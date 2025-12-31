@@ -28,6 +28,22 @@ private:
 	// Classe di gestione gioco
 	TabbyGame m_game;
 
+	// Label dei dati che variano
+	wxStaticText* m_lblNomeTabby;
+	wxStaticText* m_lblNomeTipa;
+	wxStaticText* m_lblRapportoTipa;
+	wxGauge* m_barTipa;
+	wxStaticText* m_lblSoldi;
+	wxStaticText* m_lblReputazione;
+	wxGauge* m_barRep;
+	wxStaticText* m_lblFigo;
+	wxGauge* m_barFigo;
+	wxStaticText* m_lblStudio;
+	wxGauge* m_barStudio;
+	wxStaticText* m_lblScooter;
+	wxGauge* m_barScooter;
+	wxStaticText* m_lblDate;
+
 	// FUNZIONI DI SUPPORTO
 	void UpdateInterface();
 	void AddScooterStat(wxWindow* scooterDialog, wxSizer* sizer, wxString label, wxString value);

@@ -54,6 +54,7 @@ namespace Chrono {
 				n = 0;
 			}
 		}
+		m_weekDay = dayOfWeek(*this);
 	}
 
 	void Date::AddMonth(int n)
@@ -68,6 +69,7 @@ namespace Chrono {
 			else
 				m_month = Month(int(m_month) + 1);
 		}
+		m_weekDay = dayOfWeek(*this);
 	}
 
 	void Date::AddYear(int n)
@@ -78,6 +80,7 @@ namespace Chrono {
 			m_day = 1;
 		}
 		m_year += n;
+		m_weekDay = dayOfWeek(*this);
 	}
 
 	int Date::MonthDays() const

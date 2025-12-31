@@ -1,0 +1,23 @@
+#include "TabbyGuy.h"
+
+TabbyGuy::TabbyGuy()
+	: m_soldi{ 50 }, m_rep{ 84 }, 
+	m_figo{ 92 }, m_studio{ 6 }, 
+	m_scooter{}, m_haScooter{ false }, 
+	m_tipa{}, m_haTipa{ false },
+	m_paghetta{15}, m_testa{0},
+	m_giubotto{0}, m_pantaloni{0},
+	m_scarpe{0}, m_sesso{0}
+{
+	m_identita.m_nome = "Tizio";
+	m_identita.m_cognome = "Caio";
+	m_identita.m_dataNascita = Chrono::Date{ 1971,7,28 };
+	m_identita.m_attoNascita = "Atto n. 6333 P. 1 S. A";
+	m_identita.m_luogoNascita = "Cusano Milanino";
+	m_identita.m_provinciaNascita = "MI";
+	m_identita.m_cittadinanza = "Italiana";
+	m_identita.m_residenza = "Milano";
+	m_identita.m_indirizzo = "Via Bagarotti n.123";
+	m_identita.m_statoCivile = "Celibe";
+	m_identita.m_professione = "Sfruttato";
+}

@@ -78,17 +78,15 @@ TabbyFrame::TabbyFrame()
 	Bind(wxEVT_MENU, &TabbyFrame::OnTipa, this, ID_TIPA);
 
 	// PANNELLI --------------------------------------------------------------------------------------
-	// Crea il pannello globale dove appoggiare i controlli
-	wxPanel* pnlMain = new wxPanel{ this, wxID_ANY };
 	// SIZER GLOBALE (permette di mettere roba e di ridimensionare gli elementi)
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 	
 	// Bottoni
-	wxButton* btnScooter = new wxButton{ pnlMain, ID_SCOOTER, "Scooter", wxDefaultPosition, wxSize(140, -1) };
-	wxButton* btnNegozi = new wxButton{ pnlMain, ID_NEGOZI, "Negozi", wxDefaultPosition, wxSize(140, -1) };
-	wxButton* btnDisco = new wxButton{ pnlMain, ID_DISCO, "Disco", wxDefaultPosition, wxSize(140, -1) };
-	wxButton* btnScuola = new wxButton{ pnlMain, ID_SCUOLA, "Scuola", wxDefaultPosition, wxSize(140, -1) };
-	wxButton* btnLavoro = new wxButton{ pnlMain, ID_LAVORO, "Lavoro", wxDefaultPosition, wxSize(140, -1) };
+	wxButton* btnScooter = new wxButton{ this, ID_SCOOTER, "Scooter", wxDefaultPosition, wxSize(140, -1) };
+	wxButton* btnNegozi = new wxButton{ this, ID_NEGOZI, "Negozi", wxDefaultPosition, wxSize(140, -1) };
+	wxButton* btnDisco = new wxButton{ this, ID_DISCO, "Disco", wxDefaultPosition, wxSize(140, -1) };
+	wxButton* btnScuola = new wxButton{ this, ID_SCUOLA, "Scuola", wxDefaultPosition, wxSize(140, -1) };
+	wxButton* btnLavoro = new wxButton{ this, ID_LAVORO, "Lavoro", wxDefaultPosition, wxSize(140, -1) };
 
 	// Associazione funzioni ai bottoni
 	Bind(wxEVT_BUTTON, &TabbyFrame::OnScooter, this, ID_SCOOTER);
@@ -112,10 +110,10 @@ TabbyFrame::TabbyFrame()
 	gridHeader->Add(btnNegozi, wxGBPosition(0, 1), wxDefaultSpan, wxALL, 5);
 	gridHeader->Add(btnDisco, wxGBPosition(0, 2), wxDefaultSpan, wxALL & ~wxRIGHT, 5);
 	// Linea Verticale (Parte da riga 0, alta 2 righe)
-	gridHeader->Add(new wxStaticLine(pnlMain, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL), wxGBPosition(0, 3), wxGBSpan(2, 1), wxEXPAND);	// wxEXPAND fa un override della dimensione ed estende l'elemento per tutta la lunghezza disponibile
+	gridHeader->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL), wxGBPosition(0, 3), wxGBSpan(2, 1), wxEXPAND);	// wxEXPAND fa un override della dimensione ed estende l'elemento per tutta la lunghezza disponibile
 	gridHeader->Add(btnScuola, wxGBPosition(0, 4), wxDefaultSpan, wxALL & ~wxLEFT, 5);
 	// RIGA 1
-	wxPanel* pnlNome = new wxPanel{ pnlMain, wxID_ANY, wxDefaultPosition, wxSize(-1, 40), wxBORDER_SUNKEN };
+	wxPanel* pnlNome = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(-1, 40), wxBORDER_SUNKEN };
 	wxBoxSizer* sizerNome = new wxBoxSizer{ wxHORIZONTAL };
 	sizerNome->Add(new wxStaticText(pnlNome, wxID_ANY, " Nome"), 0, wxALIGN_CENTER_VERTICAL);
 	sizerNome->AddStretchSpacer();	// Aggiungi spazio che si estende fino a destra
@@ -131,12 +129,12 @@ TabbyFrame::TabbyFrame()
 	// Aggiungi Header al Main
 	mainSizer->Add(gridHeader, 0, wxEXPAND);
 	// LINEA SEPARATRICE ORIZZONTALE
-	mainSizer->Add(new wxStaticLine(pnlMain, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxEXPAND);
+	mainSizer->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxEXPAND);
 
 
 	// BODY ---------------------------------------------------------------------------------------------
 	// FOTO
-	wxPanel* pnlFoto = new wxPanel{ pnlMain, wxID_ANY, wxDefaultPosition, wxSize(300, 300), wxBORDER_SUNKEN };
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(300, 300), wxBORDER_SUNKEN };
 	wxBoxSizer* sizerFoto = new wxBoxSizer(wxVERTICAL);
 	pnlFoto->SetBackgroundColour(*wxWHITE);
 	sizerFoto->Add(new wxStaticText(pnlFoto, wxID_ANY, "IMG TIZIO"), 0, wxALIGN_CENTER | wxTOP, 80);
@@ -145,7 +143,7 @@ TabbyFrame::TabbyFrame()
 	sizerBody->Add(pnlFoto, 0, wxEXPAND | wxALL, 5);
 
 	// GRIGLIA STATISTICHE
-	wxPanel* pnlStats = new wxPanel{ pnlMain, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), wxBORDER_SUNKEN };
+	wxPanel* pnlStats = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), wxBORDER_SUNKEN };
 	wxGridBagSizer* gridStats = new wxGridBagSizer{ 0,0 };
 	wxBoxSizer* sizerStats = new wxBoxSizer(wxVERTICAL);
 	// Bottoni laterali
@@ -234,11 +232,9 @@ TabbyFrame::TabbyFrame()
 	// IMPLEMENTAZIONE BODY
 	mainSizer->Add(sizerBody, 1, wxEXPAND);
 	// IMPLEMENTAZIONE FINALE
-	pnlMain->SetSizer(mainSizer);
-	pnlMain->Layout();
+	this->SetSizer(mainSizer);
 	this->Fit();
 	this->Centre();
-
 	UpdateInterface();	// AGGIORNA INTERFACCIA
 }
 

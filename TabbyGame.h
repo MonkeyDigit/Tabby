@@ -23,7 +23,9 @@ class TabbyGame
 {
 public:
 	TabbyGame();
+
 	TabbyGuy* GetTabbyGuy() { return &m_tabbyGuy; };
+	Chrono::Date* GetDate() { return &m_date; };
 private:
 	TabbyGuy m_tabbyGuy;
 	Chrono::Date m_date;

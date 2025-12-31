@@ -7,6 +7,7 @@
 // TODO: AL POSTO DELL'ENUM ID, USA UN VETTORE
 // TODO: FORSE PUOI AGGIUNGERE IL CONSTRUCTOR A TABBYAPP
 // TODO: AGGIUNGI MESS COMPLEANNO
+// TODO: Posso sostituire main panel con la finestra direttamente???
 
 bool TabbyApp::OnInit()
 {
@@ -21,11 +22,11 @@ bool TabbyApp::OnInit()
 wxIMPLEMENT_APP(TabbyApp);
 // Costruttore finestra
 TabbyFrame::TabbyFrame()
-	: wxFrame{ NULL, wxID_ANY, "Tabby Window", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX) } // Blocca ridimensionamento (sono operatori bitwise su delle flag binarie)
+	: wxFrame{ NULL, wxID_ANY, "Tabby Window", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)} // Blocca ridimensionamento (sono operatori bitwise su delle flag binarie)
 {
 	// Imposta colore di sfondo e il font
 	this->SetBackgroundColour(WIN_BKG);
-	this->SetFont(wxFont(12, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+	this->SetFont(wxFont(13, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 
 	// BARRA MENU -------------------------------------------------------
 	wxMenuBar* menuBar = new wxMenuBar{};
@@ -79,28 +80,15 @@ TabbyFrame::TabbyFrame()
 	// PANNELLI --------------------------------------------------------------------------------------
 	// Crea il pannello globale dove appoggiare i controlli
 	wxPanel* pnlMain = new wxPanel{ this, wxID_ANY };
-	wxPanel* pnlStats = new wxPanel{ pnlMain, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), wxBORDER_SUNKEN };
 	// SIZER GLOBALE (permette di mettere roba e di ridimensionare gli elementi)
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
-	// HEADER
-	wxGridBagSizer* gridHeader = new wxGridBagSizer{ 5, 5 };	// gap verticale, gap orizzontale
-	wxPanel* pnlNome = new wxPanel{ pnlMain, wxID_ANY, wxDefaultPosition, wxSize(-1, 40), wxBORDER_SUNKEN };
-	wxBoxSizer* sizerNome = new wxBoxSizer{ wxHORIZONTAL };
-	// BODY SOTTOSTANTE
-	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
-	wxPanel* pnlFoto = new wxPanel{ pnlMain, wxID_ANY, wxDefaultPosition, wxSize(300, 300), wxBORDER_SUNKEN };
-	wxBoxSizer* sizerFoto = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer* sizerStats = new wxBoxSizer(wxVERTICAL);
-	wxGridBagSizer* gridStats = new wxGridBagSizer{ 0,0 };
+	
 	// Bottoni
 	wxButton* btnScooter = new wxButton{ pnlMain, ID_SCOOTER, "Scooter", wxDefaultPosition, wxSize(140, -1) };
 	wxButton* btnNegozi = new wxButton{ pnlMain, ID_NEGOZI, "Negozi", wxDefaultPosition, wxSize(140, -1) };
 	wxButton* btnDisco = new wxButton{ pnlMain, ID_DISCO, "Disco", wxDefaultPosition, wxSize(140, -1) };
 	wxButton* btnScuola = new wxButton{ pnlMain, ID_SCUOLA, "Scuola", wxDefaultPosition, wxSize(140, -1) };
 	wxButton* btnLavoro = new wxButton{ pnlMain, ID_LAVORO, "Lavoro", wxDefaultPosition, wxSize(140, -1) };
-	wxButton* btnTipa = new wxButton{ pnlStats, ID_TIPA, "Tipa", wxDefaultPosition, wxSize(140, -1) };
-	wxButton* btnCompagnia = new wxButton{ pnlStats, ID_COMPAGNIA, "Compagnia", wxDefaultPosition, wxSize(140, -1) };
-	wxButton* btnFamiglia = new wxButton{ pnlStats, ID_FAMIGLIA, "Famiglia", wxDefaultPosition, wxSize(140, -1) };
 
 	// Associazione funzioni ai bottoni
 	Bind(wxEVT_BUTTON, &TabbyFrame::OnScooter, this, ID_SCOOTER);
@@ -112,8 +100,9 @@ TabbyFrame::TabbyFrame()
 	Bind(wxEVT_BUTTON, &TabbyFrame::OnCompagnia, this, ID_COMPAGNIA);
 	Bind(wxEVT_BUTTON, &TabbyFrame::OnFamiglia, this, ID_FAMIGLIA);
 
-
-	std::string auxStd{};	// stringa ausiliaria per reperire dati di gioco
+	// HEADER
+	wxGridBagSizer* gridHeader = new wxGridBagSizer{ 5, 5 };	// gap verticale, gap orizzontale
+	std::string auxStr{};	// stringa ausiliaria per reperire dati di gioco
 	int auxInt{};
 
 	// HEADER --------------------------------------------------------------------------------------------------
@@ -126,10 +115,12 @@ TabbyFrame::TabbyFrame()
 	gridHeader->Add(new wxStaticLine(pnlMain, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL), wxGBPosition(0, 3), wxGBSpan(2, 1), wxEXPAND);	// wxEXPAND fa un override della dimensione ed estende l'elemento per tutta la lunghezza disponibile
 	gridHeader->Add(btnScuola, wxGBPosition(0, 4), wxDefaultSpan, wxALL & ~wxLEFT, 5);
 	// RIGA 1
+	wxPanel* pnlNome = new wxPanel{ pnlMain, wxID_ANY, wxDefaultPosition, wxSize(-1, 40), wxBORDER_SUNKEN };
+	wxBoxSizer* sizerNome = new wxBoxSizer{ wxHORIZONTAL };
 	sizerNome->Add(new wxStaticText(pnlNome, wxID_ANY, " Nome"), 0, wxALIGN_CENTER_VERTICAL);
 	sizerNome->AddStretchSpacer();	// Aggiungi spazio che si estende fino a destra
-	auxStd = m_game.GetTabbyGuy()->GetID()->m_nome + " " + m_game.GetTabbyGuy()->GetID()->m_cognome;
-	sizerNome->Add(new wxStaticText(pnlNome, wxID_ANY, auxStd), 0, wxALIGN_CENTER_VERTICAL);
+	auxStr = m_game.GetTabbyGuy()->GetID()->m_nome + " " + m_game.GetTabbyGuy()->GetID()->m_cognome + " ";
+	sizerNome->Add(new wxStaticText(pnlNome, wxID_ANY, auxStr), 0, wxALIGN_CENTER_VERTICAL);
 	pnlNome->SetSizer(sizerNome);
 	gridHeader->Add(pnlNome, wxGBPosition(1, 0), wxGBSpan(1, 3), wxEXPAND | wxALL & ~(wxRIGHT | wxTOP), 5);
 	// Aggiungi bottone lavoro
@@ -145,20 +136,31 @@ TabbyFrame::TabbyFrame()
 
 	// BODY ---------------------------------------------------------------------------------------------
 	// FOTO
+	wxPanel* pnlFoto = new wxPanel{ pnlMain, wxID_ANY, wxDefaultPosition, wxSize(300, 300), wxBORDER_SUNKEN };
+	wxBoxSizer* sizerFoto = new wxBoxSizer(wxVERTICAL);
 	pnlFoto->SetBackgroundColour(*wxWHITE);
 	sizerFoto->Add(new wxStaticText(pnlFoto, wxID_ANY, "IMG TIZIO"), 0, wxALIGN_CENTER | wxTOP, 80);
 	pnlFoto->SetSizer(sizerFoto);
+	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
 	sizerBody->Add(pnlFoto, 0, wxEXPAND | wxALL, 5);
 
 	// GRIGLIA STATISTICHE
+	wxPanel* pnlStats = new wxPanel{ pnlMain, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), wxBORDER_SUNKEN };
+	wxGridBagSizer* gridStats = new wxGridBagSizer{ 0,0 };
+	wxBoxSizer* sizerStats = new wxBoxSizer(wxVERTICAL);
+	// Bottoni laterali
+	wxButton* btnTipa = new wxButton{ pnlStats, ID_TIPA, "Tipa", wxDefaultPosition, wxSize(140, -1) };
+	wxButton* btnCompagnia = new wxButton{ pnlStats, ID_COMPAGNIA, "Compagnia", wxDefaultPosition, wxSize(140, -1) };
+	wxButton* btnFamiglia = new wxButton{ pnlStats, ID_FAMIGLIA, "Famiglia", wxDefaultPosition, wxSize(140, -1) };
+
 	// Tipa
 	// REPERIAMO IL NOME
-	auxStd = m_game.GetTabbyGuy()->GetTipa()->GetNome();
-	gridStats->Add(new wxStaticText(pnlStats, wxID_ANY, auxStd), wxGBPosition(0,0), wxDefaultSpan, wxEXPAND | wxALIGN_RIGHT | wxALL, 5);
+	auxStr = m_game.GetTabbyGuy()->GetTipa()->GetNome();
+	gridStats->Add(new wxStaticText(pnlStats, wxID_ANY, auxStr), wxGBPosition(0,0), wxDefaultSpan, wxEXPAND | wxALIGN_RIGHT | wxALL, 5);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(1,0), wxGBSpan(1,1), wxEXPAND);
 	auxInt = m_game.GetTabbyGuy()->GetTipa()->GetRapporto();
 	gridStats->Add(new wxStaticText(pnlStats, wxID_ANY, wxString::Format("< Rapporto con la tipa %d/100 >",auxInt)), wxGBPosition(2,0), wxDefaultSpan, wxEXPAND | wxALL & ~wxBOTTOM, 10);
-	wxGauge* barTipa = new wxGauge(pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(200, 20));
+	wxGauge* barTipa = new wxGauge(pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10));
 	barTipa->SetValue(auxInt);
 	gridStats->Add(barTipa, wxGBPosition(3,0), wxDefaultSpan, wxALL & ~wxTOP, 10);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(4,0), wxGBSpan(1,3), wxEXPAND);
@@ -177,7 +179,7 @@ TabbyFrame::TabbyFrame()
 	// Reputazione
 	auxInt = m_game.GetTabbyGuy()->GetRep();
 	gridStats->Add(new wxStaticText(pnlStats, wxID_ANY, wxString::Format("< Reputazione %d/100 >", auxInt)), wxGBPosition(7, 0), wxGBSpan(1,3), wxEXPAND | wxALL & ~wxBOTTOM, 10);
-	wxGauge* barRep = new wxGauge(pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(200, 20));
+	wxGauge* barRep = new wxGauge(pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10));
 	barRep->SetValue(auxInt);
 	gridStats->Add(barRep, wxGBPosition(8, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(9,0), wxGBSpan(1,3), wxEXPAND);
@@ -185,7 +187,7 @@ TabbyFrame::TabbyFrame()
 	// Figosità
 	auxInt = m_game.GetTabbyGuy()->GetFigo();
 	gridStats->Add(new wxStaticText(pnlStats, wxID_ANY, wxString::Format("< Figosità %d/100 >", auxInt)), wxGBPosition(10, 0), wxGBSpan(1, 3), wxEXPAND | wxALL & ~wxBOTTOM, 10);
-	wxGauge* barFigo = new wxGauge(pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(200, 20));
+	wxGauge* barFigo = new wxGauge(pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10));
 	barFigo->SetValue(auxInt);
 	gridStats->Add(barFigo, wxGBPosition(11, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(12,0), wxGBSpan(1,3), wxEXPAND);
@@ -193,18 +195,35 @@ TabbyFrame::TabbyFrame()
 	// Profitto scolastico
 	auxInt = m_game.GetTabbyGuy()->GetStudio();
 	gridStats->Add(new wxStaticText(pnlStats, wxID_ANY, wxString::Format("< Profitto scolastico %d/100 >", auxInt)), wxGBPosition(13, 0), wxGBSpan(1, 3), wxEXPAND | wxALL & ~wxBOTTOM, 10);
-	wxGauge* barScuola = new wxGauge(pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(200, 20));
+	wxGauge* barScuola = new wxGauge(pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10));
 	barScuola->SetValue(auxInt);
 	gridStats->Add(barScuola, wxGBPosition(14, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(15,0), wxGBSpan(1,3), wxEXPAND);
 	
 	// Stato scooter
-	auxStd = m_game.GetTabbyGuy()->GetScooter()->GetNome();
+	auxStr = m_game.GetTabbyGuy()->GetScooter()->GetNome();
 	auxInt = m_game.GetTabbyGuy()->GetScooter()->GetStato();
-	gridStats->Add(new wxStaticText(pnlStats, wxID_ANY, wxString::Format("< %s >\n< Stato scooter %d/100 >", auxStd, auxInt)), wxGBPosition(16, 0), wxGBSpan(1, 3), wxALL & ~wxBOTTOM, 10);
-	wxGauge* barScooter = new wxGauge(pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(200, 20));
+	gridStats->Add(new wxStaticText(pnlStats, wxID_ANY, wxString::Format("< %s >\n< Stato scooter %d/100 >", auxStr, auxInt)), wxGBPosition(16, 0), wxGBSpan(1, 3), wxALL & ~wxBOTTOM, 10);
+	wxGauge* barScooter = new wxGauge(pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10));
 	barScooter->SetValue(auxInt);
 	gridStats->Add(barScooter, wxGBPosition(17, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
+	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(18,0), wxGBSpan(1,3), wxEXPAND);
+
+	// Data
+	wxPanel* pnlDate = new wxPanel{ pnlStats, wxID_ANY, wxDefaultPosition, wxSize(-1,40), wxBORDER_SUNKEN};
+	wxBoxSizer* sizerDate = new wxBoxSizer{ wxHORIZONTAL };
+	auxStr = wxString::Format("%s %d %s %d",
+		m_game.GetDate()->GetWeekDayStr(),
+		m_game.GetDate()->GetDay(),
+		m_game.GetDate()->GetMonthStr(),
+		m_game.GetDate()->GetYear());
+
+	pnlDate->SetSizer(sizerDate);
+	sizerDate->Add(new wxStaticText(pnlDate, wxID_ANY, " "+auxStr), wxEXPAND | wxALL & ~wxBOTTOM, 5);
+	sizerDate->AddStretchSpacer();
+	wxButton* btnAbout = new wxButton{ pnlDate, ID_ABOUT, "About", wxDefaultPosition, wxSize(140, -1) };
+	sizerDate->Add(btnAbout, 0, wxALL, 2);
+	gridStats->Add(pnlDate, wxGBPosition(19, 0), wxGBSpan(1, 3), wxEXPAND | wxALL, 5);
 	
 	// FISSIAMO LA GRID AL SIZER
 	gridStats->AddGrowableCol(0);

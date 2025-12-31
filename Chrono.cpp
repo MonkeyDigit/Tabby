@@ -26,7 +26,7 @@ namespace Chrono {
 	{
 		if (n < 0)
 		{
-			std::cerr << "Invalid numbero of days\n";
+			std::cerr << "Invalid number of days\n";
 			exit(1);
 		}
 

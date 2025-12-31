@@ -152,7 +152,7 @@ TabbyFrame::TabbyFrame()
 	
 	// Tipa
 	m_lblNomeTipa = new wxStaticText{ pnlStats, wxID_ANY, "---" };
-	gridStats->Add(m_lblNomeTipa, wxGBPosition(0,0), wxDefaultSpan, wxEXPAND | wxALIGN_RIGHT | wxALL, 5);
+	gridStats->Add(m_lblNomeTipa, wxGBPosition(0,0), wxDefaultSpan, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxALL, 5);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(1,0), wxGBSpan(1,1), wxEXPAND);
 	m_lblRapportoTipa = new wxStaticText{ pnlStats, wxID_ANY, "---" };
 	gridStats->Add(m_lblRapportoTipa, wxGBPosition(2,0), wxDefaultSpan, wxEXPAND | wxALL & ~wxBOTTOM, 10);

@@ -9,8 +9,8 @@ TabbyGuy::TabbyGuy()
 	m_giubotto{0}, m_pantaloni{0},
 	m_scarpe{0}, m_sesso{0}
 {
-	m_identita.m_nome = "Tizio";
-	m_identita.m_cognome = "Caio";
+	m_identita.m_nome = "Alfonso";
+	m_identita.m_cognome = "Signorini";
 	m_identita.m_dataNascita = Chrono::Date{ 1971,7,28 };
 	m_identita.m_attoNascita = "Atto n. 6333 P. 1 S. A";
 	m_identita.m_luogoNascita = "Cusano Milanino";

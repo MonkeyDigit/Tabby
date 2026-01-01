@@ -1,12 +1,12 @@
 #pragma once
 #include <wx/wx.h>
-#include "TabbyGuy.h"
+#include "TabbyGame.h"
 
 class DlgScooter : public wxDialog {
 public:
-	DlgScooter(wxWindow* parent, TabbyGuy* guy);
+	DlgScooter(wxWindow* parent, TabbyGame* game);
 private:
-	TabbyGuy* m_guy;	// Viene conservato il puntatore al tabby per poterci lavorare
+	TabbyGame* m_game;	// Il riferimento al motore di gioco
 
 	// Eventi interni alla finestra
 	void OnConcessionario(wxCommandEvent& event);

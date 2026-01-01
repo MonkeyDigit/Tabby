@@ -5,6 +5,10 @@
 // TODO: fai reperire la merda dai file, anche per i salvataggi
 // TODO: AGGIUNGI MESS COMPLEANNO
 // TODO: SISTEMA COMMENTI
+// TODO: SISTEMA DI CONVERSIONE DENARO con %.2f o cast a intero per le lire
+// TODO: EVENTO DI GIOCO: il 1° gennaio 2002 sotto il governo Berlusca viene introdotta la moneta FISICA dell'euro in italia
+// TODO: MECCANICHE FUTURE: con l'avanzamento tecnologico, escono nuove robe. + investimenti in borsa, crypto, per per arricchirsi...
+// TODO: La scuola la fa per 5 anni poi va a lavorare e investire in borsa???
 
 bool TabbyApp::OnInit()
 {
@@ -19,7 +23,8 @@ bool TabbyApp::OnInit()
 wxIMPLEMENT_APP(TabbyApp);
 // Costruttore finestra
 TabbyFrame::TabbyFrame()
-	: wxFrame{ NULL, wxID_ANY, "Tabby Window", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)} // Blocca ridimensionamento (sono operatori bitwise su delle flag binarie)
+	: wxFrame{ NULL, wxID_ANY, "Tabby Window", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)}, // Blocca ridimensionamento (sono operatori bitwise su delle flag binarie)
+	m_game{}
 {
 	// Imposta colore di sfondo e il font
 	this->SetBackgroundColour(WIN_BKG);
@@ -233,7 +238,7 @@ void TabbyFrame::UpdateInterface()
 	m_lblNomeTipa->SetLabel(guy->GetTipa()->GetNome());
 	m_lblRapportoTipa->SetLabel(wxString::Format("< Rapporto con la tipa %d/100 >", guy->GetTipa()->GetRapporto()));
 	m_barTipa->SetValue(guy->GetTipa()->GetRapporto());
-	m_lblSoldi->SetLabel(wxString::Format("< Soldi  %d€ >", guy->GetSoldi()));
+	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(guy->GetSoldi()) + " >");
 	m_lblReputazione->SetLabel(wxString::Format("< Reputazione %d/100 >", guy->GetRep()));
 	m_barRep->SetValue(guy->GetRep());
 	m_lblFigo->SetLabel(wxString::Format("< Figosità %d/100 >", guy->GetFigo()));
@@ -256,7 +261,7 @@ void TabbyFrame::UpdateInterface()
 
 void TabbyFrame::OnScooter(wxCommandEvent& event)
 {
-	DlgScooter dlg{ this, m_game.GetTabbyGuy() };
+	DlgScooter dlg{ this, &m_game };
 	dlg.Centre();
 	dlg.ShowModal();
 	this->UpdateInterface();

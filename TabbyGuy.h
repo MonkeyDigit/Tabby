@@ -29,9 +29,12 @@ public:
 	void UpdateFigo(int figo);
 	void UpdateScuola(int scuola);
 	*/
+	// Restituisce true se l'acquisto avviene con successo
+	bool SpendiSoldi(int importo);
+	void GuadagnaSoldi(int importo);
 
 	CartaIdentita* GetID() { return &m_identita; };
-	int GetSoldi() const { return m_soldi; };
+	long long GetSoldi() const { return m_soldi; };
 	int GetRep() const { return m_rep; };
 	int GetFigo() const { return m_figo; };
 	int GetStudio() const { return m_studio; };
@@ -46,7 +49,7 @@ public:
 
 private:
 	CartaIdentita m_identita;
-	int m_soldi;
+	long long m_soldi;			// intero a 64 bit (max 9 miliardi DI miliardi): il tabbozzo è rikko...
 	int m_rep;
 	int m_figo;
 	int m_studio;

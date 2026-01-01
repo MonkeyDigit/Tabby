@@ -123,7 +123,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AppDialogs.cpp" />
     <ClCompile Include="Chrono.cpp" />
+    <ClCompile Include="AppDialogs.h" />
     <ClCompile Include="Scooter.cpp" />
     <ClCompile Include="TabbyApp.cpp" />
     <ClCompile Include="TabbyGame.cpp" />

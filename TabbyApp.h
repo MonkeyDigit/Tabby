@@ -44,9 +44,8 @@ private:
 	wxGauge* m_barScooter;
 	wxStaticText* m_lblDate;
 
-	// FUNZIONI DI SUPPORTO
+	// Funzioni Helper
 	void UpdateInterface();
-	void AddScooterStat(wxWindow* scooterDialog, wxSizer* sizer, wxString label, wxString value);
 
 	// GESTORE EVENTI (Cosa succede quando clicchi)
 	void OnScooter(wxCommandEvent& event);

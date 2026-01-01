@@ -1,8 +1,8 @@
 #include "TabbyGuy.h"
 
 TabbyGuy::TabbyGuy()
-	: m_soldi{ 50 }, m_rep{ 84 }, 
-	m_figo{ 92 }, m_studio{ 6 }, 
+	: m_soldi{ 0 }, m_rep{ 0 }, 
+	m_figo{ 0 }, m_studio{ 0 }, 
 	m_scooter{}, m_haScooter{ false }, 
 	m_tipa{}, m_haTipa{ false },
 	m_paghetta{15}, m_testa{0},

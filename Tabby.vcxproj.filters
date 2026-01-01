@@ -36,6 +36,12 @@
     <ClCompile Include="Telefonino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AppDialogs.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AppDialogs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TabbyApp.h">

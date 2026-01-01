@@ -28,7 +28,7 @@ TabbyFrame::TabbyFrame()
 {
 	// Imposta colore di sfondo e il font
 	this->SetBackgroundColour(WIN_BKG);
-	this->SetFont(wxFont(13, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+	this->SetFont(wxFont(12, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 
 	// BARRA MENU -------------------------------------------------------
 	wxMenuBar* menuBar = new wxMenuBar{};
@@ -127,7 +127,7 @@ TabbyFrame::TabbyFrame()
 	gridHeader->Add(btnLavoro, wxGBPosition(1, 4), wxDefaultSpan, wxALL & ~wxLEFT, 5);
 
 	// QUESTO LO AGGIUNGO SOLO PER ALLINEARE I BOTTONI CON QUELLI DI SOTTO
-	gridHeader->Add(2, 1, wxGBPosition(0, 5), wxGBSpan(2, 1));
+	gridHeader->Add(6, 1, wxGBPosition(0, 5), wxGBSpan(2, 1));
 	gridHeader->AddGrowableCol(2);	// Questo fa sì che la colonna si estenda il più possibile
 
 	// Aggiungi Header al Main
@@ -160,7 +160,7 @@ TabbyFrame::TabbyFrame()
 	gridStats->Add(m_lblNomeTipa, wxGBPosition(0,0), wxDefaultSpan, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxALL, 5);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(1,0), wxGBSpan(1,1), wxEXPAND);
 	m_lblRapportoTipa = new wxStaticText{ pnlStats, wxID_ANY, "---" };
-	gridStats->Add(m_lblRapportoTipa, wxGBPosition(2,0), wxDefaultSpan, wxEXPAND | wxALL & ~wxBOTTOM, 10);
+	gridStats->Add(m_lblRapportoTipa, wxGBPosition(2,0), wxDefaultSpan, wxEXPAND | wxALL, 10);
 	m_barTipa = new wxGauge{ pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10) };
 	gridStats->Add(m_barTipa, wxGBPosition(3,0), wxDefaultSpan, wxALL & ~wxTOP, 10);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(4,0), wxGBSpan(1,3), wxEXPAND);
@@ -178,28 +178,28 @@ TabbyFrame::TabbyFrame()
 	
 	// Reputazione
 	m_lblReputazione = new wxStaticText{ pnlStats, wxID_ANY, "---" };
-	gridStats->Add(m_lblReputazione, wxGBPosition(7, 0), wxGBSpan(1,3), wxEXPAND | wxALL & ~wxBOTTOM, 10);
+	gridStats->Add(m_lblReputazione, wxGBPosition(7, 0), wxGBSpan(1,3), wxEXPAND | wxALL, 10);
 	m_barRep = new wxGauge{ pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10) };
 	gridStats->Add(m_barRep, wxGBPosition(8, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(9,0), wxGBSpan(1,3), wxEXPAND);
 	
 	// Figosità
 	m_lblFigo = new wxStaticText{ pnlStats, wxID_ANY, "---" };
-	gridStats->Add(m_lblFigo, wxGBPosition(10, 0), wxGBSpan(1, 3), wxEXPAND | wxALL & ~wxBOTTOM, 10);
+	gridStats->Add(m_lblFigo, wxGBPosition(10, 0), wxGBSpan(1, 3), wxEXPAND | wxALL, 10);
 	m_barFigo = new wxGauge{ pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10) };
 	gridStats->Add(m_barFigo, wxGBPosition(11, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(12,0), wxGBSpan(1,3), wxEXPAND);
 	
 	// Profitto scolastico
 	m_lblStudio = new wxStaticText{ pnlStats, wxID_ANY, "---" };
-	gridStats->Add(m_lblStudio, wxGBPosition(13, 0), wxGBSpan(1, 3), wxEXPAND | wxALL & ~wxBOTTOM, 10);
+	gridStats->Add(m_lblStudio, wxGBPosition(13, 0), wxGBSpan(1, 3), wxEXPAND | wxALL, 10);
 	m_barStudio = new wxGauge{ pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10) };
 	gridStats->Add(m_barStudio, wxGBPosition(14, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(15,0), wxGBSpan(1,3), wxEXPAND);
 	
 	// Stato scooter
 	m_lblScooter = new wxStaticText{ pnlStats, wxID_ANY, "---" };
-	gridStats->Add(m_lblScooter, wxGBPosition(16, 0), wxGBSpan(1, 3), wxALL & ~wxBOTTOM, 10);
+	gridStats->Add(m_lblScooter, wxGBPosition(16, 0), wxGBSpan(1, 3), wxALL, 10);
 	m_barScooter = new wxGauge{ pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10) };
 	gridStats->Add(m_barScooter, wxGBPosition(17, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(18,0), wxGBSpan(1,3), wxEXPAND);
@@ -227,10 +227,10 @@ TabbyFrame::TabbyFrame()
 	this->SetSizer(mainSizer);
 	this->Fit();	// Chiede al Sizer principale (mainSizer) quanto spazio gli serve al minimo per far stare dentro tutti i widget (bottoni, pannelli, immagini) senza schiacciarli. Poi ridimensiona la finestra (TabbyFrame) esattamente a quella misura
 	this->Centre();	// Posiziona la finestra al centro dello schermo. Senza, la finestra si aprirebbe nell'angolo in alto a sinistra (coordinate 0,0) o dove decide Windows a caso
-	UpdateInterface();	// AGGIORNA INTERFACCIA
+	AggiornaInterfaccia();	// AGGIORNA INTERFACCIA
 }
 
-void TabbyFrame::UpdateInterface()
+void TabbyFrame::AggiornaInterfaccia()
 { 
 	TabbyGuy* guy = m_game.GetTabbyGuy();
 
@@ -264,7 +264,7 @@ void TabbyFrame::OnScooter(wxCommandEvent& event)
 	DlgScooter dlg{ this, &m_game };
 	dlg.Centre();
 	dlg.ShowModal();
-	this->UpdateInterface();
+	this->AggiornaInterfaccia();
 }
 
 void TabbyFrame::OnDisco(wxCommandEvent& event)
@@ -273,6 +273,10 @@ void TabbyFrame::OnDisco(wxCommandEvent& event)
 }
 void TabbyFrame::OnScuola(wxCommandEvent& event)
 {
+	DlgScuola dlg{ this, &m_game };
+	dlg.Centre();
+	dlg.ShowModal();
+	this->AggiornaInterfaccia();
 }
 
 void TabbyFrame::OnNegozi(wxCommandEvent& event)

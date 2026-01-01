@@ -4,7 +4,7 @@ TabbyGuy::TabbyGuy()
 	: m_soldi{ 12000 }, m_rep{ 20 },
 	m_figo{ 75 }, m_studio{ 50 }, 
 	m_scooter{}, m_haScooter{ false }, 
-	m_tipa{}, m_haTipa{ false },
+	m_tipa{}, m_haTipa{ false }, m_scuola{}, 
 	m_paghetta{15}, m_testa{0},
 	m_giubotto{0}, m_pantaloni{0},
 	m_scarpe{0}, m_sesso{0}

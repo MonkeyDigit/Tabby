@@ -3,6 +3,7 @@
 #include "Scooter.h"
 #include "Tipa.h"
 #include "Chrono.h"
+#include "Scuola.h"
 
 struct CartaIdentita {
 	std::string m_nome;
@@ -22,13 +23,6 @@ class TabbyGuy {
 public:
 	TabbyGuy();		// Constructor
 
-	// SETTER & GETTER
-	/*
-	void UpdateSoldi(int soldi);
-	void UpdateRep(int rep);
-	void UpdateFigo(int figo);
-	void UpdateScuola(int scuola);
-	*/
 	// Restituisce true se l'acquisto avviene con successo
 	bool SpendiSoldi(int importo);
 	void GuadagnaSoldi(int importo);
@@ -38,6 +32,7 @@ public:
 	int GetRep() const { return m_rep; };
 	int GetFigo() const { return m_figo; };
 	int GetStudio() const { return m_studio; };
+	Scuola* GetScuola() { return &m_scuola; };
 	Scooter* GetScooter() { return &m_scooter; };
 	Tipa* GetTipa() { return &m_tipa; };
 	int GetPaghetta() const { return m_paghetta; };
@@ -53,6 +48,7 @@ private:
 	int m_rep;
 	int m_figo;
 	int m_studio;
+	Scuola m_scuola;
 	// Qua potevo usare dei puntatori inizializzando lo scooter e la tipa a NULL, ma non voglio fare un puttanaio con destructor e magagne dei puntatori
 	Scooter m_scooter;
 	bool m_haScooter;

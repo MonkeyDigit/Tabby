@@ -45,7 +45,7 @@ private:
 	wxStaticText* m_lblDate;
 
 	// Funzioni Helper
-	void UpdateInterface();
+	void AggiornaInterfaccia();
 
 	// GESTORE EVENTI (Cosa succede quando clicchi)
 	void OnScooter(wxCommandEvent& event);

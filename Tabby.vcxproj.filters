@@ -42,6 +42,9 @@
     <ClCompile Include="AppDialogs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scuola.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TabbyApp.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Telefonino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scuola.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -94,3 +94,90 @@ void DlgScooter::AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxStr
 	wxStaticText* valueBox = new wxStaticText{ parent, wxID_ANY, value, wxDefaultPosition, wxSize(200, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
 	sizer->Add(valueBox, 0, wxALIGN_RIGHT);
 }
+
+// SCUOLA
+DlgScuola::DlgScuola(wxWindow* parent, TabbyGame* game)
+	: wxDialog{ parent, wxID_ANY, "Scuola", wxDefaultPosition, wxDefaultSize },
+	m_game{ game }, m_materiaIndex{0}
+{
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+	this->SetFont(parent->GetFont());
+
+	Scuola* scuola = m_game->GetTabbyGuy()->GetScuola();
+
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+	wxBoxSizer* sizerTop = new wxBoxSizer{ wxHORIZONTAL };
+	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
+
+	// Pannello dei voti
+	wxPanel* pnlVoti = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxFlexGridSizer* gridVoti = new wxFlexGridSizer{ 2, 10, 5 };
+
+	// Questi aggiungono un po' di padding per evitare che la prima materia sia attaccata al soffitto
+	gridVoti->Add(0, 0);
+	gridVoti->Add(0, 0);
+
+	// TODO: METTI ROBA DEI VOTI
+	for (int i = 0; i < scuola->m_materie.size(); i++)
+	{
+		// Il Radio Button, Eh Eh :)
+		// Solo il primo (i == 0) deve avere lo stile wxRB_GROUP
+		// Questo stabilisce il gruppo di radio button, e impone che solo uno è selezionabile alla volta
+		long style = (i == 0) ? wxRB_GROUP : 0;
+		wxRadioButton* radio = new wxRadioButton{ pnlVoti, wxID_ANY, scuola->m_materie[i].GetNome(), wxDefaultPosition, wxDefaultSize, style };
+
+		// Il primo viene selezionato di default
+		if (i == 0) radio->SetValue(true);
+
+		// Il voto
+		wxString votoStr = wxString::Format("%d", scuola->m_materie[i].GetVoto());
+		wxStaticText* lblVoto = new wxStaticText{ pnlVoti, wxID_ANY, votoStr, wxDefaultPosition, wxSize(45, 25), wxBORDER_SUNKEN | wxALIGN_CENTER_HORIZONTAL};
+
+		// Aggiungiamo alla griglia
+		gridVoti->Add(radio, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
+		gridVoti->Add(lblVoto, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 5);
+
+		// Binding
+		radio->Bind(wxEVT_RADIOBUTTON, [this, i](wxCommandEvent& ev) {
+			m_materiaIndex = i;
+			AggiornaBottoni();
+			});
+	}
+
+
+	pnlVoti->SetSizer(gridVoti);
+	sizerTop->Add(pnlVoti, 0, wxEXPAND | wxALL, 5);
+
+	// Pannello bottoni
+	wxPanel* pnlButtons = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(600,400), wxBORDER_SUNKEN};
+	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
+	sizerTop->Add(pnlButtons, 0, wxALL, 5);
+	mainSizer->Add(sizerTop, 0, wxALL, 5);
+
+	wxPanel* pnlInfoOk = new wxPanel{ this,wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerInfoOk = new wxBoxSizer{ wxHORIZONTAL };
+
+	// TODO: METTI ROBA
+
+	sizerBottom->Add(pnlInfoOk, 0, wxALL, 5);
+	mainSizer->Add(sizerBottom, 0, wxALL, 5);
+
+	this->SetSizer(mainSizer);
+	this->Fit();
+}
+
+void DlgScuola::OnStudia(wxCommandEvent& event)
+{
+}
+
+void DlgScuola::OnMinaccia(wxCommandEvent& event)
+{
+}
+
+void DlgScuola::OnCorrompi(wxCommandEvent& event)
+{
+}
+
+void DlgScuola::AggiornaBottoni()
+{
+}

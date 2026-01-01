@@ -24,6 +24,12 @@ public:
 private:
 	TabbyGame* m_game;	// Il riferimento al motore di gioco
 	int m_materiaIndex;
+	std::vector<wxStaticText*> m_lblVoti;
+
+	// I puntatori ai bottoni d'azione (per cambiargli il testo dinamicamente)
+	wxButton* m_btnStudia;
+	wxButton* m_btnMinaccia;
+	wxButton* m_btnCorrompi;
 
 	// Eventi interni alla finestra
 	void OnStudia(wxCommandEvent& event);
@@ -31,5 +37,5 @@ private:
 	void OnCorrompi(wxCommandEvent& event);
 
 	// Funzione per aggiornare i testi dei bottoni
-	void AggiornaBottoni();
+	void AggiornaInterfaccia();
 };

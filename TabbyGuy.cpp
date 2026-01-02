@@ -2,9 +2,10 @@
 
 TabbyGuy::TabbyGuy()
 	: m_soldi{ 12000 }, m_rep{ 20 },
-	m_figo{ 75 }, m_studio{ 50 }, 
+	m_figo{ 75 }, m_studio{ 0 }, 
 	m_scooter{}, m_haScooter{ false }, 
-	m_tipa{}, m_haTipa{ false }, m_scuola{}, 
+	m_tipa{}, m_rapporto{ 0 },
+	m_haTipa { false }, m_scuola{},
 	m_paghetta{15}, m_testa{0},
 	m_giubotto{0}, m_pantaloni{0},
 	m_scarpe{0}, m_sesso{0}
@@ -36,4 +37,18 @@ void TabbyGuy::GuadagnaSoldi(int importo)
 {
 	if (importo > 0)
 		m_soldi += importo;
+}
+
+void TabbyGuy::CalcolaStudio()
+{
+	m_studio = 0;
+	// Per ottenere la percentuale bisogna fare il rapporto tra il punteggio e il massimo di punti, che va calcolato sul numero di materie
+	float adjust = m_scuola.m_materie.size() * 10 / 100.f;
+	
+	for (auto& mat : m_scuola.m_materie)
+	{
+		m_studio += mat.GetVoto();
+	}
+
+	m_studio /= adjust;
 }

@@ -107,11 +107,11 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame* game)
 
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 	wxBoxSizer* sizerTop = new wxBoxSizer{ wxHORIZONTAL };
-	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
 
 	// Pannello bottoni
 	wxPanel* pnlButtons = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
+	wxBoxSizer* sizerRepOk = new wxBoxSizer{ wxHORIZONTAL };
 
 	// Creiamo i bottoni, inizialmente vuoti, per poi aggiornarli come si deve in AggiornaInterfaccia...
 	// Siccome i bottoni sono già membri della classe DlgScuola, va bene wxID_ANY, perché possediamo già i loro puntatori
@@ -152,32 +152,41 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame* game)
 			});
 	}
 
-	// Creo un sizer "invisibile" che serve solo a dare MARGINE (altrimenti metallurgia sprofonda)
+
+	// Creo un sizer "invisibile" che serve a dare MARGINE (altrimenti metallurgia sprofonda)
 	wxBoxSizer* wrapperSizer = new wxBoxSizer{ wxVERTICAL };
-
-	//Inserisco la griglia dentro questo wrapper con 10px di respiro ovunque(wxALL)
+	//Inserisco la griglia dentro questo wrapper con 5px di respiro ovunque(wxALL)
 	// Questo spingerà "Agraria" giù dal soffitto e "Metallurgia" su dal pavimento
-	wrapperSizer->Add(gridVoti, 1, wxEXPAND | wxALL, 10);
-
+	wrapperSizer->Add(gridVoti, 1, wxEXPAND | wxALL, 5);
+	// Profittto scolastico
+	m_lblStudio = new wxStaticText{ pnlVoti, wxID_ANY, "---", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_VERTICAL };
+	wrapperSizer->Add(new wxStaticLine(pnlVoti, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxEXPAND | wxALL, 5);
+	wrapperSizer->Add(m_lblStudio, 0, wxALL, 5);
+	// Settiamo il sizer
 	pnlVoti->SetSizer(wrapperSizer);
 	sizerTop->Add(pnlVoti, 0, wxEXPAND | wxALL, 5);
 
+	// Bottoni del pannello a destra
 	sizerButtons->AddStretchSpacer();
 	sizerButtons->Add(m_btnStudia, 0, wxALIGN_CENTER_HORIZONTAL | wxRIGHT | wxLEFT, 5);
 	sizerButtons->Add(m_btnMinaccia, 0, wxALIGN_CENTER_HORIZONTAL | wxRIGHT | wxLEFT, 5);
-	sizerButtons->Add(m_btnCorrompi, 0, wxALIGN_CENTER_HORIZONTAL | wxRIGHT | wxLEFT, 5);
-
+	sizerButtons->Add(m_btnCorrompi, 0, wxALIGN_CENTER_HORIZONTAL | wxRIGHT | wxLEFT | wxBOTTOM, 5);
+	// Settiamo il sizer
 	pnlButtons->SetSizer(sizerButtons);
 	sizerTop->Add(pnlButtons, 0, wxEXPAND | wxALL, 5);
-	mainSizer->Add(sizerTop, 0, wxALL, 5);
+	mainSizer->Add(sizerTop, 0);
 
-	wxPanel* pnlInfoOk = new wxPanel{ this,wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
-	wxBoxSizer* sizerInfoOk = new wxBoxSizer{ wxHORIZONTAL };
+	// Pannello reputazione e tasto ok
+	wxPanel* pnlRepOk = new wxPanel{ this,wxID_ANY, wxDefaultPosition, wxSize(-1, 50), wxBORDER_SUNKEN};
 
-	// TODO: METTI ROBA
+	m_lblRep = new wxStaticText{ pnlRepOk, wxID_ANY, "---" };
+	sizerRepOk->Add(m_lblRep, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	wxButton* btnOk = new wxButton{ pnlRepOk, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) };
+	sizerRepOk->AddStretchSpacer();
+	sizerRepOk->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	pnlRepOk->SetSizer(sizerRepOk);
 
-	sizerBottom->Add(pnlInfoOk, 0, wxBOTTOM | wxALL, 5);
-	mainSizer->Add(sizerBottom, 0, wxBOTTOM | wxALL, 5);
+	mainSizer->Add(pnlRepOk, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 
 	this->SetSizer(mainSizer);
 	this->Fit();
@@ -186,10 +195,37 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame* game)
 
 void DlgScuola::OnStudia(wxCommandEvent& event)
 {
+	Materia* mat = &(m_game->GetTabbyGuy()->GetScuola()->m_materie[m_materiaIndex]);
+
+	if (mat->GetVoto() < 10)
+	{
+		mat->IncVoto(1);
+		m_game->GetTabbyGuy()->CalcolaStudio();
+		m_game->GetDate()->AddDay(1);
+		this->AggiornaInterfaccia();
+	}
+	else
+	{
+		// TODO: MESSAGGIO
+	}
+	
 }
 
 void DlgScuola::OnMinaccia(wxCommandEvent& event)
 {
+	Materia* mat = &(m_game->GetTabbyGuy()->GetScuola()->m_materie[m_materiaIndex]);
+
+	if (mat->GetVoto() > 0)
+	{
+		mat->DecVoto(2);
+		m_game->GetTabbyGuy()->CalcolaStudio();
+		m_game->GetDate()->AddDay(1);
+		this->AggiornaInterfaccia();
+	}
+	else
+	{
+		// TODO: MESSAGGIO
+	}
 }
 
 void DlgScuola::OnCorrompi(wxCommandEvent& event)
@@ -205,6 +241,9 @@ void DlgScuola::AggiornaInterfaccia()
 
 	for (int i = 0; i < scuola->m_materie.size(); i++)
 		m_lblVoti[i]->SetLabel(wxString::Format("%d", scuola->m_materie[i].GetVoto()));
+
+	m_lblStudio->SetLabel(wxString::Format("Profitto scolastico %d/100", m_game->GetTabbyGuy()->GetStudio()));
+	m_lblRep->SetLabel(wxString::Format("Reputazione %d/100", m_game->GetTabbyGuy()->GetRep()));
 
 	this->Layout();
 }

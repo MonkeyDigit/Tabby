@@ -26,6 +26,7 @@ public:
 	// Restituisce true se l'acquisto avviene con successo
 	bool SpendiSoldi(int importo);
 	void GuadagnaSoldi(int importo);
+	void CalcolaStudio();
 
 	CartaIdentita* GetID() { return &m_identita; };
 	long long GetSoldi() const { return m_soldi; };
@@ -35,6 +36,7 @@ public:
 	Scuola* GetScuola() { return &m_scuola; };
 	Scooter* GetScooter() { return &m_scooter; };
 	Tipa* GetTipa() { return &m_tipa; };
+	int GetRapporto() const { return m_rapporto; };
 	int GetPaghetta() const { return m_paghetta; };
 	int GetGiubotto() const { return m_giubotto; };
 	int GetPantaloni() const { return m_pantaloni; };
@@ -53,6 +55,7 @@ private:
 	Scooter m_scooter;
 	bool m_haScooter;
 	Tipa m_tipa;
+	int m_rapporto;
 	bool m_haTipa;
 	int m_paghetta;
 	int m_testa;	// abbronzatura

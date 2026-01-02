@@ -1,5 +1,9 @@
 #pragma once
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
 #include <wx/wx.h>
+#endif
+#include <wx/statline.h>
 #include "TabbyGame.h"
 
 class DlgScooter : public wxDialog {
@@ -30,6 +34,8 @@ private:
 	wxButton* m_btnStudia;
 	wxButton* m_btnMinaccia;
 	wxButton* m_btnCorrompi;
+	wxStaticText* m_lblStudio;
+	wxStaticText* m_lblRep;
 
 	// Eventi interni alla finestra
 	void OnStudia(wxCommandEvent& event);

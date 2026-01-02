@@ -1,7 +1,7 @@
 #include "TabbyGame.h"
 
 TabbyGame::TabbyGame()	// Lunedì 11 settembre 1989
-	: m_tabbyGuy{}, m_date{1989, 9, 11}, m_valutaCorrente{Valuta::EURO}
+	: m_tabbyGuy{}, m_date{1989, 9, 11}, m_valutaCorrente{Valuta::LIRE}
 {}
 
 void TabbyGame::CheckCambioValuta()

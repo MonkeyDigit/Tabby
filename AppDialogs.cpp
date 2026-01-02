@@ -201,7 +201,7 @@ void DlgScuola::OnStudia(wxCommandEvent& event)
 	{
 		mat->IncVoto(1);
 		m_game->GetTabbyGuy()->CalcolaStudio();
-		m_game->GetDate()->AddDay(1);
+		m_game->Evento();
 		this->AggiornaInterfaccia();
 	}
 	else
@@ -219,7 +219,7 @@ void DlgScuola::OnMinaccia(wxCommandEvent& event)
 	{
 		mat->DecVoto(2);
 		m_game->GetTabbyGuy()->CalcolaStudio();
-		m_game->GetDate()->AddDay(1);
+		m_game->Evento();
 		this->AggiornaInterfaccia();
 	}
 	else

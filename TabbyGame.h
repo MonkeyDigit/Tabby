@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 #include "TabbyGuy.h"
 #include "Chrono.h"
 // Per attivare il debug
@@ -31,6 +32,9 @@ public:
 	TabbyGuy* GetTabbyGuy() { return &m_tabbyGuy; };
 	Chrono::Date* GetDate() { return &m_date; };
 	Valuta GetValutaCorrente() const { return m_valutaCorrente; };
+	int GenRandomInt(int min, int max);
+
+	bool CheckVacanza();
 
 	// LOGICA MONETARIA
 	// Controlla se è il 2002...
@@ -39,9 +43,14 @@ public:
 	long long ConvertiValuta(long long valoreBase) const;
 	// Stringa formattata (es. "1.000 L." o "5 €")
 	std::string GetSoldiStr(long long valoreBase) const;
-
+	void Evento();
 private:
 	TabbyGuy m_tabbyGuy;
 	Chrono::Date m_date;
 	Valuta m_valutaCorrente;
+	int m_CoolDownPestaggio;
+
+	// IL MOTORE DI NUMERI CASUALI
+	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile
+	std::mt19937 m_rng;
 };

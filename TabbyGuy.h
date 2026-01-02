@@ -4,6 +4,7 @@
 #include "Tipa.h"
 #include "Chrono.h"
 #include "Scuola.h"
+#include "Telefonino.h"
 
 struct CartaIdentita {
 	std::string m_nome;
@@ -23,44 +24,71 @@ class TabbyGuy {
 public:
 	TabbyGuy();		// Constructor
 
+	// SETTER
+	void SetRapporti(int rapporti);
+	void SetImpegno(int impegno);
+
+	// MODIFICHE
 	// Restituisce true se l'acquisto avviene con successo
 	bool SpendiSoldi(int importo);
 	void GuadagnaSoldi(int importo);
 	void CalcolaStudio();
+	void SetFortuna(int fortuna);
+	void IncSizze(int numSizze);
+	void DecSizze(int numSizze);
+	void IncRep(int punti);
+	void DecRep(int punti);
+	void IncFama(int punti);
+	void DecFama(int punti);
+	void IncRapporti(int punti);
+	void DecRapporti(int punti);
+	void IncImpegno(int punti);
+	void DecImpegno(int punti);
+	void ResetLavoro();
 
 	CartaIdentita* GetID() { return &m_identita; };
 	long long GetSoldi() const { return m_soldi; };
 	int GetRep() const { return m_rep; };
-	int GetFigo() const { return m_figo; };
+	int GetFama() const { return m_fama; };
 	int GetStudio() const { return m_studio; };
-	Scuola* GetScuola() { return &m_scuola; };
-	Scooter* GetScooter() { return &m_scooter; };
-	Tipa* GetTipa() { return &m_tipa; };
-	int GetRapporto() const { return m_rapporto; };
+	int GetFortuna() const { return m_fortuna; };
+	int GetRapporti() const { return m_rapporti; };
 	int GetPaghetta() const { return m_paghetta; };
 	int GetGiubotto() const { return m_giubotto; };
 	int GetPantaloni() const { return m_pantaloni; };
 	int GetScarpe() const { return m_scarpe; };
-	int GetSesso() const { return m_sesso; };
+	int GetSizze() const { return m_sizze; };
+	int GetImpegno() const { return m_impegno; };
+	int GetNumDitta() const { return m_numDitta; };
+	Scuola* GetScuola() { return &m_scuola; };
+	Scooter* GetScooter() { return &m_scooter; };
+	Tipa* GetTipa() { return &m_tipa; };
+	Telefono* GetTelefono() { return &m_telefono; };
+	OperatoreTel* GetOperatore() { return &m_operatore; };
 
 
 private:
 	CartaIdentita m_identita;
 	long long m_soldi;			// intero a 64 bit (max 9 miliardi DI miliardi): il tabbozzo è rikko...
 	int m_rep;
-	int m_figo;
+	int m_fama;
 	int m_studio;
-	Scuola m_scuola;
-	// Qua potevo usare dei puntatori inizializzando lo scooter e la tipa a NULL, ma non voglio fare un puttanaio con destructor e magagne dei puntatori
-	Scooter m_scooter;
-	bool m_haScooter;
-	Tipa m_tipa;
-	int m_rapporto;
-	bool m_haTipa;
+	int m_fortuna;
+	int m_impegno;
+	int m_rapporti;
 	int m_paghetta;
 	int m_testa;	// abbronzatura
 	int m_giubotto;
 	int m_pantaloni;
 	int m_scarpe;
-	int m_sesso;	// TODO: FAI MACRO
+	int m_sizze;	// sigarette
+	int m_numDitta;
+	int m_giorniLavoro;
+	int m_stipendio;
+	// Qua potevo usare dei puntatori inizializzando lo scooter e la tipa a NULL, ma non voglio fare un puttanaio con destructor e magagne dei puntatori
+	Scuola m_scuola;
+	Scooter m_scooter;
+	Tipa m_tipa;
+	Telefono m_telefono;
+	OperatoreTel m_operatore;
 };

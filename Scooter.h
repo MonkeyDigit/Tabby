@@ -4,6 +4,12 @@
 class Scooter {
 public:
 	Scooter();
+
+	// MODIFICHE
+	void IncStato(int punti);
+	void DecStato(int punti);
+	// TODO: salute piena o -1??
+	void Reset();
 	
 	std::string GetNome() const { return m_nome; };
 	int GetVelocita() const { return m_velocita; };

@@ -1,8 +1,28 @@
 #include "TabbyGame.h"
 
-TabbyGame::TabbyGame()	// Lunedì 11 settembre 1989
-	: m_tabbyGuy{}, m_date{1989, 9, 11}, m_valutaCorrente{Valuta::LIRE}
-{}
+TabbyGame::TabbyGame()	// Mercoledì 11 settembre 1995
+	: m_tabbyGuy{}, m_date{1991, 9, 11}, m_valutaCorrente{Valuta::LIRE}, m_CoolDownPestaggio{ 0 }
+{
+    // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
+    // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
+     std::random_device rd;
+    // Inizializzo il motore (m_rng) con quel seme
+    m_rng.seed(rd());
+}
+
+int TabbyGame::GenRandomInt(int min, int max)
+{
+    // Creiamo una distribuzione uniforme tra min e max
+    // Significa che ogni numero ha la stessa probabilità di uscire
+    std::uniform_int_distribution<int> dist(min, max);
+    // Chiediamo al motore di darci un numero secondo quella distribuzione
+    return dist(m_rng);
+}
+
+bool TabbyGame::CheckVacanza()
+{
+    return false;
+}
 
 void TabbyGame::CheckCambioValuta()
 {	// Dopo il 2002 scatta l'euro
@@ -58,4 +78,335 @@ std::string TabbyGame::GetSoldiStr(long long valoreBase) const
 	// Altrimenti è la lira...
 	long long valoreConvertito = ConvertiValuta(valoreBase);
 	return (formattaConPunti(valoreConvertito) + " L.");
+}
+
+void TabbyGame::Evento()
+{
+    int rnd{};
+    int caso{};
+
+    // I giorni passano...
+    m_date.AddDay(1);
+    
+    // Tempo trascorso pestaggio
+    if (m_CoolDownPestaggio > 0)
+        m_CoolDownPestaggio--;
+
+    // Sigarette
+    if (m_tabbyGuy.GetSizze() > 0)
+    {
+        m_tabbyGuy.DecSizze(1);
+
+        if (m_tabbyGuy.GetSizze() == 0)
+        {
+            // TODO: Dialog sigarette esaurite
+            if (m_tabbyGuy.GetRep() > 10)
+                m_tabbyGuy.DecRep(3);
+        }
+        else if (m_tabbyGuy.GetSizze() < 3)
+        {
+            // TODO: Dialog stai per finire le siga
+        }
+    }
+
+    // Abbonamento
+    if (m_tabbyGuy.GetOperatore()->GetCredito() > 0 && m_tabbyGuy.GetTelefono()->GetStato() > -1)
+    {
+        m_tabbyGuy.GetOperatore()->DecCredito(1);
+        if (m_tabbyGuy.GetFama() < 55)
+            m_tabbyGuy.IncFama(1);
+
+        if (m_tabbyGuy.GetOperatore()->GetCredito() == 0)
+        {
+            // TODO: Dialog credito esaurito
+        }
+        else if (m_tabbyGuy.GetOperatore()->GetCredito() < 3)
+        {
+            // TODO: Dialog poco credito
+        }
+    }
+
+    // Telefono
+    if (m_tabbyGuy.GetTelefono()->GetStato() == 1)
+    {
+        // Cellulare morente
+        m_tabbyGuy.GetTelefono()->DecStato(1);
+
+        // TODO: Dialog telefono morto
+    }
+
+
+    // Rapporti Tipa
+    if (m_tabbyGuy.GetRapporti() > 3)
+    {
+        rnd = GenRandomInt(0, 4) - 3;
+        if (rnd > 0)
+            m_tabbyGuy.DecRapporti(1);
+    }
+
+    if (m_tabbyGuy.GetRapporti() > 0)
+    {
+        if (m_tabbyGuy.GetRapporti() < 98)
+        {
+            int rand_max = (m_tabbyGuy.GetRapporti() + m_tabbyGuy.GetFortuna() + m_tabbyGuy.GetFama()) * 3 + 1;
+            rnd = GenRandomInt(1, rand_max);
+
+            if (rnd < 11)
+            {
+                // Da 1 a 10, la donna ti molla...
+                // TODO: Play sound
+
+                m_tabbyGuy.SetRapporti(0);
+
+                // TODO: Dialog la tipa ti molla - sesso m f
+
+                m_tabbyGuy.DecRep(11 - rnd);    // Quelle con numero più basso, sono peggiori...
+
+            }
+        }
+    }
+
+    // Lavoro
+    if (m_tabbyGuy.GetImpegno() > 3)
+    {
+        rnd = GenRandomInt(0, 6) - 3;
+        if (rnd > 0)
+            m_tabbyGuy.DecImpegno(1);
+    }
+
+    if (m_tabbyGuy.GetNumDitta() > 0)
+    {
+        rnd = GenRandomInt(0, (m_tabbyGuy.GetImpegno() * 2 + m_tabbyGuy.GetFortuna() * 3) - 1);
+
+        if (rnd < 2)
+        {
+            // Perdi il lavoro
+            m_tabbyGuy.ResetLavoro();
+
+            // TODO: Dialog licenziato + suono
+
+        }
+    }
+
+    // Paghetta
+    if (m_date.GetWeekDay() == Chrono::WeekDay::saturday)
+    {
+        // Il Sabato c'è la paghetta...
+        if (m_tabbyGuy.GetStudio() >= 45)
+        {
+            m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta());
+            // TODO: DEBUG
+            
+            //TODO: Dialog eventi paghetta
+
+            if (m_tabbyGuy.GetStudio() >= 80)
+            {
+                m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta());
+                //TODO: DEBUG
+                
+                // TODO: Dialog eventi paghetta doppia + suono
+            }
+        }
+        else
+        {
+            m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta()*0.5f);
+            // TODO: DEBUG
+
+            // TODO: Dialog eventi metà paghetta
+        }
+    }
+
+    // Eventi casuali
+    caso = GenRandomInt(0, (100 + m_tabbyGuy.GetFortuna() * 2) - 1);
+    // TODO: DEBUG
+
+    if (caso < 51)
+    {
+        // METALLONI E MANOVALI
+        if (caso <= 10)
+        {
+            // TODO: FEMMINA
+
+            m_tabbyGuy.DecRep(caso);
+
+            // TODO: FINESTRA PESTAGGIO METALLONE
+
+            rnd = GenRandomInt(100, 105);
+
+            // TODO: DEBUG
+
+            m_CoolDownPestaggio = 5;
+        }
+        else if (11 <= caso && caso <= 20)   // SCOOTER
+        {
+            // TODO: perchè nell'originale c'è & ???
+            if (m_tabbyGuy.GetScooter()->GetStato() != -1 && m_tabbyGuy.GetScooter()->GetAttivita() == 1)
+            {
+                if (m_tabbyGuy.GetTelefono()->GetStato() > -1)
+                {
+                    // A furia di prendere botte, il cellulare si spacca...
+                    m_tabbyGuy.GetTelefono()->DecStato(GenRandomInt(1, 8));
+                }
+
+                if (caso < 17)
+                {
+                    m_tabbyGuy.GetScooter()->DecStato(35);
+                    // TODO: Dialog camionista
+
+                    // TODO: DEBUG
+                }
+                else
+                {
+                    m_tabbyGuy.GetScooter()->DecStato(20);
+                    // TODO: Dialog muro
+
+                    // TODO: DEBUG
+                }
+
+                m_tabbyGuy.DecRep(2);
+
+                if (m_tabbyGuy.GetScooter()->GetStato() <= 0)
+                {
+                    m_tabbyGuy.GetScooter()->Reset();
+                    // TODO: Dialog scooter distrutto
+
+                    // TODO: DEBUG
+                }
+            }
+        }
+        else if (21 <= caso && caso <= 30)
+        {
+            if (caso <= 27)
+                m_tabbyGuy.DecFama(1);
+
+            if (caso <= 25)
+                m_tabbyGuy.DecFama(1);
+
+            if (caso <= 23)
+                m_tabbyGuy.DecFama(5);
+
+            m_tabbyGuy.DecFama(2);
+            // TODO: Dialog sei fortunato... random
+
+            // TODO: DEBUG
+        }
+        else if(31 <= caso && caso <= 40)   // Skuola
+        {
+            // Durante i giorni di vacanza non ci sono eventi riguardanti la scuola
+            if (!CheckVacanza())
+            {
+                rnd = GenRandomInt(1, 9);
+
+                // TODO: Dialog scuola random
+
+                m_tabbyGuy.GetScuola()->m_materie[rnd].DecVoto(2);
+                m_tabbyGuy.CalcolaStudio();
+
+                // TODO: DEBUG
+                // TODO: Scuola redraw
+            }
+        }
+        else if (caso == 41 || caso == 42)  // Tipa - una tipa ci prova
+        {
+            if (m_tabbyGuy.GetFama() > 35)   // Fama < 35 = nessuna speranza...
+            {
+                // TODO: Sesso m f
+
+                // TODO: Dialog una tipa ci prova
+            }
+
+            // TODO: Dialog qualcuno ti caga...
+
+            // TODO: if yes
+            /*
+                if ((figTemp >= 79) && (Rapporti < 1) && (sesso == 'M'))
+                { // Se non hai gia' una tipa e rifiuti una figona...
+                    MessageBox(hInstance,
+                               "Appena vengono a sapere che non ti vuoi mettere insieme ad una figona come quella, i tuoi amici ti prendono a scarpate.",
+                               "Idiota...", MB_OK | MB_ICONSTOP);
+                    Reputazione -= 4;
+                    if (Reputazione < 0)
+                        Reputazione = 0;
+                }
+                break;
+            */
+
+            // Controlla che tu non abbia già una tipa...
+            if (m_tabbyGuy.GetRapporti() > 0)
+            {
+                // TODO: Dialog due donne
+            }
+            else   // Bravo, non hai una tipa...
+            {
+                // TODO: DEBUG
+                m_tabbyGuy.SetRapporti(45 + GenRandomInt(0, 14));
+                // TODO: Figtipa
+                /*
+                sprintf(Nometipa, "%s", nomeTemp);
+                FigTipa = figTemp;
+                Rapporti = 45 + random(15);
+                Fama += FigTipa / 10;
+                if (Fama > 100)
+                    Fama = 100;
+                Reputazione += FigTipa / 13;
+                if (Reputazione > 100)
+                    Reputazione = 100;
+                */
+            }
+
+            // TODO: DEBUG
+        }
+        else if (caso == 43)    // Domande inutili
+        {
+            /*
+            i = MessageBox(hInstance,
+                                   "Mi ami ???",
+                                   "Domande inutili della Tipa...", MB_YESNO | MB_ICONQUESTION);
+                    if (i != IDYES)
+                    {
+                        MessageBox(hInstance,
+                                   "Sei sempre il solito stronzo.. non capisco perche' resto ancora con uno come cosi'...",
+                                   "Risposta sbagliata...", MB_OK | MB_ICONSTOP);
+                        Rapporti -= 45;
+                        if (Rapporti < 5)
+                            Rapporti = 5;
+                    }
+            */
+
+            // TODO: DEBUG
+        }
+        else if (caso == 44)
+        {
+            /*
+            i = MessageBox(hInstance,
+                                   "Ma sono ingrassata ???",
+                                   "Domande inutili della Tipa...", MB_YESNO | MB_ICONQUESTION);
+                    if (i != IDNO)
+                    {
+                        MessageBox(hInstance,
+                                   "Sei un bastardo, non capisci mai i miei problemi...",
+                                   "Risposta sbagliata...", MB_OK | MB_ICONSTOP);
+                        Rapporti -= 20;
+                        if (Rapporti < 5)
+                            Rapporti = 5;
+                    }
+            */
+           //  TODO: DEBUG
+        }
+        else if (45 <= caso && caso <= 48)
+        {
+            // TODO: DEBUG
+        }
+        else if (caso == 49 || caso == 50)  // Vari ed eventuali
+        {
+            if (m_tabbyGuy.GetTelefono()->GetStato() > -1)
+            {
+                m_tabbyGuy.GetTelefono()->DecStato(GenRandomInt(1, 8));
+
+                // TODO: Dialog telefono morto
+
+                // TODO: DEBUG
+            }
+        }
+    }
 }

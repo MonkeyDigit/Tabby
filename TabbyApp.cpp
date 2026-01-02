@@ -10,6 +10,8 @@
 // TODO: MECCANICHE FUTURE: con l'avanzamento tecnologico, escono nuove robe. + investimenti in borsa, crypto, per per arricchirsi...
 // TODO: La scuola la fa per 5 anni poi va a lavorare e investire in borsa???
 // TODO: NON PUOI ANDARE A SCUOLA LA DOMENICA E NELLE VACANZE
+// TODO: possibile sistema di message id con array dei messaggi???
+// TODO: Separare totalmente tabbygame con le finestre???
 
 bool TabbyApp::OnInit()
 {
@@ -235,15 +237,15 @@ void TabbyFrame::AggiornaInterfaccia()
 { 
 	TabbyGuy* guy = m_game.GetTabbyGuy();
 
-	m_lblNomeTabby->SetLabel(guy->GetID()->m_nome + " " + guy->GetID()->m_cognome + " ");
+	m_lblNomeTabby->SetLabel(guy->GetID()->m_nome + " " + guy->GetID()->m_cognome);
 	m_lblNomeTipa->SetLabel(guy->GetTipa()->GetNome());
-	m_lblRapportoTipa->SetLabel(wxString::Format("< Rapporto con la tipa %d/100 >", guy->GetRapporto()));
-	m_barTipa->SetValue(guy->GetRapporto());
+	m_lblRapportoTipa->SetLabel(wxString::Format("< Rapporto con la tipa %d/100 >", guy->GetRapporti()));
+	m_barTipa->SetValue(guy->GetRapporti());
 	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(guy->GetSoldi()) + " >");
 	m_lblReputazione->SetLabel(wxString::Format("< Reputazione %d/100 >", guy->GetRep()));
 	m_barRep->SetValue(guy->GetRep());
-	m_lblFigo->SetLabel(wxString::Format("< Figosità %d/100 >", guy->GetFigo()));
-	m_barFigo->SetValue(guy->GetFigo());
+	m_lblFigo->SetLabel(wxString::Format("< Figosità %d/100 >", guy->GetFama()));
+	m_barFigo->SetValue(guy->GetFama());
 	m_lblStudio->SetLabel(wxString::Format("< Profitto scolastico %d/100 >", guy->GetStudio()));
 	m_barStudio->SetValue(guy->GetStudio());
 	m_lblScooter->SetLabel(wxString::Format("< %s >\n< Stato scooter %d/100 >", guy->GetScooter()->GetNome(), guy->GetScooter()->GetEfficienza()));

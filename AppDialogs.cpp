@@ -1,12 +1,36 @@
 #include "AppDialogs.h"
 
-DlgScooter::DlgScooter(wxWindow* parent, TabbyGame* game)
+// Funzione helper
+void ManifestaEventi(wxWindow* parent, TabbyGame& game)
+{
+	// TODO: Dichiara funzione globale in appdialogs
+		// Processa gli eventi
+	if (game.NuoviEventi())
+	{
+		for (auto& ev : game.m_eventQueue)
+		{
+			DlgEvento dlgEvento{ parent, ev };
+			dlgEvento.Centre();
+			// Nel caso di un pop up evento con scelta (previa implementazione degli appositi bottoni con wxID_YES e wxID_NO), gli id vengono restituiti alla finestra padre
+			// Qua valutiamo l'espressione logica
+			bool scelta = (dlgEvento.ShowModal() == wxID_YES);
+
+			if (ev.tipo == TipoEvento::SCELTA)
+				game.ApplicaScelta(ev.idEvento, scelta);
+		}
+
+		// Gli eventi sono stati gestiti, tempo di spazzare la coda...
+		game.m_eventQueue.clear();
+	}
+}
+
+DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Scooter", wxDefaultPosition, wxDefaultSize },
 	m_game{game}
 {
 	this->SetBackgroundColour(parent->GetBackgroundColour());
 	this->SetFont(parent->GetFont());
-	Scooter* scootptr = m_game->GetTabbyGuy()->GetScooter();
+	Scooter& scootref = m_game.GetTabbyGuy().GetScooter();
 
 	// Layout orizzontale principale (Colonna SX | Colonna DX)
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxHORIZONTAL };
@@ -34,7 +58,7 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame* game)
 	wxPanel* pnlBottom = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
 	sizerBottom->Add(new wxStaticText(pnlBottom, wxID_ANY, "[IMG]"), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
-	sizerBottom->Add(new wxStaticText(pnlBottom, wxID_ANY, "< Soldi "+m_game->GetSoldiStr(m_game->GetTabbyGuy()->GetSoldi()) + " >"), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	sizerBottom->Add(new wxStaticText(pnlBottom, wxID_ANY, "< Soldi "+m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()) + " >"), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 	sizerBottom->Add(new wxButton(pnlBottom, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50)), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 	pnlBottom->SetSizer(sizerBottom);
 	leftCol->Add(pnlBottom, 1, wxEXPAND | wxALL, 5);
@@ -43,16 +67,16 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame* game)
 	wxPanel* pnlStats = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerStats = new wxBoxSizer{ wxVERTICAL };
 	sizerStats->Add(new wxStaticText(pnlStats, wxID_ANY, "Statistiche scooter"), 0, wxALIGN_CENTER_HORIZONTAL);
-	sizerStats->Add(new wxStaticText(pnlStats, wxID_ANY, "  " + scootptr->GetNome() + "  ", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALIGN_CENTER_HORIZONTAL | wxALL & ~wxTOP, 10);
+	sizerStats->Add(new wxStaticText(pnlStats, wxID_ANY, "  " + scootref.GetNome() + "  ", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALIGN_CENTER_HORIZONTAL | wxALL & ~wxTOP, 10);
 	// GRIGLIA DATI
 	// Usiamo FlexGridSizer per allineare "Etichetta" -> "Valore"
 	wxFlexGridSizer* gridStats = new wxFlexGridSizer{ 2, 5, 10 }; // 2 Colonne, gap di 5px e 10px
 
-	AddStat(pnlStats, gridStats, "Velocità:", wxString::Format("%d km/h", scootptr->GetVelocita()));
-	AddStat(pnlStats, gridStats, "Cilindrata:", wxString::Format("%d cc", scootptr->GetCilindrata()));
+	AddStat(pnlStats, gridStats, "Velocità:", wxString::Format("%d km/h", scootref.GetVelocita()));
+	AddStat(pnlStats, gridStats, "Cilindrata:", wxString::Format("%d cc", scootref.GetCilindrata()));
 	// scrivo %% per escapeare '%'
-	AddStat(pnlStats, gridStats, "Efficienza:", wxString::Format("%d %%", scootptr->GetEfficienza()));
-	AddStat(pnlStats, gridStats, "Benzina:", wxString::Format("%.2f l", scootptr->GetBenza()));
+	AddStat(pnlStats, gridStats, "Efficienza:", wxString::Format("%d %%", scootref.GetEfficienza()));
+	AddStat(pnlStats, gridStats, "Benzina:", wxString::Format("%.2f l", scootref.GetBenza()));
 
 	sizerStats->Add(gridStats, 0, wxALIGN_CENTER | wxALL & ~wxTOP, 5);
 
@@ -96,14 +120,14 @@ void DlgScooter::AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxStr
 }
 
 // SCUOLA
-DlgScuola::DlgScuola(wxWindow* parent, TabbyGame* game)
+DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Scuola", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }, m_materiaIndex{0}
 {
 	this->SetBackgroundColour(parent->GetBackgroundColour());
 	this->SetFont(parent->GetFont());
 
-	Scuola* scuola = m_game->GetTabbyGuy()->GetScuola();
+	Scuola& scuolaref = m_game.GetTabbyGuy().GetScuola();
 
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 	wxBoxSizer* sizerTop = new wxBoxSizer{ wxHORIZONTAL };
@@ -126,13 +150,13 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame* game)
 	wxPanel* pnlVoti = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxFlexGridSizer* gridVoti = new wxFlexGridSizer{ 2, 10, 5 };
 
-	for (int i = 0; i < scuola->m_materie.size(); i++)
+	for (int i = 0; i < scuolaref.m_materie.size(); i++)
 	{
 		// Il Radio Button, Eh Eh :)
 		// Solo il primo (i == 0) deve avere lo stile wxRB_GROUP
 		// Questo stabilisce il gruppo di radio button, e impone che solo uno è selezionabile alla volta
 		long style = (i == 0) ? wxRB_GROUP : 0;
-		wxRadioButton* radio = new wxRadioButton{ pnlVoti, wxID_ANY, scuola->m_materie[i].GetNome(), wxDefaultPosition, wxDefaultSize, style };
+		wxRadioButton* radio = new wxRadioButton{ pnlVoti, wxID_ANY, scuolaref.m_materie[i].GetNome(), wxDefaultPosition, wxDefaultSize, style };
 
 		// Il primo viene selezionato di default
 		if (i == 0) radio->SetValue(true);
@@ -151,7 +175,6 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame* game)
 			AggiornaInterfaccia();
 			});
 	}
-
 
 	// Creo un sizer "invisibile" che serve a dare MARGINE (altrimenti metallurgia sprofonda)
 	wxBoxSizer* wrapperSizer = new wxBoxSizer{ wxVERTICAL };
@@ -195,13 +218,13 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame* game)
 
 void DlgScuola::OnStudia(wxCommandEvent& event)
 {
-	Materia* mat = &(m_game->GetTabbyGuy()->GetScuola()->m_materie[m_materiaIndex]);
+	Materia& mat = m_game.GetTabbyGuy().GetScuola().m_materie[m_materiaIndex];
 
-	if (mat->GetVoto() < 10)
+	if (mat.GetVoto() < 10)
 	{
-		mat->IncVoto(1);
-		m_game->GetTabbyGuy()->CalcolaStudio();
-		m_game->Evento();
+		mat.IncVoto(1);
+		m_game.GetTabbyGuy().CalcolaStudio();
+		m_game.ProssimoGiorno();
 		this->AggiornaInterfaccia();
 	}
 	else
@@ -213,13 +236,17 @@ void DlgScuola::OnStudia(wxCommandEvent& event)
 
 void DlgScuola::OnMinaccia(wxCommandEvent& event)
 {
-	Materia* mat = &(m_game->GetTabbyGuy()->GetScuola()->m_materie[m_materiaIndex]);
+	Materia& mat = m_game.GetTabbyGuy().GetScuola().m_materie[m_materiaIndex];
 
-	if (mat->GetVoto() > 0)
+	if (mat.GetVoto() > 0)
 	{
-		mat->DecVoto(2);
-		m_game->GetTabbyGuy()->CalcolaStudio();
-		m_game->Evento();
+		mat.DecVoto(2);
+		m_game.GetTabbyGuy().CalcolaStudio();
+
+		m_game.ProssimoGiorno();
+		// Mostra le finestre degli eventi
+		ManifestaEventi(this, m_game);
+
 		this->AggiornaInterfaccia();
 	}
 	else
@@ -234,16 +261,65 @@ void DlgScuola::OnCorrompi(wxCommandEvent& event)
 
 void DlgScuola::AggiornaInterfaccia()
 {
-	Scuola* scuola = m_game->GetTabbyGuy()->GetScuola();
-	m_btnStudia->SetLabel("Studia " + scuola->m_materie[m_materiaIndex].GetNome());
-	m_btnMinaccia->SetLabel("Minaccia il prof di " + scuola->m_materie[m_materiaIndex].GetNome());
-	m_btnCorrompi->SetLabel("Corrompi il prof di " + scuola->m_materie[m_materiaIndex].GetNome());
+	Scuola& scuolaref = m_game.GetTabbyGuy().GetScuola();
+	m_btnStudia->SetLabel("Studia " + scuolaref.m_materie[m_materiaIndex].GetNome());
+	m_btnMinaccia->SetLabel("Minaccia il prof di " + scuolaref.m_materie[m_materiaIndex].GetNome());
+	m_btnCorrompi->SetLabel("Corrompi il prof di " + scuolaref.m_materie[m_materiaIndex].GetNome());
 
-	for (int i = 0; i < scuola->m_materie.size(); i++)
-		m_lblVoti[i]->SetLabel(wxString::Format("%d", scuola->m_materie[i].GetVoto()));
+	for (int i = 0; i < scuolaref.m_materie.size(); i++)
+		m_lblVoti[i]->SetLabel(wxString::Format("%d", scuolaref.m_materie[i].GetVoto()));
 
-	m_lblStudio->SetLabel(wxString::Format("Profitto scolastico %d/100", m_game->GetTabbyGuy()->GetStudio()));
-	m_lblRep->SetLabel(wxString::Format("Reputazione %d/100", m_game->GetTabbyGuy()->GetRep()));
+	m_lblStudio->SetLabel(wxString::Format("Profitto scolastico %d/100", m_game.GetTabbyGuy().GetStudio()));
+	m_lblRep->SetLabel(wxString::Format("Reputazione %d/100", m_game.GetTabbyGuy().GetRep()));
 
 	this->Layout();
+}
+
+DlgEvento::DlgEvento(wxWindow* parent, EventoDati& eventoDati)
+	: wxDialog{ parent, wxID_ANY, eventoDati.titolo, wxDefaultPosition, wxDefaultSize, wxCAPTION | wxSTAY_ON_TOP }	// Stile: CAPTION (barra titolo) ma niente tasto X (CLOSE_BOX) così l'utente è obbligato a premere i bottoni
+{
+	this->CenterOnParent();	// Appare al centro della finestra padre
+	EventoDati& evref = eventoDati;
+	// TODO: implementa immagine
+
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+
+	wxStaticText* lblTesto = new wxStaticText{ this, wxID_ANY, evref.testo, wxDefaultPosition, wxSize(300, -1), wxALIGN_CENTER | wxST_NO_AUTORESIZE };
+
+	// Manda a capo il testo automaticamente
+	lblTesto->Wrap(300);
+	mainSizer->Add(lblTesto, 1, wxALIGN_CENTER | wxALL, 15);
+
+	// Linea separatrice
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxLEFT | wxRIGHT, 10);
+
+	// BOTTONI
+	wxBoxSizer* btnSizer = new wxBoxSizer(wxHORIZONTAL);
+
+	if (evref.tipo == TipoEvento::INFO)
+	{
+		// Caso semplice: Solo OK
+		wxButton* btnOk = new wxButton(this, wxID_OK, "OK, Ho capito");
+		btnSizer->Add(btnOk, 0, wxALL, 10);
+		// wxID_OK chiude automaticamente il dialogo ritornando wxID_OK
+	}
+	else if (evref.tipo == TipoEvento::SCELTA)
+	{
+		// Caso scelta: SÌ e NO
+		// TODO: accetta e rifiuta
+		wxButton* btnSi = new wxButton(this, wxID_YES, "Sì (Fallo)");
+		wxButton* btnNo = new wxButton(this, wxID_NO, "No (Lascia stare)");
+
+		btnSizer->Add(btnSi, 0, wxALL, 10);
+		btnSizer->Add(btnNo, 0, wxALL, 10);
+		// wxID_YES e wxID_NO chiudono automaticamente ritornando il rispettivo ID
+		// TODO: Cosa intende sta cosa???
+
+
+	}
+
+	mainSizer->Add(btnSizer, 0, wxALIGN_CENTER | wxBOTTOM, 5);
+
+	this->SetSizerAndFit(mainSizer);
+
 }

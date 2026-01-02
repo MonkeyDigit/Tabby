@@ -8,9 +8,9 @@
 
 class DlgScooter : public wxDialog {
 public:
-	DlgScooter(wxWindow* parent, TabbyGame* game);
+	DlgScooter(wxWindow* parent, TabbyGame& game);
 private:
-	TabbyGame* m_game;	// Il riferimento al motore di gioco
+	TabbyGame& m_game;	// Il riferimento al motore di gioco
 
 	// Eventi interni alla finestra
 	void OnConcessionario(wxCommandEvent& event);
@@ -24,9 +24,9 @@ private:
 
 class DlgScuola : public wxDialog {
 public:
-	DlgScuola(wxWindow* parent, TabbyGame* game);
+	DlgScuola(wxWindow* parent, TabbyGame& game);
 private:
-	TabbyGame* m_game;	// Il riferimento al motore di gioco
+	TabbyGame& m_game;	// Il riferimento al motore di gioco
 	int m_materiaIndex;
 	std::vector<wxStaticText*> m_lblVoti;
 
@@ -44,4 +44,12 @@ private:
 
 	// Funzione per aggiornare i testi dei bottoni
 	void AggiornaInterfaccia();
+};
+
+class DlgEvento : public wxDialog {
+public:
+	DlgEvento(wxWindow* parent, EventoDati& eventoDati);
+
+private:
+	// TODO: Roba
 };

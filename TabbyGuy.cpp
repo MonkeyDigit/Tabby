@@ -96,7 +96,6 @@ void TabbyGuy::IncRep(int punti)
 
 void TabbyGuy::DecRep(int punti)
 {
-	
 	if (punti > 0)
 	{
 		m_rep -= punti;
@@ -113,7 +112,6 @@ void TabbyGuy::IncFama(int punti)
 
 void TabbyGuy::DecFama(int punti)
 {
-	
 	if (punti > 0)
 	{
 		m_fama -= punti;
@@ -129,8 +127,7 @@ void TabbyGuy::IncRapporti(int punti)
 }
 
 void TabbyGuy::DecRapporti(int punti)
-{
-	
+{	
 	if (punti > 0)
 	{
 		m_rapporti -= punti;
@@ -147,7 +144,6 @@ void TabbyGuy::IncImpegno(int punti)
 
 void TabbyGuy::DecImpegno(int punti)
 {
-
 	if (punti > 0)
 	{
 		m_impegno -= punti;

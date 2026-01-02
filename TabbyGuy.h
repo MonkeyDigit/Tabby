@@ -46,7 +46,6 @@ public:
 	void DecImpegno(int punti);
 	void ResetLavoro();
 
-	CartaIdentita* GetID() { return &m_identita; };
 	long long GetSoldi() const { return m_soldi; };
 	int GetRep() const { return m_rep; };
 	int GetFama() const { return m_fama; };
@@ -60,11 +59,12 @@ public:
 	int GetSizze() const { return m_sizze; };
 	int GetImpegno() const { return m_impegno; };
 	int GetNumDitta() const { return m_numDitta; };
-	Scuola* GetScuola() { return &m_scuola; };
-	Scooter* GetScooter() { return &m_scooter; };
-	Tipa* GetTipa() { return &m_tipa; };
-	Telefono* GetTelefono() { return &m_telefono; };
-	OperatoreTel* GetOperatore() { return &m_operatore; };
+	CartaIdentita& GetID() { return m_identita; };
+	Scuola& GetScuola() { return m_scuola; };
+	Scooter& GetScooter() { return m_scooter; };
+	Tipa& GetTipa() { return m_tipa; };
+	Telefono& GetTelefono() { return m_telefono; };
+	OperatoreTel& GetOperatore() { return m_operatore; };
 
 
 private:

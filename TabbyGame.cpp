@@ -24,6 +24,11 @@ bool TabbyGame::CheckVacanza()
     return false;
 }
 
+void TabbyGame::ApplicaScelta(int idEvento, bool sceltaYes)
+{
+
+}
+
 void TabbyGame::CheckCambioValuta()
 {	// Dopo il 2002 scatta l'euro
 	if (m_valutaCorrente == Valuta::LIRE && m_date.GetYear() >= 2002)
@@ -80,7 +85,7 @@ std::string TabbyGame::GetSoldiStr(long long valoreBase) const
 	return (formattaConPunti(valoreConvertito) + " L.");
 }
 
-void TabbyGame::Evento()
+void TabbyGame::ProssimoGiorno()
 {
     int rnd{};
     int caso{};
@@ -110,27 +115,27 @@ void TabbyGame::Evento()
     }
 
     // Abbonamento
-    if (m_tabbyGuy.GetOperatore()->GetCredito() > 0 && m_tabbyGuy.GetTelefono()->GetStato() > -1)
+    if (m_tabbyGuy.GetOperatore().GetCredito() > 0 && m_tabbyGuy.GetTelefono().GetStato() > -1)
     {
-        m_tabbyGuy.GetOperatore()->DecCredito(1);
+        m_tabbyGuy.GetOperatore().DecCredito(1);
         if (m_tabbyGuy.GetFama() < 55)
             m_tabbyGuy.IncFama(1);
 
-        if (m_tabbyGuy.GetOperatore()->GetCredito() == 0)
+        if (m_tabbyGuy.GetOperatore().GetCredito() == 0)
         {
             // TODO: Dialog credito esaurito
         }
-        else if (m_tabbyGuy.GetOperatore()->GetCredito() < 3)
+        else if (m_tabbyGuy.GetOperatore().GetCredito() < 3)
         {
             // TODO: Dialog poco credito
         }
     }
 
     // Telefono
-    if (m_tabbyGuy.GetTelefono()->GetStato() == 1)
+    if (m_tabbyGuy.GetTelefono().GetStato() == 1)
     {
         // Cellulare morente
-        m_tabbyGuy.GetTelefono()->DecStato(1);
+        m_tabbyGuy.GetTelefono().DecStato(1);
 
         // TODO: Dialog telefono morto
     }
@@ -240,24 +245,24 @@ void TabbyGame::Evento()
         else if (11 <= caso && caso <= 20)   // SCOOTER
         {
             // TODO: perchè nell'originale c'è & ???
-            if (m_tabbyGuy.GetScooter()->GetStato() != -1 && m_tabbyGuy.GetScooter()->GetAttivita() == 1)
+            if (m_tabbyGuy.GetScooter().GetStato() != -1 && m_tabbyGuy.GetScooter().GetAttivita() == 1)
             {
-                if (m_tabbyGuy.GetTelefono()->GetStato() > -1)
+                if (m_tabbyGuy.GetTelefono().GetStato() > -1)
                 {
                     // A furia di prendere botte, il cellulare si spacca...
-                    m_tabbyGuy.GetTelefono()->DecStato(GenRandomInt(1, 8));
+                    m_tabbyGuy.GetTelefono().DecStato(GenRandomInt(1, 8));
                 }
 
                 if (caso < 17)
                 {
-                    m_tabbyGuy.GetScooter()->DecStato(35);
+                    m_tabbyGuy.GetScooter().DecStato(35);
                     // TODO: Dialog camionista
 
                     // TODO: DEBUG
                 }
                 else
                 {
-                    m_tabbyGuy.GetScooter()->DecStato(20);
+                    m_tabbyGuy.GetScooter().DecStato(20);
                     // TODO: Dialog muro
 
                     // TODO: DEBUG
@@ -265,9 +270,9 @@ void TabbyGame::Evento()
 
                 m_tabbyGuy.DecRep(2);
 
-                if (m_tabbyGuy.GetScooter()->GetStato() <= 0)
+                if (m_tabbyGuy.GetScooter().GetStato() <= 0)
                 {
-                    m_tabbyGuy.GetScooter()->Reset();
+                    m_tabbyGuy.GetScooter().Reset();
                     // TODO: Dialog scooter distrutto
 
                     // TODO: DEBUG
@@ -295,11 +300,11 @@ void TabbyGame::Evento()
             // Durante i giorni di vacanza non ci sono eventi riguardanti la scuola
             if (!CheckVacanza())
             {
-                rnd = GenRandomInt(1, 9);
+                rnd = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size()-1);
 
                 // TODO: Dialog scuola random
 
-                m_tabbyGuy.GetScuola()->m_materie[rnd].DecVoto(2);
+                m_tabbyGuy.GetScuola().m_materie[rnd].DecVoto(2);
                 m_tabbyGuy.CalcolaStudio();
 
                 // TODO: DEBUG
@@ -339,7 +344,7 @@ void TabbyGame::Evento()
             else   // Bravo, non hai una tipa...
             {
                 // TODO: DEBUG
-                m_tabbyGuy.SetRapporti(45 + GenRandomInt(0, 14));
+                // TODO: m_tabbyGuy.SetRapporti(45 + GenRandomInt(0, 14));
                 // TODO: Figtipa
                 /*
                 sprintf(Nometipa, "%s", nomeTemp);
@@ -399,9 +404,9 @@ void TabbyGame::Evento()
         }
         else if (caso == 49 || caso == 50)  // Vari ed eventuali
         {
-            if (m_tabbyGuy.GetTelefono()->GetStato() > -1)
+            if (m_tabbyGuy.GetTelefono().GetStato() > -1)
             {
-                m_tabbyGuy.GetTelefono()->DecStato(GenRandomInt(1, 8));
+                m_tabbyGuy.GetTelefono().DecStato(GenRandomInt(1, 8));
 
                 // TODO: Dialog telefono morto
 

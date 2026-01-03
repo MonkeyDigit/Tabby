@@ -1,7 +1,7 @@
 #include "TabbyGuy.h"
 
 TabbyGuy::TabbyGuy()
-	: m_soldi{ 12000 }, m_rep{ 0 },
+	: m_soldi{ 0 }, m_rep{ 0 },
 	m_fama{ 0 }, m_studio{ 0 }, m_giorniLavoro{ 0 },
 	m_scooter{}, m_tipa{}, m_rapporti{ 0 }, m_stipendio{ 0 },
 	m_scuola{}, m_paghetta{ 15 }, m_testa{ 0 },

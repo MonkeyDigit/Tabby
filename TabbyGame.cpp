@@ -1,4 +1,11 @@
+#include <sstream>
 #include "TabbyGame.h"
+
+EventoDati::EventoDati() {}
+
+EventoDati::EventoDati(TipoEvento tipo, int id, std::string titolo, std::string testo, std::string img)
+    : m_tipo{ tipo }, m_idEvento{ id }, m_titolo{ titolo }, m_testo{ testo }, m_immagine{ img }
+{}
 
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
 	: m_tabbyGuy{}, m_date{1991, 9, 16}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 0 }
@@ -77,7 +84,8 @@ void TabbyGame::AvanzaCalendario()
         m_date.GetMonth() == Chrono::Month::feb &&
         m_date.GetDay() == 29)
     {
-        // TODO: Dialog anno bisesto anno funesto
+        EventoDati ev{ TipoEvento::INFO, 0, "Anno Bisesto", "Anno bisesto, anno funesto...", "" };
+        PushEvento(ev);
     }
 
     // ---------------> S T I P E N D I O <---------------
@@ -97,7 +105,14 @@ void TabbyGame::AvanzaCalendario()
 
             m_tabbyGuy.ResetGiorniLavoro();
 
-            // TODO: EVENTO stipendio da sottomesso
+            // EVENTO STIPENDIO
+            // TODO: SESSO?
+            std::stringstream msgstream;
+            msgstream << "Visto che sei stato un bravo dipendente sottomesso, ora ti arriva il tuo misero stipendio di "
+                << GetSoldiStr(m_tabbyGuy.GetStipendio());
+            EventoDati ev{ TipoEvento::INFO, 0, "Stipendio !", msgstream.str(), ""};
+            PushEvento(ev);
+
             m_tabbyGuy.GuadagnaSoldi(stipendietto);
 
             // TODO: DEBUG
@@ -108,7 +123,8 @@ void TabbyGame::AvanzaCalendario()
     // ---------------> P A L E S T R A <---------------
     if (m_date == m_tabbyGuy.GetScadenzaGym())
     {
-        // TODO: Dialog abbonamento scaduto
+        EventoDati ev{ TipoEvento::INFO, 0, "Pagah", "E' appena scaduto il tuo abbonamento della palestra...", "" };
+        PushEvento(ev);
         // TODO: RESETTA DATA SCADENZA
         // TODO: DEBUG
     }
@@ -125,7 +141,9 @@ void TabbyGame::AvanzaCalendario()
     case Chrono::Month::jun:    // Giugno
         if (m_date.GetDay() == 15)
         {
-            // TODO: DIALOG vacanze estive
+            // TODO: Sta roba va sistemata
+            EventoDati ev{ TipoEvento::INFO, 0, "Ultimo giorno di scuola", "Da domani iniziano le vacanze estive !", "" };
+            PushEvento(ev);
         }
         
         if (m_date.GetDay() > 15)
@@ -133,6 +151,7 @@ void TabbyGame::AvanzaCalendario()
             if (m_date.GetDay() == 22)
             {
                 // TODO: DIALOG pagella
+                // TODO: Qua va fatta una roba speciale
             }
 
             // TODO: roba vacanza
@@ -154,7 +173,9 @@ void TabbyGame::AvanzaCalendario()
 
         if (m_date.GetDay() == 15)
         {
-            // TODO: Dialog rientro scuola
+            EventoDati ev{ TipoEvento::INFO, 0, "Primo giorno di scuola", "Questa mattina devi tornare a scuola...", "" };
+            PushEvento(ev);
+            // Azzera le materie
             m_tabbyGuy.GetScuola().Reset();
         }
         break;
@@ -169,13 +190,15 @@ void TabbyGame::AvanzaCalendario()
             {   // TODO: VESTITI NATALIZI
                 if (m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubotto() == 19)
                 {
-                    // TODO: Dialog vestito stupendo
+                    EventoDati ev{ TipoEvento::INFO, 0, "Natale...", "Con il tuo vestito da Babbo Natale riesci a stupire tutti...", "" };
+                    PushEvento(ev);
                     m_tabbyGuy.IncFama(20);
                 }
             }
             else if (m_date.GetDay() == 28 && m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubotto() == 19)
             {
-                // TODO: Dialog togliti il vestito
+                EventoDati ev{ TipoEvento::INFO, 0, "Natale...", "Natale è già passato... Togliti quel dannato vestito...", "" };
+                PushEvento(ev);
                 m_tabbyGuy.DecFama(5);
             }
         }
@@ -189,6 +212,7 @@ void TabbyGame::AvanzaCalendario()
     }
 
     // TODO: if natale
+    // TODO: Dialog infovacanze
     /*
     if (natale2 == 0)
     {
@@ -221,13 +245,15 @@ void TabbyGame::GestioneConsumi()
 
         if (m_tabbyGuy.GetSizze() == 0)
         {
-            // TODO: Dialog sigarette esaurite
+            EventoDati ev{ TipoEvento::INFO, 0, "Sei senza sigarette !", "Apri il tuo pacchetto di sigarette e lo trovi disperatamente vuoto...", "" };
+            PushEvento(ev);
             if (m_tabbyGuy.GetRep() > 10)
                 m_tabbyGuy.DecRep(3);
         }
         else if (m_tabbyGuy.GetSizze() < 3)
         {
-            // TODO: Dialog stai per finire le siga
+            EventoDati ev{ TipoEvento::INFO, 0, "Sigarette...", "Ti accorgi che stai per finire le tue sizze", "" };
+            PushEvento(ev);
         }
     }
 
@@ -240,11 +266,13 @@ void TabbyGame::GestioneConsumi()
 
         if (m_tabbyGuy.GetOperatore().GetCredito() == 0)
         {
-            // TODO: Dialog credito esaurito
+            EventoDati ev{ TipoEvento::INFO, 0, "Telefonino", "Cerchi di telefonare e ti accorgi di aver finito i soldi a tua disposizione...", "" };
+            PushEvento(ev);
         }
         else if (m_tabbyGuy.GetOperatore().GetCredito() < 3)
         {
-            // TODO: Dialog poco credito
+            EventoDati ev{ TipoEvento::INFO, 0, "Telefonino", "Ti accorgi che stai per finire la ricarica del tuo telefonino", "" };
+            PushEvento(ev);
         }
     }
 
@@ -254,7 +282,8 @@ void TabbyGame::GestioneConsumi()
         // Cellulare morente
         m_tabbyGuy.GetTelefono().DecStato(1);
 
-        // TODO: Dialog telefono morto
+        EventoDati ev{ TipoEvento::INFO, 0, "Telefonino", "Dopo una vita di duro lavoro, a furia di prendere botte, il tuo cellulare si spacca...", "" };
+        PushEvento(ev);
     }
 }
 
@@ -284,6 +313,9 @@ void TabbyGame::GestioneRelazioni()
                 m_tabbyGuy.SetRapporti(0);
 
                 // TODO: Dialog la tipa ti molla - sesso m f
+                // TODO: Messaggio speciale
+                EventoDati ev{ TipoEvento::INFO, 0, "La tipa ti molla...", "[messaggio]", "" };
+                PushEvento(ev);
 
                 m_tabbyGuy.DecRep(11 - rnd);    // Quelle con numero più basso, sono peggiori...
 
@@ -313,6 +345,8 @@ void TabbyGame::GestioneLavoro()
             m_tabbyGuy.ResetLavoro();
 
             // TODO: Dialog licenziato + suono
+            EventoDati ev{ TipoEvento::INFO, 0, "Perdi il lavoro...", "Un bel giorno ti svegli e scopri di essere stato licenziato", "" };
+            PushEvento(ev);
 
         }
     }
@@ -329,14 +363,14 @@ void TabbyGame::GestioneEconomia()
             m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta());
             // TODO: DEBUG
 
-            //TODO: Dialog eventi paghetta
-
             if (m_tabbyGuy.GetStudio() >= 80)
             {
                 m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta());
                 //TODO: DEBUG
 
                 // TODO: Dialog eventi paghetta doppia + suono
+                EventoDati ev{ TipoEvento::INFO, 0, "Paghetta settimanale", "Visto che vai bene a scuola, ti diamo il doppio della paghetta...", "" };
+                PushEvento(ev);
             }
         }
         else
@@ -344,7 +378,8 @@ void TabbyGame::GestioneEconomia()
             m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta() * 0.5f);
             // TODO: DEBUG
 
-            // TODO: Dialog eventi metà paghetta
+            EventoDati ev{ TipoEvento::INFO, 0, "Paghetta settimanale", "Finché non andrai bene a scuola, ti daremo solo metà della paghetta...", "" };
+            PushEvento(ev);
         }
     }
 }
@@ -366,6 +401,8 @@ void TabbyGame::GestioneEventiCasuali()
             m_tabbyGuy.DecRep(caso);
 
             // TODO: FINESTRA PESTAGGIO METALLONE
+            EventoDati ev{ TipoEvento::INFO, 0, "Vieni pestato", "[messaggio]", "" };
+            PushEvento(ev);
 
             rnd = GenRandomInt(100, 105);
 
@@ -387,14 +424,15 @@ void TabbyGame::GestioneEventiCasuali()
                 if (caso < 17)
                 {
                     m_tabbyGuy.GetScooter().DecStato(35);
-                    // TODO: Dialog camionista
-
+                    EventoDati ev{ TipoEvento::INFO, 0, "Camionista bastardo", "[messaggio]", "" };
+                    PushEvento(ev);
                     // TODO: DEBUG
                 }
                 else
                 {
                     m_tabbyGuy.GetScooter().DecStato(20);
-                    // TODO: Dialog muro
+                    EventoDati ev{ TipoEvento::INFO, 0, "Muro bastardo", "[messaggio]", "" };
+                    PushEvento(ev);
 
                     // TODO: DEBUG
                 }
@@ -404,7 +442,8 @@ void TabbyGame::GestioneEventiCasuali()
                 if (m_tabbyGuy.GetScooter().GetStato() <= 0)
                 {
                     m_tabbyGuy.GetScooter().Reset();
-                    // TODO: Dialog scooter distrutto
+                    EventoDati ev{ TipoEvento::INFO, 0, "Scooter Distrutto", "Quando ti rialzi ti accorgi che il tuo scooter è ormai ridotto a un ammasso di rottami", "" };
+                    PushEvento(ev);
 
                     // TODO: DEBUG
                 }
@@ -423,6 +462,8 @@ void TabbyGame::GestioneEventiCasuali()
 
             m_tabbyGuy.DecFama(2);
             // TODO: Dialog sei fortunato... random
+            EventoDati ev{ TipoEvento::INFO, 0, "Sei fortunato...", "[messaggio]", "" };
+            PushEvento(ev);
 
             // TODO: DEBUG
         }
@@ -434,6 +475,8 @@ void TabbyGame::GestioneEventiCasuali()
                 rnd = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size() - 1);
 
                 // TODO: Dialog scuola random
+                EventoDati ev{ TipoEvento::INFO, 0, "Scuola", "[messaggio]", "" };
+                PushEvento(ev);
 
                 m_tabbyGuy.GetScuola().m_materie[rnd].DecVoto(2);
                 m_tabbyGuy.CalcolaStudio();
@@ -449,6 +492,8 @@ void TabbyGame::GestioneEventiCasuali()
                 // TODO: Sesso m f
 
                 // TODO: Dialog una tipa ci prova
+                EventoDati ev{ TipoEvento::SCELTA, 0, "Qualcuno ti caga...", "Una tipa, di nome [nome] (Figosità [fama]), ci prova con te...\nCi stai ???", "" };
+                PushEvento(ev);
             }
 
             // TODO: Dialog qualcuno ti caga...
@@ -471,6 +516,8 @@ void TabbyGame::GestioneEventiCasuali()
             if (m_tabbyGuy.GetRapporti() > 0)
             {
                 // TODO: Dialog due donne
+                EventoDati ev{ TipoEvento::INFO, 0, "Due donne", "", "" };
+                PushEvento(ev);
             }
             else   // Bravo, non hai una tipa...
             {
@@ -494,6 +541,9 @@ void TabbyGame::GestioneEventiCasuali()
         }
         else if (caso == 43)    // Domande inutili
         {
+            // TODO: COMPLETARE
+            EventoDati ev{ TipoEvento::SCELTA, 0, "Domande inutili della tipa...", "Mi ami ???", "" };
+            PushEvento(ev);
             /*
             i = MessageBox(hInstance,
                                    "Mi ami ???",
@@ -513,6 +563,9 @@ void TabbyGame::GestioneEventiCasuali()
         }
         else if (caso == 44)
         {
+            // TODO: COMPLETARE
+            EventoDati ev{ TipoEvento::SCELTA, 0, "Domande inutili della tipa...", "Ma sono ingrassata ???", "" };
+            PushEvento(ev);
             /*
             i = MessageBox(hInstance,
                                    "Ma sono ingrassata ???",
@@ -539,7 +592,8 @@ void TabbyGame::GestioneEventiCasuali()
             {
                 m_tabbyGuy.GetTelefono().DecStato(GenRandomInt(1, 8));
 
-                // TODO: Dialog telefono morto
+                EventoDati ev{ TipoEvento::INFO, 0, "Telefonino", "Il telefonino ti cade di tasca e vola per terra...", "" };
+                PushEvento(ev);
 
                 // TODO: DEBUG
             }

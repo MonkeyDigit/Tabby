@@ -14,6 +14,9 @@
 // TODO: SISTEMA BEST PRACTICE
 // TODO: Attento ai range dei vettori nei random
 // TODO: FAI FUNZIONI ISOLATE per la roba degli eventi
+// TODO: metti const per le pass by reference
+// TODO: wxString format o stringstream
+// TODO: msg sborsa spilla investi. e io pago!
 
 bool TabbyApp::OnInit()
 {
@@ -239,8 +242,8 @@ void TabbyFrame::AggiornaInterfaccia()
 { 
 	TabbyGuy& guy = m_game.GetTabbyGuy();
 
-	m_lblNomeTabby->SetLabel(guy.GetID().m_nome + " " + guy.GetID().m_cognome);
-	m_lblNomeTipa->SetLabel(guy.GetTipa().GetNome());
+	m_lblNomeTabby->SetLabel(guy.GetID().m_nome + " " + guy.GetID().m_cognome + " ");
+	m_lblNomeTipa->SetLabel(guy.GetTipa().GetNome() + " ");
 	m_lblRapportoTipa->SetLabel(wxString::Format("< Rapporto con la tipa %d/100 >", guy.GetRapporti()));
 	m_barTipa->SetValue(guy.GetRapporti());
 	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(guy.GetSoldi()) + " >");

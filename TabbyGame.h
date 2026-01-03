@@ -8,20 +8,7 @@
 constexpr float CAMBIO_EURO_LIRA = 1936.27;
 constexpr int GIORNO_STIPENDIO = 27;
 
-/* TODO:
-giorno vacanza
-anno bisesto
-data scadenza palestra
-data del compleanno
-attesa prima di riavere soldi
-fortuna
-numeroditta
-impegno
-giorni di lavoro -> serve a calcolare lo stipendio solo per il primo mese...
-stipendio
-tempo trascorso dal pestaggio
-
-*/
+// TODO: Data del compleanno
 
 // Sotto il cofano, i soldi di tabby e in generale il sistema monetario del gioco, viene gestito di base come euro, ma in base alla data sono messe a disposizione delle funzione per effettuare la conversione in lire, che fanno da "maschera"
 enum class Valuta { LIRE, EURO };
@@ -33,12 +20,13 @@ enum class TipoEvento {
 };
 
 struct EventoDati {
-	EventoDati() {}	// Constructor
-	TipoEvento tipo = TipoEvento::NESSUNO;
-	int idEvento = -1;
-	std::string titolo;
-	std::string testo;
-	std::string immagine;	// Nome del file immagine
+	EventoDati();
+	EventoDati(TipoEvento tipo, int id, std::string titolo, std::string testo, std::string img);
+	TipoEvento m_tipo = TipoEvento::NESSUNO;
+	int m_idEvento = -1;
+	std::string m_titolo;
+	std::string m_testo;
+	std::string m_immagine;	// Nome del file immagine
 };
 
 class TabbyGame
@@ -50,7 +38,6 @@ public:
 	Valuta GetValutaCorrente() const { return m_valutaCorrente; };
 	TabbyGuy& GetTabbyGuy() { return m_tabbyGuy; };
 	Chrono::Date& GetDate() { return m_date; };
-	std::vector<EventoDati>& GetCodaEventi() { return m_codaEventi; };
 
 	// LOGICA EVENTI
 	// Restituisce true se c'era un evento (e lo mette in outEvento), false se la coda eventi è vuota
@@ -76,6 +63,9 @@ private:
 	// IL MOTORE DI NUMERI CASUALI
 	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile
 	std::mt19937 m_rng;
+
+	// Evento
+	void PushEvento(const EventoDati& e) { m_codaEventi.push_back(e); };
 
 	// Funzioni di gestione giornaliera
 	void NuovoGiorno();

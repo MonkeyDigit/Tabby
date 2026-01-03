@@ -13,8 +13,8 @@ static void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 		bool scelta = (dlgEvento.ShowModal() == wxID_YES);
 
 		// Se qui ApplicaScelta aggiunge un NUOVO evento, questo finisce in fondo alla coda. Il ciclo while continuerà a girare e lo pescherà subito dopo
-		if (evento.tipo == TipoEvento::SCELTA)
-			game.ApplicaScelta(evento.idEvento, scelta);
+		if (evento.m_tipo == TipoEvento::SCELTA)
+			game.ApplicaScelta(evento.m_idEvento, scelta);
 	}
 	// Usciti dal while, la coda è sicuramente vuota
 }
@@ -249,19 +249,21 @@ void DlgScuola::AggiornaInterfaccia()
 	this->Layout();
 }
 
+// TODO: ICONA INFO
 DlgEvento::DlgEvento(wxWindow* parent, EventoDati& eventoDati)
-	: wxDialog{ parent, wxID_ANY, eventoDati.titolo, wxDefaultPosition, wxDefaultSize, wxCAPTION | wxSTAY_ON_TOP }	// Stile: CAPTION (barra titolo) ma niente tasto X (CLOSE_BOX) così l'utente è obbligato a premere i bottoni
+	: wxDialog{ parent, wxID_ANY, eventoDati.m_titolo, wxDefaultPosition, wxDefaultSize, wxCAPTION | wxSTAY_ON_TOP }	// Stile: CAPTION (barra titolo) ma niente tasto X (CLOSE_BOX) così l'utente è obbligato a premere i bottoni
 {
+	this->SetFont(parent->GetFont());
 	this->CenterOnParent();	// Appare al centro della finestra padre
 	EventoDati& evref = eventoDati;
 	// TODO: implementa immagine
 
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 
-	wxStaticText* lblTesto = new wxStaticText{ this, wxID_ANY, evref.testo, wxDefaultPosition, wxSize(300, -1), wxALIGN_CENTER | wxST_NO_AUTORESIZE };
+	wxStaticText* lblTesto = new wxStaticText{ this, wxID_ANY, evref.m_testo, wxDefaultPosition, wxSize(-1, -1), wxALIGN_LEFT };
 
 	// Manda a capo il testo automaticamente
-	lblTesto->Wrap(300);
+	lblTesto->Wrap(500);
 	mainSizer->Add(lblTesto, 1, wxALIGN_CENTER | wxALL, 15);
 
 	// Linea separatrice
@@ -270,20 +272,29 @@ DlgEvento::DlgEvento(wxWindow* parent, EventoDati& eventoDati)
 	// BOTTONI
 	wxBoxSizer* btnSizer = new wxBoxSizer(wxHORIZONTAL);
 
-	if (evref.tipo == TipoEvento::INFO)
+	if (evref.m_tipo == TipoEvento::INFO)
 	{
 		// Caso semplice: Solo OK
 		// wxID_OK chiude automaticamente il dialogo ritornando wxID_OK
-		wxButton* btnOk = new wxButton(this, wxID_OK, "OK, Ho capito");
+		wxButton* btnOk = new wxButton(this, wxID_OK, "OK");
 		btnSizer->Add(btnOk, 0, wxALL, 10);
 	}
-	else if (evref.tipo == TipoEvento::SCELTA)
+	else if (evref.m_tipo == TipoEvento::SCELTA)
 	{
 		// Caso scelta: SÌ e NO
 		// TODO: accetta e rifiuta
 		// TODO: aggiungi stringhe speciali per roba tipo lascia tipa, fai questo fai quello
-		wxButton* btnSi = new wxButton(this, wxID_YES, "Sì (Fallo)");
-		wxButton* btnNo = new wxButton(this, wxID_NO, "No (Lascia stare)");
+		wxButton* btnSi = new wxButton(this, wxID_YES, "Sì");
+		wxButton* btnNo = new wxButton(this, wxID_NO, "No");
+
+		// Diciamo esplicitamente: "Quando clicchi, chiudi la finestra e ritorna questo ID"
+		btnSi->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+			EndModal(wxID_YES);
+			});
+
+		btnNo->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+			EndModal(wxID_NO);
+			});
 
 		// wxID_YES e wxID_NO chiudono automaticamente ritornando il rispettivo ID
 		btnSizer->Add(btnSi, 0, wxALL, 10);

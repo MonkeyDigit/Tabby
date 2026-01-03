@@ -30,8 +30,8 @@ public:
 
 	// MODIFICHE
 	// Restituisce true se l'acquisto avviene con successo
-	bool SpendiSoldi(int importo);
-	void GuadagnaSoldi(int importo);
+	bool SpendiSoldi(long long importo);
+	void GuadagnaSoldi(long long importo);
 	void CalcolaStudio();
 	void SetFortuna(int fortuna);
 	void IncSizze(int numSizze);
@@ -44,6 +44,8 @@ public:
 	void DecRapporti(int punti);
 	void IncImpegno(int punti);
 	void DecImpegno(int punti);
+	void IncGiorniLavoro(int giorni);	// I giorni possono solo aumentare
+	void ResetGiorniLavoro();
 	void ResetLavoro();
 
 	long long GetSoldi() const { return m_soldi; };
@@ -59,6 +61,9 @@ public:
 	int GetSizze() const { return m_sizze; };
 	int GetImpegno() const { return m_impegno; };
 	int GetNumDitta() const { return m_numDitta; };
+	int GetGiorniLavoro() const { return m_giorniLavoro; };
+	long GetStipendio() const { return m_stipendio; };
+	Chrono::Date& GetScadenzaGym() { return m_scadenzaGym; };
 	CartaIdentita& GetID() { return m_identita; };
 	Scuola& GetScuola() { return m_scuola; };
 	Scooter& GetScooter() { return m_scooter; };
@@ -82,9 +87,11 @@ private:
 	int m_pantaloni;
 	int m_scarpe;
 	int m_sizze;	// sigarette
+	// TODO: POSSIBILE CLASSE LAVORO/CARRIERA???
 	int m_numDitta;
 	int m_giorniLavoro;
-	int m_stipendio;
+	long m_stipendio;
+	Chrono::Date m_scadenzaGym;
 	// Qua potevo usare dei puntatori inizializzando lo scooter e la tipa a NULL, ma non voglio fare un puttanaio con destructor e magagne dei puntatori
 	Scuola m_scuola;
 	Scooter m_scooter;

@@ -1,7 +1,7 @@
 #include "TabbyGame.h"
 
-TabbyGame::TabbyGame()	// Mercoledì 11 settembre 1991
-	: m_tabbyGuy{}, m_date{1991, 9, 11}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 0 }
+TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
+	: m_tabbyGuy{}, m_date{1991, 9, 16}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 0 }
 {
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
     // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
@@ -10,88 +10,7 @@ TabbyGame::TabbyGame()	// Mercoledì 11 settembre 1991
     m_rng.seed(rd());
 }
 
-int TabbyGame::GenRandomInt(int min, int max)
-{
-    // Creiamo una distribuzione uniforme tra min e max
-    // Significa che ogni numero ha la stessa probabilità di uscire
-    std::uniform_int_distribution<int> dist(min, max);
-    // Chiediamo al motore di darci un numero secondo quella distribuzione
-    return dist(m_rng);
-}
-
-bool TabbyGame::CheckVacanza()
-{
-    return false;
-}
-
-bool TabbyGame::PollEvento(EventoDati& outEvento)
-{
-    if (m_codaEventi.empty())
-        return false;   // Nessun evento
-
-    // Viene COPIATO il primo evento del vettore
-    outEvento = m_codaEventi.front();
-    // Viene rimosso dalla coda
-    m_codaEventi.erase(m_codaEventi.begin());
-
-    return true;    // C'è un evento da processare
-}
-
-void TabbyGame::ApplicaScelta(int idEvento, bool sceltaYes)
-{
-
-}
-
-void TabbyGame::AzioneStudia(int materiaIndex)
-{
-    Materia& mat = m_tabbyGuy.GetScuola().m_materie[materiaIndex];
-
-    if (mat.GetVoto() < 10)
-    {
-        mat.IncVoto(1);
-        m_tabbyGuy.CalcolaStudio();
-        ProssimoGiorno();
-    }
-    else
-    {
-        // TODO: MESSAGGIO
-    }
-}
-
-void TabbyGame::AzioneMinaccia(int materiaIndex)
-{
-    Materia& mat = m_tabbyGuy.GetScuola().m_materie[materiaIndex];
-
-    if (mat.GetVoto() > 0)
-    {
-        mat.DecVoto(2);
-        m_tabbyGuy.CalcolaStudio();
-        ProssimoGiorno();
-    }
-    else
-    {
-        // TODO: MESSAGGIO
-    }
-}
-
-void TabbyGame::AzioneCorrompi(int materiaIndex)
-{
-}
-
-void TabbyGame::CheckCambioValuta()
-{	// Dopo il 2002 scatta l'euro
-	if (m_valutaCorrente == Valuta::LIRE && m_date.GetYear() >= 2002)
-		m_valutaCorrente = Valuta::EURO;
-}
-
-long long TabbyGame::ConvertiValuta(long long valoreBase) const
-{
-	if (m_valutaCorrente == Valuta::EURO)
-		return valoreBase;
-
-	return (long long)(valoreBase * CAMBIO_EURO_LIRA);
-}
-
+// Funzione helper per la formattazione dei soldi
 static std::string formattaConPunti(long long numero)
 {
     // Convertiamo in stringa grezza (es. "1000000")
@@ -124,28 +43,177 @@ static std::string formattaConPunti(long long numero)
     return s;
 }
 
-std::string TabbyGame::GetSoldiStr(long long valoreBase) const
+int TabbyGame::GenRandomInt(int min, int max)
 {
-	if (m_valutaCorrente == Valuta::EURO)
-		return (formattaConPunti(valoreBase) + " €");
-
-	// Altrimenti è la lira...
-	long long valoreConvertito = ConvertiValuta(valoreBase);
-	return (formattaConPunti(valoreConvertito) + " L.");
+    // Creiamo una distribuzione uniforme tra min e max
+    // Significa che ogni numero ha la stessa probabilità di uscire
+    std::uniform_int_distribution<int> dist(min, max);
+    // Chiediamo al motore di darci un numero secondo quella distribuzione
+    return dist(m_rng);
 }
 
-void TabbyGame::ProssimoGiorno()
+void TabbyGame::NuovoGiorno()
 {
-    int rnd{};
-    int caso{};
+    // Il tempo scorre inesorabilmente...
+    AvanzaCalendario();
 
-    // I giorni passano...
-    m_date.AddDay(1);
-    
-    // Tempo trascorso pestaggio
     if (m_coolDownPestaggio > 0)
         m_coolDownPestaggio--;
 
+    // Chiamata ai reparti
+    GestioneConsumi();
+    GestioneRelazioni();
+    GestioneLavoro();
+    GestioneEconomia();
+    GestioneEventiCasuali();    // Il dado del destino...
+}
+
+// TODO: RENDI MODULARE???
+void TabbyGame::AvanzaCalendario()
+{
+    m_date.AddDay(1);
+    
+    if (Chrono::leapYear(m_date.GetYear()) &&
+        m_date.GetMonth() == Chrono::Month::feb &&
+        m_date.GetDay() == 29)
+    {
+        // TODO: Dialog anno bisesto anno funesto
+    }
+
+    // ---------------> S T I P E N D I O <---------------
+
+    if (m_tabbyGuy.GetImpegno() > 0)
+    {
+        m_tabbyGuy.IncGiorniLavoro(1);
+
+        if (m_date.GetDay() == GIORNO_STIPENDIO)
+        {
+            long stipendietto{};  // Stipendio calcolato secondo i giorni effettivi di lavoro
+
+            if (m_tabbyGuy.GetGiorniLavoro() > 29)
+                stipendietto = m_tabbyGuy.GetStipendio();
+            else
+                stipendietto = m_tabbyGuy.GetStipendio() * (long)m_tabbyGuy.GetGiorniLavoro() / 30;
+
+            m_tabbyGuy.ResetGiorniLavoro();
+
+            // TODO: EVENTO stipendio da sottomesso
+            m_tabbyGuy.GuadagnaSoldi(stipendietto);
+
+            // TODO: DEBUG
+        }
+
+    }
+
+    // ---------------> P A L E S T R A <---------------
+    if (m_date == m_tabbyGuy.GetScadenzaGym())
+    {
+        // TODO: Dialog abbonamento scaduto
+        // TODO: RESETTA DATA SCADENZA
+        // TODO: DEBUG
+    }
+
+    switch (m_date.GetMonth())
+    {
+    case Chrono::Month::jan:    // Gennaio
+        if (m_date.GetDay() < 7)
+        {
+            // TODO: Cos'è sta roba x vacanza
+        }
+        break;
+
+    case Chrono::Month::jun:    // Giugno
+        if (m_date.GetDay() == 15)
+        {
+            // TODO: DIALOG vacanze estive
+        }
+        
+        if (m_date.GetDay() > 15)
+        {
+            if (m_date.GetDay() == 22)
+            {
+                // TODO: DIALOG pagella
+            }
+
+            // TODO: roba vacanza
+        }
+        break;
+
+    case Chrono::Month::jul:    // Luglio
+    case Chrono::Month::aug:    // Agosto
+        // TODO: roba vacanza
+        // TODO: roba tipa
+        break;
+
+    case Chrono::Month::sep:    // Settembre
+
+        if (m_date.GetDay() < 15)
+        {
+            // TODO: Roba vacanza
+        }
+
+        if (m_date.GetDay() == 15)
+        {
+            // TODO: Dialog rientro scuola
+            m_tabbyGuy.GetScuola().Reset();
+        }
+        break;
+
+    case Chrono::Month::dec:    // Dicembre
+        if (m_date.GetDay() > 22)
+        {
+            // TODO: Roba vacanza
+            // TODO: Roba tipa
+
+            if (m_date.GetDay() == 25)
+            {   // TODO: VESTITI NATALIZI
+                if (m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubotto() == 19)
+                {
+                    // TODO: Dialog vestito stupendo
+                    m_tabbyGuy.IncFama(20);
+                }
+            }
+            else if (m_date.GetDay() == 28 && m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubotto() == 19)
+            {
+                // TODO: Dialog togliti il vestito
+                m_tabbyGuy.DecFama(5);
+            }
+        }
+    }
+
+    // TODO: vacanze tipo 2
+    // Domeniche e festività varie
+    if (m_date.GetWeekDay() == Chrono::WeekDay::sunday)
+    {
+        // TODO: vacanza = 2 ?
+    }
+
+    // TODO: if natale
+    /*
+    if (natale2 == 0)
+    {
+        int a = 0;
+        while (InfoVacanze[a].giorno != 0)
+        {
+            if (InfoVacanze[a].mese == x_mese)
+                if (InfoVacanze[a].giorno == x_giorno)
+                {
+                    MessageBox(hInstance,
+                               InfoVacanze[a].descrizione,
+                               InfoVacanze[a].nome, MB_OK | MB_ICONINFORMATION);
+
+                    x_vacanza = 2; // 2 = sono chiusi anche i negozi...
+                }
+                a++;
+        }
+    }
+    */
+
+    // TODO: DEBUG
+}
+
+void TabbyGame::GestioneConsumi()
+{
     // Sigarette
     if (m_tabbyGuy.GetSizze() > 0)
     {
@@ -188,8 +256,11 @@ void TabbyGame::ProssimoGiorno()
 
         // TODO: Dialog telefono morto
     }
+}
 
-
+void TabbyGame::GestioneRelazioni()
+{
+    int rnd{};
     // Rapporti Tipa
     if (m_tabbyGuy.GetRapporti() > 3)
     {
@@ -219,7 +290,11 @@ void TabbyGame::ProssimoGiorno()
             }
         }
     }
+}
 
+void TabbyGame::GestioneLavoro()
+{
+    int rnd{};
     // Lavoro
     if (m_tabbyGuy.GetImpegno() > 3)
     {
@@ -241,7 +316,10 @@ void TabbyGame::ProssimoGiorno()
 
         }
     }
+}
 
+void TabbyGame::GestioneEconomia()
+{
     // Paghetta
     if (m_date.GetWeekDay() == Chrono::WeekDay::saturday)
     {
@@ -250,28 +328,32 @@ void TabbyGame::ProssimoGiorno()
         {
             m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta());
             // TODO: DEBUG
-            
+
             //TODO: Dialog eventi paghetta
 
             if (m_tabbyGuy.GetStudio() >= 80)
             {
                 m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta());
                 //TODO: DEBUG
-                
+
                 // TODO: Dialog eventi paghetta doppia + suono
             }
         }
         else
         {
-            m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta()*0.5f);
+            m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta() * 0.5f);
             // TODO: DEBUG
 
             // TODO: Dialog eventi metà paghetta
         }
     }
+}
 
+void TabbyGame::GestioneEventiCasuali()
+{
     // Eventi casuali
-    caso = GenRandomInt(0, (100 + m_tabbyGuy.GetFortuna() * 2) - 1);
+    int caso = GenRandomInt(0, (100 + m_tabbyGuy.GetFortuna() * 2) - 1);
+    int rnd{};
     // TODO: DEBUG
 
     if (caso < 51)
@@ -344,12 +426,12 @@ void TabbyGame::ProssimoGiorno()
 
             // TODO: DEBUG
         }
-        else if(31 <= caso && caso <= 40)   // Skuola
+        else if (31 <= caso && caso <= 40)   // Skuola
         {
             // Durante i giorni di vacanza non ci sono eventi riguardanti la scuola
             if (!CheckVacanza())
             {
-                rnd = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size()-1);
+                rnd = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size() - 1);
 
                 // TODO: Dialog scuola random
 
@@ -445,7 +527,7 @@ void TabbyGame::ProssimoGiorno()
                             Rapporti = 5;
                     }
             */
-           //  TODO: DEBUG
+            //  TODO: DEBUG
         }
         else if (45 <= caso && caso <= 48)
         {
@@ -463,4 +545,87 @@ void TabbyGame::ProssimoGiorno()
             }
         }
     }
+}
+
+bool TabbyGame::CheckVacanza()
+{
+    return false;
+}
+
+bool TabbyGame::PollEvento(EventoDati& outEvento)
+{
+    if (m_codaEventi.empty())
+        return false;   // Nessun evento
+
+    // Viene COPIATO il primo evento del vettore
+    outEvento = m_codaEventi.front();
+    // Viene rimosso dalla coda
+    m_codaEventi.erase(m_codaEventi.begin());
+
+    return true;    // C'è un evento da processare
+}
+
+void TabbyGame::ApplicaScelta(int idEvento, bool sceltaYes)
+{
+
+}
+
+void TabbyGame::AzioneStudia(int materiaIndex)
+{
+    Materia& mat = m_tabbyGuy.GetScuola().m_materie[materiaIndex];
+
+    if (mat.GetVoto() < 10)
+    {
+        mat.IncVoto(1);
+        m_tabbyGuy.CalcolaStudio();
+        NuovoGiorno();
+    }
+    else
+    {
+        // TODO: MESSAGGIO
+    }
+}
+
+void TabbyGame::AzioneMinaccia(int materiaIndex)
+{
+    Materia& mat = m_tabbyGuy.GetScuola().m_materie[materiaIndex];
+
+    if (mat.GetVoto() > 0)
+    {
+        mat.DecVoto(2);
+        m_tabbyGuy.CalcolaStudio();
+        NuovoGiorno();
+    }
+    else
+    {
+        // TODO: MESSAGGIO
+    }
+}
+
+void TabbyGame::AzioneCorrompi(int materiaIndex)
+{
+}
+
+void TabbyGame::CheckCambioValuta()
+{	// Dopo il 2002 scatta l'euro
+	if (m_valutaCorrente == Valuta::LIRE && m_date.GetYear() >= 2002)
+		m_valutaCorrente = Valuta::EURO;
+}
+
+long long TabbyGame::ConvertiValuta(long long valoreBase) const
+{
+	if (m_valutaCorrente == Valuta::EURO)
+		return valoreBase;
+
+	return (long long)(valoreBase * CAMBIO_EURO_LIRA);
+}
+
+std::string TabbyGame::GetSoldiStr(long long valoreBase) const
+{
+	if (m_valutaCorrente == Valuta::EURO)
+		return (formattaConPunti(valoreBase) + " €");
+
+	// Altrimenti è la lira...
+	long long valoreConvertito = ConvertiValuta(valoreBase);
+	return (formattaConPunti(valoreConvertito) + " L.");
 }

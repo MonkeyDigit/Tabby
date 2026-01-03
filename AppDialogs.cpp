@@ -273,23 +273,21 @@ DlgEvento::DlgEvento(wxWindow* parent, EventoDati& eventoDati)
 	if (evref.tipo == TipoEvento::INFO)
 	{
 		// Caso semplice: Solo OK
+		// wxID_OK chiude automaticamente il dialogo ritornando wxID_OK
 		wxButton* btnOk = new wxButton(this, wxID_OK, "OK, Ho capito");
 		btnSizer->Add(btnOk, 0, wxALL, 10);
-		// wxID_OK chiude automaticamente il dialogo ritornando wxID_OK
 	}
 	else if (evref.tipo == TipoEvento::SCELTA)
 	{
 		// Caso scelta: SÌ e NO
 		// TODO: accetta e rifiuta
+		// TODO: aggiungi stringhe speciali per roba tipo lascia tipa, fai questo fai quello
 		wxButton* btnSi = new wxButton(this, wxID_YES, "Sì (Fallo)");
 		wxButton* btnNo = new wxButton(this, wxID_NO, "No (Lascia stare)");
 
+		// wxID_YES e wxID_NO chiudono automaticamente ritornando il rispettivo ID
 		btnSizer->Add(btnSi, 0, wxALL, 10);
 		btnSizer->Add(btnNo, 0, wxALL, 10);
-		// wxID_YES e wxID_NO chiudono automaticamente ritornando il rispettivo ID
-		// TODO: Cosa intende sta cosa???
-
-
 	}
 
 	mainSizer->Add(btnSizer, 0, wxALIGN_CENTER | wxBOTTOM, 5);

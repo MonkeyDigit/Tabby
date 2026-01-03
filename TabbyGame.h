@@ -6,6 +6,7 @@
 // Per attivare il debug
 #define TABBY_DEBUG
 constexpr float CAMBIO_EURO_LIRA = 1936.27;
+constexpr int GIORNO_STIPENDIO = 27;
 
 /* TODO:
 giorno vacanza
@@ -51,26 +52,17 @@ public:
 	Chrono::Date& GetDate() { return m_date; };
 	std::vector<EventoDati>& GetCodaEventi() { return m_codaEventi; };
 
-	// TODO: fai direttamente una funzione di gestione del tempo, in cui dentro metti cambio valuta
-	bool CheckVacanza();
 	// LOGICA EVENTI
 	// Restituisce true se c'era un evento (e lo mette in outEvento), false se la coda eventi è vuota
 	bool PollEvento(EventoDati& outEvento);
-
 	void ApplicaScelta(int idEvento, bool sceltaYes);
 	// TODO: BOOL / CODICE DI INFORMAZIONE / EVENTO CON MESSAGGIO
 	void AzioneStudia(int materiaIndex);
 	void AzioneMinaccia(int materiaIndex);
 	void AzioneCorrompi(int materiaIndex);
 
-	// LOGICA MONETARIA
-	// Controlla se è il 2002...
-	void CheckCambioValuta();
-	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
-	long long ConvertiValuta(long long valoreBase) const;
 	// Stringa formattata (es. "1.000 L." o "5 €")
 	std::string GetSoldiStr(long long valoreBase) const;
-	void ProssimoGiorno();
 
 	// GENERATORE RANDOM
 	int GenRandomInt(int min, int max);
@@ -81,8 +73,24 @@ private:
 	Valuta m_valutaCorrente;
 	int m_coolDownPestaggio;
 	std::vector<EventoDati> m_codaEventi;
-
 	// IL MOTORE DI NUMERI CASUALI
 	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile
 	std::mt19937 m_rng;
+
+	// Funzioni di gestione giornaliera
+	void NuovoGiorno();
+	void AvanzaCalendario();
+	void GestioneConsumi();     // Sigarette, telefono, abbonamento
+	void GestioneRelazioni();   // Tipa, amici, famiglia
+	void GestioneLavoro();      // Licenziamento, impegno
+	void GestioneEconomia();    // Paghetta, stipendio
+	void GestioneEventiCasuali(); // Il "Generatore di Caos"
+	// TODO: fai direttamente una funzione di gestione del tempo, in cui dentro metti cambio valuta
+	bool CheckVacanza();
+
+	// LOGICA MONETARIA
+	// Controlla se è il 2002...
+	void CheckCambioValuta();
+	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
+	long long ConvertiValuta(long long valoreBase) const;
 };

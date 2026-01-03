@@ -33,7 +33,7 @@ void TabbyGuy::SetImpegno(int impegno)
 		m_impegno = impegno;
 }
 
-bool TabbyGuy::SpendiSoldi(int importo)
+bool TabbyGuy::SpendiSoldi(long long importo)
 {	
 	// Con quali soldi...
 	if (importo > m_soldi)
@@ -43,7 +43,7 @@ bool TabbyGuy::SpendiSoldi(int importo)
 	return true;
 }
 
-void TabbyGuy::GuadagnaSoldi(int importo)
+void TabbyGuy::GuadagnaSoldi(long long importo)
 {
 	if (importo > 0)
 		m_soldi += importo;
@@ -150,6 +150,17 @@ void TabbyGuy::DecImpegno(int punti)
 		if (m_impegno < 0)
 			m_impegno = 0;
 	}
+}
+
+void TabbyGuy::IncGiorniLavoro(int giorni)
+{
+	if (giorni > 0)
+		m_giorniLavoro += giorni;
+}
+
+void TabbyGuy::ResetGiorniLavoro()
+{
+	m_giorniLavoro = 0;	// TODO: nell'originale c'è 1
 }
 
 void TabbyGuy::ResetLavoro()

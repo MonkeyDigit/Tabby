@@ -10,11 +10,10 @@
 // TODO: MECCANICHE FUTURE: con l'avanzamento tecnologico, escono nuove robe. + investimenti in borsa, crypto, per per arricchirsi...
 // TODO: La scuola la fa per 5 anni poi va a lavorare e investire in borsa???
 // TODO: NON PUOI ANDARE A SCUOLA LA DOMENICA E NELLE VACANZE
-// TODO: possibile sistema di message id con array dei messaggi???
-// TODO: Separare totalmente tabbygame con le finestre???
 // TODO: Freccia colorata per sapere se i soldi sono aumentati o diminuiti
 // TODO: SISTEMA BEST PRACTICE
 // TODO: Attento ai range dei vettori nei random
+// TODO: FAI FUNZIONI ISOLATE per la roba degli eventi
 
 bool TabbyApp::OnInit()
 {

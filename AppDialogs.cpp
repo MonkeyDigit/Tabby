@@ -1,27 +1,22 @@
 #include "AppDialogs.h"
 
 // Funzione helper
-void ManifestaEventi(wxWindow* parent, TabbyGame& game)
+static void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 {
-	// TODO: Dichiara funzione globale in appdialogs
-		// Processa gli eventi
-	if (game.NuoviEventi())
+	EventoDati evento;
+
+	while (game.PollEvento(evento))
 	{
-		for (auto& ev : game.m_eventQueue)
-		{
-			DlgEvento dlgEvento{ parent, ev };
-			dlgEvento.Centre();
-			// Nel caso di un pop up evento con scelta (previa implementazione degli appositi bottoni con wxID_YES e wxID_NO), gli id vengono restituiti alla finestra padre
-			// Qua valutiamo l'espressione logica
-			bool scelta = (dlgEvento.ShowModal() == wxID_YES);
+		DlgEvento dlgEvento{ parent, evento };
+		// Nel caso di un pop up evento con scelta (previa implementazione degli appositi bottoni con wxID_YES e wxID_NO), gli id vengono restituiti alla finestra padre
+		// Qua valutiamo l'espressione logica
+		bool scelta = (dlgEvento.ShowModal() == wxID_YES);
 
-			if (ev.tipo == TipoEvento::SCELTA)
-				game.ApplicaScelta(ev.idEvento, scelta);
-		}
-
-		// Gli eventi sono stati gestiti, tempo di spazzare la coda...
-		game.m_eventQueue.clear();
+		// Se qui ApplicaScelta aggiunge un NUOVO evento, questo finisce in fondo alla coda. Il ciclo while continuerà a girare e lo pescherà subito dopo
+		if (evento.tipo == TipoEvento::SCELTA)
+			game.ApplicaScelta(evento.idEvento, scelta);
 	}
+	// Usciti dal while, la coda è sicuramente vuota
 }
 
 DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
@@ -218,45 +213,24 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 
 void DlgScuola::OnStudia(wxCommandEvent& event)
 {
-	Materia& mat = m_game.GetTabbyGuy().GetScuola().m_materie[m_materiaIndex];
-
-	if (mat.GetVoto() < 10)
-	{
-		mat.IncVoto(1);
-		m_game.GetTabbyGuy().CalcolaStudio();
-		m_game.ProssimoGiorno();
-		this->AggiornaInterfaccia();
-	}
-	else
-	{
-		// TODO: MESSAGGIO
-	}
+	m_game.AzioneStudia(m_materiaIndex);
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 	
 }
 
 void DlgScuola::OnMinaccia(wxCommandEvent& event)
 {
-	Materia& mat = m_game.GetTabbyGuy().GetScuola().m_materie[m_materiaIndex];
-
-	if (mat.GetVoto() > 0)
-	{
-		mat.DecVoto(2);
-		m_game.GetTabbyGuy().CalcolaStudio();
-
-		m_game.ProssimoGiorno();
-		// Mostra le finestre degli eventi
-		ManifestaEventi(this, m_game);
-
-		this->AggiornaInterfaccia();
-	}
-	else
-	{
-		// TODO: MESSAGGIO
-	}
+	m_game.AzioneMinaccia(m_materiaIndex);
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgScuola::OnCorrompi(wxCommandEvent& event)
 {
+	m_game.AzioneCorrompi(m_materiaIndex);
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgScuola::AggiornaInterfaccia()

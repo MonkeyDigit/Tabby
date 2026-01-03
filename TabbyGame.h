@@ -45,17 +45,23 @@ class TabbyGame
 public:
 	TabbyGame();
 
+	// GETTER FUNCTIONS
+	Valuta GetValutaCorrente() const { return m_valutaCorrente; };
 	TabbyGuy& GetTabbyGuy() { return m_tabbyGuy; };
 	Chrono::Date& GetDate() { return m_date; };
-	Valuta GetValutaCorrente() const { return m_valutaCorrente; };
-	int GenRandomInt(int min, int max);
+	std::vector<EventoDati>& GetCodaEventi() { return m_codaEventi; };
 
 	// TODO: fai direttamente una funzione di gestione del tempo, in cui dentro metti cambio valuta
-	// TODO: implementa idevento
 	bool CheckVacanza();
-	// Ci sono eventi in coda da processare?
-	bool NuoviEventi() const { return (m_eventQueue.size() > 0 ? true : false); };
+	// LOGICA EVENTI
+	// Restituisce true se c'era un evento (e lo mette in outEvento), false se la coda eventi è vuota
+	bool PollEvento(EventoDati& outEvento);
+
 	void ApplicaScelta(int idEvento, bool sceltaYes);
+	// TODO: BOOL / CODICE DI INFORMAZIONE / EVENTO CON MESSAGGIO
+	void AzioneStudia(int materiaIndex);
+	void AzioneMinaccia(int materiaIndex);
+	void AzioneCorrompi(int materiaIndex);
 
 	// LOGICA MONETARIA
 	// Controlla se è il 2002...
@@ -66,15 +72,15 @@ public:
 	std::string GetSoldiStr(long long valoreBase) const;
 	void ProssimoGiorno();
 
-	// Gli eventi sono pubblici
-	std::vector<EventoDati> m_eventQueue;
+	// GENERATORE RANDOM
+	int GenRandomInt(int min, int max);
 
 private:
 	TabbyGuy m_tabbyGuy;
 	Chrono::Date m_date;
 	Valuta m_valutaCorrente;
-	int m_CoolDownPestaggio;
-
+	int m_coolDownPestaggio;
+	std::vector<EventoDati> m_codaEventi;
 
 	// IL MOTORE DI NUMERI CASUALI
 	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile

@@ -1,7 +1,7 @@
 #include "TabbyGame.h"
 
-TabbyGame::TabbyGame()	// Mercoledì 11 settembre 1995
-	: m_tabbyGuy{}, m_date{1991, 9, 11}, m_valutaCorrente{Valuta::LIRE}, m_CoolDownPestaggio{ 0 }
+TabbyGame::TabbyGame()	// Mercoledì 11 settembre 1991
+	: m_tabbyGuy{}, m_date{1991, 9, 11}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 0 }
 {
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
     // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
@@ -24,15 +24,64 @@ bool TabbyGame::CheckVacanza()
     return false;
 }
 
+bool TabbyGame::PollEvento(EventoDati& outEvento)
+{
+    if (m_codaEventi.empty())
+        return false;   // Nessun evento
+
+    // Viene COPIATO il primo evento del vettore
+    outEvento = m_codaEventi.front();
+    // Viene rimosso dalla coda
+    m_codaEventi.erase(m_codaEventi.begin());
+
+    return true;    // C'è un evento da processare
+}
+
 void TabbyGame::ApplicaScelta(int idEvento, bool sceltaYes)
 {
 
 }
 
+void TabbyGame::AzioneStudia(int materiaIndex)
+{
+    Materia& mat = m_tabbyGuy.GetScuola().m_materie[materiaIndex];
+
+    if (mat.GetVoto() < 10)
+    {
+        mat.IncVoto(1);
+        m_tabbyGuy.CalcolaStudio();
+        ProssimoGiorno();
+    }
+    else
+    {
+        // TODO: MESSAGGIO
+    }
+}
+
+void TabbyGame::AzioneMinaccia(int materiaIndex)
+{
+    Materia& mat = m_tabbyGuy.GetScuola().m_materie[materiaIndex];
+
+    if (mat.GetVoto() > 0)
+    {
+        mat.DecVoto(2);
+        m_tabbyGuy.CalcolaStudio();
+        ProssimoGiorno();
+    }
+    else
+    {
+        // TODO: MESSAGGIO
+    }
+}
+
+void TabbyGame::AzioneCorrompi(int materiaIndex)
+{
+}
+
 void TabbyGame::CheckCambioValuta()
 {	// Dopo il 2002 scatta l'euro
 	if (m_valutaCorrente == Valuta::LIRE && m_date.GetYear() >= 2002)
-		m_valutaCorrente == Valuta::EURO;
+		m_valutaCorrente = Valuta::EURO;
 }
 
 long long TabbyGame::ConvertiValuta(long long valoreBase) const
@@ -94,8 +143,8 @@ void TabbyGame::ProssimoGiorno()
     m_date.AddDay(1);
     
     // Tempo trascorso pestaggio
-    if (m_CoolDownPestaggio > 0)
-        m_CoolDownPestaggio--;
+    if (m_coolDownPestaggio > 0)
+        m_coolDownPestaggio--;
 
     // Sigarette
     if (m_tabbyGuy.GetSizze() > 0)
@@ -240,7 +289,7 @@ void TabbyGame::ProssimoGiorno()
 
             // TODO: DEBUG
 
-            m_CoolDownPestaggio = 5;
+            m_coolDownPestaggio = 5;
         }
         else if (11 <= caso && caso <= 20)   // SCOOTER
         {

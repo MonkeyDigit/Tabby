@@ -11,6 +11,7 @@ public:
 
 	void IncVoto(int punti);
 	void DecVoto(int punti);
+	void SetVoto(int voto);
 	void Reset() { m_voto = 0; };
 private:
 	std::string m_nome;

@@ -6,7 +6,7 @@
 
 EventoDati::EventoDati() {}
 
-EventoDati::EventoDati(TipoEvento tipo, int id, std::string titolo, std::string testo, std::string img)
+EventoDati::EventoDati(TipoEvento tipo, IdEvento id, std::string titolo, std::string testo, std::string img)
     : m_tipo{ tipo }, m_idEvento{ id }, m_titolo{ titolo }, m_testo{ testo }, m_immagine{ img }
 {}
 
@@ -103,7 +103,7 @@ void TabbyGame::AvanzaCalendario()
         m_date.GetMonth() == Chrono::Month::feb &&
         m_date.GetDay() == 29)
     {
-        EventoDati ev{ TipoEvento::INFO, 0, "Anno Bisesto", "Anno bisesto, anno funesto...", "" };
+        EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Anno Bisesto", "Anno bisesto, anno funesto...", "" };
         PushEvento(ev);
     }
 
@@ -129,7 +129,7 @@ void TabbyGame::AvanzaCalendario()
             // EVENTO STIPENDIO
             // TODO: SESSO?
             std::string msg =  "Visto che sei stato un bravo dipendente sottomesso, ora ti arriva il tuo misero stipendio di " + GetSoldiStr(stipendietto);
-            EventoDati ev{ TipoEvento::INFO, 0, "Stipendio !", msg, ""};
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Stipendio !", msg, ""};
             PushEvento(ev);
 
             m_tabbyGuy.GuadagnaSoldi(stipendietto);
@@ -142,7 +142,7 @@ void TabbyGame::AvanzaCalendario()
     // ---------------> P A L E S T R A <---------------
     if (m_date == m_tabbyGuy.GetScadenzaGym())
     {
-        EventoDati ev{ TipoEvento::INFO, 0, "Pagah", "E' appena scaduto il tuo abbonamento della palestra...", "" };
+        EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Pagah", "E' appena scaduto il tuo abbonamento della palestra...", "" };
         PushEvento(ev);
         // TODO: RESETTA DATA SCADENZA
         WriteLog("Calendario: E' scaduto l'abbonamento alla palestra");
@@ -162,7 +162,7 @@ void TabbyGame::AvanzaCalendario()
         if (m_date.GetDay() == 15)
         {
             // TODO: Sta roba va sistemata
-            EventoDati ev{ TipoEvento::INFO, 0, "Ultimo giorno di scuola", "Da domani iniziano le vacanze estive !", "" };
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Ultimo giorno di scuola", "Da domani iniziano le vacanze estive !", "" };
             PushEvento(ev);
         }
         
@@ -191,7 +191,7 @@ void TabbyGame::AvanzaCalendario()
 
         if (m_date.GetDay() == 15)
         {
-            EventoDati ev{ TipoEvento::INFO, 0, "Primo giorno di scuola", "Questa mattina devi tornare a scuola...", "" };
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Primo giorno di scuola", "Questa mattina devi tornare a scuola...", "" };
             PushEvento(ev);
             // Azzera le materie
             m_tabbyGuy.GetScuola().Reset();
@@ -208,14 +208,14 @@ void TabbyGame::AvanzaCalendario()
             {   // TODO: VESTITI NATALIZI
                 if (m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubotto() == 19)
                 {
-                    EventoDati ev{ TipoEvento::INFO, 0, "Natale...", "Con il tuo vestito da Babbo Natale riesci a stupire tutti...", "" };
+                    EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Natale...", "Con il tuo vestito da Babbo Natale riesci a stupire tutti...", "" };
                     PushEvento(ev);
                     m_tabbyGuy.IncFama(20);
                 }
             }
             else if (m_date.GetDay() == 28 && m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubotto() == 19)
             {
-                EventoDati ev{ TipoEvento::INFO, 0, "Natale...", "Natale è già passato... Togliti quel dannato vestito...", "" };
+                EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Natale...", "Natale è già passato... Togliti quel dannato vestito...", "" };
                 PushEvento(ev);
                 m_tabbyGuy.DecFama(5);
             }
@@ -260,14 +260,14 @@ void TabbyGame::GestioneConsumi()
 
         if (m_tabbyGuy.GetSizze() == 0)
         {
-            EventoDati ev{ TipoEvento::INFO, 0, "Sei senza sigarette !", "Apri il tuo pacchetto di sigarette e lo trovi disperatamente vuoto...", "" };
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Sei senza sigarette !", "Apri il tuo pacchetto di sigarette e lo trovi disperatamente vuoto...", "" };
             PushEvento(ev);
             if (m_tabbyGuy.GetRep() > 10)
                 m_tabbyGuy.DecRep(3);
         }
         else if (m_tabbyGuy.GetSizze() < 3)
         {
-            EventoDati ev{ TipoEvento::INFO, 0, "Sigarette...", "Ti accorgi che stai per finire le tue sizze", "" };
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Sigarette...", "Ti accorgi che stai per finire le tue sizze", "" };
             PushEvento(ev);
         }
     }
@@ -281,12 +281,12 @@ void TabbyGame::GestioneConsumi()
 
         if (m_tabbyGuy.GetOperatore().GetCredito() == 0)
         {
-            EventoDati ev{ TipoEvento::INFO, 0, "Telefonino", "Cerchi di telefonare e ti accorgi di aver finito i soldi a tua disposizione...", "" };
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Telefonino", "Cerchi di telefonare e ti accorgi di aver finito i soldi a tua disposizione...", "" };
             PushEvento(ev);
         }
         else if (m_tabbyGuy.GetOperatore().GetCredito() < 3)
         {
-            EventoDati ev{ TipoEvento::INFO, 0, "Telefonino", "Ti accorgi che stai per finire la ricarica del tuo telefonino", "" };
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Telefonino", "Ti accorgi che stai per finire la ricarica del tuo telefonino", "" };
             PushEvento(ev);
         }
     }
@@ -297,7 +297,7 @@ void TabbyGame::GestioneConsumi()
         // Cellulare morente
         m_tabbyGuy.GetTelefono().DecStato(1);
 
-        EventoDati ev{ TipoEvento::INFO, 0, "Telefonino", "Dopo una vita di duro lavoro, a furia di prendere botte, il tuo cellulare si spacca...", "" };
+        EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Telefonino", "Dopo una vita di duro lavoro, a furia di prendere botte, il tuo cellulare si spacca...", "" };
         PushEvento(ev);
     }
 }
@@ -329,7 +329,7 @@ void TabbyGame::GestioneRelazioni()
 
                 // TODO: Dialog la tipa ti molla - sesso m f
                 // TODO: Messaggio speciale
-                EventoDati ev{ TipoEvento::INFO, 0, "La tipa ti molla...", "[messaggio]", "" };
+                EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "La tipa ti molla...", "[messaggio]", "" };
                 PushEvento(ev);
 
                 m_tabbyGuy.DecRep(11 - rnd);    // Quelle con numero più basso, sono peggiori...
@@ -360,7 +360,7 @@ void TabbyGame::GestioneLavoro()
             m_tabbyGuy.ResetLavoro();
 
             // TODO: Dialog licenziato + suono
-            EventoDati ev{ TipoEvento::INFO, 0, "Perdi il lavoro...", "Un bel giorno ti svegli e scopri di essere stato licenziato", "" };
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Perdi il lavoro...", "Un bel giorno ti svegli e scopri di essere stato licenziato", "" };
             PushEvento(ev);
 
         }
@@ -387,7 +387,7 @@ void TabbyGame::GestioneEconomia()
 
 
                 // TODO: Dialog eventi paghetta doppia + suono
-                EventoDati ev{ TipoEvento::INFO, 0, "Paghetta settimanale", "Visto che vai bene a scuola, ti diamo il doppio della paghetta...", "" };
+                EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Paghetta settimanale", "Visto che vai bene a scuola, ti diamo il doppio della paghetta...", "" };
                 PushEvento(ev);
             }
         }
@@ -398,7 +398,7 @@ void TabbyGame::GestioneEconomia()
             WriteLog("GestioneEconomia: Metà paghetta (" + GetSoldiStr(m_tabbyGuy.GetPaghetta()*0.5f) + ")");
 
 
-            EventoDati ev{ TipoEvento::INFO, 0, "Paghetta settimanale", "Finché non andrai bene a scuola, ti daremo solo metà della paghetta...", "" };
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Paghetta settimanale", "Finché non andrai bene a scuola, ti daremo solo metà della paghetta...", "" };
             PushEvento(ev);
         }
     }
@@ -423,7 +423,7 @@ void TabbyGame::GestioneEventiCasuali()
             int rndFrase = GenRandomInt(0, frasiMetallari.size() - 1);
             int rndVia = GenRandomInt(0, vieStr.size() - 1);
 
-            EventoDati ev{ TipoEvento::INFO, 0, "Vieni pestato", Sostituisci(frasiMetallari[rndFrase],"{LUOGO}", vieStr[rndVia]), ""};
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Vieni pestato", Sostituisci(frasiMetallari[rndFrase],"{LUOGO}", vieStr[rndVia]), ""};
             PushEvento(ev);
             // DEBUG LOG
             WriteLog("GestioneEventiCasuali: Metallaro n. " + std::to_string(rndFrase));
@@ -444,7 +444,7 @@ void TabbyGame::GestioneEventiCasuali()
                 {
                     // TODO: messaggio camionista
                     m_tabbyGuy.GetScooter().DecStato(35);
-                    EventoDati ev{ TipoEvento::INFO, 0, "Camionista bastardo", "[messaggio]", "" };
+                    EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Camionista bastardo", "[messaggio]", "" };
                     PushEvento(ev);
                     // DEBUG LOG
                     WriteLog("GestioneEventiCasuali: Scooter - Camionista...");
@@ -454,7 +454,7 @@ void TabbyGame::GestioneEventiCasuali()
                 {
                     // TODO: messaggio muro
                     m_tabbyGuy.GetScooter().DecStato(20);
-                    EventoDati ev{ TipoEvento::INFO, 0, "Muro bastardo", "[messaggio]", "" };
+                    EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Muro bastardo", "[messaggio]", "" };
                     PushEvento(ev);
                     // DEBUG LOG
                     WriteLog("GestioneEventiCasuali: Scooter - Muro...");
@@ -465,7 +465,7 @@ void TabbyGame::GestioneEventiCasuali()
                 if (m_tabbyGuy.GetScooter().GetStato() <= 0)
                 {
                     m_tabbyGuy.GetScooter().Reset();
-                    EventoDati ev{ TipoEvento::INFO, 0, "Scooter Distrutto", "Quando ti rialzi ti accorgi che il tuo scooter è ormai ridotto a un ammasso di rottami", "" };
+                    EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Scooter Distrutto", "Quando ti rialzi ti accorgi che il tuo scooter è ormai ridotto a un ammasso di rottami", "" };
                     PushEvento(ev);
                     // DEBUG LOG
                     WriteLog("GestioneEventiCasuali: Lo scooter si è completamente distrutto...");
@@ -486,7 +486,7 @@ void TabbyGame::GestioneEventiCasuali()
             m_tabbyGuy.DecFama(2);
 
             int rndFrase = GenRandomInt(0, frasiFortuna.size() - 1);
-            EventoDati ev{ TipoEvento::INFO, 0, "Sei fortunato...", frasiFortuna[rndFrase], ""};
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Sei fortunato...", frasiFortuna[rndFrase], ""};
             PushEvento(ev);
             // DEBUG LOG
             WriteLog("GestioneEventiCasuali: Evento riguardante la figosità...");
@@ -499,7 +499,7 @@ void TabbyGame::GestioneEventiCasuali()
                 int rndMat = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size() - 1);
                 int rndFrase = GenRandomInt(0, frasiScuola.size() - 1);
                 Materia& mat = m_tabbyGuy.GetScuola().m_materie[rndMat];
-                EventoDati ev{ TipoEvento::INFO, 0, "Scuola", Sostituisci(frasiScuola[rndFrase],"{MATERIA}",mat.GetNome()), ""};
+                EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Scuola", Sostituisci(frasiScuola[rndFrase],"{MATERIA}",mat.GetNome()), ""};
                 PushEvento(ev);
 
                 mat.DecVoto(2);
@@ -515,7 +515,7 @@ void TabbyGame::GestioneEventiCasuali()
                 // TODO: Sesso m f
 
                 // TODO: Dialog una tipa ci prova
-                EventoDati ev{ TipoEvento::SCELTA, 0, "Qualcuno ti caga...", "Una tipa, di nome [nome] (Figosità [fama]), ci prova con te...\nCi stai ???", "" };
+                EventoDati ev{ TipoEvento::SCELTA, IdEvento::NULLO, "Qualcuno ti caga...", "Una tipa, di nome [nome] (Figosità [fama]), ci prova con te...\nCi stai ???", "" };
                 PushEvento(ev);
             }
 
@@ -537,7 +537,7 @@ void TabbyGame::GestioneEventiCasuali()
             if (m_tabbyGuy.GetRapporti() > 0)
             {
                 // TODO: Dialog due donne
-                EventoDati ev{ TipoEvento::INFO, 0, "Due donne", "", "" };
+                EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Due donne", "", "" };
                 PushEvento(ev);
             }
             else   // Bravo, non hai una tipa...
@@ -563,7 +563,7 @@ void TabbyGame::GestioneEventiCasuali()
         else if (caso == 43)    // Domande inutili
         {
             // TODO: COMPLETARE
-            EventoDati ev{ TipoEvento::SCELTA, 0, "Domande inutili della tipa...", "Mi ami ???", "" };
+            EventoDati ev{ TipoEvento::SCELTA, IdEvento::NULLO, "Domande inutili della tipa...", "Mi ami ???", "" };
             PushEvento(ev);
             /*
             i = MessageBox(hInstance,
@@ -585,7 +585,7 @@ void TabbyGame::GestioneEventiCasuali()
         else if (caso == 44)
         {
             // TODO: COMPLETARE
-            EventoDati ev{ TipoEvento::SCELTA, 0, "Domande inutili della tipa...", "Ma sono ingrassata ???", "" };
+            EventoDati ev{ TipoEvento::SCELTA, IdEvento::NULLO, "Domande inutili della tipa...", "Ma sono ingrassata ???", "" };
             PushEvento(ev);
             /*
             i = MessageBox(hInstance,
@@ -614,7 +614,7 @@ void TabbyGame::GestioneEventiCasuali()
             {
                 m_tabbyGuy.GetTelefono().DecStato(GenRandomInt(1, 8));
 
-                EventoDati ev{ TipoEvento::INFO, 0, "Telefonino", "Il telefonino ti cade di tasca e vola per terra...", "" };
+                EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Telefonino", "Il telefonino ti cade di tasca e vola per terra...", "" };
                 PushEvento(ev);
                 // DEBUG LOG
                 WriteLog("GestioneEventiCasuali: Telefonino - Cade...");
@@ -637,9 +637,35 @@ bool TabbyGame::PollEvento(EventoDati& outEvento)
     return true;    // C'è un evento da processare
 }
 
-void TabbyGame::ApplicaScelta(int idEvento, bool sceltaYes)
+void TabbyGame::ApplicaScelta(IdEvento idEvento, bool sceltaYes)
 {
+    switch (idEvento)
+    {
+    case IdEvento::CORROMPI:
+        if (sceltaYes)
+        {
+            if (m_tabbyGuy.SpendiSoldi(m_costoCorruzione))
+            {
+                // DEBUG LOG
+                WriteLog("AzioneCorrompi: Corrompi un professore per " + GetSoldiStr(m_costoCorruzione));
+                m_tabbyGuy.GetScuola().m_materie[m_materiaIndex].SetVoto(10);
+                m_tabbyGuy.CalcolaStudio();
+            }
+            else
+            {
+                m_tabbyGuy.GetScuola().m_materie[m_materiaIndex].DecVoto(2);
+                m_tabbyGuy.CalcolaStudio();
+                EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Errore critico", "Cosa ??? Prima cerchi di corrompermi, poi si scopre che non hai abbastanza soldi !!!", "" };
+                PushEvento(ev);
+            }
+        }
 
+        NuovoGiorno();
+        
+        break;
+
+    }
+    
 }
 
 bool TabbyGame::TriggerScuola()
@@ -647,7 +673,7 @@ bool TabbyGame::TriggerScuola()
     if (m_tipoGiorno == TipoGiorno::NORMALE)
         return true;
 
-    EventoDati ev{ TipoEvento::INFO, -1, "Scuola", "Non puoi andare a scuola in un giorno di vacanza!", "" };
+    EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Scuola", "Non puoi andare a scuola in un giorno di vacanza!", "" };
     PushEvento(ev);
 
     return false;
@@ -656,29 +682,49 @@ bool TabbyGame::TriggerScuola()
 void TabbyGame::AzioneStudia(int materiaIndex)
 {
     Materia& mat = m_tabbyGuy.GetScuola().m_materie[materiaIndex];
+    if (mat.GetVoto() >= 10)
+        return;
 
-    if (mat.GetVoto() < 10)
-    {
-        mat.IncVoto(1);
-        m_tabbyGuy.CalcolaStudio();
-        NuovoGiorno();
-    }
+    if (m_tabbyGuy.GetRep() > 10) // Studiare costa fatica...(oltre che reputazione e fama)
+        m_tabbyGuy.DecRep(5);
+    if (m_tabbyGuy.GetFama() > 5)
+        m_tabbyGuy.DecFama(1);
+
+    mat.IncVoto(1);
+    m_tabbyGuy.CalcolaStudio();
+    NuovoGiorno();
 }
 
 void TabbyGame::AzioneMinaccia(int materiaIndex)
 {
     Materia& mat = m_tabbyGuy.GetScuola().m_materie[materiaIndex];
 
-    if (mat.GetVoto() > 0)
+    // TODO: Sesso??
+    if (m_tabbyGuy.GetRep() >= 30 || GenRandomInt(1, 10) == 1)
     {
-        mat.DecVoto(2);
-        m_tabbyGuy.CalcolaStudio();
-        NuovoGiorno();
+        mat.IncVoto(2);
     }
+    else
+    {
+        m_tabbyGuy.DecRep(2);
+        mat.DecVoto(1);
+
+        // TODO: SUONO
+        EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Bella figura", "Cosa ??? Credi di farmi paura piccolo pezzettino di letame vestito da zarro...\nDeve ancora nascere chi può minacciarmi...", "" };
+        PushEvento(ev);
+    }
+    // IMPORTANTE: NEGLI EVENTI NULLI VA SEMPRE FATTO NUOVOGIORNO, MENTRE QUELLI A SCELTA CONVIENE IN APPLICASCELTA PER RISPETTARE L'ORDINE DI INVOCAZIONE EVENTI
+    m_tabbyGuy.CalcolaStudio();
+    NuovoGiorno();
 }
 
 void TabbyGame::AzioneCorrompi(int materiaIndex)
 {
+    m_materiaIndex = materiaIndex;
+    // Per corrompere un professore va da 75€ a 150€
+    m_costoCorruzione = GenRandomInt(75,150);
+    EventoDati ev{ TipoEvento::SCELTA, IdEvento::CORROMPI, "Corrompi i professori", "Ma... forse per " + GetSoldiStr(m_costoCorruzione) + " potrei dimenticare i tuoi ultimi compiti in classe...", "" };
+    PushEvento(ev);
 }
 
 // TODO: SISTEMA QUESTE FUNZIONI
@@ -706,14 +752,14 @@ void TabbyGame::AzioneAumentoPaghetta()
     {
         if (((m_tabbyGuy.GetStudio() - m_tabbyGuy.GetPaghetta() + m_tabbyGuy.GetFortuna()) > (100 + GenRandomInt(0, 50)) && (m_tabbyGuy.GetPaghetta() < 50)))
         {
-            EventoDati ev{ TipoEvento::INFO, -1, "Aumento Paghetta !", "Va bene... ti daremo " + GetSoldiStr(5) + " di paghetta in più...", "" };
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Aumento Paghetta !", "Va bene... ti daremo " + GetSoldiStr(5) + " di paghetta in più...", "" };
             PushEvento(ev);
             m_tabbyGuy.IncPaghetta(5);
             // TODO: RICORDA DI RESETTARE
         }
         else
         {
-            EventoDati ev{ TipoEvento::INFO, -1, "Errore irrecuperabile", "Vedi di scordartelo... Dovrà passare molto tempo prima che ti venga aumentata la paghetta...", "" };
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Errore irrecuperabile", "Vedi di scordartelo... Dovrà passare molto tempo prima che ti venga aumentata la paghetta...", "" };
             PushEvento(ev);
         }
 
@@ -721,7 +767,7 @@ void TabbyGame::AzioneAumentoPaghetta()
     }
     else
     {
-        EventoDati ev{ TipoEvento::INFO, -1, "Errore irrecuperabile", "Quando andrai meglio a scuola, forse...", "" };
+        EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Errore irrecuperabile", "Quando andrai meglio a scuola, forse...", "" };
         PushEvento(ev);
     }
 }
@@ -741,7 +787,7 @@ void TabbyGame::AzioneSoldiExtra()
         }
         else
         {
-            EventoDati ev{ TipoEvento::INFO, -1, "Non te li diamo, viziato", "Ma insomma ! Non puoi continuamente chiedere soldi ! Aspetta ancora qualche giorno. Fai qualche cosa di economico nel frattempo...", "" };
+            EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Non te li diamo, viziato", "Ma insomma ! Non puoi continuamente chiedere soldi ! Aspetta ancora qualche giorno. Fai qualche cosa di economico nel frattempo...", "" };
             PushEvento(ev);
         }
 
@@ -749,7 +795,7 @@ void TabbyGame::AzioneSoldiExtra()
     }
     else
     {
-        EventoDati ev{ TipoEvento::INFO, -1, "Errore irrecuperabile", 
+        EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Errore irrecuperabile",
             "Quando andrai meglio a scuola potrai tornare a chiederci dei soldi, non ora. "
             "\nMa non lo sai che per la tua vita è importante studiare, e dovresti impegnarti "
             "di più, perchè quando ti impegni i risultati si vedono, solo che sei svogliato "
@@ -761,7 +807,7 @@ void TabbyGame::AzioneSoldiExtra()
 
 void TabbyGame::AzioneChiediSoldi()
 {
-    EventoDati ev{ TipoEvento::INFO, -1, "Errore irrecuperabile", "Non pensarci neanche lontanamente...", "" };
+    EventoDati ev{ TipoEvento::INFO, IdEvento::NULLO, "Errore irrecuperabile", "Non pensarci neanche lontanamente...", "" };
     PushEvento(ev);
     NuovoGiorno();
 }

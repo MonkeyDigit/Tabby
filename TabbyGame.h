@@ -32,11 +32,16 @@ enum class TipoEvento {
 	SCELTA		// Tasti sì/no
 };
 
+enum class IdEvento {
+    NULLO,
+    CORROMPI
+};
+
 struct EventoDati {
 	EventoDati();
-	EventoDati(TipoEvento tipo, int id, std::string titolo, std::string testo, std::string img);
+	EventoDati(TipoEvento tipo, IdEvento id, std::string titolo, std::string testo, std::string img);
 	TipoEvento m_tipo = TipoEvento::NESSUNO;
-	int m_idEvento = -1;
+    IdEvento m_idEvento = IdEvento::NULLO;
 	std::string m_titolo;
 	std::string m_testo;
 	std::string m_immagine;	// Nome del file immagine
@@ -68,7 +73,7 @@ public:
 	// LOGICA EVENTI
 	// Restituisce true se c'era un evento (e lo mette in outEvento), false se la coda eventi è vuota
 	bool PollEvento(EventoDati& outEvento);
-	void ApplicaScelta(int idEvento, bool sceltaYes);
+	void ApplicaScelta(IdEvento idEvento, bool sceltaYes);
 	// TODO: BOOL / CODICE DI INFORMAZIONE / EVENTO CON MESSAGGIO
     // Scuola
     bool TriggerScuola();
@@ -100,6 +105,8 @@ private:
     int m_attesa;
 	std::vector<EventoDati> m_codaEventi;
 	TipoGiorno m_tipoGiorno;
+    long long m_costoCorruzione;
+    int m_materiaIndex;
 	// IL MOTORE DI NUMERI CASUALI
 	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile
 	std::mt19937 m_rng;

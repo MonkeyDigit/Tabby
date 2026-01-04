@@ -16,6 +16,12 @@ void Materia::DecVoto(int punti)
 	if (m_voto < 0) m_voto = 0;	// Clamping
 }
 
+void Materia::SetVoto(int voto)
+{
+	if (0 <= voto && voto <= 10)
+		m_voto = voto;
+}
+
 Scuola::Scuola()
 	: m_materie{
 	Materia("Agraria"),

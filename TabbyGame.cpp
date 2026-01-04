@@ -1,4 +1,7 @@
-#include <sstream>
+#define _CRT_SECURE_NO_WARNINGS // Senza questa mi fotte la funzione localtime
+#include <fstream>  // Gestione file
+#include <ctime>    // Per l'orario nel log
+#include <iomanip>  // Per formattare l'orario
 #include "TabbyGame.h"
 
 EventoDati::EventoDati() {}
@@ -10,6 +13,7 @@ EventoDati::EventoDati(TipoEvento tipo, int id, std::string titolo, std::string 
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
 	: m_tabbyGuy{}, m_date{1991, 9, 16}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 5 }, m_tipoGiorno{ TipoGiorno::NORMALE }
 {
+    WriteLog("\n=== AVVIO TABBY - LOG SESSIONE ===");
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
     // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
      std::random_device rd;
@@ -119,15 +123,13 @@ void TabbyGame::AvanzaCalendario()
 
             // EVENTO STIPENDIO
             // TODO: SESSO?
-            std::stringstream msgstream;
-            msgstream << "Visto che sei stato un bravo dipendente sottomesso, ora ti arriva il tuo misero stipendio di "
-                << GetSoldiStr(m_tabbyGuy.GetStipendio());
-            EventoDati ev{ TipoEvento::INFO, 0, "Stipendio !", msgstream.str(), ""};
+            std::string msg =  "Visto che sei stato un bravo dipendente sottomesso, ora ti arriva il tuo misero stipendio di " + GetSoldiStr(stipendietto);
+            EventoDati ev{ TipoEvento::INFO, 0, "Stipendio !", msg, ""};
             PushEvento(ev);
 
             m_tabbyGuy.GuadagnaSoldi(stipendietto);
 
-            // TODO: DEBUG
+            WriteLog("Calendario: Stipendio (" + GetSoldiStr(stipendietto) + ")");
         }
 
     }
@@ -138,7 +140,7 @@ void TabbyGame::AvanzaCalendario()
         EventoDati ev{ TipoEvento::INFO, 0, "Pagah", "E' appena scaduto il tuo abbonamento della palestra...", "" };
         PushEvento(ev);
         // TODO: RESETTA DATA SCADENZA
-        // TODO: DEBUG
+        WriteLog("Calendario: E' scaduto l'abbonamento alla palestra");
     }
 
     switch (m_date.GetMonth())
@@ -234,7 +236,14 @@ void TabbyGame::AvanzaCalendario()
         }
     }
 
-    // TODO: DEBUG
+    // DEBUG LOG
+    std::string msg = "Calendario: " + 
+        m_date.GetWeekDayStr() + " " + 
+        std::to_string(m_date.GetDay()) + " " + 
+        m_date.GetMonthStr() + " " + 
+        std::to_string(m_date.GetYear()) + " " +
+        GetSoldiStr(m_tabbyGuy.GetSoldi());
+    WriteLog(msg);
 }
 
 void TabbyGame::GestioneConsumi()
@@ -362,12 +371,15 @@ void TabbyGame::GestioneEconomia()
         if (m_tabbyGuy.GetStudio() >= 45)
         {
             m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta());
-            // TODO: DEBUG
+            // DEBUG LOG
+            WriteLog("GestioneEconomia: Paghetta (" + GetSoldiStr(m_tabbyGuy.GetPaghetta()) + ")");
 
             if (m_tabbyGuy.GetStudio() >= 80)
             {
                 m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta());
-                //TODO: DEBUG
+                // DEBUG LOG
+                WriteLog("GestioneEconomia: Paghetta doppia !!!");
+
 
                 // TODO: Dialog eventi paghetta doppia + suono
                 EventoDati ev{ TipoEvento::INFO, 0, "Paghetta settimanale", "Visto che vai bene a scuola, ti diamo il doppio della paghetta...", "" };
@@ -377,7 +389,9 @@ void TabbyGame::GestioneEconomia()
         else
         {
             m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta() * 0.5f);
-            // TODO: DEBUG
+            // DEBUG LOG
+            WriteLog("GestioneEconomia: Metà paghetta (" + GetSoldiStr(m_tabbyGuy.GetPaghetta()*0.5f) + ")");
+
 
             EventoDati ev{ TipoEvento::INFO, 0, "Paghetta settimanale", "Finché non andrai bene a scuola, ti daremo solo metà della paghetta...", "" };
             PushEvento(ev);
@@ -389,7 +403,9 @@ void TabbyGame::GestioneEventiCasuali()
 {
     // Eventi casuali
     int caso = GenRandomInt(0, (100 + m_tabbyGuy.GetFortuna() * 2) - 1);
-    // TODO: DEBUG
+    // DEBUG LOG
+    WriteLog("GestioneEventiCasuali: Evento casuale n. " + std::to_string(caso));
+
 
     if (caso < 51)
     {
@@ -404,7 +420,8 @@ void TabbyGame::GestioneEventiCasuali()
 
             EventoDati ev{ TipoEvento::INFO, 0, "Vieni pestato", Sostituisci(frasiMetallari[rndFrase],"{LUOGO}", vieStr[rndVia]), ""};
             PushEvento(ev);
-            // TODO: DEBUG
+            // DEBUG LOG
+            WriteLog("GestioneEventiCasuali: Metallaro n. " + std::to_string(rndFrase));
 
             m_coolDownPestaggio = 5;
         }
@@ -423,15 +440,17 @@ void TabbyGame::GestioneEventiCasuali()
                     m_tabbyGuy.GetScooter().DecStato(35);
                     EventoDati ev{ TipoEvento::INFO, 0, "Camionista bastardo", "[messaggio]", "" };
                     PushEvento(ev);
-                    // TODO: DEBUG
+                    // DEBUG LOG
+                    WriteLog("GestioneEventiCasuali: Scooter - Camionista...");
+
                 }
                 else
                 {
                     m_tabbyGuy.GetScooter().DecStato(20);
                     EventoDati ev{ TipoEvento::INFO, 0, "Muro bastardo", "[messaggio]", "" };
                     PushEvento(ev);
-
-                    // TODO: DEBUG
+                    // DEBUG LOG
+                    WriteLog("GestioneEventiCasuali: Scooter - Muro...");
                 }
 
                 m_tabbyGuy.DecRep(2);
@@ -441,8 +460,8 @@ void TabbyGame::GestioneEventiCasuali()
                     m_tabbyGuy.GetScooter().Reset();
                     EventoDati ev{ TipoEvento::INFO, 0, "Scooter Distrutto", "Quando ti rialzi ti accorgi che il tuo scooter è ormai ridotto a un ammasso di rottami", "" };
                     PushEvento(ev);
-
-                    // TODO: DEBUG
+                    // DEBUG LOG
+                    WriteLog("GestioneEventiCasuali: Lo scooter si è completamente distrutto...");
                 }
             }
         }
@@ -462,8 +481,8 @@ void TabbyGame::GestioneEventiCasuali()
             int rndFrase = GenRandomInt(0, frasiFortuna.size() - 1);
             EventoDati ev{ TipoEvento::INFO, 0, "Sei fortunato...", frasiFortuna[rndFrase], ""};
             PushEvento(ev);
-
-            // TODO: DEBUG
+            // DEBUG LOG
+            WriteLog("GestioneEventiCasuali: Evento riguardante la figosità...");
         }
         else if (31 <= caso && caso <= 40)   // Skuola
         {
@@ -478,8 +497,8 @@ void TabbyGame::GestioneEventiCasuali()
 
                 mat.DecVoto(2);
                 m_tabbyGuy.CalcolaStudio();
-
-                // TODO: DEBUG
+                // DEBUG LOG
+                WriteLog("GestioneEventiCasuali: Evento riguardante la scuola");
             }
         }
         else if (caso == 41 || caso == 42)  // Tipa - una tipa ci prova
@@ -516,7 +535,9 @@ void TabbyGame::GestioneEventiCasuali()
             }
             else   // Bravo, non hai una tipa...
             {
-                // TODO: DEBUG
+                // DEBUG LOG
+                WriteLog("GestioneEventiCasuali: Una tipa/o ci prova...");
+
                 // TODO: m_tabbyGuy.SetRapporti(45 + GenRandomInt(0, 14));
                 // TODO: Figtipa
                 /*
@@ -531,8 +552,6 @@ void TabbyGame::GestioneEventiCasuali()
                     Reputazione = 100;
                 */
             }
-
-            // TODO: DEBUG
         }
         else if (caso == 43)    // Domande inutili
         {
@@ -553,8 +572,8 @@ void TabbyGame::GestioneEventiCasuali()
                             Rapporti = 5;
                     }
             */
-
-            // TODO: DEBUG
+            // DEBUG LOG
+            WriteLog("GestioneEventiCasuali: Domande inutili della tipa...");
         }
         else if (caso == 44)
         {
@@ -575,11 +594,12 @@ void TabbyGame::GestioneEventiCasuali()
                             Rapporti = 5;
                     }
             */
-            //  TODO: DEBUG
+            // DEBUG LOG
+            WriteLog("GestioneEventiCasuali: Domande inutili della tipa...");
         }
         else if (45 <= caso && caso <= 48)
         {
-            // TODO: DEBUG
+            // TODO: Qua non c'è nulla
         }
         else if (caso == 49 || caso == 50)  // Vari ed eventuali
         {
@@ -589,8 +609,9 @@ void TabbyGame::GestioneEventiCasuali()
 
                 EventoDati ev{ TipoEvento::INFO, 0, "Telefonino", "Il telefonino ti cade di tasca e vola per terra...", "" };
                 PushEvento(ev);
+                // DEBUG LOG
+                WriteLog("GestioneEventiCasuali: Telefonino - Cade...");
 
-                // TODO: DEBUG
             }
         }
     }
@@ -694,4 +715,26 @@ std::string TabbyGame::GetSoldiStr(long long valoreBase) const
 	// Altrimenti è la lira...
 	long long valoreConvertito = ConvertiValuta(valoreBase);
 	return (formattaConPunti(valoreConvertito) + " L.");
+}
+
+void TabbyGame::WriteLog(const std::string& messaggio)
+{
+#ifdef TABBY_DEBUG
+    // Apre il file "tabby.log" in modalità append, e se non esiste lo crea
+    std::ofstream logFile("tabby.log", std::ios::app);
+
+    if (logFile.is_open())
+    {
+        // Ottengo l'orario corrente per fare il figo
+        std::time_t t = std::time(nullptr);
+        std::tm tm = *std::localtime(&t);
+
+        // [ORARIO] Messaggio
+        logFile << "[" << std::put_time(&tm, "%H:%M:%S") << "] "
+            << messaggio << std::endl;
+
+        // Chiudiamo il file (importante per salvare subito)
+        logFile.close();
+    }
+#endif
 }

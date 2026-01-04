@@ -72,6 +72,8 @@ public:
 
 	// GENERATORE RANDOM
 	int GenRandomInt(int min, int max);
+    // SCRITTURA LOG DI DEBUG
+    void WriteLog(const std::string& messaggio);
 
 private:
 	TabbyGuy m_tabbyGuy;

@@ -20,6 +20,7 @@
 // TODO: Ottimizza rnd delle finestre (obsoleto)
 // TODO: METTI I PUNTI
 // TODO: SPOSTA TUTTI I VETTORI DI STRINGHE E DIALOGHI IN UN HEADER DEDICATO
+// TODO: cosa cambia con setsizer and fit
 
 bool TabbyApp::OnInit()
 {
@@ -333,7 +334,10 @@ void TabbyFrame::OnLavoro(wxCommandEvent& event)
 
 void TabbyFrame::OnCompagnia(wxCommandEvent& event)
 {
-
+	DlgCompagnia dlg{ this, m_game };
+	dlg.Centre();
+	dlg.ShowModal();
+	this->AggiornaInterfaccia();
 }
 
 void TabbyFrame::OnFamiglia(wxCommandEvent& event)

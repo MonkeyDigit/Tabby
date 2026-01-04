@@ -8,7 +8,7 @@ EventoDati::EventoDati(TipoEvento tipo, int id, std::string titolo, std::string 
 {}
 
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
-	: m_tabbyGuy{}, m_date{1991, 9, 16}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 0 }, m_tipoGiorno{ TipoGiorno::NORMALE }
+	: m_tabbyGuy{}, m_date{1991, 9, 16}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 5 }, m_tipoGiorno{ TipoGiorno::NORMALE }
 {
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
     // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
@@ -651,6 +651,25 @@ void TabbyGame::AzioneMinaccia(int materiaIndex)
 
 void TabbyGame::AzioneCorrompi(int materiaIndex)
 {
+}
+
+// TODO: SISTEMA QUESTE FUNZIONI
+void TabbyGame::AzioneGara()
+{
+    m_tabbyGuy.IncRep(1);
+    NuovoGiorno();
+}
+
+void TabbyGame::AzioneEsci()
+{
+    m_tabbyGuy.IncRep(1);
+    NuovoGiorno();
+}
+
+void TabbyGame::AzioneChiama()
+{
+    m_tabbyGuy.IncRep(1);
+    NuovoGiorno();
 }
 
 void TabbyGame::CheckCambioValuta()

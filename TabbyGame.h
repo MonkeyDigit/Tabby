@@ -57,10 +57,15 @@ public:
 	bool PollEvento(EventoDati& outEvento);
 	void ApplicaScelta(int idEvento, bool sceltaYes);
 	// TODO: BOOL / CODICE DI INFORMAZIONE / EVENTO CON MESSAGGIO
+    // Scuola
     bool TriggerScuola();
 	void AzioneStudia(int materiaIndex);
 	void AzioneMinaccia(int materiaIndex);
 	void AzioneCorrompi(int materiaIndex);
+    // Compagnia
+    void AzioneGara();
+    void AzioneEsci();
+    void AzioneChiama();
 
 	// Stringa formattata (es. "1.000 L." o "5 €")
 	std::string GetSoldiStr(long long valoreBase) const;

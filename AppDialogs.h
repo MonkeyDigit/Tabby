@@ -17,9 +17,10 @@ private:
 	void OnTrucca(wxCommandEvent& event);
 	void OnRipara(wxCommandEvent& event);
 	void OnFaiBenza(wxCommandEvent& event);
-
 	// Funzione helper
 	void AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxString value);
+	// Funzione per aggiornare i testi dei bottoni
+	void AggiornaInterfaccia();
 };
 
 class DlgScuola : public wxDialog {
@@ -41,8 +42,24 @@ private:
 	void OnStudia(wxCommandEvent& event);
 	void OnMinaccia(wxCommandEvent& event);
 	void OnCorrompi(wxCommandEvent& event);
+	void AggiornaInterfaccia();
+};
 
-	// Funzione per aggiornare i testi dei bottoni
+class DlgCompagnia : public wxDialog {
+public:
+	DlgCompagnia(wxWindow* parent, TabbyGame& game);
+private:
+	TabbyGame& m_game;	// Il riferimento al motore di gioco
+	int m_materiaIndex;
+	std::vector<wxStaticText*> m_lblVoti;
+
+	// I puntatori ai bottoni d'azione (per cambiargli il testo dinamicamente)
+	wxStaticText* m_lblRep;
+
+	// Eventi interni alla finestra
+	void OnGara(wxCommandEvent& event);
+	void OnEsci(wxCommandEvent& event);
+	void OnChiama(wxCommandEvent& event);
 	void AggiornaInterfaccia();
 };
 

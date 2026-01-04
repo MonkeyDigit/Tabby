@@ -113,6 +113,10 @@ void DlgScooter::AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxStr
 	sizer->Add(valueBox, 0, wxALIGN_RIGHT);
 }
 
+void DlgScooter::AggiornaInterfaccia()
+{
+}
+
 // SCUOLA
 DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Scuola", wxDefaultPosition, wxDefaultSize },
@@ -262,6 +266,73 @@ void DlgScuola::AggiornaInterfaccia()
 	this->Layout();
 }
 
+DlgCompagnia::DlgCompagnia(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Scuola", wxDefaultPosition, wxDefaultSize },
+	m_game{ game }
+{
+	this->SetFont(parent->GetFont());
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(200,150), wxBORDER_SUNKEN };
+	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
+	wxPanel* pnlButtons = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
+	wxPanel* pnlInfoOk = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerInfoOk = new wxBoxSizer{ wxHORIZONTAL };
+
+	// TODO: foto
+	pnlFoto->SetSizer(sizerFoto);
+	mainSizer->Add(pnlFoto, wxALL, 5);
+
+	// Bottoni
+	wxButton* btnGara = new wxButton{ pnlButtons, wxID_ANY, "Gareggia con lo Scooter" };
+	wxButton* btnEsci = new wxButton{ pnlButtons, wxID_ANY, "Esci con la Compagnia" };
+	wxButton* btnChiama = new wxButton{ pnlButtons, wxID_ANY, "Chiama la Compagnia" };
+
+	btnGara->Bind(wxEVT_BUTTON, &DlgCompagnia::OnGara, this);
+	btnEsci->Bind(wxEVT_BUTTON, &DlgCompagnia::OnEsci, this);
+	btnChiama->Bind(wxEVT_BUTTON, &DlgCompagnia::OnChiama, this);
+
+	sizerButtons->Add(btnGara, 0, wxALL, 5);
+	sizerButtons->Add(btnEsci, 0, wxALL, 5);
+	sizerButtons->Add(btnChiama, 0, wxALL, 5);
+
+	pnlButtons->SetSizer(sizerButtons);
+	mainSizer->Add(pnlButtons, wxALL, 5);
+	// TODO: info e ok
+	pnlInfoOk->SetSizer(sizerInfoOk);
+	mainSizer->Add(pnlInfoOk, wxALL, 5);
+
+	this->SetSizerAndFit(mainSizer);
+}
+
+void DlgCompagnia::OnGara(wxCommandEvent& event)
+{
+	m_game.AzioneGara();
+	ManifestaEventi(this, m_game);
+	this->EndModal(wxID_ANY);
+}
+
+void DlgCompagnia::OnEsci(wxCommandEvent& event)
+{
+	m_game.AzioneEsci();
+	ManifestaEventi(this, m_game);
+	this->EndModal(wxID_ANY);
+
+}
+
+void DlgCompagnia::OnChiama(wxCommandEvent& event)
+{
+	m_game.AzioneChiama();
+	ManifestaEventi(this, m_game);
+	this->EndModal(wxID_ANY);
+}
+
+void DlgCompagnia::AggiornaInterfaccia()
+{
+}
+
+
 // TODO: ICONA INFO
 DlgEvento::DlgEvento(wxWindow* parent, EventoDati& eventoDati)
 	: wxDialog{ parent, wxID_ANY, eventoDati.m_titolo, wxDefaultPosition, wxDefaultSize, wxCAPTION | wxSTAY_ON_TOP }	// Stile: CAPTION (barra titolo) ma niente tasto X (CLOSE_BOX) così l'utente è obbligato a premere i bottoni
@@ -315,7 +386,5 @@ DlgEvento::DlgEvento(wxWindow* parent, EventoDati& eventoDati)
 	}
 
 	mainSizer->Add(btnSizer, 0, wxALIGN_CENTER | wxBOTTOM, 5);
-
 	this->SetSizerAndFit(mainSizer);
-
 }

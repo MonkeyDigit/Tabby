@@ -32,6 +32,7 @@ public:
 	// Restituisce true se l'acquisto avviene con successo
 	bool SpendiSoldi(long long importo);
 	void GuadagnaSoldi(long long importo);
+	void ResetSoldiDelta() { m_soldiDelta = 0; };	// E' solo un dato informativo...
 	void CalcolaStudio();
 	void SetFortuna(int fortuna);
 	void IncSizze(int numSizze);

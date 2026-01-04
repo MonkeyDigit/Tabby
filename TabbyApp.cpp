@@ -260,11 +260,14 @@ void TabbyFrame::AggiornaInterfaccia()
 	{
 		m_lblSoldiDelta->SetLabel("+" + m_game.GetSoldiStr(delta));
 		m_lblSoldiDelta->SetForegroundColour(wxColor(0, 150, 0)); // Verde scuro
+		m_game.GetTabbyGuy().ResetSoldiDelta();
+
 	}
 	else if (delta < 0)
 	{
 		m_lblSoldiDelta->SetLabel(m_game.GetSoldiStr(delta));
 		m_lblSoldiDelta->SetForegroundColour(wxColor(200, 0, 0)); // Rosso
+		m_game.GetTabbyGuy().ResetSoldiDelta();
 	}
 	else
 		m_lblSoldiDelta->SetLabel("");

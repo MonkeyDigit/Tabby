@@ -8,7 +8,7 @@ EventoDati::EventoDati(TipoEvento tipo, int id, std::string titolo, std::string 
 {}
 
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
-	: m_tabbyGuy{}, m_date{1991, 9, 16}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 0 }
+	: m_tabbyGuy{}, m_date{1991, 12, 21}, m_valutaCorrente{Valuta::EURO}, m_coolDownPestaggio{ 0 }, m_tipoGiorno{ TipoGiorno::NORMALE }
 {
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
     // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
@@ -75,10 +75,23 @@ void TabbyGame::NuovoGiorno()
     GestioneEventiCasuali();    // Il dado del destino...
 }
 
-// TODO: RENDI MODULARE???
+const std::vector<FestaFissa> feste = {
+    {1, 1, "Capodanno", "Oggi è Capodanno!"},
+    {6, 1, "Epifania", "Tutte le feste si porta via..."},
+    {25, 4, "Anniversario Liberazione", "Oggi mi sento liberato"},
+    {1, 5, "Festa dei Lavoratori", "Nonostante nella tua vita tu non faccia nulla, oggi fai festa anche tu..."},
+    {15, 8, "Ferragosto", "Tutti al mare!"},
+    {1, 11, "Tutti i Santi", "Figata, oggi è vacanza..."},
+    {7, 12, "Sant'Ambrogio", "Visto che siamo a Milano, oggi facciamo festa"},
+    {8, 12, "Immacolata Concezione", "Oggi è festa"},
+    {25, 12, "Natale", "Buon Natale !!!"},
+    {26, 12, "Santo Stefano", "Buon Santo Stefano..."}
+};
+
 void TabbyGame::AvanzaCalendario()
 {
     m_date.AddDay(1);
+    m_tipoGiorno = TipoGiorno::NORMALE;
     
     if (Chrono::leapYear(m_date.GetYear()) &&
         m_date.GetMonth() == Chrono::Month::feb &&
@@ -87,6 +100,8 @@ void TabbyGame::AvanzaCalendario()
         EventoDati ev{ TipoEvento::INFO, 0, "Anno Bisesto", "Anno bisesto, anno funesto...", "" };
         PushEvento(ev);
     }
+
+    // TODO: abbronzatura
 
     // ---------------> S T I P E N D I O <---------------
 
@@ -134,7 +149,8 @@ void TabbyGame::AvanzaCalendario()
     case Chrono::Month::jan:    // Gennaio
         if (m_date.GetDay() < 7)
         {
-            // TODO: Cos'è sta roba x vacanza
+            m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
+            // TODO: tipa vestita da babbo natale
         }
         break;
 
@@ -154,22 +170,20 @@ void TabbyGame::AvanzaCalendario()
                 // TODO: Qua va fatta una roba speciale
             }
 
-            // TODO: roba vacanza
+            m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
         }
         break;
 
     case Chrono::Month::jul:    // Luglio
     case Chrono::Month::aug:    // Agosto
-        // TODO: roba vacanza
-        // TODO: roba tipa
+        m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
+        // TODO: Tipa al mare
         break;
 
     case Chrono::Month::sep:    // Settembre
 
         if (m_date.GetDay() < 15)
-        {
-            // TODO: Roba vacanza
-        }
+            m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
 
         if (m_date.GetDay() == 15)
         {
@@ -183,7 +197,7 @@ void TabbyGame::AvanzaCalendario()
     case Chrono::Month::dec:    // Dicembre
         if (m_date.GetDay() > 22)
         {
-            // TODO: Roba vacanza
+            m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
             // TODO: Roba tipa
 
             if (m_date.GetDay() == 25)
@@ -207,31 +221,22 @@ void TabbyGame::AvanzaCalendario()
     // TODO: vacanze tipo 2
     // Domeniche e festività varie
     if (m_date.GetWeekDay() == Chrono::WeekDay::sunday)
-    {
-        // TODO: vacanza = 2 ?
-    }
+        m_tipoGiorno = TipoGiorno::FESTIVO;
 
-    // TODO: if natale
-    // TODO: Dialog infovacanze
-    /*
-    if (natale2 == 0)
+    // Cicla eventi delle feste fisse
+    for (const auto& festa : feste)
     {
-        int a = 0;
-        while (InfoVacanze[a].giorno != 0)
+        if (m_date.GetMonth() == (Chrono::Month)festa.m_mese && m_date.GetDay() == festa.m_giorno)
         {
-            if (InfoVacanze[a].mese == x_mese)
-                if (InfoVacanze[a].giorno == x_giorno)
-                {
-                    MessageBox(hInstance,
-                               InfoVacanze[a].descrizione,
-                               InfoVacanze[a].nome, MB_OK | MB_ICONINFORMATION);
-
-                    x_vacanza = 2; // 2 = sono chiusi anche i negozi...
-                }
-                a++;
+            m_tipoGiorno = TipoGiorno::FESTIVO;
+            // Genera l'evento popup
+            EventoDati ev;
+            ev.m_tipo = TipoEvento::INFO;
+            ev.m_titolo = festa.m_nome;
+            ev.m_testo = festa.m_messaggio;
+            PushEvento(ev);
         }
     }
-    */
 
     // TODO: DEBUG
 }
@@ -470,7 +475,7 @@ void TabbyGame::GestioneEventiCasuali()
         else if (31 <= caso && caso <= 40)   // Skuola
         {
             // Durante i giorni di vacanza non ci sono eventi riguardanti la scuola
-            if (!CheckVacanza())
+            if (m_tipoGiorno == TipoGiorno::NORMALE)
             {
                 rnd = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size() - 1);
 
@@ -599,11 +604,6 @@ void TabbyGame::GestioneEventiCasuali()
             }
         }
     }
-}
-
-bool TabbyGame::CheckVacanza()
-{
-    return false;
 }
 
 bool TabbyGame::PollEvento(EventoDati& outEvento)

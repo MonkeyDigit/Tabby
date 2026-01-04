@@ -29,6 +29,19 @@ struct EventoDati {
 	std::string m_immagine;	// Nome del file immagine
 };
 
+enum class TipoGiorno {
+	NORMALE,        // Scuola aperta, Negozi aperti
+	VACANZA_SCUOLA, // Scuola chiusa, Negozi aperti - Es. Estate
+	FESTIVO         // Tutto chiuso - Es. Domenica o Natale
+};
+
+struct FestaFissa {
+	int m_giorno;
+	int m_mese;
+	std::string m_nome;
+	std::string m_messaggio;
+};
+
 class TabbyGame
 {
 public:
@@ -60,6 +73,7 @@ private:
 	Valuta m_valutaCorrente;
 	int m_coolDownPestaggio;
 	std::vector<EventoDati> m_codaEventi;
+	TipoGiorno m_tipoGiorno;
 	// IL MOTORE DI NUMERI CASUALI
 	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile
 	std::mt19937 m_rng;
@@ -74,9 +88,7 @@ private:
 	void GestioneRelazioni();   // Tipa, amici, famiglia
 	void GestioneLavoro();      // Licenziamento, impegno
 	void GestioneEconomia();    // Paghetta, stipendio
-	void GestioneEventiCasuali(); // Il "Generatore di Caos"
-	// TODO: fai direttamente una funzione di gestione del tempo, in cui dentro metti cambio valuta
-	bool CheckVacanza();
+	void GestioneEventiCasuali(); // Il generatore di caos
 
 	// LOGICA MONETARIA
 	// Controlla se è il 2002...

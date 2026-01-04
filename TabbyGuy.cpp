@@ -40,7 +40,7 @@ bool TabbyGuy::SpendiSoldi(long long importo)
 		return false;
 
 	m_soldi -= importo;
-	m_soldiDelta = -importo;
+	m_soldiDelta -= importo;
 	return true;
 }
 
@@ -49,7 +49,7 @@ void TabbyGuy::GuadagnaSoldi(long long importo)
 	if (importo > 0)
 	{
 		m_soldi += importo;
-		m_soldiDelta = importo;
+		m_soldiDelta += importo;
 	}
 }
 

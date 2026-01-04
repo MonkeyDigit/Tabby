@@ -8,7 +8,7 @@ EventoDati::EventoDati(TipoEvento tipo, int id, std::string titolo, std::string 
 {}
 
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
-	: m_tabbyGuy{}, m_date{1991, 12, 21}, m_valutaCorrente{Valuta::EURO}, m_coolDownPestaggio{ 0 }, m_tipoGiorno{ TipoGiorno::NORMALE }
+	: m_tabbyGuy{}, m_date{1991, 9, 16}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 0 }, m_tipoGiorno{ TipoGiorno::NORMALE }
 {
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
     // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
@@ -48,6 +48,82 @@ static std::string formattaConPunti(long long numero)
     }
 
     return s;
+}
+
+// TITOLO: Vieni pestato
+static const std::vector<std::string> frasiMetallari = {
+    "Cerchi la rissa con un metallaro che passa in {LUOGO} e lui ti spacca tutte le ossa.",
+    "Incontri un metallaro in {LUOGO}, lo minacci e lui ti spacca tutte le ossa.",
+    "Insulti un gruppo di metallari che passano in {LUOGO} e uno di questi ti spacca le ossa",
+    "Mentre cammini per {LUOGO} cerchi la rissa con un metallaro e lui ti spacca tutte le ossa",
+    "Cerchi la rissa con un metallaro e lui ti spacca tutte le osse"
+};
+// TODO: TITOLO: Fai incazzare un manovale
+// Senza un preciso motivo, prendi per il culo un manovale che, essendo privo di senso dell'umorismo, ti fa a pezzi.
+
+// In TabbyGame.cpp -> GestioneEventiCasuali
+
+static const std::vector<std::string> vie = {
+    "Via Lorenteggio",
+    "Corso Vercelli",
+    "Viale Papiniano",
+    "Via Forze Armate",
+    "Via Pontaccio",
+    "Via Padova",
+    "Via Porpora",
+    "Corso Buenos Aires",
+    "Viale Monza",
+    "Via Leoncavallo",
+    "Via Bagarotti",
+    "Via Viterbo",
+    "Via Fratelli Zoia",
+    "Via dei Ciclamini",
+    "Via Bassi",
+    "Viale Monte Ceneri",
+    "Viale Certosa",
+    "Via Lamarmora",
+    "Corso XII Marzo",
+    "Viale dei Mille",
+    "Via Goldoni",
+    "Via Melchiorre Gioia",
+    "Corso Lodi",
+    "Viale Umbria",
+    "Viale Puglie",
+    "Via Tertulliano",
+    "Viale Cassala",
+    "Viale Liguria",
+    "Viale Beatrice D'Este",
+    "Viale Filippetti",
+    "Viale Toscana",
+    "Viale Famagosta",
+    "Via La Spezia",
+    "Via Giambellino",
+    "Via Inganni",
+    "Via Savona",
+    "Viale Lomellina",
+    "Via Galileo Galilei",
+    "Viale Faenza",
+    "Viale Jenner",
+    "Via Fiuggi",
+    "Via Imbonati",
+    "Via Pio II",
+    "Viale Tunisia",
+    "Via Pergolesi",
+    "Via Sammartini",
+    "Via Primaticcio",
+    "Via Archimede",
+    "Corso Venezia",
+    "Via Karl Marx"
+};
+
+// Funzione Helper: Cerca 'tag' dentro 'testo' e lo sostituisce con 'valore'
+static std::string Sostituisci(std::string testo, const std::string& tag, const std::string& valore)
+{
+    size_t pos = testo.find(tag);
+    if (pos != std::string::npos) {
+        testo.replace(pos, tag.length(), valore);
+    }
+    return testo; // Ritorna la stringa modificata
 }
 
 int TabbyGame::GenRandomInt(int min, int max)
@@ -218,7 +294,6 @@ void TabbyGame::AvanzaCalendario()
         }
     }
 
-    // TODO: vacanze tipo 2
     // Domeniche e festività varie
     if (m_date.GetWeekDay() == Chrono::WeekDay::sunday)
         m_tipoGiorno = TipoGiorno::FESTIVO;
@@ -393,7 +468,6 @@ void TabbyGame::GestioneEventiCasuali()
 {
     // Eventi casuali
     int caso = GenRandomInt(0, (100 + m_tabbyGuy.GetFortuna() * 2) - 1);
-    int rnd{};
     // TODO: DEBUG
 
     if (caso < 51)
@@ -404,13 +478,11 @@ void TabbyGame::GestioneEventiCasuali()
             // TODO: FEMMINA
 
             m_tabbyGuy.DecRep(caso);
+            int rndFrase = GenRandomInt(1, frasiMetallari.size()) - 1;
+            int rndVia = GenRandomInt(1, vie.size()) - 1;
 
-            // TODO: FINESTRA PESTAGGIO METALLONE
-            EventoDati ev{ TipoEvento::INFO, 0, "Vieni pestato", "[messaggio]", "" };
+            EventoDati ev{ TipoEvento::INFO, 0, "Vieni pestato", Sostituisci(frasiMetallari[rndFrase],"{LUOGO}", vie[rndVia]), ""};
             PushEvento(ev);
-
-            rnd = GenRandomInt(100, 105);
-
             // TODO: DEBUG
 
             m_coolDownPestaggio = 5;
@@ -477,7 +549,7 @@ void TabbyGame::GestioneEventiCasuali()
             // Durante i giorni di vacanza non ci sono eventi riguardanti la scuola
             if (m_tipoGiorno == TipoGiorno::NORMALE)
             {
-                rnd = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size() - 1);
+                int rnd = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size() - 1);
 
                 // TODO: Dialog scuola random
                 EventoDati ev{ TipoEvento::INFO, 0, "Scuola", "[messaggio]", "" };

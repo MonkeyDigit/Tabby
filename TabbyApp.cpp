@@ -17,6 +17,9 @@
 // TODO: metti const per le pass by reference
 // TODO: wxString format o stringstream
 // TODO: msg sborsa spilla investi. e io pago!
+// TODO: Ottimizza rnd delle finestre (obsoleto)
+// TODO: METTI I PUNTI
+// TODO: SPOSTA TUTTI I VETTORI DI STRINGHE E DIALOGHI IN UN HEADER DEDICATO
 
 bool TabbyApp::OnInit()
 {

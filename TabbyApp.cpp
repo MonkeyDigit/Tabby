@@ -5,19 +5,14 @@
 // TODO: fai reperire la merda dai file, anche per i salvataggi
 // TODO: AGGIUNGI MESS COMPLEANNO
 // TODO: SISTEMA COMMENTI
-// TODO: SISTEMA DI CONVERSIONE DENARO con %.2f o cast a intero per le lire
 // TODO: EVENTO DI GIOCO: il 1° gennaio 2002 sotto il governo Berlusca viene introdotta la moneta FISICA dell'euro in italia
 // TODO: MECCANICHE FUTURE: con l'avanzamento tecnologico, escono nuove robe. + investimenti in borsa, crypto, per per arricchirsi...
 // TODO: La scuola la fa per 5 anni poi va a lavorare e investire in borsa???
-// TODO: NON PUOI ANDARE A SCUOLA LA DOMENICA E NELLE VACANZE
-// TODO: Freccia colorata per sapere se i soldi sono aumentati o diminuiti
 // TODO: SISTEMA BEST PRACTICE
 // TODO: Attento ai range dei vettori nei random
 // TODO: FAI FUNZIONI ISOLATE per la roba degli eventi
 // TODO: metti const per le pass by reference
-// TODO: wxString format o stringstream
 // TODO: msg sborsa spilla investi. e io pago!
-// TODO: Ottimizza rnd delle finestre (obsoleto)
 // TODO: METTI I PUNTI
 // TODO: SPOSTA TUTTI I VETTORI DI STRINGHE E DIALOGHI IN UN HEADER DEDICATO
 // TODO: cosa cambia con setsizer and fit
@@ -342,7 +337,10 @@ void TabbyFrame::OnCompagnia(wxCommandEvent& event)
 
 void TabbyFrame::OnFamiglia(wxCommandEvent& event)
 {
-
+	DlgFamiglia dlg{ this, m_game };
+	dlg.Centre();
+	dlg.ShowModal();
+	this->AggiornaInterfaccia();
 }
 
 void TabbyFrame::OnTipa(wxCommandEvent& event)

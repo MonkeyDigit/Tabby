@@ -50,8 +50,6 @@ public:
 	DlgCompagnia(wxWindow* parent, TabbyGame& game);
 private:
 	TabbyGame& m_game;	// Il riferimento al motore di gioco
-	int m_materiaIndex;
-	std::vector<wxStaticText*> m_lblVoti;
 
 	// I puntatori ai bottoni d'azione (per cambiargli il testo dinamicamente)
 	wxStaticText* m_lblRep;
@@ -62,6 +60,22 @@ private:
 	void OnChiama(wxCommandEvent& event);
 	void AggiornaInterfaccia();
 };
+
+class DlgFamiglia : public wxDialog {
+public:
+	DlgFamiglia(wxWindow* parent, TabbyGame& game);
+private:
+	TabbyGame& m_game;	// Il riferimento al motore di gioco
+	wxStaticText* m_lblSoldi;
+	wxStaticText* m_lblPaghetta;
+
+	// Eventi interni alla finestra
+	void OnAumentoPaghetta(wxCommandEvent& event);
+	void OnSoldiExtra(wxCommandEvent& event);
+	void OnChiediSoldi(wxCommandEvent& event);
+	void AggiornaInterfaccia();
+};
+
 
 class DlgEvento : public wxDialog {
 public:

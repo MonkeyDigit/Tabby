@@ -11,7 +11,8 @@ EventoDati::EventoDati(TipoEvento tipo, int id, std::string titolo, std::string 
 {}
 
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
-	: m_tabbyGuy{}, m_date{1991, 9, 16}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 5 }, m_tipoGiorno{ TipoGiorno::NORMALE }
+	: m_tabbyGuy{}, m_date{1991, 9, 16}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 5 }, m_tipoGiorno{ TipoGiorno::NORMALE },
+        m_attesa{ATTESA_MAX}
 {
     WriteLog("\n=== AVVIO TABBY - LOG SESSIONE ===");
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
@@ -78,8 +79,12 @@ void TabbyGame::NuovoGiorno()
     // Il tempo scorre inesorabilmente...
     AvanzaCalendario();
 
+    // TODO: dec pestaggio??
     if (m_coolDownPestaggio > 0)
         m_coolDownPestaggio--;
+
+    if (m_attesa > 0)
+        m_attesa--;
 
     // Chiamata ai reparti
     GestioneConsumi();
@@ -110,7 +115,7 @@ void TabbyGame::AvanzaCalendario()
     {
         m_tabbyGuy.IncGiorniLavoro(1);
 
-        if (m_date.GetDay() == GIORNO_STIPENDIO)
+        if (m_date.GetDay() == 27)
         {
             long stipendietto{};  // Stipendio calcolato secondo i giorni effettivi di lavoro
 
@@ -437,6 +442,7 @@ void TabbyGame::GestioneEventiCasuali()
 
                 if (caso < 17)
                 {
+                    // TODO: messaggio camionista
                     m_tabbyGuy.GetScooter().DecStato(35);
                     EventoDati ev{ TipoEvento::INFO, 0, "Camionista bastardo", "[messaggio]", "" };
                     PushEvento(ev);
@@ -446,6 +452,7 @@ void TabbyGame::GestioneEventiCasuali()
                 }
                 else
                 {
+                    // TODO: messaggio muro
                     m_tabbyGuy.GetScooter().DecStato(20);
                     EventoDati ev{ TipoEvento::INFO, 0, "Muro bastardo", "[messaggio]", "" };
                     PushEvento(ev);
@@ -690,6 +697,72 @@ void TabbyGame::AzioneEsci()
 void TabbyGame::AzioneChiama()
 {
     m_tabbyGuy.IncRep(1);
+    NuovoGiorno();
+}
+
+void TabbyGame::AzioneAumentoPaghetta()
+{
+    if (m_tabbyGuy.GetStudio() > 40)
+    {
+        if (((m_tabbyGuy.GetStudio() - m_tabbyGuy.GetPaghetta() + m_tabbyGuy.GetFortuna()) > (100 + GenRandomInt(0, 50)) && (m_tabbyGuy.GetPaghetta() < 50)))
+        {
+            EventoDati ev{ TipoEvento::INFO, -1, "Aumento Paghetta !", "Va bene... ti daremo " + GetSoldiStr(5) + " di paghetta in più...", "" };
+            PushEvento(ev);
+            m_tabbyGuy.IncPaghetta(5);
+            // TODO: RICORDA DI RESETTARE
+        }
+        else
+        {
+            EventoDati ev{ TipoEvento::INFO, -1, "Errore irrecuperabile", "Vedi di scordartelo... Dovrà passare molto tempo prima che ti venga aumentata la paghetta...", "" };
+            PushEvento(ev);
+        }
+
+        NuovoGiorno();
+    }
+    else
+    {
+        EventoDati ev{ TipoEvento::INFO, -1, "Errore irrecuperabile", "Quando andrai meglio a scuola, forse...", "" };
+        PushEvento(ev);
+    }
+}
+
+void TabbyGame::AzioneSoldiExtra()
+{
+    // TODO: DEFINISCI ATTESA 
+    if (m_tabbyGuy.GetStudio() >= 40)
+    {
+        if (m_attesa == 0)
+        {
+            m_attesa = ATTESA_MAX;
+            m_tabbyGuy.GuadagnaSoldi(10);
+
+            // DEBUG LOG
+            WriteLog("AzioneSoldiExtra: Soldi extra (" + GetSoldiStr(10) + ")");
+        }
+        else
+        {
+            EventoDati ev{ TipoEvento::INFO, -1, "Non te li diamo, viziato", "Ma insomma ! Non puoi continuamente chiedere soldi ! Aspetta ancora qualche giorno. Fai qualche cosa di economico nel frattempo...", "" };
+            PushEvento(ev);
+        }
+
+        NuovoGiorno();
+    }
+    else
+    {
+        EventoDati ev{ TipoEvento::INFO, -1, "Errore irrecuperabile", 
+            "Quando andrai meglio a scuola potrai tornare a chiederci dei soldi, non ora. "
+            "\nMa non lo sai che per la tua vita è importante studiare, e dovresti impegnarti "
+            "di più, perchè quando ti impegni i risultati si vedono, solo che sei svogliato "
+            "e non fai mai nulla, mi ricordo che quando ero giovane io era tutta un altra cosa..."
+            "allora sì che i giovani studiavano...", "" };
+        PushEvento(ev);
+    }
+}
+
+void TabbyGame::AzioneChiediSoldi()
+{
+    EventoDati ev{ TipoEvento::INFO, -1, "Errore irrecuperabile", "Non pensarci neanche lontanamente...", "" };
+    PushEvento(ev);
     NuovoGiorno();
 }
 

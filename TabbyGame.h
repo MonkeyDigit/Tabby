@@ -6,9 +6,22 @@
 // Per attivare il debug
 #define TABBY_DEBUG
 constexpr float CAMBIO_EURO_LIRA = 1936.27;
-constexpr int GIORNO_STIPENDIO = 27;
+constexpr int ATTESA_MAX = 7;
 
 // TODO: Data del compleanno
+// TODO: Calcola sesso
+// TODO: Reset me con anagrafica random
+// TODO: Init tabby con salvataggio
+// TODO: Fine programma
+// TODO: About
+// TODO: Logo
+// TODO: Spegnimi
+// TODO: Configuration
+// TODO: Personal info
+// TODO: Famiglia
+// TODO: Compagnia
+// TODO: No money
+
 
 // Sotto il cofano, i soldi di tabby e in generale il sistema monetario del gioco, viene gestito di base come euro, ma in base alla data sono messe a disposizione delle funzione per effettuare la conversione in lire, che fanno da "maschera"
 enum class Valuta { LIRE, EURO };
@@ -66,6 +79,10 @@ public:
     void AzioneGara();
     void AzioneEsci();
     void AzioneChiama();
+    // Famiglia
+    void AzioneAumentoPaghetta();
+    void AzioneSoldiExtra();
+    void AzioneChiediSoldi();
 
 	// Stringa formattata (es. "1.000 L." o "5 €")
 	std::string GetSoldiStr(long long valoreBase) const;
@@ -80,6 +97,7 @@ private:
 	Chrono::Date m_date;
 	Valuta m_valutaCorrente;
 	int m_coolDownPestaggio;
+    int m_attesa;
 	std::vector<EventoDati> m_codaEventi;
 	TipoGiorno m_tipoGiorno;
 	// IL MOTORE DI NUMERI CASUALI

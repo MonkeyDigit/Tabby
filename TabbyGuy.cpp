@@ -53,6 +53,12 @@ void TabbyGuy::GuadagnaSoldi(long long importo)
 	}
 }
 
+void TabbyGuy::IncPaghetta(long long importo)
+{
+	if (importo > 0)
+		m_paghetta += importo;
+}
+
 void TabbyGuy::CalcolaStudio()
 {
 	m_studio = 0;

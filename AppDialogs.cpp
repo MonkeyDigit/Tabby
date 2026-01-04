@@ -86,8 +86,7 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(leftCol, 0, wxEXPAND | wxALL, 5);
 	mainSizer->Add(rightCol, 0, wxEXPAND | wxALL, 5);
 
-	this->SetSizer(mainSizer);
-	this->Fit();
+	this->SetSizerAndFit(mainSizer);
 }
 
 void DlgScooter::OnConcessionario(wxCommandEvent& event)
@@ -209,8 +208,7 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 
 	mainSizer->Add(pnlRepOk, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 
-	this->SetSizer(mainSizer);
-	this->Fit();
+	this->SetSizerAndFit(mainSizer);
 	this->AggiornaInterfaccia();
 }
 
@@ -267,13 +265,14 @@ void DlgScuola::AggiornaInterfaccia()
 }
 
 DlgCompagnia::DlgCompagnia(wxWindow* parent, TabbyGame& game)
-	: wxDialog{ parent, wxID_ANY, "Scuola", wxDefaultPosition, wxDefaultSize },
+	: wxDialog{ parent, wxID_ANY, "Compagnia", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }
 {
 	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 
-	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(200,150), wxBORDER_SUNKEN };
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(300, 200), wxBORDER_SUNKEN};
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
 	wxPanel* pnlButtons = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
@@ -282,12 +281,12 @@ DlgCompagnia::DlgCompagnia(wxWindow* parent, TabbyGame& game)
 
 	// TODO: foto
 	pnlFoto->SetSizer(sizerFoto);
-	mainSizer->Add(pnlFoto, wxALL, 5);
+	mainSizer->Add(pnlFoto, 0, wxEXPAND | wxALL, 5);
 
 	// Bottoni
-	wxButton* btnGara = new wxButton{ pnlButtons, wxID_ANY, "Gareggia con lo Scooter" };
-	wxButton* btnEsci = new wxButton{ pnlButtons, wxID_ANY, "Esci con la Compagnia" };
-	wxButton* btnChiama = new wxButton{ pnlButtons, wxID_ANY, "Chiama la Compagnia" };
+	wxButton* btnGara = new wxButton{ pnlButtons, wxID_ANY, "Gareggia con lo Scooter", wxDefaultPosition, wxSize(300,-1) };
+	wxButton* btnEsci = new wxButton{ pnlButtons, wxID_ANY, "Esci con la Compagnia", wxDefaultPosition, wxSize(300,-1) };
+	wxButton* btnChiama = new wxButton{ pnlButtons, wxID_ANY, "Chiama la Compagnia", wxDefaultPosition, wxSize(300,-1) };
 
 	btnGara->Bind(wxEVT_BUTTON, &DlgCompagnia::OnGara, this);
 	btnEsci->Bind(wxEVT_BUTTON, &DlgCompagnia::OnEsci, this);
@@ -298,12 +297,20 @@ DlgCompagnia::DlgCompagnia(wxWindow* parent, TabbyGame& game)
 	sizerButtons->Add(btnChiama, 0, wxALL, 5);
 
 	pnlButtons->SetSizer(sizerButtons);
-	mainSizer->Add(pnlButtons, wxALL, 5);
-	// TODO: info e ok
+	mainSizer->Add(pnlButtons, 0, wxEXPAND | wxALL, 5);
+
+	// Info e ok
+	m_lblRep = new wxStaticText(pnlInfoOk, wxID_ANY, "---");
+	wxButton* btnOk = new wxButton{ pnlInfoOk, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) };;
+	sizerInfoOk->Add(m_lblRep, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	sizerInfoOk->AddStretchSpacer();
+	sizerInfoOk->Add(btnOk, 0, wxALL, 5);
+
 	pnlInfoOk->SetSizer(sizerInfoOk);
-	mainSizer->Add(pnlInfoOk, wxALL, 5);
+	mainSizer->Add(pnlInfoOk, 0, wxEXPAND | wxALL, 5);
 
 	this->SetSizerAndFit(mainSizer);
+	this->AggiornaInterfaccia();
 }
 
 void DlgCompagnia::OnGara(wxCommandEvent& event)
@@ -330,6 +337,8 @@ void DlgCompagnia::OnChiama(wxCommandEvent& event)
 
 void DlgCompagnia::AggiornaInterfaccia()
 {
+	m_lblRep->SetLabel(wxString::Format("Reputazione %d/100", m_game.GetTabbyGuy().GetRep()));
+	this->Layout();
 }
 
 
@@ -387,4 +396,82 @@ DlgEvento::DlgEvento(wxWindow* parent, EventoDati& eventoDati)
 
 	mainSizer->Add(btnSizer, 0, wxALIGN_CENTER | wxBOTTOM, 5);
 	this->SetSizerAndFit(mainSizer);
+}
+
+DlgFamiglia::DlgFamiglia(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Famiglia", wxDefaultPosition, wxDefaultSize },
+	m_game{ game }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+
+	wxPanel* pnlButtons = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
+	wxPanel* pnlInfoOk = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerInfoOk = new wxBoxSizer{ wxHORIZONTAL };
+
+	// Bottoni
+	wxButton* btnAumento = new wxButton{ pnlButtons, wxID_ANY, "Chiedi aumento paghetta", wxDefaultPosition, wxSize(600,-1) };
+	wxButton* btnSoldiExtra = new wxButton{ pnlButtons, wxID_ANY, "Chiedi soldi extra", wxDefaultPosition, wxSize(600,-1) };
+	wxButton* btnChiediSoldi = new wxButton{ pnlButtons, wxID_ANY, "Papà, mi dai " + m_game.GetSoldiStr(50) + " ?", wxDefaultPosition, wxSize(600,-1) };
+
+	btnAumento->Bind(wxEVT_BUTTON, &DlgFamiglia::OnAumentoPaghetta, this);
+	btnSoldiExtra->Bind(wxEVT_BUTTON, &DlgFamiglia::OnSoldiExtra, this);
+	btnChiediSoldi->Bind(wxEVT_BUTTON, &DlgFamiglia::OnChiediSoldi, this);
+
+	sizerButtons->Add(btnAumento, 0, wxTOP | wxRIGHT | wxLEFT, 5);
+	sizerButtons->Add(btnSoldiExtra, 0, wxRIGHT | wxLEFT, 5);
+	sizerButtons->Add(btnChiediSoldi, 0, wxRIGHT | wxLEFT | wxBOTTOM, 5);
+
+	pnlButtons->SetSizer(sizerButtons);
+	mainSizer->Add(pnlButtons, 0, wxEXPAND | wxALL, 5);
+
+	// Info e ok
+	m_lblSoldi = new wxStaticText(pnlInfoOk, wxID_ANY, "---");
+	m_lblPaghetta = new wxStaticText(pnlInfoOk, wxID_ANY, "---");
+	wxButton* btnOk = new wxButton{ pnlInfoOk, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) };
+
+	// Creiamo un sizer VERTICALE solo per le scritte
+	wxBoxSizer* sizerTesti = new wxBoxSizer{ wxVERTICAL };
+	sizerTesti->Add(m_lblSoldi, 0, wxBOTTOM, 2);
+	sizerTesti->Add(m_lblPaghetta, 0, wxTOP, 2);
+
+	// Ora aggiungiamo al sizer orizzontale principale del pannello
+	// 1. I testi (con proportion=1 così spingono l'OK a destra se serve)
+	sizerInfoOk->Add(sizerTesti, 1, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
+
+	// 2. Il bottone OK (fisso a destra)
+	sizerInfoOk->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+	pnlInfoOk->SetSizer(sizerInfoOk);
+	mainSizer->Add(pnlInfoOk, 0, wxEXPAND | wxALL, 5);
+
+	this->SetSizerAndFit(mainSizer);
+	this->AggiornaInterfaccia();
+}
+
+void DlgFamiglia::OnAumentoPaghetta(wxCommandEvent& event)
+{
+	m_game.AzioneAumentoPaghetta();
+	ManifestaEventi(this, m_game);
+}
+
+void DlgFamiglia::OnSoldiExtra(wxCommandEvent& event)
+{
+	m_game.AzioneSoldiExtra();
+	ManifestaEventi(this, m_game);
+}
+
+void DlgFamiglia::OnChiediSoldi(wxCommandEvent& event)
+{
+	m_game.AzioneChiediSoldi();
+	ManifestaEventi(this, m_game);
+}
+
+void DlgFamiglia::AggiornaInterfaccia()
+{
+	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()) + " >");
+	m_lblPaghetta->SetLabel("< Paghetta " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetPaghetta()) + " >");
+	this->Layout();
 }

@@ -34,6 +34,7 @@ private:
 	wxStaticText* m_lblRapportoTipa;
 	wxGauge* m_barTipa;
 	wxStaticText* m_lblSoldi;
+	wxStaticText* m_lblSoldiDelta;
 	wxStaticText* m_lblReputazione;
 	wxGauge* m_barRep;
 	wxStaticText* m_lblFigo;

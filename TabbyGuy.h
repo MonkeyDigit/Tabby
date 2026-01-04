@@ -49,6 +49,7 @@ public:
 	void ResetLavoro();
 
 	long long GetSoldi() const { return m_soldi; };
+	long long GetSoldiDelta() const { return m_soldiDelta; };
 	int GetRep() const { return m_rep; };
 	int GetFama() const { return m_fama; };
 	int GetStudio() const { return m_studio; };
@@ -75,6 +76,7 @@ public:
 private:
 	CartaIdentita m_identita;
 	long long m_soldi;			// intero a 64 bit (max 9 miliardi DI miliardi): il tabbozzo è rikko...
+	long long m_soldiDelta;		// Guadagno o perdita
 	int m_rep;
 	int m_fama;
 	int m_studio;

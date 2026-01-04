@@ -180,10 +180,17 @@ TabbyFrame::TabbyFrame()
 	gridStats->Add(btnFamiglia, wxGBPosition(3, 2), wxDefaultSpan, wxALL, 7);
 	
 	// Soldi
+	wxBoxSizer* sizerSoldiRow = new wxBoxSizer(wxHORIZONTAL);
 	m_lblSoldi = new wxStaticText{ pnlStats, wxID_ANY, "---" };
-	gridStats->Add(m_lblSoldi, wxGBPosition(5, 0), wxGBSpan(1, 3), wxEXPAND | wxALIGN_CENTER_HORIZONTAL | wxALL, 10);
+	// Soldi Delta - Singoli guadagni e perdite
+	m_lblSoldiDelta = new wxStaticText{ pnlStats, wxID_ANY, "---" };
+	m_lblSoldiDelta->SetFont(wxFont(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+	sizerSoldiRow->Add(m_lblSoldi, 0, wxALIGN_CENTER_VERTICAL);
+	sizerSoldiRow->AddSpacer(10); // Un po' di spazio tra il saldo e la variazione
+	sizerSoldiRow->Add(m_lblSoldiDelta, 0, wxALIGN_CENTER_VERTICAL);
+	gridStats->Add(sizerSoldiRow, wxGBPosition(5, 0), wxGBSpan(1, 3), wxALIGN_CENTER_HORIZONTAL | wxALL, 10);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(6,0), wxGBSpan(1,3), wxEXPAND);
-	
+
 	// Reputazione
 	m_lblReputazione = new wxStaticText{ pnlStats, wxID_ANY, "---" };
 	gridStats->Add(m_lblReputazione, wxGBPosition(7, 0), wxGBSpan(1,3), wxEXPAND | wxALL, 10);
@@ -247,6 +254,21 @@ void TabbyFrame::AggiornaInterfaccia()
 	m_lblRapportoTipa->SetLabel(wxString::Format("< Rapporto con la tipa %d/100 >", guy.GetRapporti()));
 	m_barTipa->SetValue(guy.GetRapporti());
 	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(guy.GetSoldi()) + " >");
+	// Delta soldi
+	long long delta = m_game.GetTabbyGuy().GetSoldiDelta();
+	if (delta > 0)
+	{
+		m_lblSoldiDelta->SetLabel("+" + m_game.GetSoldiStr(delta));
+		m_lblSoldiDelta->SetForegroundColour(wxColor(0, 150, 0)); // Verde scuro
+	}
+	else if (delta < 0)
+	{
+		m_lblSoldiDelta->SetLabel(m_game.GetSoldiStr(delta));
+		m_lblSoldiDelta->SetForegroundColour(wxColor(200, 0, 0)); // Rosso
+	}
+	else
+		m_lblSoldiDelta->SetLabel("");
+
 	m_lblReputazione->SetLabel(wxString::Format("< Reputazione %d/100 >", guy.GetRep()));
 	m_barRep->SetValue(guy.GetRep());
 	m_lblFigo->SetLabel(wxString::Format("< Figosità %d/100 >", guy.GetFama()));

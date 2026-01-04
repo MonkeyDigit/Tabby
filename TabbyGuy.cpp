@@ -1,10 +1,10 @@
 #include "TabbyGuy.h"
 
 TabbyGuy::TabbyGuy()
-	: m_soldi{ 0 }, m_rep{ 0 },
+	: m_soldi{ 10 }, m_soldiDelta{ 0 }, m_rep { 0 },
 	m_fama{ 0 }, m_studio{ 0 }, m_giorniLavoro{ 0 },
 	m_scooter{}, m_tipa{}, m_rapporti{ 0 }, m_stipendio{ 0 },
-	m_scuola{}, m_paghetta{ 15 }, m_testa{ 0 },
+	m_scuola{}, m_paghetta{ 20 }, m_testa{ 0 },
 	m_giubotto{ 0 }, m_pantaloni{ 0 }, m_impegno{ 0 },
 	m_scarpe{ 0 }, m_fortuna{ 0 }, m_sizze{ 0 }, m_numDitta{ 0 }
 {
@@ -36,17 +36,21 @@ void TabbyGuy::SetImpegno(int impegno)
 bool TabbyGuy::SpendiSoldi(long long importo)
 {	
 	// Con quali soldi...
-	if (importo > m_soldi)
+	if (importo < 0 || importo > m_soldi)
 		return false;
 
 	m_soldi -= importo;
+	m_soldiDelta = -importo;
 	return true;
 }
 
 void TabbyGuy::GuadagnaSoldi(long long importo)
 {
 	if (importo > 0)
+	{
 		m_soldi += importo;
+		m_soldiDelta = importo;
+	}
 }
 
 void TabbyGuy::CalcolaStudio()

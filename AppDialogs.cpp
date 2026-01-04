@@ -1,7 +1,6 @@
 #include "AppDialogs.h"
 
-// Funzione helper
-static void ManifestaEventi(wxWindow* parent, TabbyGame& game)
+void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 {
 	EventoDati evento;
 
@@ -213,24 +212,38 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 
 void DlgScuola::OnStudia(wxCommandEvent& event)
 {
-	m_game.AzioneStudia(m_materiaIndex);
-	ManifestaEventi(this, m_game);
-	this->AggiornaInterfaccia();
-	
+	if (m_game.TriggerScuola())
+	{
+		m_game.AzioneStudia(m_materiaIndex);
+		ManifestaEventi(this, m_game);
+		this->AggiornaInterfaccia();
+	}
+	else
+		ManifestaEventi(this, m_game);	
 }
 
 void DlgScuola::OnMinaccia(wxCommandEvent& event)
 {
-	m_game.AzioneMinaccia(m_materiaIndex);
-	ManifestaEventi(this, m_game);
-	this->AggiornaInterfaccia();
+	if (m_game.TriggerScuola())
+	{
+		m_game.AzioneMinaccia(m_materiaIndex);
+		ManifestaEventi(this, m_game);
+		this->AggiornaInterfaccia();
+	}
+	else
+		ManifestaEventi(this, m_game);
 }
 
 void DlgScuola::OnCorrompi(wxCommandEvent& event)
 {
-	m_game.AzioneCorrompi(m_materiaIndex);
-	ManifestaEventi(this, m_game);
-	this->AggiornaInterfaccia();
+	if (m_game.TriggerScuola())
+	{
+		m_game.AzioneCorrompi(m_materiaIndex);
+		ManifestaEventi(this, m_game);
+		this->AggiornaInterfaccia();
+	}
+	else
+		ManifestaEventi(this, m_game);
 }
 
 void DlgScuola::AggiornaInterfaccia()
@@ -263,7 +276,7 @@ DlgEvento::DlgEvento(wxWindow* parent, EventoDati& eventoDati)
 	wxStaticText* lblTesto = new wxStaticText{ this, wxID_ANY, evref.m_testo, wxDefaultPosition, wxSize(-1, -1), wxALIGN_LEFT };
 
 	// Manda a capo il testo automaticamente
-	lblTesto->Wrap(500);
+	lblTesto->Wrap(600);
 	mainSizer->Add(lblTesto, 1, wxALIGN_CENTER | wxALL, 15);
 
 	// Linea separatrice

@@ -50,72 +50,6 @@ static std::string formattaConPunti(long long numero)
     return s;
 }
 
-// TITOLO: Vieni pestato
-static const std::vector<std::string> frasiMetallari = {
-    "Cerchi la rissa con un metallaro che passa in {LUOGO} e lui ti spacca tutte le ossa.",
-    "Incontri un metallaro in {LUOGO}, lo minacci e lui ti spacca tutte le ossa.",
-    "Insulti un gruppo di metallari che passano in {LUOGO} e uno di questi ti spacca le ossa",
-    "Mentre cammini per {LUOGO} cerchi la rissa con un metallaro e lui ti spacca tutte le ossa",
-    "Cerchi la rissa con un metallaro e lui ti spacca tutte le osse"
-};
-// TODO: TITOLO: Fai incazzare un manovale
-// Senza un preciso motivo, prendi per il culo un manovale che, essendo privo di senso dell'umorismo, ti fa a pezzi.
-
-// In TabbyGame.cpp -> GestioneEventiCasuali
-
-static const std::vector<std::string> vie = {
-    "Via Lorenteggio",
-    "Corso Vercelli",
-    "Viale Papiniano",
-    "Via Forze Armate",
-    "Via Pontaccio",
-    "Via Padova",
-    "Via Porpora",
-    "Corso Buenos Aires",
-    "Viale Monza",
-    "Via Leoncavallo",
-    "Via Bagarotti",
-    "Via Viterbo",
-    "Via Fratelli Zoia",
-    "Via dei Ciclamini",
-    "Via Bassi",
-    "Viale Monte Ceneri",
-    "Viale Certosa",
-    "Via Lamarmora",
-    "Corso XII Marzo",
-    "Viale dei Mille",
-    "Via Goldoni",
-    "Via Melchiorre Gioia",
-    "Corso Lodi",
-    "Viale Umbria",
-    "Viale Puglie",
-    "Via Tertulliano",
-    "Viale Cassala",
-    "Viale Liguria",
-    "Viale Beatrice D'Este",
-    "Viale Filippetti",
-    "Viale Toscana",
-    "Viale Famagosta",
-    "Via La Spezia",
-    "Via Giambellino",
-    "Via Inganni",
-    "Via Savona",
-    "Viale Lomellina",
-    "Via Galileo Galilei",
-    "Viale Faenza",
-    "Viale Jenner",
-    "Via Fiuggi",
-    "Via Imbonati",
-    "Via Pio II",
-    "Viale Tunisia",
-    "Via Pergolesi",
-    "Via Sammartini",
-    "Via Primaticcio",
-    "Via Archimede",
-    "Corso Venezia",
-    "Via Karl Marx"
-};
-
 // Funzione Helper: Cerca 'tag' dentro 'testo' e lo sostituisce con 'valore'
 static std::string Sostituisci(std::string testo, const std::string& tag, const std::string& valore)
 {
@@ -150,19 +84,6 @@ void TabbyGame::NuovoGiorno()
     GestioneEconomia();
     GestioneEventiCasuali();    // Il dado del destino...
 }
-
-const std::vector<FestaFissa> feste = {
-    {1, 1, "Capodanno", "Oggi è Capodanno!"},
-    {6, 1, "Epifania", "Tutte le feste si porta via..."},
-    {25, 4, "Anniversario Liberazione", "Oggi mi sento liberato"},
-    {1, 5, "Festa dei Lavoratori", "Nonostante nella tua vita tu non faccia nulla, oggi fai festa anche tu..."},
-    {15, 8, "Ferragosto", "Tutti al mare!"},
-    {1, 11, "Tutti i Santi", "Figata, oggi è vacanza..."},
-    {7, 12, "Sant'Ambrogio", "Visto che siamo a Milano, oggi facciamo festa"},
-    {8, 12, "Immacolata Concezione", "Oggi è festa"},
-    {25, 12, "Natale", "Buon Natale !!!"},
-    {26, 12, "Santo Stefano", "Buon Santo Stefano..."}
-};
 
 void TabbyGame::AvanzaCalendario()
 {
@@ -478,10 +399,10 @@ void TabbyGame::GestioneEventiCasuali()
             // TODO: FEMMINA
 
             m_tabbyGuy.DecRep(caso);
-            int rndFrase = GenRandomInt(1, frasiMetallari.size()) - 1;
-            int rndVia = GenRandomInt(1, vie.size()) - 1;
+            int rndFrase = GenRandomInt(0, frasiMetallari.size() - 1);
+            int rndVia = GenRandomInt(0, vieStr.size() - 1);
 
-            EventoDati ev{ TipoEvento::INFO, 0, "Vieni pestato", Sostituisci(frasiMetallari[rndFrase],"{LUOGO}", vie[rndVia]), ""};
+            EventoDati ev{ TipoEvento::INFO, 0, "Vieni pestato", Sostituisci(frasiMetallari[rndFrase],"{LUOGO}", vieStr[rndVia]), ""};
             PushEvento(ev);
             // TODO: DEBUG
 
@@ -489,7 +410,6 @@ void TabbyGame::GestioneEventiCasuali()
         }
         else if (11 <= caso && caso <= 20)   // SCOOTER
         {
-            // TODO: perchè nell'originale c'è & ???
             if (m_tabbyGuy.GetScooter().GetStato() != -1 && m_tabbyGuy.GetScooter().GetAttivita() == 1)
             {
                 if (m_tabbyGuy.GetTelefono().GetStato() > -1)
@@ -538,8 +458,9 @@ void TabbyGame::GestioneEventiCasuali()
                 m_tabbyGuy.DecFama(5);
 
             m_tabbyGuy.DecFama(2);
-            // TODO: Dialog sei fortunato... random
-            EventoDati ev{ TipoEvento::INFO, 0, "Sei fortunato...", "[messaggio]", "" };
+
+            int rndFrase = GenRandomInt(0, frasiFortuna.size() - 1);
+            EventoDati ev{ TipoEvento::INFO, 0, "Sei fortunato...", frasiFortuna[rndFrase], ""};
             PushEvento(ev);
 
             // TODO: DEBUG
@@ -549,17 +470,16 @@ void TabbyGame::GestioneEventiCasuali()
             // Durante i giorni di vacanza non ci sono eventi riguardanti la scuola
             if (m_tipoGiorno == TipoGiorno::NORMALE)
             {
-                int rnd = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size() - 1);
-
-                // TODO: Dialog scuola random
-                EventoDati ev{ TipoEvento::INFO, 0, "Scuola", "[messaggio]", "" };
+                int rndMat = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size() - 1);
+                int rndFrase = GenRandomInt(0, frasiScuola.size() - 1);
+                Materia& mat = m_tabbyGuy.GetScuola().m_materie[rndMat];
+                EventoDati ev{ TipoEvento::INFO, 0, "Scuola", Sostituisci(frasiScuola[rndFrase],"{MATERIA}",mat.GetNome()), ""};
                 PushEvento(ev);
 
-                m_tabbyGuy.GetScuola().m_materie[rnd].DecVoto(2);
+                mat.DecVoto(2);
                 m_tabbyGuy.CalcolaStudio();
 
                 // TODO: DEBUG
-                // TODO: Scuola redraw
             }
         }
         else if (caso == 41 || caso == 42)  // Tipa - una tipa ci prova
@@ -572,8 +492,6 @@ void TabbyGame::GestioneEventiCasuali()
                 EventoDati ev{ TipoEvento::SCELTA, 0, "Qualcuno ti caga...", "Una tipa, di nome [nome] (Figosità [fama]), ci prova con te...\nCi stai ???", "" };
                 PushEvento(ev);
             }
-
-            // TODO: Dialog qualcuno ti caga...
 
             // TODO: if yes
             /*
@@ -696,6 +614,17 @@ void TabbyGame::ApplicaScelta(int idEvento, bool sceltaYes)
 
 }
 
+bool TabbyGame::TriggerScuola()
+{
+    if (m_tipoGiorno == TipoGiorno::NORMALE)
+        return true;
+
+    EventoDati ev{ TipoEvento::INFO, -1, "Scuola", "Non puoi andare a scuola in un giorno di vacanza!", "" };
+    PushEvento(ev);
+
+    return false;
+}
+
 void TabbyGame::AzioneStudia(int materiaIndex)
 {
     Materia& mat = m_tabbyGuy.GetScuola().m_materie[materiaIndex];
@@ -705,10 +634,6 @@ void TabbyGame::AzioneStudia(int materiaIndex)
         mat.IncVoto(1);
         m_tabbyGuy.CalcolaStudio();
         NuovoGiorno();
-    }
-    else
-    {
-        // TODO: MESSAGGIO
     }
 }
 
@@ -721,10 +646,6 @@ void TabbyGame::AzioneMinaccia(int materiaIndex)
         mat.DecVoto(2);
         m_tabbyGuy.CalcolaStudio();
         NuovoGiorno();
-    }
-    else
-    {
-        // TODO: MESSAGGIO
     }
 }
 

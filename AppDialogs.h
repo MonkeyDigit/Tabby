@@ -53,3 +53,6 @@ public:
 private:
 	// TODO: Roba
 };
+
+// Funzione helper
+void ManifestaEventi(wxWindow* parent, TabbyGame& game);

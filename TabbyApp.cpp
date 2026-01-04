@@ -309,10 +309,16 @@ void TabbyFrame::OnDisco(wxCommandEvent& event)
 }
 void TabbyFrame::OnScuola(wxCommandEvent& event)
 {
-	DlgScuola dlg{ this, m_game };
-	dlg.Centre();
-	dlg.ShowModal();
-	this->AggiornaInterfaccia();
+	if (m_game.TriggerScuola())
+	{
+		DlgScuola dlg{ this, m_game };
+		dlg.Centre();
+		dlg.ShowModal();
+		this->AggiornaInterfaccia();
+	}
+	else
+		ManifestaEventi(this, m_game);	// Dentro trigger scuola si controlla se è vacanza, e nel caso viene creato il dialog popup
+	
 }
 
 void TabbyFrame::OnNegozi(wxCommandEvent& event)

@@ -4,16 +4,20 @@ Materia::Materia(std::string nome)
 	: m_nome{nome}, m_voto{0}
 {}
 
-void Materia::IncVoto(int punti)
-{
-	m_voto += punti;
-	if (m_voto > 10) m_voto = 10;	// Clamping
+void Materia::IncVoto(int punti) {
+	if (punti > 0)
+	{
+		m_voto += punti;
+		if (m_voto > 10) m_voto = 10;
+	}
 }
 
-void Materia::DecVoto(int punti)
-{
-	m_voto -= punti;
-	if (m_voto < 0) m_voto = 0;	// Clamping
+void Materia::DecVoto(int punti) {
+	if (punti > 0)
+	{
+		m_voto -= punti;
+		if (m_voto < 0) m_voto = 0;
+	}
 }
 
 void Materia::SetVoto(int voto)

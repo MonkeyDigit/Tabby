@@ -545,7 +545,17 @@ DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
 
 void DlgLavoro::OnCercaLavoro(wxCommandEvent& event)
 {
-	m_game.AzioneCercaLavoro();
+	if (m_game.AzioneCercaLavoro())
+	{
+		// Chiediamo al CERVELLO (TabbyGame) quale lavoro esce per il nostro tabbozzo
+		// TODO: FARE REFERENCE?
+		const Ditta& ditta = m_game.ProponiDitta();
+		DlgOffertaLavoro dlg{ this, ditta };
+		dlg.Centre();
+		dlg.ShowModal();
+	}
+
+	// TODO: TOGLIERE ???
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
 }
@@ -595,8 +605,67 @@ void DlgLavoro::OnSciopera(wxCommandEvent& event)
 void DlgLavoro::AggiornaInterfaccia()
 {
 	TabbyGuy& guy = m_game.GetTabbyGuy();
-	m_lblDitta->SetLabel("Ditta: "+guy.GetDitta().GetNome());
-	m_lblImpegno->SetLabel("Impegno " + std::to_string(guy.GetImpegno()) + "/100");
-	m_lblStipendio->SetLabel("Stipendio: " + m_game.GetSoldiStr(guy.GetStipendio()));
+	std::string nomeDitta{};
+	if (guy.HaUnLavoro())
+		nomeDitta = ditte[guy.GetCarriera().GetIdDitta()].m_nome;
+
+	m_lblDitta->SetLabel("Ditta: " + nomeDitta);
+	m_lblImpegno->SetLabel("Impegno " + std::to_string(guy.GetCarriera().GetImpegno()) + "/100");
+	m_lblStipendio->SetLabel("Stipendio: " + m_game.GetSoldiStr(guy.GetCarriera().GetStipendio()));
 	m_lblSoldi->SetLabel("Soldi: " + m_game.GetSoldiStr(guy.GetSoldi()));
+}
+
+DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, const Ditta& ditta)
+	: wxDialog{ parent, wxID_ANY, "Annunci - Offerta di lavoro", wxDefaultPosition, wxDefaultSize,  wxCAPTION }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(*wxBLACK);
+	this->SetForegroundColour(*wxRED);
+
+	// TODO: Immagine e icona sotto
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(500,300), wxBORDER_SUNKEN };
+	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
+	// Foto
+	pnlFoto->SetSizer(sizerFoto);
+	mainSizer->Add(pnlFoto, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+
+	// Linea di separazione
+	mainSizer->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
+
+	// Descrizione
+	wxStaticText* lblNomeDitta = new wxStaticText(this, wxID_ANY, "Ditta: " + ditta.m_nome);
+	wxStaticText* lblSedeDitta = new wxStaticText(this, wxID_ANY, "Sede: " + ditta.m_sede);
+	wxStaticText* lblDesc = new wxStaticText(this, wxID_ANY, ditta.m_offerta.m_descrizione);
+	lblDesc->Wrap(600); // Manda a capo il testo se troppo lungo
+	mainSizer->Add(lblNomeDitta, 0, wxALL, 10);
+	mainSizer->Add(lblSedeDitta, 0, wxALL, 10);
+	mainSizer->Add(lblDesc, 0, wxALL, 10);
+
+	// Linea di separazione
+	mainSizer->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
+
+	// Bottoni
+	wxButton* btnAccetta = new wxButton{ this, wxID_ANY, ditta.m_offerta.m_accettaStr, wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnRifiuta = new wxButton{ this, wxID_ANY, ditta.m_offerta.m_rifiutaStr, wxDefaultPosition, wxSize(-1, 40) };
+
+	btnAccetta->Bind(wxEVT_BUTTON, &DlgOffertaLavoro::OnAccetta, this);
+	btnRifiuta->Bind(wxEVT_BUTTON, &DlgOffertaLavoro::OnRifiuta, this);
+
+	mainSizer->Add(btnAccetta, 0, wxEXPAND | wxTOP | wxRIGHT | wxLEFT, 10);
+	mainSizer->Add(btnRifiuta, 0, wxEXPAND | wxALL & ~wxTOP, 10);
+
+	this->SetSizerAndFit(mainSizer);
+}
+
+void DlgOffertaLavoro::OnAccetta(wxCommandEvent& event)
+{
+	// TODO: COMPLETA
+	this->EndModal(wxID_ANY);
+}
+
+void DlgOffertaLavoro::OnRifiuta(wxCommandEvent& event)
+{
+	// TODO: COMPLETA
+	this->EndModal(wxID_ANY);
 }

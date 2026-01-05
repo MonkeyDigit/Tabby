@@ -11,10 +11,13 @@ Messaggio::Messaggio(TipoMsg tipo, MsgAzione id, std::string titolo, std::string
 {}
 
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
-	: m_tabbyGuy{}, m_date{1991, 9, 16}, m_valutaCorrente{Valuta::LIRE}, m_coolDownPestaggio{ 5 }, m_tipoGiorno{ TipoGiorno::NORMALE },
-        m_attesa{ATTESA_MAX}
+	: m_tabbyGuy{}, m_date{1991, 9, 16}, 
+    m_valutaCorrente{Valuta::LIRE}, 
+    m_coolDownPestaggio{ 5 }, 
+    m_tipoGiorno{ TipoGiorno::NORMALE },
+    m_attesa{ATTESA_MAX}
 {
-    WriteLog("\n=== AVVIO TABBY - LOG SESSIONE ===");
+    WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
     // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
      std::random_device rd;
@@ -121,20 +124,20 @@ void TabbyGame::AvanzaCalendario()
 
     // ---------------> S T I P E N D I O <---------------
 
-    if (m_tabbyGuy.GetImpegno() > 0)
+    if (m_tabbyGuy.GetCarriera().GetImpegno() > 0)
     {
-        m_tabbyGuy.IncGiorniLavoro(1);
+        m_tabbyGuy.GetCarriera().Lavora();
 
         if (m_date.GetDay() == 27)
         {
             long stipendietto{};  // Stipendio calcolato secondo i giorni effettivi di lavoro
 
-            if (m_tabbyGuy.GetGiorniLavoro() > 29)
-                stipendietto = m_tabbyGuy.GetStipendio();
+            if (m_tabbyGuy.GetCarriera().GetGiorniLavorati() > 29)
+                stipendietto = m_tabbyGuy.GetCarriera().GetStipendio();
             else
-                stipendietto = m_tabbyGuy.GetStipendio() * (long)m_tabbyGuy.GetGiorniLavoro() / 30;
+                stipendietto = m_tabbyGuy.GetCarriera().GetStipendio() * (long)m_tabbyGuy.GetCarriera().GetGiorniLavorati() / 30;
 
-            m_tabbyGuy.ResetGiorniLavoro();
+            m_tabbyGuy.GetCarriera().ResetGiorni();
 
             // EVENTO STIPENDIO
             // TODO: SESSO?
@@ -350,21 +353,21 @@ void TabbyGame::GestioneLavoro()
 {
     int rnd{};
     // Lavoro
-    if (m_tabbyGuy.GetImpegno() > 3)
+    if (m_tabbyGuy.GetCarriera().GetImpegno() > 3)
     {
         rnd = GenRandomInt(0, 6) - 3;
         if (rnd > 0)
-            m_tabbyGuy.DecImpegno(1);
+            m_tabbyGuy.GetCarriera().DecImpegno(1);
     }
 
-    if (m_tabbyGuy.isAssunto())
+    if (m_tabbyGuy.HaUnLavoro())
     {
-        rnd = GenRandomInt(0, (m_tabbyGuy.GetImpegno() * 2 + m_tabbyGuy.GetFortuna() * 3) - 1);
+        rnd = GenRandomInt(0, (m_tabbyGuy.GetCarriera().GetImpegno() * 2 + m_tabbyGuy.GetFortuna() * 3) - 1);
 
         if (rnd < 2)
         {
             // Perdi il lavoro
-            m_tabbyGuy.ResetLavoro();
+            m_tabbyGuy.GetCarriera().Licenziati();
 
             // TODO: Dialog licenziato + suono
             Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Perdi il lavoro...", "Un bel giorno ti svegli e scopri di essere stato licenziato", "" };
@@ -529,7 +532,7 @@ void TabbyGame::GestioneEventiCasuali()
             // TODO: if yes
             /*
                 if ((figTemp >= 79) && (Rapporti < 1) && (sesso == 'M'))
-                { // Se non hai gia' una tipa e rifiuti una figona...
+                { // Se non hai già una tipa e rifiuti una figona...
                     MessageBox(hInstance,
                                "Appena vengono a sapere che non ti vuoi mettere insieme ad una figona come quella, i tuoi amici ti prendono a scarpate.",
                                "Idiota...", MB_OK | MB_ICONSTOP);
@@ -579,7 +582,7 @@ void TabbyGame::GestioneEventiCasuali()
                     if (i != IDYES)
                     {
                         MessageBox(hInstance,
-                                   "Sei sempre il solito stronzo.. non capisco perche' resto ancora con uno come cosi'...",
+                                   "Sei sempre il solito stronzo.. non capisco perchè resto ancora con uno come cosi'...",
                                    "Risposta sbagliata...", MB_OK | MB_ICONSTOP);
                         Rapporti -= 45;
                         if (Rapporti < 5)
@@ -943,24 +946,31 @@ void TabbyGame::AzioneChiediSoldi()
     NuovoGiorno();
 }
 
-void TabbyGame::AzioneCercaLavoro()
+// TODO: POSSIBILE CASINO DI DISTRUZIONE DELLA VARIABILE?
+const Ditta& TabbyGame::ProponiDitta()
 {
-    TriggerLavoro();
+    int indiceLavoro = GenRandomInt(0, ditte.size() - 1);
+    return ditte[indiceLavoro];
+}
 
-    if (m_tabbyGuy.isAssunto())
+bool TabbyGame::AzioneCercaLavoro()
+{
+    if (!TriggerLavoro())
+        return false;
+
+    if (m_tabbyGuy.HaUnLavoro())
     {
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non ti permettere", "Forse non ti ricordi che hai già un lavoro...", "" };
         PushMessaggio(msg);
+        return false;
     }
-    else
-    {
-        // TODO: IMPLEMENTA I QUESTIONARI
-    }
+
+    return true;
 }
 
 void TabbyGame::AzioneLicenziati()
 {
-    if (!m_tabbyGuy.isAssunto())
+    if (!m_tabbyGuy.HaUnLavoro())
     {
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Disabile", "Forse non ti ricordi che sei disokkupato...", "" };
         PushMessaggio(msg);
@@ -970,7 +980,9 @@ void TabbyGame::AzioneLicenziati()
         if (!TriggerLavoro())
             return;
         
-        Messaggio msg{ TipoMsg::SCELTA, MsgAzione::LICENZIATI, "Licenziati", "Sei proprio sicuro di voler dare le dimissioni dalla " + m_tabbyGuy.GetDitta().GetNome() + " ?", "" };
+        // TODO: COMPLETARE
+        std::string nomeDitta = "NOME DITTA";
+        Messaggio msg{ TipoMsg::SCELTA, MsgAzione::LICENZIATI, "Licenziati", "Sei proprio sicuro di voler dare le dimissioni dalla " + nomeDitta + " ?", ""};
         PushMessaggio(msg);
     }
 }
@@ -1026,7 +1038,7 @@ void TabbyGame::WriteLog(const std::string& messaggio)
 
 void TabbyGame::AzioneLavora()
 {
-    if (!m_tabbyGuy.isAssunto())
+    if (!m_tabbyGuy.HaUnLavoro())
     {
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Disabile", "Forse non ti ricordi che sei disokkupato...", "" };
         PushMessaggio(msg);
@@ -1036,8 +1048,8 @@ void TabbyGame::AzioneLavora()
         if (!TriggerLavoro())
             return;
 
-        if (m_tabbyGuy.GetImpegno() < 85)
-            m_tabbyGuy.IncImpegno(1);
+        if (m_tabbyGuy.GetCarriera().GetImpegno() < 85)
+            m_tabbyGuy.GetCarriera().IncImpegno(1);
 
         // TODO: SUONO
         NuovoGiorno();
@@ -1047,7 +1059,7 @@ void TabbyGame::AzioneLavora()
 
 void TabbyGame::AzioneLeccaculo()
 {
-    if (!m_tabbyGuy.isAssunto())
+    if (!m_tabbyGuy.HaUnLavoro())
     {
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Disabile", "Forse non ti ricordi che sei disokkupato...", "" };
         PushMessaggio(msg);
@@ -1060,8 +1072,8 @@ void TabbyGame::AzioneLeccaculo()
         if (m_tabbyGuy.GetRep() > 20)    // Facendo il leccaculo perdi reputazione e fama
             m_tabbyGuy.DecRep(1);
 
-        if (m_tabbyGuy.GetImpegno() < 99)
-            m_tabbyGuy.IncImpegno(1);
+        if (m_tabbyGuy.GetCarriera().GetImpegno() < 99)
+            m_tabbyGuy.GetCarriera().IncImpegno(1);
 
         if (GenRandomInt(1, m_tabbyGuy.GetFortuna() + 3) == 1)
             NuovoGiorno();
@@ -1072,7 +1084,7 @@ void TabbyGame::AzioneLeccaculo()
 
 void TabbyGame::AzioneAumentoSalario()
 {
-    if (!m_tabbyGuy.isAssunto())
+    if (!m_tabbyGuy.HaUnLavoro())
     {
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Disabile", "Forse non ti ricordi che sei disokkupato...", "" };
         PushMessaggio(msg);
@@ -1088,7 +1100,7 @@ void TabbyGame::AzioneAumentoSalario()
             {
                 if ((30 + Fortuna) > (30 + random(50)))
                 {
-                    sprintf(tmp, "Forse per questa volta potremmo darti qualcosina in piu'...");
+                    sprintf(tmp, "Forse per questa volta potremmo darti qualcosina in più...");
                     MessageBox(hDlg, tmp,
                                "Chiedi aumento salario", MB_OK | MB_ICONINFORMATION);
                     stipendio += ((random(1) + 1) * 100);
@@ -1125,7 +1137,7 @@ void TabbyGame::AzioneAumentoSalario()
 
 void TabbyGame::AzioneSciopera()
 {
-    if (!m_tabbyGuy.isAssunto())
+    if (!m_tabbyGuy.HaUnLavoro())
     {
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Disabile", "Forse non ti ricordi che sei disokkupato...", "" };
         PushMessaggio(msg);
@@ -1140,8 +1152,8 @@ void TabbyGame::AzioneSciopera()
         if (m_tabbyGuy.GetRep() < 85)
             m_tabbyGuy.IncRep(10);
 
-        if (m_tabbyGuy.GetImpegno() > 19)
-            m_tabbyGuy.DecImpegno(15);
+        if (m_tabbyGuy.GetCarriera().GetImpegno() > 19)
+            m_tabbyGuy.GetCarriera().DecImpegno(15);
 
         NuovoGiorno();
         // TODO: AGGIORNA LAVORO

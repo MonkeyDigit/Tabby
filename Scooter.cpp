@@ -9,37 +9,27 @@ Scooter::Scooter()
 	m_prezzo{3800}
 {}
 
-void Scooter::IncStato(int punti)
-{
-	if (punti > 0)
-		m_stato += punti;
+void Scooter::IncStato(int punti) {
+	if (punti > 0) m_stato += punti;
 }
 
-void Scooter::DecStato(int punti)
-{
-
+void Scooter::DecStato(int punti) {
 	if (punti > 0)
 	{
 		m_stato -= punti;
-		if (m_stato < 0)
-			m_stato = 0;
+		if (m_stato < 0) m_stato = 0;
 	}
 }
 
-void Scooter::IncBenzina(int litri)
-{
-	if (litri > 0)
-		m_benzina += litri;
+void Scooter::IncBenzina(int litri) {
+	if (litri > 0) m_benzina += litri;
 }
 
-void Scooter::DecBenzina(int litri)
-{
-
+void Scooter::DecBenzina(int litri) {
 	if (litri > 0)
 	{
 		m_benzina -= litri;
-		if (m_benzina < 0)
-			m_benzina = 0;
+		if (m_benzina < 0) m_benzina = 0;
 	}
 }
 

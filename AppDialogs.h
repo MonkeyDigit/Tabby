@@ -97,12 +97,18 @@ private:
 	void AggiornaInterfaccia();
 };
 
+class DlgOffertaLavoro : public wxDialog {
+public:
+	DlgOffertaLavoro(wxWindow* parent, const Ditta& ditta);
+
+private:
+	void OnAccetta(wxCommandEvent& event);
+	void OnRifiuta(wxCommandEvent& event);
+};
+
 class DlgEvento : public wxDialog {
 public:
 	DlgEvento(wxWindow* parent, Messaggio& msg);
-
-private:
-	// TODO: Roba
 };
 
 // Funzione helper

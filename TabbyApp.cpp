@@ -17,6 +17,9 @@
 // TODO: cosa cambia con setsizer and fit
 // TODO: Rizz sfx
 // TODO: Controlla bene calcolastudio
+// TODO: Separare addday da avanzacalendario ???
+// TODO: TOGLI TUTTI I ; DALLE DEFINIZIONI NEGLI HEADER
+// TODO: TOGLI i cpp CORTI E INCORPORA NEGLI HEADER
 
 bool TabbyApp::OnInit()
 {

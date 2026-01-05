@@ -5,7 +5,7 @@
 #include "Chrono.h"
 #include "Scuola.h"
 #include "Telefonino.h"
-#include "Lavoro.h"
+#include "Carriera.h"
 
 struct CartaIdentita {
 	std::string m_nome;
@@ -27,30 +27,28 @@ public:
 
 	// SETTER
 	void SetRapporti(int rapporti);
-	void SetImpegno(int impegno);
 
 	// MODIFICHE
+	// SOLDI
 	// Restituisce true se l'acquisto avviene con successo
 	bool SpendiSoldi(long long importo);
 	void GuadagnaSoldi(long long importo);
 	void IncPaghetta(long long importo);
-	void ResetSoldiDelta() { m_soldiDelta = 0; };	// E' solo un dato informativo...
+	void ResetSoldiDelta() { m_soldiDelta = 0; };	// è solo un dato informativo...
+	// SCUOLA
 	void CalcolaStudio();
+	// FORTUNA
 	void SetFortuna(int fortuna);
-	void IncSizze(int numSizze);
-	void DecSizze(int numSizze);
+	void IncSizze(int sizze);
+	void DecSizze(int sizze);
 	void IncRep(int punti);
 	void DecRep(int punti);
 	void IncFama(int punti);
 	void DecFama(int punti);
+	// RAPPORTO TIPA
 	void IncRapporti(int punti);
 	void DecRapporti(int punti);
-	void IncImpegno(int punti);
-	void DecImpegno(int punti);
-	void IncGiorniLavoro(int giorni);	// I giorni possono solo aumentare
-	void ResetGiorniLavoro();
-	void ResetLavoro();
-
+	// TODO: RIORDINA TUTTA STA MERDA
 	long long GetSoldi() const { return m_soldi; };
 	long long GetSoldiDelta() const { return m_soldiDelta; };
 	int GetRep() const { return m_rep; };
@@ -63,11 +61,10 @@ public:
 	int GetPantaloni() const { return m_pantaloni; };
 	int GetScarpe() const { return m_scarpe; };
 	int GetSizze() const { return m_sizze; };
-	int GetImpegno() const { return m_impegno; };
-	int GetGiorniLavoro() const { return m_giorniLavoro; };
-	bool isAssunto() const { return m_assunto; };
-	long GetStipendio() const { return m_stipendio; };
-	Ditta& GetDitta() { return m_ditta; };
+
+	// PASS-BY REFERENCE
+	// CARRIERA LAVORATIVA
+	Carriera& GetCarriera() { return m_carriera; };
 	Chrono::Date& GetScadenzaGym() { return m_scadenzaGym; };
 	CartaIdentita& GetID() { return m_identita; };
 	Scuola& GetScuola() { return m_scuola; };
@@ -76,29 +73,26 @@ public:
 	Telefono& GetTelefono() { return m_telefono; };
 	OperatoreTel& GetOperatore() { return m_operatore; };
 
+	// Funzione helper
+	bool HaUnLavoro() const { return !m_carriera.IsDisoccupato(); }
 
 private:
 	CartaIdentita m_identita;
+	int m_rapporti;
 	long long m_soldi;			// intero a 64 bit (max 9 miliardi DI miliardi): il tabbozzo è rikko...
 	long long m_soldiDelta;		// Guadagno o perdita
+	int m_paghetta;
 	int m_rep;
 	int m_fama;
 	int m_studio;
 	int m_fortuna;
-	Ditta m_ditta;
-	int m_impegno;
-	int m_rapporti;
-	int m_paghetta;
 	int m_testa;	// abbronzatura
 	int m_giubotto;
 	int m_pantaloni;
 	int m_scarpe;
 	int m_sizze;	// sigarette
-	// TODO: POSSIBILE CLASSE LAVORO/CARRIERA???
-	int m_numDitta;
-	int m_giorniLavoro;
-	long m_stipendio;
-	bool m_assunto;
+	Carriera m_carriera;
+
 	Chrono::Date m_scadenzaGym;
 	// Qua potevo usare dei puntatori inizializzando lo scooter e la tipa a NULL, ma non voglio fare un puttanaio con destructor e magagne dei puntatori
 	Scuola m_scuola;

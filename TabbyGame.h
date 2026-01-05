@@ -94,7 +94,8 @@ public:
     void AzioneSoldiExtra();
     void AzioneChiediSoldi();
     // Lavoro
-    void AzioneCercaLavoro();
+    const Ditta& ProponiDitta();
+    bool AzioneCercaLavoro();   	// Restituisce true se possiamo procedere con la ricerca, false altrimenti (es. festivo)
     void AzioneLicenziati();
     void AzioneInformazioni();
     void AzioneLavora();
@@ -102,9 +103,8 @@ public:
     void AzioneAumentoSalario();
     void AzioneSciopera();
 
-	// Stringa formattata (es. "1.000 L." o "5 €")
-	std::string GetSoldiStr(long long valoreBase) const;
-
+    // Stringa formattata (es. "1.000 L." o "5 €")
+    std::string GetSoldiStr(long long valoreBase) const;
 	// GENERATORE RANDOM
 	int GenRandomInt(int min, int max);
     // SCRITTURA LOG DI DEBUG
@@ -142,12 +142,120 @@ private:
 	long long ConvertiValuta(long long valoreBase) const;
 };
 
+// TODO: SPOSTARE STA ROBA DA QUALCHE PARTE?
+static const std::vector<Ditta> ditte{
+    {"Magneti Budelli",
+        775800000, // 775.8 Milioni di euro
+        "Sesto San Giovanni",
+        "INDUSTRIA PESANTE - La Magneti Budelli produce su richiesta oggetti metallici, tra cui: ",
+        "Magneti, dadi, bulloni, ferodi, turbine, aerei, patatine, attrezi da lavoro, parti meccaniche, missili, cannoni, dadi per il brodo, viti, chiavi, brugole, lime, carri armati, montacarichi, muletti, etc...",
+        // Offerta Lavoro
+        {
+            "Si desidera incontrare giovani, età massima 30 anni, con una precedente esperienza nel settore, conoscenza della lingua inglese e dimestichezza nell'uso del PC. Trattamenti economici commisurati alle effettive capacità.",
+            "Mi presento !",
+            "Lascio perdere..."
+        },
+        ""
+    },
+    {"Acciaierie Diamine",
+        -1, // Fatturato sconosciuto
+        "Sconosciuta",
+        "ACCIAIERIE E FERIERE - Produzioni su vasta scala di: ",
+        "Tubi saldati, tondini, lamiere, trafilati, laminati, banda stagnata.",
+        // Offerta Lavoro
+        {
+            "Cercasi n.6 addetti alla manutenzione delle apparecchiature, n 4. ballerine di danza classica con esperienza decennale, n.20 operai non specializzati da sfruttare e retribuire male, n.1 figli di puttana per quadri dirigenziali.",
+            "Potrei provare...",
+            "Non ho molta voglia di lavorare..."
+        },
+        ""
+    },
+    {"TESTMEC",
+        -1, // Fatturato sconosciuto
+        "Livorno, Italia",
+        "MACCHINE DA LAVORO - Tra i prodotti più conosciuti della TESTMEC ci sono: ",
+        "Motoseghe, motoseghe cingolate, muletti, schiaccia sassi, camion da cava, martelli pneumatici, lance termiche, armature, scavatrici, profilattici, hard disk.",
+        // Offerta Lavoro
+        {
+            "Azienda leader nella produzione di motoseghe, cerca giovani di età non superiore ad anni n. 22, fini, educati e di gradevole aspetto per la vendita porta a porta di motoseghe cingolate da cava e da cantiere.",
+            "Basta fare il disokkupato !",
+            "Lavoro??? Sto' cercando di smettere..."
+        },
+        ""
+    },
+    {"T.I.B.B.",
+        14250000000, // 14.25 Miliardi di euro
+        "Sconosciuta",
+        "MATERIALE ROTABILE O MOBILE - Produzione materiali pesanti od ad alta tecnologia:",
+        "Treni, locomotori, pezzi per mezzi pesanti, motori per navi, turbine, reattori nucleari, centrali idroelettriche, motori a curvatura per navi stellari, mezzi cingolati.",
+        // Offerta Lavoro
+        {
+            "TIBB cerca: 10 Apprendisti, 1 Tecnico specializzato riparazione materiale rotabile disponibili trasferte settimanali; inglese o tedesco saranno requisiti preferenziali. 4 collaboratori/collaboaratrici età massima anni 30, esperti in vendita, automuniti.",
+            "Voglio trovare un posto !",
+            "Che palle lavorare..."
+        },
+        ""
+    },
+    {"October Heavy Industries",
+        830000000000000, // 83.4 Miliardi di euro
+        "Mosca, Russia",
+        "ENERGIA NUCLEARE - l' October Heavy Industries fornisce i seguenti servizi per l'industria nucleare: ",
+        "Servizi di costruzione, equipaggiamento per il trattamento del combustibile, nocciolo dei reattori nucleari, fornitura di plutonio, inceneritori di rifiuti radioattivi, riprocessamento e trattamento delle acque.",
+        // Offerta Lavoro
+        {
+            "L' October Heavy Industries cerca personale NON SPECIALIZZATO per la pulitura di noccioli dei reattori nucleari e per lo smaltimento dei rifiuti radioattivi. NON è RICHIESTO ALCUN TITOLO DI STUDIO.",
+            "Sembra interessante...",
+            "Troppo faticoso !"
+        },
+        ""
+    },
+    {"Arlond's Food Company",
+        18500000000,    // Fatturato di 18.5 Miliardi di euro
+        "Vevey, Svizzera",
+        "ALIMENTARI - L'Arlond's Food Company distribuisce i seguenti prodotti: ",
+        "Smorties(Dolci), Galac(Dolci), Toffe(Dolci), Vismaro(Salumi), Ethoprop(Pesticida), Scasso(Olio), Mera(Acqua), Sant' Ansemo(Acqua), Mare Fresko(Surgelati), Surgelami(Surgelati, DBCP(Vermicida), Maggio(Dadi), Rodo(Freni a disco)",
+        // Offerta Lavoro
+        {
+            "Cerchiamo giovani dinamici e fantasiosi da inserire nella nostra catena di produzione dei pesticidi, un ramo emergente e gratificante che offre interessanti possibilità di guadagno.",
+            "Figata !",
+            "Torno a casa a dormire..."
+        },
+        ""
+    },
+    {"Computer Discarica",
+        790180000, // 790.18 Milioni di euro
+        "Venegono Superiore",
+        "Ecco finalmente l'unica discarica abusiva dove potrete buttare tutti i vostri rottami informatici e riacquistarli al doppio del prezzo...",
+        "",
+        // Offerta Lavoro
+        {
+            "Ecco finalmente l'unica discarica abusiva dove potrete buttare tutti i vostri rottami informatici e riaquistarli al doppio del prezzo... Cercasi personale defic..ehm con una graaande passione per l'informatica, bella o brutta presenza, perfetta padronanza del sistema ZX Spectrum, CPM, MS-DOS ver 1.0 o inferiore, padronanza della lingua di mucca, cerchiamo giovani elastici, vitali, stronzi, scazzati basta che non siano tabbozzi....",
+            "Tabbozzo?? Cos'è???",
+            "Ma io sono un po' tabboz..."
+        },
+        ""
+    },
+    {"RICOPIO",
+        -1, // Fatturato sconosciuto
+        "Tokyo, Japan",
+        "La RICOPIO, è la prima azienda al mondo che vanta innumerevoli copie illegali di libri, CD, cassette, persone, oggetti, progetti, brevetti, ecc...",
+        "",
+        // Offerta Lavoro
+        {
+            "La RICOPIO, è la prima azienda al mondo che vanta innumerevoli copie illegali di libri, CD, cassette, persone, oggetti, progetti, brevetti, ecc... Cercasi personale disinvolto, di piccola presenza, da assumersi come copertura.",
+            "Potrei provare...",
+            "Piccola presenza ??? No, grazie !"
+        },
+        ""
+    }
+};
+
 
 // ------------------ TESTI MESSAGGI POPUP VARIABILI ---------------------------------------------------------------------
-const std::vector<FestaFissa> feste = {
+static const std::vector<FestaFissa> feste = {
     {1, 1, "Capodanno", "Oggi è Capodanno!"},
     {6, 1, "Epifania", "Tutte le feste si porta via..."},
-    {25, 4, "Anniversario Liberazione", "Oggi mi sento liberato"},
+    {25, 4, "Anniversario Liberazione", "La vera festa della liberazione ci sarà quando ci saremo liberati di tutti gli stronzi di questo mondo..."},
     {1, 5, "Festa dei Lavoratori", "Nonostante nella tua vita tu non faccia nulla, oggi fai festa anche tu..."},
     {15, 8, "Ferragosto", "Tutti al mare!"},
     {1, 11, "Tutti i Santi", "Figata, oggi è vacanza..."},

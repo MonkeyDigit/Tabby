@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+enum class Attivita { NESSUNA, PARCHEGGIATO, IN_GIRO };
+
 class Scooter {
 public:
 	Scooter();
@@ -8,6 +10,8 @@ public:
 	// MODIFICHE
 	void IncStato(int punti);
 	void DecStato(int punti);
+	void IncBenzina(int litri);
+	void DecBenzina(int litri);
 	// TODO: salute piena o -1??
 	void Reset();
 	
@@ -21,7 +25,8 @@ public:
 	int GetMarmitta() const { return m_marmitta; };
 	int GetCarburatore() const { return m_carburatore; };
 	int GetFiltro() const { return m_filtro; };
-	int GetAttivita() const { return m_attivita; };
+	Attivita GetAttivita() const { return m_attivita; };
+	std::string GetAttivitaStr(bool tolower) const;
 	int GetPrezzo() const { return m_prezzo; };
 
 private:
@@ -35,6 +40,6 @@ private:
 	int m_marmitta;
 	int m_carburatore;
 	int m_filtro;
-	int m_attivita;
+	Attivita m_attivita;
 	int m_prezzo;
 };

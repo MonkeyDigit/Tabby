@@ -33,15 +33,16 @@ enum class TipoEvento {
 };
 
 enum class IdEvento {
-    NULLO,
-    CORROMPI
+    BASE,
+    CORROMPI,
+    GARA
 };
 
 struct EventoDati {
 	EventoDati();
 	EventoDati(TipoEvento tipo, IdEvento id, std::string titolo, std::string testo, std::string img);
 	TipoEvento m_tipo = TipoEvento::NESSUNO;
-    IdEvento m_idEvento = IdEvento::NULLO;
+    IdEvento m_idEvento = IdEvento::BASE;
 	std::string m_titolo;
 	std::string m_testo;
 	std::string m_immagine;	// Nome del file immagine
@@ -107,6 +108,7 @@ private:
 	TipoGiorno m_tipoGiorno;
     long long m_costoCorruzione;
     int m_materiaIndex;
+    int m_scooterAvversarioIndex;
 	// IL MOTORE DI NUMERI CASUALI
 	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile
 	std::mt19937 m_rng;
@@ -150,7 +152,8 @@ static const std::vector<std::string> frasiMetallari = {
     "Incontri un metallaro in {LUOGO}, lo minacci e lui ti spacca tutte le ossa.",
     "Insulti un gruppo di metallari che passano in {LUOGO} e uno di questi ti spacca le ossa.",
     "Mentre cammini per {LUOGO} cerchi la rissa con un metallaro e lui ti spacca tutte le ossa.",
-    "Cerchi la rissa con un metallaro e lui ti spacca tutte le ossa."
+    "Cerchi la rissa con un metallaro e lui ti spacca tutte le ossa.",
+    "Senza un preciso motivo, prendi per il culo un manovale che, essendo privo di senso dell'umorismo, ti fa a pezzi."
 };
 static const std::vector<std::string> frasiFortuna = {
     "Mentre cammini per il quartiere con la tua compagnia, un piccione ti caga in testa...",
@@ -163,7 +166,6 @@ static const std::vector<std::string> frasiFortuna = {
     "Ti perdi e non arrivi ad un appuntamento importante.",
     "La televisione si rompe e perdi l'ultima puntata di Tabby News.",
     "Qualcuno non apprezza il modo in cui sei vestito.",
-    "Senza un preciso motivo, prendi per il culo un manovale che, essendo privo di senso dell'umorismo, ti fa a pezzi."
 };
 static const std::vector<std::string> frasiScuola = {
     "Senza una precisa ragione, picchi il prof di {MATERIA}",

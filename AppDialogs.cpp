@@ -455,18 +455,21 @@ void DlgFamiglia::OnAumentoPaghetta(wxCommandEvent& event)
 {
 	m_game.AzioneAumentoPaghetta();
 	ManifestaEventi(this, m_game);
+	this->EndModal(wxID_ANY);
 }
 
 void DlgFamiglia::OnSoldiExtra(wxCommandEvent& event)
 {
 	m_game.AzioneSoldiExtra();
 	ManifestaEventi(this, m_game);
+	this->EndModal(wxID_ANY);
 }
 
 void DlgFamiglia::OnChiediSoldi(wxCommandEvent& event)
 {
 	m_game.AzioneChiediSoldi();
 	ManifestaEventi(this, m_game);
+	this->EndModal(wxID_ANY);
 }
 
 void DlgFamiglia::AggiornaInterfaccia()

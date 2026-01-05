@@ -16,6 +16,8 @@
 // TODO: METTI I PUNTI
 // TODO: SPOSTA TUTTI I VETTORI DI STRINGHE E DIALOGHI IN UN HEADER DEDICATO
 // TODO: cosa cambia con setsizer and fit
+// TODO: Rizz sfx
+// TODO: Controlla bene calcolastudio
 
 bool TabbyApp::OnInit()
 {

@@ -478,3 +478,119 @@ void DlgFamiglia::AggiornaInterfaccia()
 	m_lblPaghetta->SetLabel("< Paghetta " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetPaghetta()) + " >");
 	this->Layout();
 }
+
+DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Lavoro", wxDefaultPosition, wxDefaultSize },
+	m_game{ game }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+	// TODO: Immagine e icona sotto
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+	wxPanel* pnlBody	= new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN};
+	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
+	wxPanel* pnlFoto	= new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxSize(300,200), wxBORDER_SUNKEN};
+	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
+	wxPanel* pnlButtons = new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
+	wxPanel* pnlBottom = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
+	wxPanel* pnlInfo	= new wxPanel{ pnlBottom, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN};
+	wxFlexGridSizer* sizerInfo = new wxFlexGridSizer{ 2, 5, 10 };
+
+	// Foto
+	pnlFoto->SetSizer(sizerFoto);
+	sizerBody->Add(pnlFoto, 0, wxALL, 5);
+
+	// Bottoni
+	wxButton* btnCercaLavoro = new wxButton{ pnlButtons, wxID_ANY, "Cerca lavoro", wxDefaultPosition, wxSize(300, 40) };
+	wxButton* btnLicenziati = new wxButton{ pnlButtons, wxID_ANY, "Licenziati", wxDefaultPosition, wxSize(300, 40) };
+	wxButton* btnInformazioni = new wxButton{ pnlButtons, wxID_ANY, "Informazioni", wxDefaultPosition, wxSize(300, 40) };
+	wxButton* btnLavora = new wxButton{ pnlButtons, wxID_ANY, "Lavora", wxDefaultPosition, wxSize(300, 40) };
+	wxButton* btnLeccaculo = new wxButton{ pnlButtons, wxID_ANY, "Fai il Leccaculo", wxDefaultPosition, wxSize(300,40) };
+	wxButton* btnAumento = new wxButton{ pnlButtons, wxID_ANY, "Chiedi aumento salario", wxDefaultPosition, wxSize(300,40) };
+	wxButton* btnSciopera = new wxButton{ pnlButtons, wxID_ANY, "Sciopera", wxDefaultPosition, wxSize(300,40) };
+
+	btnCercaLavoro->Bind(wxEVT_BUTTON, &DlgLavoro::OnCercaLavoro, this);
+	btnLicenziati->Bind(wxEVT_BUTTON, &DlgLavoro::OnLicenziati, this);
+	btnInformazioni->Bind(wxEVT_BUTTON, &DlgLavoro::OnInformazioni, this);
+	btnLavora->Bind(wxEVT_BUTTON, &DlgLavoro::OnLavora, this);
+	btnLeccaculo->Bind(wxEVT_BUTTON, &DlgLavoro::OnLeccaculo, this);
+	btnAumento->Bind(wxEVT_BUTTON, &DlgLavoro::OnAumento, this);
+	btnSciopera->Bind(wxEVT_BUTTON, &DlgLavoro::OnSciopera, this);
+
+	sizerButtons->Add(btnCercaLavoro, 0, wxTOP | wxRIGHT | wxLEFT, 10);
+	sizerButtons->Add(btnLicenziati, 0, wxALL & ~wxTOP, 10);
+	sizerButtons->Add(btnInformazioni, 0, wxALL,10);
+	sizerButtons->Add(btnLavora, 0, wxALL & ~wxBOTTOM, 10);
+	sizerButtons->Add(btnLeccaculo, 0, wxALL & ~(wxBOTTOM | wxTOP), 10);
+	sizerButtons->Add(btnAumento, 0, wxALL & ~(wxBOTTOM | wxTOP), 10);
+	sizerButtons->Add(btnSciopera, 0, wxALL & ~wxTOP, 10);
+
+	pnlButtons->SetSizer(sizerButtons);
+	sizerBody->Add(pnlButtons, 0, wxEXPAND | wxALL, 5);
+
+	pnlBody->SetSizer(sizerBody);
+
+	// Info e ok
+	m_lblDitta = new wxStaticText(pnlInfo, wxID_ANY, "---");
+	m_lblImpegno = new wxStaticText(pnlInfo, wxID_ANY, "---");
+	m_lblSoldi = new wxStaticText(pnlInfo, wxID_ANY, "---");
+	m_lblStipendio = new wxStaticText(pnlInfo, wxID_ANY, "---");
+
+	sizerInfo->Add(m_lblDitta, 0, wxEXPAND | wxALL, 10);
+	sizerInfo->Add(m_lblImpegno, 0, wxEXPAND | wxALL, 10);
+	sizerInfo->Add(m_lblSoldi, 0, wxEXPAND | wxALL, 10);
+	sizerInfo->Add(m_lblStipendio, 0, wxEXPAND | wxALL, 10);
+
+	pnlInfo->SetSizer(sizerInfo);
+	sizerBottom->Add(pnlInfo, 1, wxEXPAND | wxALL, 5);
+	//sizerBottom->AddStretchSpacer();
+
+	wxButton* btnOk = new wxButton{ pnlBottom, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) };
+	sizerBottom->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxALL, 10);
+	pnlBottom->SetSizer(sizerBottom);
+
+	mainSizer->Add(pnlBody, 0, wxEXPAND | wxALL, 5);
+	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL, 5);
+
+	this->SetSizerAndFit(mainSizer);
+	this->AggiornaInterfaccia();
+}
+
+void DlgLavoro::OnCercaLavoro(wxCommandEvent& event)
+{
+}
+
+void DlgLavoro::OnLicenziati(wxCommandEvent& event)
+{
+}
+
+void DlgLavoro::OnInformazioni(wxCommandEvent& event)
+{
+}
+
+void DlgLavoro::OnLavora(wxCommandEvent& event)
+{
+}
+
+void DlgLavoro::OnLeccaculo(wxCommandEvent& event)
+{
+}
+
+void DlgLavoro::OnAumento(wxCommandEvent& event)
+{
+}
+
+void DlgLavoro::OnSciopera(wxCommandEvent& event)
+{
+}
+
+void DlgLavoro::AggiornaInterfaccia()
+{
+	TabbyGuy& guy = m_game.GetTabbyGuy();
+	m_lblDitta->SetLabel("Ditta: "+guy.GetDitta().GetNome());
+	m_lblImpegno->SetLabel("Impegno " + std::to_string(guy.GetImpegno()) + "/100");
+	m_lblStipendio->SetLabel("Stipendio: " + m_game.GetSoldiStr(guy.GetStipendio()));
+	m_lblSoldi->SetLabel("Soldi: " + m_game.GetSoldiStr(guy.GetSoldi()));
+}

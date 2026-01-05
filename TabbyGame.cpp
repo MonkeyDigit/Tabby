@@ -360,7 +360,7 @@ void TabbyGame::GestioneLavoro()
             m_tabbyGuy.DecImpegno(1);
     }
 
-    if (m_tabbyGuy.GetNumDitta() > 0)
+    if (m_tabbyGuy.isAssunto())
     {
         rnd = GenRandomInt(0, (m_tabbyGuy.GetImpegno() * 2 + m_tabbyGuy.GetFortuna() * 3) - 1);
 
@@ -720,6 +720,17 @@ bool TabbyGame::TriggerScuola()
         return true;
 
     EventoDati ev{ TipoEvento::INFO, IdEvento::BASE, "Scuola", "Non puoi andare a scuola in un giorno di vacanza!", "" };
+    PushEvento(ev);
+
+    return false;
+}
+
+bool TabbyGame::TriggerLavoro()
+{
+    if (m_tipoGiorno != TipoGiorno::FESTIVO)
+        return true;
+
+    EventoDati ev{ TipoEvento::INFO, IdEvento::BASE, "Lavoro", "Arrivato davanti ai cancelli della ditta, li trovi irrimediabilmente chiusi...", "" };
     PushEvento(ev);
 
     return false;

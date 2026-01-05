@@ -6,7 +6,7 @@ TabbyGuy::TabbyGuy()
 	m_scooter{}, m_tipa{}, m_rapporti{ 0 }, m_stipendio{ 0 },
 	m_scuola{}, m_paghetta{ 20 }, m_testa{ 0 },
 	m_giubotto{ 0 }, m_pantaloni{ 0 }, m_impegno{ 0 },
-	m_scarpe{ 0 }, m_fortuna{ 0 }, m_sizze{ 0 }, m_numDitta{ 0 }
+	m_scarpe{ 0 }, m_fortuna{ 0 }, m_sizze{ 0 }, m_numDitta{ 0 }, m_assunto{ false }
 {
 	m_identita.m_nome = "Alfonso";
 	m_identita.m_cognome = "Signorini";

@@ -78,6 +78,7 @@ public:
 	// TODO: BOOL / CODICE DI INFORMAZIONE / EVENTO CON MESSAGGIO
     // Scuola
     bool TriggerScuola();
+    bool TriggerLavoro();
 	void AzioneStudia(int materiaIndex);
 	void AzioneMinaccia(int materiaIndex);
 	void AzioneCorrompi(int materiaIndex);

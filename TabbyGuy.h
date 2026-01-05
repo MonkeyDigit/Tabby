@@ -5,6 +5,7 @@
 #include "Chrono.h"
 #include "Scuola.h"
 #include "Telefonino.h"
+#include "Lavoro.h"
 
 struct CartaIdentita {
 	std::string m_nome;
@@ -63,9 +64,10 @@ public:
 	int GetScarpe() const { return m_scarpe; };
 	int GetSizze() const { return m_sizze; };
 	int GetImpegno() const { return m_impegno; };
-	int GetNumDitta() const { return m_numDitta; };
 	int GetGiorniLavoro() const { return m_giorniLavoro; };
+	bool isAssunto() const { return m_assunto; };
 	long GetStipendio() const { return m_stipendio; };
+	Ditta& GetDitta() { return m_ditta; };
 	Chrono::Date& GetScadenzaGym() { return m_scadenzaGym; };
 	CartaIdentita& GetID() { return m_identita; };
 	Scuola& GetScuola() { return m_scuola; };
@@ -83,6 +85,7 @@ private:
 	int m_fama;
 	int m_studio;
 	int m_fortuna;
+	Ditta m_ditta;
 	int m_impegno;
 	int m_rapporti;
 	int m_paghetta;
@@ -95,6 +98,7 @@ private:
 	int m_numDitta;
 	int m_giorniLavoro;
 	long m_stipendio;
+	bool m_assunto;
 	Chrono::Date m_scadenzaGym;
 	// Qua potevo usare dei puntatori inizializzando lo scooter e la tipa a NULL, ma non voglio fare un puttanaio con destructor e magagne dei puntatori
 	Scuola m_scuola;

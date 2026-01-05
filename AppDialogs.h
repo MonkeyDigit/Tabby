@@ -99,7 +99,7 @@ private:
 
 class DlgEvento : public wxDialog {
 public:
-	DlgEvento(wxWindow* parent, EventoDati& eventoDati);
+	DlgEvento(wxWindow* parent, Messaggio& msg);
 
 private:
 	// TODO: Roba

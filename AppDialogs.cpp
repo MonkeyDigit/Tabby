@@ -2,18 +2,18 @@
 
 void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 {
-	EventoDati evento;
+	Messaggio msg;
 
-	while (game.PollEvento(evento))
+	while (game.PollMessaggi(msg))
 	{
-		DlgEvento dlgEvento{ parent, evento };
+		DlgEvento dlgEvento{ parent, msg };
 		// Nel caso di un pop up evento con scelta (previa implementazione degli appositi bottoni con wxID_YES e wxID_NO), gli id vengono restituiti alla finestra padre
 		// Qua valutiamo l'espressione logica
 		bool scelta = (dlgEvento.ShowModal() == wxID_YES);
 
 		// Se qui ApplicaScelta aggiunge un NUOVO evento, questo finisce in fondo alla coda. Il ciclo while continuerà a girare e lo pescherà subito dopo
-		if (evento.m_tipo == TipoEvento::SCELTA)
-			game.ApplicaScelta(evento.m_idEvento, scelta);
+		if (msg.m_tipo == TipoMsg::SCELTA)
+			game.ApplicaScelta(msg.m_msgAzione, scelta);
 	}
 	// Usciti dal while, la coda è sicuramente vuota
 }
@@ -214,38 +214,23 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 
 void DlgScuola::OnStudia(wxCommandEvent& event)
 {
-	if (m_game.TriggerScuola())
-	{
-		m_game.AzioneStudia(m_materiaIndex);
-		ManifestaEventi(this, m_game);
-		this->AggiornaInterfaccia();
-	}
-	else
-		ManifestaEventi(this, m_game);	
+	m_game.AzioneStudia(m_materiaIndex);
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgScuola::OnMinaccia(wxCommandEvent& event)
 {
-	if (m_game.TriggerScuola())
-	{
-		m_game.AzioneMinaccia(m_materiaIndex);
-		ManifestaEventi(this, m_game);
-		this->AggiornaInterfaccia();
-	}
-	else
-		ManifestaEventi(this, m_game);
+	m_game.AzioneMinaccia(m_materiaIndex);
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgScuola::OnCorrompi(wxCommandEvent& event)
 {
-	if (m_game.TriggerScuola())
-	{
-		m_game.AzioneCorrompi(m_materiaIndex);
-		ManifestaEventi(this, m_game);
-		this->AggiornaInterfaccia();
-	}
-	else
-		ManifestaEventi(this, m_game);
+	m_game.AzioneCorrompi(m_materiaIndex);
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgScuola::AggiornaInterfaccia()
@@ -343,17 +328,17 @@ void DlgCompagnia::AggiornaInterfaccia()
 
 
 // TODO: ICONA INFO
-DlgEvento::DlgEvento(wxWindow* parent, EventoDati& eventoDati)
+DlgEvento::DlgEvento(wxWindow* parent, Messaggio& eventoDati)
 	: wxDialog{ parent, wxID_ANY, eventoDati.m_titolo, wxDefaultPosition, wxDefaultSize, wxCAPTION | wxSTAY_ON_TOP }	// Stile: CAPTION (barra titolo) ma niente tasto X (CLOSE_BOX) così l'utente è obbligato a premere i bottoni
 {
 	this->SetFont(parent->GetFont());
 	this->CenterOnParent();	// Appare al centro della finestra padre
-	EventoDati& evref = eventoDati;
+	Messaggio& msgref = eventoDati;
 	// TODO: implementa immagine
 
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 
-	wxStaticText* lblTesto = new wxStaticText{ this, wxID_ANY, evref.m_testo, wxDefaultPosition, wxSize(-1, -1), wxALIGN_LEFT };
+	wxStaticText* lblTesto = new wxStaticText{ this, wxID_ANY, msgref.m_testo, wxDefaultPosition, wxSize(-1, -1), wxALIGN_LEFT };
 
 	// Manda a capo il testo automaticamente
 	lblTesto->Wrap(600);
@@ -365,14 +350,14 @@ DlgEvento::DlgEvento(wxWindow* parent, EventoDati& eventoDati)
 	// BOTTONI
 	wxBoxSizer* btnSizer = new wxBoxSizer(wxHORIZONTAL);
 
-	if (evref.m_tipo == TipoEvento::INFO)
+	if (msgref.m_tipo == TipoMsg::INFO)
 	{
 		// Caso semplice: Solo OK
 		// wxID_OK chiude automaticamente il dialogo ritornando wxID_OK
 		wxButton* btnOk = new wxButton(this, wxID_OK, "OK");
 		btnSizer->Add(btnOk, 0, wxALL, 10);
 	}
-	else if (evref.m_tipo == TipoEvento::SCELTA)
+	else if (msgref.m_tipo == TipoMsg::SCELTA)
 	{
 		// Caso scelta: SÌ e NO
 		// TODO: accetta e rifiuta
@@ -560,30 +545,51 @@ DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
 
 void DlgLavoro::OnCercaLavoro(wxCommandEvent& event)
 {
+	m_game.AzioneCercaLavoro();
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgLavoro::OnLicenziati(wxCommandEvent& event)
 {
+	m_game.AzioneLicenziati();
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgLavoro::OnInformazioni(wxCommandEvent& event)
 {
+	m_game.AzioneInformazioni();
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgLavoro::OnLavora(wxCommandEvent& event)
 {
+	m_game.AzioneLavora();
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgLavoro::OnLeccaculo(wxCommandEvent& event)
 {
+	m_game.AzioneLeccaculo();
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgLavoro::OnAumento(wxCommandEvent& event)
 {
+	m_game.AzioneAumentoSalario();
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgLavoro::OnSciopera(wxCommandEvent& event)
 {
+	m_game.AzioneSciopera();
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgLavoro::AggiornaInterfaccia()

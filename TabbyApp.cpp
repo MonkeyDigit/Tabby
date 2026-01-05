@@ -5,7 +5,6 @@
 // TODO: fai reperire la merda dai file, anche per i salvataggi
 // TODO: AGGIUNGI MESS COMPLEANNO
 // TODO: SISTEMA COMMENTI
-// TODO: EVENTO DI GIOCO: il 1° gennaio 2002 sotto il governo Berlusca viene introdotta la moneta FISICA dell'euro in italia
 // TODO: MECCANICHE FUTURE: con l'avanzamento tecnologico, escono nuove robe. + investimenti in borsa, crypto, per per arricchirsi...
 // TODO: La scuola la fa per 5 anni poi va a lavorare e investire in borsa???
 // TODO: SISTEMA BEST PRACTICE

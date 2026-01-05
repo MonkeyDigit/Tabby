@@ -26,23 +26,26 @@ constexpr int ATTESA_MAX = 7;
 // Sotto il cofano, i soldi di tabby e in generale il sistema monetario del gioco, viene gestito di base come euro, ma in base alla data sono messe a disposizione delle funzione per effettuare la conversione in lire, che fanno da "maschera"
 enum class Valuta { LIRE, EURO };
 
-enum class TipoEvento {
-	NESSUNO, 
+enum class TipoMsg {
 	INFO,		// Solo tasto OK
 	SCELTA		// Tasti sì/no
 };
 
-enum class IdEvento {
-    BASE,
+enum class MsgAzione {
+    NONE,
+    // Scuola
     CORROMPI,
-    GARA
+    // Compagnia
+    GARA,
+    // Lavoro
+    LICENZIATI
 };
 
-struct EventoDati {
-	EventoDati();
-	EventoDati(TipoEvento tipo, IdEvento id, std::string titolo, std::string testo, std::string img);
-	TipoEvento m_tipo = TipoEvento::NESSUNO;
-    IdEvento m_idEvento = IdEvento::BASE;
+struct Messaggio {
+	Messaggio();
+	Messaggio(TipoMsg tipo, MsgAzione id, std::string titolo, std::string testo, std::string img);
+	TipoMsg m_tipo = TipoMsg::INFO;
+    MsgAzione m_msgAzione = MsgAzione::NONE;
 	std::string m_titolo;
 	std::string m_testo;
 	std::string m_immagine;	// Nome del file immagine
@@ -73,8 +76,8 @@ public:
     TipoGiorno GetTipoGiorno() const { return m_tipoGiorno; };
 	// LOGICA EVENTI
 	// Restituisce true se c'era un evento (e lo mette in outEvento), false se la coda eventi è vuota
-	bool PollEvento(EventoDati& outEvento);
-	void ApplicaScelta(IdEvento idEvento, bool sceltaYes);
+	bool PollMessaggi(Messaggio& outMsg);
+	void ApplicaScelta(MsgAzione mgsAzione, bool sceltaYes);
 	// TODO: BOOL / CODICE DI INFORMAZIONE / EVENTO CON MESSAGGIO
     // Scuola
     bool TriggerScuola();
@@ -90,6 +93,14 @@ public:
     void AzioneAumentoPaghetta();
     void AzioneSoldiExtra();
     void AzioneChiediSoldi();
+    // Lavoro
+    void AzioneCercaLavoro();
+    void AzioneLicenziati();
+    void AzioneInformazioni();
+    void AzioneLavora();
+    void AzioneLeccaculo();
+    void AzioneAumentoSalario();
+    void AzioneSciopera();
 
 	// Stringa formattata (es. "1.000 L." o "5 €")
 	std::string GetSoldiStr(long long valoreBase) const;
@@ -105,7 +116,7 @@ private:
 	Valuta m_valutaCorrente;
 	int m_coolDownPestaggio;
     int m_attesa;
-	std::vector<EventoDati> m_codaEventi;
+	std::vector<Messaggio> m_codaMsg;
 	TipoGiorno m_tipoGiorno;
     long long m_costoCorruzione;
     int m_materiaIndex;
@@ -115,7 +126,7 @@ private:
 	std::mt19937 m_rng;
 
 	// Evento
-	void PushEvento(const EventoDati& e) { m_codaEventi.push_back(e); };
+	void PushMessaggio(const Messaggio& e) { m_codaMsg.push_back(e); };
 
 	// Funzioni di gestione giornaliera
 	void NuovoGiorno();
@@ -127,8 +138,6 @@ private:
 	void GestioneEventiCasuali(); // Il generatore di caos
 
 	// LOGICA MONETARIA
-	// Controlla se è il 2002...
-	void CheckCambioValuta();
 	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
 	long long ConvertiValuta(long long valoreBase) const;
 };

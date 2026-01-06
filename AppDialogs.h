@@ -5,6 +5,7 @@
 #endif
 #include <wx/statline.h>
 #include "TabbyGame.h"
+#define WIN_BKG wxColor(194, 196, 184)
 
 class DlgScooter : public wxDialog {
 public:
@@ -99,12 +100,34 @@ private:
 
 class DlgOffertaLavoro : public wxDialog {
 public:
-	DlgOffertaLavoro(wxWindow* parent, const Ditta& ditta);
+	DlgOffertaLavoro(wxWindow* parent, TabbyGame& game);
 
 private:
 	void OnAccetta(wxCommandEvent& event);
 	void OnRifiuta(wxCommandEvent& event);
+
+	TabbyGame& m_game;
+	std::string m_ditta;
+
 };
+
+class DlgQuiz : public wxDialog {
+public:
+	DlgQuiz(wxWindow* parent, TabbyGame& game, const QuizScheda& quiz, std::string ditta);
+private:
+	TabbyGame& m_game;
+	std::string m_ditta;
+	// Memorizziamo le checkbox divisa per domande (3 gruppi da 3)
+	// m_checkboxes[0] contiene le 3 opzioni della domanda A
+	std::vector<std::vector<wxCheckBox*>> m_gruppiRisposte;
+	// Funzione di supporto per creare il blocco "Domanda + 3 Risposte"
+	void AggiungiDomanda(wxWindow* parent, wxSizer* sizer, const QuizDomanda& domanda, int indiceDomanda);
+
+	// Invia i dati del gioco al motore di gioco per processarli
+	void OnFinito(wxCommandEvent& event);
+};
+
+
 
 class DlgEvento : public wxDialog {
 public:

@@ -19,34 +19,25 @@ struct Ditta {
 
 class Carriera {
 public:
-    Carriera() : m_idDitta(0), m_stipendio(0), m_impegno(0), m_giorniLavorati(0) {}
+    Carriera() : m_nomeDitta(""), m_stipendio(0), m_impegno(0), m_giorniLavorati(0) {}
 
     // Metodi di stato
-    bool IsDisoccupato() const { return (m_idDitta == 0); }
-
-    // Azioni
-    void FattiAssumere(int idDitta, long stipendioIniziale) {
-        m_idDitta = idDitta;
-        m_stipendio = stipendioIniziale;
-        m_impegno = 50; // TODO: RANDOMICO
-        m_giorniLavorati = 0;
-    }
+    bool IsDisoccupato() const { return (m_nomeDitta == ""); }
 
     void Licenziati() {
-        m_idDitta = 0;
+        m_nomeDitta = "";
         m_stipendio = 0;
         m_impegno = 0;
         m_giorniLavorati = 0;
     }
 
     // Getters & Setters
-    int GetIdDitta() const { return m_idDitta; }
+    std::string GetNomeDitta() const { return m_nomeDitta; }
     long GetStipendio() const { return m_stipendio; }
     int GetImpegno() const { return m_impegno; }
     void IncImpegno(int punti) {
         if (punti > 0) m_impegno += punti;
     }
-
     void DecImpegno(int punti) {
         if (punti > 0)
         {
@@ -54,16 +45,41 @@ public:
             if (m_impegno < 0) m_impegno = 0;
         }
     }
+    void SetImpegno(int impegno) {
+        m_impegno = impegno;
+        if (m_impegno < 0) m_impegno = 0;
+        else if (m_impegno > 100) m_impegno = 100;
+    }
+    void SetGiorniLavorati(int gg) {
+        m_giorniLavorati = gg;
+        if (m_giorniLavorati < 0) m_giorniLavorati = 0;
+    }
+    void SetStipendio(long long soldi) {
+        m_stipendio = soldi;
+        if (m_stipendio < 0) m_stipendio = 0;
+    }
+    void SetDitta(std::string nomeDitta) { m_nomeDitta = nomeDitta; };
+
 
     // Gestione tempo
     void Lavora() { if (!IsDisoccupato()) m_giorniLavorati++; }
-
     int GetGiorniLavorati() const { return m_giorniLavorati; }
     void ResetGiorni() { m_giorniLavorati = 0; }
 
 private:
-    int m_idDitta;      // 0 = Nessuna
-    long m_stipendio;   // Stipendio attuale
-    int m_impegno;      // Quanto ti sbatti
-    int m_giorniLavorati; // Contatore per la busta paga
+    std::string m_nomeDitta;    // "" = Nessuna
+    long m_stipendio;           // Stipendio attuale
+    int m_impegno;              // Quanto ti sbatti
+    int m_giorniLavorati;       // Contatore per la busta paga
+};
+
+struct QuizDomanda {
+    std::string m_testo;
+    std::string m_risposte[3];
+};
+
+struct QuizScheda {
+    std::string m_titolo;
+    std::string m_intro;
+    QuizDomanda m_domande[3];
 };

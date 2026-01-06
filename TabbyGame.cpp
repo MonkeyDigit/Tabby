@@ -953,6 +953,62 @@ const Ditta& TabbyGame::ProponiDitta()
     return ditte[indiceLavoro];
 }
 
+void TabbyGame::AzioneRifiutaProposta()
+{
+    Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Levati dai coglioni", "Allora vai a farti fottere...", "" };
+    PushMessaggio(msg);
+}
+
+const QuizScheda& TabbyGame::AssegnaQuiz()
+{
+    int rnd = GenRandomInt(0, schede.size() - 1);
+    return schede[rnd];
+}
+
+void TabbyGame::AzioneTerminaQuiz(const std::vector<int>& countRisposte, std::string nomeDitta)
+{
+    bool errore = false;
+    for (int count : countRisposte)
+    {
+        if (count != 1) { // Deve essere esattamente 1 risposta
+            errore = true;
+            break;
+        }
+    }
+
+    if (errore)
+    {
+        Messaggio msg{
+            TipoMsg::INFO,
+            MsgAzione::NONE,
+            "Sei un po' stupido...",
+            "Mi spieghi perchè dovremmo assumere qualcuno che non è neanche in grado di mettere delle crocette su un foglio ???",
+            ""
+        };
+        PushMessaggio(msg);
+    }
+    else if (m_tabbyGuy.GetRep() + m_tabbyGuy.GetFortuna() + GenRandomInt(1, 80) > GenRandomInt(1, 200))
+    {
+        m_tabbyGuy.GetCarriera().SetImpegno(10 + GenRandomInt(0, 20));
+        m_tabbyGuy.GetCarriera().SetGiorniLavorati(1);
+        m_tabbyGuy.GetCarriera().SetStipendio(520 + GenRandomInt(0, 6) * 60);
+        m_tabbyGuy.GetCarriera().SetDitta(nomeDitta);
+
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ora sei sfruttato !", "SEI STATO ASSUNTO ! Ora sei un felice dipendente della " + nomeDitta + " !", ""};
+        PushMessaggio(msg);
+    }
+    else
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Sei inutile", "Mi dispiace ragazzo, ma non sei riuscito a superare il test... Ora puoi anche portare la tua brutta faccia fuori dal mio ufficio, prima che ti faccia buttare fuori a calci... Grazie e arrivederci...", "" };
+        PushMessaggio(msg);
+
+        if (m_tabbyGuy.GetRep() > 10)
+            m_tabbyGuy.DecRep(2);
+
+        NuovoGiorno();
+    }
+}
+
 bool TabbyGame::AzioneCercaLavoro()
 {
     if (!TriggerLavoro())
@@ -1069,10 +1125,10 @@ void TabbyGame::AzioneLeccaculo()
         if (!TriggerLavoro())
             return;
         // TODO: PLAY SOUND + SESSO
-        if (m_tabbyGuy.GetRep() > 20)    // Facendo il leccaculo perdi reputazione e fama
+        if (m_tabbyGuy.GetRep() > 20)    // Facendo il leccaculo perdi reputazione e fama...
             m_tabbyGuy.DecRep(1);
 
-        if (m_tabbyGuy.GetCarriera().GetImpegno() < 99)
+        if (m_tabbyGuy.GetCarriera().GetImpegno() < 99) // Perchè non ti impegnerai mai abbastanza...
             m_tabbyGuy.GetCarriera().IncImpegno(1);
 
         if (GenRandomInt(1, m_tabbyGuy.GetFortuna() + 3) == 1)

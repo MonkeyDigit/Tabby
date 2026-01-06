@@ -6,7 +6,6 @@
 #include <wx/statline.h>
 #include <wx/gbsizer.h>
 #include "TabbyGame.h"
-#define WIN_BKG wxColor(194, 196, 184)
 
 // ---------- APPLICAZIONE ------------
 // il public fa in modo che la classe che stiame creando erediti i membri e le funzioni pubbliche di wxApp

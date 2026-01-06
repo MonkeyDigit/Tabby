@@ -1,7 +1,7 @@
 #include "TabbyGuy.h"
 
 TabbyGuy::TabbyGuy()
-	: m_soldi{ 10 }
+	: m_soldi{ 10 }, m_paghetta{ 20 }
 {
 	m_identita.m_nome = "Alfonso";
 	m_identita.m_cognome = "Signorini";

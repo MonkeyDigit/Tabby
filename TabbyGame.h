@@ -95,6 +95,9 @@ public:
     void AzioneChiediSoldi();
     // Lavoro
     const Ditta& ProponiDitta();
+    void AzioneRifiutaProposta();
+    const QuizScheda& AssegnaQuiz();
+    void AzioneTerminaQuiz(const std::vector<int>& countRisposte, std::string nomeDitta);  // Controlla se il quiz è stato compilato correttamente (1 risposta per domanda)
     bool AzioneCercaLavoro();   	// Restituisce true se possiamo procedere con la ricerca, false altrimenti (es. festivo)
     void AzioneLicenziati();
     void AzioneInformazioni();
@@ -179,7 +182,7 @@ static const std::vector<Ditta> ditte{
         {
             "Azienda leader nella produzione di motoseghe, cerca giovani di età non superiore ad anni n. 22, fini, educati e di gradevole aspetto per la vendita porta a porta di motoseghe cingolate da cava e da cantiere.",
             "Basta fare il disokkupato !",
-            "Lavoro??? Sto' cercando di smettere..."
+            "Lavoro??? Sto cercando di smettere..."
         },
         ""
     },
@@ -199,11 +202,11 @@ static const std::vector<Ditta> ditte{
     {"October Heavy Industries",
         830000000000000, // 83.4 Miliardi di euro
         "Mosca, Russia",
-        "ENERGIA NUCLEARE - l' October Heavy Industries fornisce i seguenti servizi per l'industria nucleare: ",
+        "ENERGIA NUCLEARE - L'October Heavy Industries fornisce i seguenti servizi per l'industria nucleare: ",
         "Servizi di costruzione, equipaggiamento per il trattamento del combustibile, nocciolo dei reattori nucleari, fornitura di plutonio, inceneritori di rifiuti radioattivi, riprocessamento e trattamento delle acque.",
         // Offerta Lavoro
         {
-            "L' October Heavy Industries cerca personale NON SPECIALIZZATO per la pulitura di noccioli dei reattori nucleari e per lo smaltimento dei rifiuti radioattivi. NON è RICHIESTO ALCUN TITOLO DI STUDIO.",
+            "L'October Heavy Industries cerca personale NON SPECIALIZZATO per la pulitura di noccioli dei reattori nucleari e per lo smaltimento dei rifiuti radioattivi. NON è RICHIESTO ALCUN TITOLO DI STUDIO.",
             "Sembra interessante...",
             "Troppo faticoso !"
         },
@@ -213,7 +216,7 @@ static const std::vector<Ditta> ditte{
         18500000000,    // Fatturato di 18.5 Miliardi di euro
         "Vevey, Svizzera",
         "ALIMENTARI - L'Arlond's Food Company distribuisce i seguenti prodotti: ",
-        "Smorties(Dolci), Galac(Dolci), Toffe(Dolci), Vismaro(Salumi), Ethoprop(Pesticida), Scasso(Olio), Mera(Acqua), Sant' Ansemo(Acqua), Mare Fresko(Surgelati), Surgelami(Surgelati, DBCP(Vermicida), Maggio(Dadi), Rodo(Freni a disco)",
+        "Smorties(Dolci), Galac(Dolci), Toffe(Dolci), Vismaro(Salumi), Ethoprop(Pesticida), Scasso(Olio), Mera(Acqua), Sant'Ansemo(Acqua), Mare Fresko(Surgelati), Surgelami(Surgelati, DBCP(Vermicida), Maggio(Dadi), Rodo(Freni a disco)",
         // Offerta Lavoro
         {
             "Cerchiamo giovani dinamici e fantasiosi da inserire nella nostra catena di produzione dei pesticidi, un ramo emergente e gratificante che offre interessanti possibilità di guadagno.",
@@ -247,6 +250,90 @@ static const std::vector<Ditta> ditte{
             "Piccola presenza ??? No, grazie !"
         },
         ""
+    }
+};
+
+// Quiz
+static std::vector<QuizScheda> schede = {
+    {   "Sei ancora disoccupato ? Ah!ah!ah!...",
+        "Sai, vorremmo assumerti subito ma, prima dovresti superare una piccola formalità , questo semplice test attitudinale sarà uno scherzo per una mente sveglia come la tua !",
+        {
+            { "A. Di che colore era il cavallo bianco di Napoleone ?", { "Verde", "Nero", "Rosso" } },
+            { "B. In un lavoro in cantiere il vostro compagno viene travolto da una decina di travi provenienti dall'alto, ne deducete che...", { "Presto avrete bisogno di un nuovo compagno...", "Quel burlone del gruista avrà nuovamente fatto uno dei suoi scherzi.", "Dovete ammazzare subito il vostro compagno prima che soffra !" } },
+            { "C. Vi rendete conto di quello che state facendo ?", { "Sì", "No", "Forse" } }
+        }
+    },
+    {   "Test attitudinale Ministero Pubblica Distruzione",
+        "Non sarai mica in difficoltà, non é da te riflettere su queste banalissime domande... auguri e buon lavoro (si fa per dire)",
+        {
+            { "A. Quale é il lasso di tempo che intercorre tra l'arresto di un mafioso e la sua scarcerazione ?", { "10 nano secondi", "-10 nano secondi (viene liberato prima dell'arresto effettivo)", "60 nano secondi" } },
+            { "B. Quando i vostri genitori credono opportuno non elargire la paghetta settimanale, credete sia il caso di:", { "Prendere esempio da Gaetano Bresci.", "Non ho capito la domanda.", "Noooooooo! come farò adesso a mantenere il cellulare ?" } },
+            { "C. E' vietato il sorpasso", { "in prossimità di centrali nucleari sovietiche.", "In tutte le strade percorse da camionisti infuriati e ubriachi.", "Banchettando sul cruscotto con lupini e mascarpone." } }
+        }
+    },
+    {   "Questionario...",
+        "Leggere attentamente le domande poi con la matita segnare la.....CATZ...!...porc !..AAaaaaahhhhhhhhhh !!!",
+        {
+            { "A. Indovinate, stronzoni, cosa é quell'oggetto tondo con un buco in mezzo, dal quale escono strani odori ?", { "Parigi dall'alto.", "Una marmitta catalitica !", "La mia faccia." } },
+            { "B. Riteniamo che voi che leggete siete tutti dei disadattati e per di più senza lavoro... Ah dimenticavamo, anche un po' stronzi !", { "Lo andate a dire al budello di vostra madre nel casino !", "E io vi dico che siete degli sciocchini ! ...ECCO !", "Andatevela a stroncare nel culo va' !" } },
+            { "C. Come ci si comporta per aumentare la produttività ?", { "Una partita a poker con gli amici in ufficio.", "Assenteismo.", "Ogni tanto si soddisfa sessualmente il direttore." } }
+        }
+    },
+    {   "Nuovi quiz ministeriali",
+        "Tracciate una retta A B, partite poi i suddetti punti per disegnare la secante, l'angolo formatosi dovrà essere di 32 gradi se fallite significa che non siete buoni a un cazzo !",
+        {
+            { "A. Quando si vuole preservare la democrazia bisogna:", { "Sciogliere il parlamento.", "Fare aereoplanini con la costituzione.", "Proclamarsi capo assoluto." } },
+            { "B. Viene prima l'uovo o la gallina ?", { "L'uovo, sicuramente !", "La gallina perché frutto di un'evoluzione !", "Io" } },
+            { "C. Quanto dista la nebulosa del granchio dalla stella del buco strappato ?", { "Tanto, tanto, tanto, tanto, tanto, tanto lontana !", "1.254.643.342 anni luce.", "Tanti metri quante le volte che è maiala !" } }
+        }
+    },
+    {   "Pestasti lo sterco mezzo di strizzo",
+        "Non é male questa pastasciutta, però quest'altra volta ci si rimette il parmigiano eh ?!",
+        {
+            { "A. Allo stadio sei in curva sud, in mezzo alla bolgia vedi una bella figona che balla e si dimena a ritmo di samba...", { "La fai a pezzi con un colpo di mortaio.", "Ti travesti da brasileiro e gli refili il tuo mango.", "Bah, non so ballare la samba." } },
+            { "B. Che ruolo vorresti avere in una squadra di calcio ?", { "Attaccante, sono uno specialista nell'infilare le palle ovunque.", "Tutti ! Gliela faccio vedere io come si gioca a calcio.", "Portiere, sono bravo a prendere le palle di tutti." } },
+            { "C. L'inquinamento atmosferico prodotto dai veicoli con motore a scoppio", { "Dipende dall'isolamento del reattore nucleare.", "Può essere incrementato dall'uso di camion senza marmitte.", "Dipende dal camionista." } }
+        }
+    },
+    {   "Quiz attitudinale per pirloni senza lavoro",
+        "Cortesemente, potrebbe compilare questo test in modo da comprovare la sua discutibile preparazione e mettere in condizioni noi della ditta a risparmiarci la sua orrenda puzza di zarro ?",
+        {   // TODO: CAMBIA
+            { "A. Quando ritornate a casa e trovate la vostra nonna che vi guarda con uno sguardo terrorizzato", { "La fai a pezzi con un colpo di fucile.", "La fate a pezzi con una granata di mortaio.", "Uhm...povera nonna !" } },
+            { "B. Cosa significa: Le calcul de la gran mére d'Ada ?", { "Nel mezzo del cammin di nostra vita.", "I calcoli della nonna di Ada.", "Quei tegami delle vostre madri ?" } },
+            { "C. Cosa può provocare una puzzetta in ufficio ?", { "Un'evaquazione immediata dello stabile.", "Dispersione del personale.", "Disapprovazione da parte del personale." } }
+        }
+    },
+    {   "._..  .._  .._--__.. ._.._-- .__:.-_:::... ---_:.:::..:.--._",
+        "Test attitudinale statale per portatori di handicap. Questo test é esclusivamente adibito all'uso dei non vedenti. I mutilati di guerra sono sempre i benaccetti.",
+        {
+            { "A. -_.-__..   ._  _.._..  ._._._.  .._..  _..._._...._  -", { "Ma state scherzando ?", "Non conosco il braille, non sono cieco.", "Sono un mutilato di guerra !" } },
+            { "B. Come forse avrete capito ci siamo presi gioco di lei... Come reagite davanti un simile sopruso ?", { "Male, molto male !", "Ora vi faccio a pezzi con una motosega !", "I dipendenti devono essere sempre sottomessi." } },
+            { "C. Da quanti e quali atomi é composta la molecola della benzina ?", { "2 atomi di potassio e mezzo.", "12 atomi di idrogeno e 24 di carbonio.", "8 atomi di idrogeno e 3 di potassio." } }
+        }
+    },
+    {   "Provaci sarai fortunato",
+        "Con questo test verificheremo la tempra di ogni aspirante operaio per vedere la sua validità e la sua devozione al lavoro nonche alla sua tenuta di strada...",
+        {
+            { "A. Come forse avete capito dalla didascalia sul fronte del documento crediamo opportuno domandarvi se possedete una Fìat Tempra.", { "Purltroppo No!", "No, ma se mi assumete potrò comprarla !", "Ehm...Um...err..certamente !" } },
+            { "B. Vi é stato facile trovare altri lavori ?", { "Come rubare una mazza ferrata a un bambino !", "Come bere un bicchier d'acqua (e veleno) !", "Sì, sì, sì, sì, sì !" } },
+            { "C. Vi trovate in una strada buia e desolata...", { "Speriamo non mi rubino il portafogli !", "La persona che trovo la faccio a pezzi !", "Devo tornare a casa, domani devo andare al lavoro." } }
+        }
+    },
+    {   "Test lavorativo per disoccupati",
+        "I nuovi QUIZ MINISTERIALI.\nIn vigore dal 15 settembre 1997",
+        {
+            { "A. Come si può trasmettere l'A.I.D.S. ?", { "In TV.", "Sulla Panda.", "Sulla Panda?" } },
+            { "B. Il mod. 740 si compila seguendo...", { "Ordine e disciplina !", "Una vecchietta brandendo un'ascia !", "Le leggi n°345 cod.2 comma 3 paragrafo 7°" } },
+            { "C. Come si provoca una combustione in camera stagna ?", { "A forza di rutti abominevoli.", "Con un pacchetto di fiammiferi.", "Con un pacchetto di dinamite ed armi assortite." } }
+        }
+    },
+    {   "Test attitudinale",
+        "Dal paterno terrazzo donde lucean le stelle illuminar con luci rubelle ci viene ora la rima in -azzo e si é sciupata tutta la poesia .",
+        {
+            { "A. Quando si esegue una colata di titanio ad elevata temperatura", { "Si verifichino bolle nella colata.", "Si rompe il catino rovesciando il titanio liquido sui lavoratori.", "Volino le bestemmie." } },
+            { "B. Solitamente in gergo lavorativo si usa dire", { "Bestemmie varie", "Governo ladro", "Che voglia di lavorare che ho !" } },
+            { "C. Con il sistema anti infortunistico sul lavoro... normalmente accade che", { "Tutti gli operai possono lavorare tranquilli", "Tutti gli operai crepano ugualmente per gli incidenti", "Tutti gli operai bestemmiano durante il lavoro." } }
+        }
     }
 };
 
@@ -290,7 +377,7 @@ static const std::vector<std::string> frasiScuola = {
     "Con lo scooter di un tuo amico, ti scontri contro la macchina del prof di {MATERIA}.",
     "Sputi dalla finestra della tua classe e centri il prof di {MATERIA}.",
     "Forse dovevi studiare di più {MATERIA}.",
-    "Non riesci a dire una parola durante l' interrogazione di {MATERIA}.",
+    "Non riesci a dire una parola durante l'interrogazione di {MATERIA}.",
     "Offendi la moralità della madre del prof di {MATERIA}.",
     "Ti sei dimenticato del compito in classe di {MATERIA}.",
     "Non ti impegni abbastanza delle ore di {MATERIA}.",

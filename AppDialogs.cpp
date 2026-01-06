@@ -547,10 +547,7 @@ void DlgLavoro::OnCercaLavoro(wxCommandEvent& event)
 {
 	if (m_game.AzioneCercaLavoro())
 	{
-		// Chiediamo al CERVELLO (TabbyGame) quale lavoro esce per il nostro tabbozzo
-		// TODO: FARE REFERENCE?
-		const Ditta& ditta = m_game.ProponiDitta();
-		DlgOffertaLavoro dlg{ this, ditta };
+		DlgOffertaLavoro dlg{ this, m_game };
 		dlg.Centre();
 		dlg.ShowModal();
 	}
@@ -605,23 +602,25 @@ void DlgLavoro::OnSciopera(wxCommandEvent& event)
 void DlgLavoro::AggiornaInterfaccia()
 {
 	TabbyGuy& guy = m_game.GetTabbyGuy();
-	std::string nomeDitta{};
-	if (guy.HaUnLavoro())
-		nomeDitta = ditte[guy.GetCarriera().GetIdDitta()].m_nome;
 
-	m_lblDitta->SetLabel("Ditta: " + nomeDitta);
+	m_lblDitta->SetLabel("Ditta: " + guy.GetCarriera().GetNomeDitta());
 	m_lblImpegno->SetLabel("Impegno " + std::to_string(guy.GetCarriera().GetImpegno()) + "/100");
 	m_lblStipendio->SetLabel("Stipendio: " + m_game.GetSoldiStr(guy.GetCarriera().GetStipendio()));
 	m_lblSoldi->SetLabel("Soldi: " + m_game.GetSoldiStr(guy.GetSoldi()));
 }
 
-DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, const Ditta& ditta)
-	: wxDialog{ parent, wxID_ANY, "Annunci - Offerta di lavoro", wxDefaultPosition, wxDefaultSize,  wxCAPTION }
+DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Annunci - Offerta di lavoro", wxDefaultPosition, wxDefaultSize,  wxCAPTION },
+	m_game{game}
 {
 	this->SetFont(parent->GetFont());
 	this->SetBackgroundColour(*wxBLACK);
 	this->SetForegroundColour(*wxRED);
 
+	// Chiediamo al CERVELLO (TabbyGame) quale lavoro esce per il nostro tabbozzo
+	const Ditta& ditta = m_game.ProponiDitta();
+	m_ditta = ditta.m_nome;
+	
 	// TODO: Immagine e icona sotto
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(500,300), wxBORDER_SUNKEN };
@@ -660,12 +659,99 @@ DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, const Ditta& ditta)
 
 void DlgOffertaLavoro::OnAccetta(wxCommandEvent& event)
 {
-	// TODO: COMPLETA
+	const QuizScheda& quiz = m_game.AssegnaQuiz();
 	this->EndModal(wxID_ANY);
+	DlgQuiz dlg{ this, m_game, quiz, m_ditta };
+	dlg.Centre();
+	dlg.ShowModal();
 }
 
 void DlgOffertaLavoro::OnRifiuta(wxCommandEvent& event)
 {
-	// TODO: COMPLETA
+	m_game.AzioneRifiutaProposta();
+	this->EndModal(wxID_ANY);
+}
+
+DlgQuiz::DlgQuiz(wxWindow* parent, TabbyGame& game, const QuizScheda& quiz, std::string ditta)
+	: wxDialog{ parent, wxID_ANY, quiz.m_titolo, wxDefaultPosition, wxDefaultSize,  wxCAPTION },
+	m_game{ game }, m_ditta{ ditta }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(WIN_BKG);
+
+	// Inizializziamo il vettore per contenere 3 gruppi di risposte
+	m_gruppiRisposte.resize(3);
+
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+	wxPanel* pnlMain = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* pnlSizer = new wxBoxSizer{ wxVERTICAL };
+
+	// INTRODUZIONE
+	wxStaticText* lblIntro = new wxStaticText(pnlMain, wxID_ANY, quiz.m_intro, wxDefaultPosition, wxSize(-1, -1), wxALIGN_CENTER);
+	lblIntro->Wrap(700);
+	// Un po' di grassetto per l'intro
+	wxFont fontIntro = lblIntro->GetFont();
+	fontIntro.SetWeight(wxFONTWEIGHT_BOLD);
+	lblIntro->SetFont(fontIntro);
+
+	pnlSizer->Add(lblIntro, 0, wxALL | wxALIGN_CENTER, 10);
+	pnlSizer->Add(new wxStaticLine(pnlMain), 0, wxEXPAND | wxALL, 5);
+
+	// LE TRE DOMANDE
+	for (int i = 0; i < 3; i++)
+	{
+		AggiungiDomanda(pnlMain, pnlSizer, quiz.m_domande[i], i);
+		pnlSizer->Add(new wxStaticLine(pnlMain), 0, wxEXPAND | wxALL, 5);
+	}
+
+	// BOTTONE FINALE
+	wxButton* btnFinito = new wxButton(pnlMain, wxID_ANY, "Clicca qui quando hai finito di fare il test-a di cazzo!", wxDefaultPosition, wxSize(-1, 40));
+	btnFinito->Bind(wxEVT_BUTTON, &DlgQuiz::OnFinito, this);
+	pnlSizer->Add(btnFinito, 0, wxALL | wxALIGN_CENTER, 15);
+
+
+	pnlMain->SetSizer(pnlSizer);
+	mainSizer->Add(pnlMain, 1, wxEXPAND | wxALL, 5);
+
+	this->SetSizerAndFit(mainSizer);
+	this->Centre();
+}
+
+void DlgQuiz::AggiungiDomanda(wxWindow* parent, wxSizer* sizer, const QuizDomanda& domanda, int indiceDomanda)
+{
+	wxStaticText* txtDomanda = new wxStaticText(parent, wxID_ANY, domanda.m_testo);
+	txtDomanda->Wrap(700);
+	// Colore per distinguere la domanda
+	txtDomanda->SetForegroundColour(*wxBLUE);
+
+	sizer->Add(txtDomanda, 0, wxALL, 10);
+
+	// Creiamo le 3 Checkbox
+	for (int i = 0; i < 3; i++)
+	{
+		wxCheckBox* chk = new wxCheckBox(parent, wxID_ANY, domanda.m_risposte[i]);
+		sizer->Add(chk, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
+
+		// Salviamo il puntatore nel gruppo giusto per controllarlo dopo
+		m_gruppiRisposte[indiceDomanda].push_back(chk);
+	}
+}
+
+void DlgQuiz::OnFinito(wxCommandEvent& event)
+{
+	// Raccogliamo solo i dati (Quante crocette per ogni domanda?)
+	std::vector<int> conteggi;
+
+	for (const auto& gruppo : m_gruppiRisposte)
+	{
+		int crocette = 0;
+		for (auto cb : gruppo) {
+			if (cb->GetValue()) crocette++;
+		}
+		conteggi.push_back(crocette);
+	}
+
+	// Inviamo i dati al cervello
+	m_game.AzioneTerminaQuiz(conteggi, m_ditta);
 	this->EndModal(wxID_ANY);
 }

@@ -523,9 +523,9 @@ void TabbyGame::GestioneEventiCasuali()
             if (m_tabbyGuy.GetFama() > 35)   // Fama < 35 = nessuna speranza...
             {
                 // TODO: Sesso m f
-
+                Tipa tipa = GeneraTipa();
                 // TODO: Dialog una tipa ci prova
-                Messaggio msg{ TipoMsg::SCELTA, MsgAzione::NONE, "Qualcuno ti caga...", "Una tipa, di nome [nome] (Figosità [fama]), ci prova con te...\nCi stai ???", "" };
+                Messaggio msg{ TipoMsg::SCELTA, MsgAzione::TIPA_CI_PROVA, "Qualcuno ti caga...", "Una tipa, di nome "+tipa.GetNome()+" (Figosità"+std::to_string(tipa.GetFama())+"), ci prova con te...\nCi stai ???", "" };
                 PushMessaggio(msg);
             }
 
@@ -573,8 +573,12 @@ void TabbyGame::GestioneEventiCasuali()
         else if (caso == 43)    // Domande inutili
         {
             // TODO: COMPLETARE
-            Messaggio msg{ TipoMsg::SCELTA, MsgAzione::NONE, "Domande inutili della tipa...", "Mi ami ???", "" };
-            PushMessaggio(msg);
+            if (m_tabbyGuy.HaTipa())
+            {
+                Messaggio msg{ TipoMsg::SCELTA, MsgAzione::TIPA_MI_AMI, "Domande inutili della tipa...", "Mi ami ???", "" };
+                PushMessaggio(msg);
+
+            }
             /*
             i = MessageBox(hInstance,
                                    "Mi ami ???",
@@ -595,8 +599,11 @@ void TabbyGame::GestioneEventiCasuali()
         else if (caso == 44)
         {
             // TODO: COMPLETARE
-            Messaggio msg{ TipoMsg::SCELTA, MsgAzione::NONE, "Domande inutili della tipa...", "Ma sono ingrassata ???", "" };
-            PushMessaggio(msg);
+            if (m_tabbyGuy.HaTipa())
+            {
+                Messaggio msg{ TipoMsg::SCELTA, MsgAzione::TIPA_INGRASSATA, "Domande inutili della tipa...", "Ma sono ingrassata ???", "" };
+                PushMessaggio(msg);
+            }
             /*
             i = MessageBox(hInstance,
                                    "Ma sono ingrassata ???",
@@ -669,7 +676,6 @@ void TabbyGame::ApplicaScelta(MsgAzione msgAzione, bool sceltaYes)
                 PushMessaggio(msg);
             }
         }
-
         NuovoGiorno();
         break;
 
@@ -986,6 +992,43 @@ Tipa TabbyGame::GeneraTipa()
     int fama = GenRandomInt(30, 100);
     std::string nome = nomiTipe[GenRandomInt(0, nomiTipe.size() - 1)];
     return Tipa{ nome, fama };
+}
+
+void TabbyGame::AzioneProvaci(const Tipa& tipa)
+{
+    if ((tipa.GetFama() * 2 + GenRandomInt(0, 49)) <= (m_tabbyGuy.GetFama() + m_tabbyGuy.GetRep() + GenRandomInt(0, 29)))
+    {
+        // E' andata bene...
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "E' andata bene !", "Con il tuo fascino nascosto da tabbozzo, seduci la tipa e ti ci metti insieme.", "" };
+        PushMessaggio(msg);
+        // ...Ma comunque controlla che tu non abbia già una tipa
+        if (m_tabbyGuy.HaTipa())
+        {
+            // TODO: DUE DONNE
+        }
+        else
+        {   // Bravo, non hai una tipa
+            m_tabbyGuy.SetTipa(tipa);
+            m_tabbyGuy.SetRapporti(GenRandomInt(30, 45));
+            m_tabbyGuy.IncFama(tipa.GetFama() * 0.1f);
+        }
+    }
+    else
+    {
+        // Fai cagare...
+        // TODO: SUONO
+        // TODO: LOG 2 di picche
+        m_tabbyGuy.DecRep(2);
+        m_tabbyGuy.DecFama(2);
+
+        // TODO: CARICA MESSAGGIO SPECIALE TIPA
+        int rnd = GenRandomInt(0, frasiSfighe.size() - 1);
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Due di picche", frasiSfighe[rnd], "" };
+        PushMessaggio(msg);
+        // TODO: IMPLEMENTA LISTA FRASI
+    }
+
+    NuovoGiorno();
 }
 
 void TabbyGame::AzioneTerminaQuiz(const std::vector<int>& countRisposte, std::string nomeDitta)

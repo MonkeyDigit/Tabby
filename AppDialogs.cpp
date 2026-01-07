@@ -1224,10 +1224,9 @@ void DlgTipa::AggiornaInterfaccia()
 
 DlgIncontroTipa::DlgIncontroTipa(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Esci allo scoperto...", wxDefaultPosition, wxDefaultSize, wxCAPTION },
-	m_game{game}
+	m_game{ game }, m_tipa{}
 {
-	// TODO: REFERENCE ??
-	Tipa tipa = m_game.GeneraTipa();
+	m_tipa = m_game.GeneraTipa();
 
 	this->SetFont(parent->GetFont());
 	this->SetBackgroundColour(parent->GetBackgroundColour());
@@ -1241,11 +1240,11 @@ DlgIncontroTipa::DlgIncontroTipa(wxWindow* parent, TabbyGame& game)
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
 
 	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, "Nome:"), 0, wxALL & ~wxBOTTOM, 5);
-	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, tipa.GetNome(), wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
+	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, m_tipa.GetNome(), wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
 	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, "Figosità:"), 0, wxALL & ~wxBOTTOM, 5);
-	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, std::to_string(tipa.GetFama())+"/100", wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
+	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, std::to_string(m_tipa.GetFama())+"/100", wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
 	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, "Giudizio\ncomplessivo:"), 0, wxALL & ~wxBOTTOM, 5);
-	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, tipa.GetDesc(), wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
+	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, m_tipa.GetDesc(), wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
 	sizerInfo->AddStretchSpacer();
 
 	wxButton* btnProvaci = new wxButton(pnlInfo, wxID_ANY, "Ci provo !", wxDefaultPosition, wxSize(250, -1));
@@ -1266,6 +1265,8 @@ DlgIncontroTipa::DlgIncontroTipa(wxWindow* parent, TabbyGame& game)
 
 void DlgIncontroTipa::OnProvaci(wxCommandEvent& event)
 {
+	m_game.AzioneProvaci(m_tipa);
+	this->EndModal(wxID_ANY);
 }
 
 void DlgIncontroTipa::OnLasciaStare(wxCommandEvent& event)

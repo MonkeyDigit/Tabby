@@ -51,6 +51,7 @@ public:
 	// RAPPORTO TIPA
 	void IncRapporti(int punti);
 	void DecRapporti(int punti);
+	void SetTipa(const Tipa& tipa) { m_tipa = tipa; };
 	void LasciaTipa();
 	// LAVORO
 	void Licenziati();

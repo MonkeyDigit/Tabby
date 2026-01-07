@@ -19,9 +19,6 @@ constexpr int ATTESA_MAX = 7;
 // TODO: Spegnimi
 // TODO: Configuration
 // TODO: Personal info
-// TODO: Famiglia
-// TODO: Compagnia
-// TODO: No money
 
 
 // Sotto il cofano, i soldi di tabby e in generale il sistema monetario del gioco, viene gestito di base come euro, ma in base alla data sono messe a disposizione delle funzione per effettuare la conversione in lire, che fanno da "maschera"
@@ -41,7 +38,10 @@ enum class MsgAzione {
     // Lavoro
     LICENZIATI,
     // TIPA
-    LASCIA_TIPA
+    LASCIA_TIPA,
+    TIPA_MI_AMI,
+    TIPA_INGRASSATA,
+    TIPA_CI_PROVA
 };
 
 struct Messaggio {
@@ -100,8 +100,6 @@ public:
     const Ditta& ProponiDitta();
     void AzioneRifiutaProposta();
     const QuizScheda& AssegnaQuiz();
-    // TODO: REFEREMCE ???
-    Tipa GeneraTipa();
     void AzioneTerminaQuiz(const std::vector<int>& countRisposte, std::string nomeDitta);  // Controlla se il quiz è stato compilato correttamente (1 risposta per domanda)
     bool AzioneCercaLavoro();   	// Restituisce true se possiamo procedere con la ricerca, false altrimenti (es. festivo)
     void AzioneLicenziati();
@@ -112,6 +110,8 @@ public:
     // Discoteca
     void AzionePagaDisco(int discoIndex);
     // Tipa
+    Tipa GeneraTipa();
+    void AzioneProvaci(const Tipa& tipa);
     void AzioneLasciaTipa();
     void AzioneEsciTipa();
     void AzioneTelefonaTipa();
@@ -153,6 +153,29 @@ private:
 	// LOGICA MONETARIA
 	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
 	long long ConvertiValuta(long long valoreBase) const;
+};
+
+static const std::vector<std::string> frasiSfighe{
+    "Non ti caga nemmeno di striscio...",
+    "Mi dispiace...insomma, ho già il ragazzo.. ",
+    "Non vorrei offendere i tuoi sentimenti, ma mi fai proprio cagare...",
+    "Ti amo troppo ma non potrei mai riuscire a stare con te...",
+    "Sei la persona più spregevole che ho incontrato sulla faccia della terra...",
+    "Meglio morire che mettermi con uno come te...",
+    "Spero che tu stia scerzando... in caso contrario devo informati che il mio ragazzo è campione di lotta libera...",
+    "Vorrei tanto mettermi con te, davvero... ora però devo prendermi una pausa per riflettere, spero che tu mi capisca...",
+    "Sono già impegnata... se solo me lo avessi chiesto due giorni fa...",
+    "Mi dispiace ma non credo che tu sia il mio tipo... Il mio amore è alto, biondo con gli occhi azzurri...",
+    "No.",
+    "Sono appena uscita da una storia molto triste ed ora non mi fido più di voi uomini.",
+    "Voi uomini siete tutti stronzi... Chissà quante altre povere ragazze hai ingannato con il tuo sorrisetto di merda...",
+    "Cioè zerella... non ci sto dentro...",
+    "Mettermi con te ???? Ha,ha,ha !",
+    "Nooooooo !",
+    "Comincia a ritirati su i pantaloni...",
+    "Forse mi hai preso per la ragazza sbagliata...",
+    "Vai a farti fottere...",
+    "O, scusa, mi sono dimenticata di dirti che sono impegnata..."
 };
 
 static const std::vector<std::string> nomiTipe{

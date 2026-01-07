@@ -193,7 +193,7 @@ public:
 	DlgIncontroTipa(wxWindow* parent, TabbyGame& game);
 private:
 	TabbyGame& m_game;
-
+	Tipa m_tipa;
 	void OnProvaci(wxCommandEvent& event);
 	void OnLasciaStare(wxCommandEvent& event);
 };

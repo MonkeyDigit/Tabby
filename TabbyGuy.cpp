@@ -96,6 +96,7 @@ void TabbyGuy::DecRep(int punti) {
 
 void TabbyGuy::IncFama(int punti) {
 	if (punti > 0) m_fama += punti;
+	if (m_fama > 100) m_fama = 100;
 }
 
 void TabbyGuy::DecFama(int punti) {

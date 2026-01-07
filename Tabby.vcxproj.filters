@@ -45,6 +45,9 @@
     <ClCompile Include="Scuola.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Disco.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TabbyApp.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Carriera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Disco.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

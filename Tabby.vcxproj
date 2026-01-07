@@ -126,6 +126,7 @@
     <ClCompile Include="AppDialogs.cpp" />
     <ClCompile Include="Chrono.cpp" />
     <ClCompile Include="AppDialogs.h" />
+    <ClCompile Include="Disco.cpp" />
     <ClCompile Include="Scooter.cpp" />
     <ClCompile Include="Scuola.cpp" />
     <ClCompile Include="TabbyApp.cpp" />
@@ -137,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="Chrono.h" />
     <ClInclude Include="Carriera.h" />
+    <ClInclude Include="Disco.h" />
     <ClInclude Include="Scuola.h" />
     <ClInclude Include="TabbyApp.h" />
     <ClInclude Include="Scooter.h" />

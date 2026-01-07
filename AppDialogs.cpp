@@ -781,6 +781,7 @@ DlgElencoDitte::DlgElencoDitte(wxWindow* parent, TabbyGame& game)
 	lblTitolo->SetFont(fontTitolo);
 
 	mainSizer->Add(lblTitolo, 0, wxALL | wxALIGN_CENTER, 10);
+	mainSizer->Add(new wxStaticText(this, wxID_ANY, "Seleziona una ditta per visualizzare ulteriori informazioni"), wxALIGN_CENTER | wxALL, 5);
 
 	// ======================================================================================
 	// PUNTO 1: BORDI (Grid Lines)
@@ -949,4 +950,151 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 
 	this->SetSizerAndFit(mainSizer);
 	this->Centre();
+}
+
+DlgDisco::DlgDisco(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Disco", wxDefaultPosition, wxDefaultSize, wxCAPTION },
+	m_game{ game }, m_selectedIndex{ -1 }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+
+	// Sizer Principale Verticale
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+
+	wxPanel* pnlBody = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
+	wxPanel* pnlBottom = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
+
+	// COLONNA SINISTRA (Radio Buttons)
+	wxPanel* pnlLocali = new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerLocali = new wxBoxSizer{ wxVERTICAL };
+
+	// Creiamo i radio button dinamicamente
+	for (size_t i = 0; i < discoteche.size(); i++)
+	{
+		// wxRB_GROUP solo al primo, ma vogliamo deselezionarli all'inizio
+		long style = (i == 0) ? wxRB_GROUP : 0;
+		wxRadioButton* rad = new wxRadioButton(pnlLocali, wxID_ANY, discoteche[i].m_nome, wxDefaultPosition, wxDefaultSize, style);
+
+		// Hack per deselezionare visivamente tutto all'inizio (wxWidgets tende a selezionare il primo del gruppo)
+		rad->SetValue(false);
+		// Bind dell'evento (usiamo una lambda per catturare l'indice 'i')
+		rad->Bind(wxEVT_RADIOBUTTON, [this, i](wxCommandEvent& ev) {
+			m_selectedIndex = (int)i;
+			OnRadioSelect(ev);
+			});
+
+		m_radios.push_back(rad);
+		sizerLocali->Add(rad, 0, wxLEFT | wxTOP | wxBOTTOM, 5);
+	}
+
+	pnlLocali->SetSizer(sizerLocali);
+	sizerBody->Add(pnlLocali, 0, wxEXPAND | wxALL, 5);
+
+	// Un pannello incassato per il testo
+	wxPanel* pnlDesc = new wxPanel(pnlBody, wxID_ANY, wxDefaultPosition, wxSize(550, -1), wxBORDER_SUNKEN);
+	wxBoxSizer* sizerDesc = new wxBoxSizer{ wxVERTICAL };
+
+	m_lblDescrizione = new wxStaticText(pnlDesc, wxID_ANY, "");
+
+	m_lblPrezzo = new wxStaticText(pnlDesc, wxID_ANY, "");
+	wxFont fBold = m_lblPrezzo->GetFont();
+	fBold.SetWeight(wxFONTWEIGHT_BOLD);
+	m_lblPrezzo->SetFont(fBold);
+
+	sizerDesc->Add(m_lblDescrizione, 1, wxEXPAND | wxALL, 10);
+	sizerDesc->Add(new wxStaticLine(pnlDesc), 0, wxEXPAND | wxALL, 2);
+	sizerDesc->Add(m_lblPrezzo, 0, wxALL, 5);
+
+	pnlDesc->SetSizer(sizerDesc);
+	sizerBody->Add(pnlDesc, 1, wxEXPAND | wxALL, 5);
+	pnlBody->SetSizer(sizerBody);
+	mainSizer->Add(pnlBody, 1, wxEXPAND | wxALL, 5);
+
+	// --- PARTE INFERIORE (Icona, Soldi, Bottoni) ---
+	// Icona (Placeholder per "ZDISCO")
+	wxStaticText* iconBox = new wxStaticText(pnlBottom, wxID_ANY, "[ICON]", wxDefaultPosition, wxSize(-1, -1), wxALIGN_CENTER | wxBORDER_SIMPLE);
+	sizerBottom->Add(iconBox, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
+
+	// Soldi
+	wxString soldiStr = "Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi());
+	m_lblSoldiAttuali = new wxStaticText(pnlBottom, wxID_ANY, soldiStr);
+	sizerBottom->Add(m_lblSoldiAttuali, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 15);
+
+	sizerBottom->AddStretchSpacer();
+
+	// Bottoni
+	wxButton* btnOk = new wxButton(pnlBottom, wxID_OK, "OK", wxDefaultPosition, wxSize(-1, -1));
+	wxButton* btnCancel = new wxButton(pnlBottom, wxID_CANCEL, "Cancel", wxDefaultPosition, wxSize(-1, -1));
+
+	// Bind OK manuale per fare i controlli prima di chiudere
+	btnOk->Bind(wxEVT_BUTTON, &DlgDisco::OnOk, this);
+
+	sizerBottom->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxALL, 10);
+	sizerBottom->Add(btnCancel, 0, wxALIGN_CENTER_VERTICAL | wxALL, 10);
+	pnlBottom->SetSizer(sizerBottom);
+
+	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL, 10);
+
+	this->SetSizerAndFit(mainSizer);
+	this->Centre();
+}
+
+void DlgDisco::OnRadioSelect(wxCommandEvent& event)
+{
+	if (m_selectedIndex < 0) return;
+
+	const Disco& d = discoteche[m_selectedIndex];
+
+	// Aggiorna Descrizione
+	m_lblDescrizione->SetLabel(d.m_descrizione);
+	m_lblDescrizione->Wrap(500); // Wrappa il testo per stare nel pannello
+
+	// Aggiorna Prezzo e Info
+	wxString info = "Ingresso: " + m_game.GetSoldiStr(d.m_prezzoIngresso);
+
+	// Verifica Scooter (solo visuale qui)
+	bool haScooter = (m_game.GetTabbyGuy().GetScooter().GetNome() != "Nessuno");
+	if (d.m_fuoriPorta && !haScooter) {
+		info += "\n(Serve Scooter!)";
+		m_lblPrezzo->SetForegroundColour(*wxRED);
+	}
+	else {
+		m_lblPrezzo->SetForegroundColour(*wxBLACK);
+	}
+
+	m_lblPrezzo->SetLabel(info);
+
+	// Aggiorna layout del pannello descrizione
+	m_lblDescrizione->GetParent()->Layout();
+
+	this->Fit();
+}
+
+void DlgDisco::OnOk(wxCommandEvent& event)
+{
+	// 1. Controllo Selezione
+	if (m_selectedIndex < 0) {
+		wxMessageBox("Non hai selezionato nessun locale!", "Tabboz Simulator", wxOK | wxICON_EXCLAMATION);
+		return;
+	}
+
+	const Disco& d = discoteche[m_selectedIndex];
+
+	// 2. Controllo Scooter (Logica bloccante)
+	bool haScooter = (m_game.GetTabbyGuy().GetScooter().GetNome() != "Nessuno");
+	if (d.m_fuoriPorta && !haScooter) {
+		wxMessageBox("Questo locale e' fuori citta'!\nTi serve lo scooter per arrivarci, sfigato!", "A piedi?", wxOK | wxICON_HAND);
+		return; // Non chiude la finestra
+	}
+
+	// 4. Esegui Azione nel Gioco (che controllerà i soldi e la fama)
+	// Chiama la funzione logica che hai già in TabbyGame
+	m_game.AzionePagaDisco(m_selectedIndex);
+	ManifestaEventi(this, m_game);
+
+	// Chiudi la finestra
+	EndModal(wxID_OK);
 }

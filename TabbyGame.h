@@ -2,6 +2,7 @@
 #include <random>
 #include <vector>
 #include "TabbyGuy.h"
+#include "Disco.h"
 #include "Chrono.h"
 // Per attivare il debug
 #define TABBY_DEBUG
@@ -104,6 +105,8 @@ public:
     void AzioneLeccaculo();
     void AzioneAumentoSalario();
     void AzioneSciopera();
+    // Discoteca
+    void AzionePagaDisco(int discoIndex);
 
     // Stringa formattata (es. "1.000 L." o "5 €")
     std::string GetSoldiStr(long long valoreBase) const;
@@ -142,6 +145,89 @@ private:
 	// LOGICA MONETARIA
 	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
 	long long ConvertiValuta(long long valoreBase) const;
+};
+
+static const std::vector<Disco> discoteche = {
+        {
+            "Splush",
+            "Questo locale buio e spazioso si estende per circa 134.000 metri quadrati sotto la città. Di grande effetto con degli enormi tubi fognari che rallegrano l'ambiente.\nChiuso il Lunedì.",
+            Chrono::WeekDay::monday,
+            false,
+            20, // Prezzo originale
+            30,
+            15,
+            2
+        },
+        {
+            "QB",
+            "Spaziosa discoteca di tendenza ricavata da un'antica stalla. Odori e sapori tipici di una volta; si balla tra vagonate di letame e mangime. A mezzanotte casola e cotiche per tutti.\nChiuso il Giovedì",
+            Chrono::WeekDay::thursday,
+            false,
+            15,
+            0,
+            7,
+            1
+        },
+        {
+            "Spoking",
+            "Da sempre nome di grande richiamo per modelle, modaioli, giovani della Milano bene, tabbozzi e non. Per chi ama gli ambienti modaioli. A due passi dalla discarica di Cerro Maggiore.\n Chiuso il Lunedì",
+            Chrono::WeekDay::monday,
+            false,
+            16,
+            0,
+            8,
+            1
+        },
+        {
+            "Madame Close",
+            "Elegante discobar e discoteca dove non mancano le sorprese. Ex bordello di periferio ora trasformato in un lussuoso bordello del centro storico.\nSelezione all'ingresso - Chiuso il Lunedì.",
+            Chrono::WeekDay::monday,
+            false,
+            20,
+            35,
+            15,
+            3
+        },
+        {
+            "Number 0",
+            "Che dire di questo storico locale? Meglio non dire niente...\nChiuso il Mercoledì.",
+            Chrono::WeekDay::wednesday,
+            false,
+            15,
+            0,
+            6,
+            2
+        },
+        {
+            "Spuce",
+            "Il massimo dell'economico per il tabbozzo che non deve chiedere mai (ai genitori i soldi per comprare le sigarette).\nChiuso il Martedì",
+            Chrono::WeekDay::tuesday,
+            false,
+            10,
+            0,
+            5,
+            2
+        },
+        {
+            "Honeywood",
+            "Locale di tendenza ispirato ad una acciaieria. All'interno tra altiforni e colate di acciao bollente, potete degustare ottimi piatti caraibici.\nChiuso il Lunedì",
+            Chrono::WeekDay::monday,
+            false,
+            16,
+            0,
+            8,
+            3
+        },
+        {
+            "Strap Line",
+            "Discoteca fuori porta, con ampie terrazze dove si può ballare all'aperto ed una splendida vista sulle montagne innevate del bassopiano siberiano orientale.\nAutostrada del Brennero uscita Novosibirsk - Chiuso la Domenica.",
+            Chrono::WeekDay::sunday,
+            true,
+            20,
+            0,
+            9,
+            2
+        }
 };
 
 // TODO: SPOSTARE STA ROBA DA QUALCHE PARTE?

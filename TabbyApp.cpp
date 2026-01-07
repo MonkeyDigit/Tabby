@@ -304,8 +304,12 @@ void TabbyFrame::OnScooter(wxCommandEvent& event)
 
 void TabbyFrame::OnDisco(wxCommandEvent& event)
 {
-
+	DlgDisco dlg{ this, m_game };
+	dlg.Centre();
+	dlg.ShowModal();
+	this->AggiornaInterfaccia();
 }
+
 void TabbyFrame::OnScuola(wxCommandEvent& event)
 {
 	if (m_game.TriggerScuola())
@@ -322,7 +326,7 @@ void TabbyFrame::OnScuola(wxCommandEvent& event)
 
 void TabbyFrame::OnNegozi(wxCommandEvent& event)
 {
-
+	// TODO: IMPLEMENTA
 }
 
 void TabbyFrame::OnLavoro(wxCommandEvent& event)
@@ -356,7 +360,7 @@ void TabbyFrame::OnFamiglia(wxCommandEvent& event)
 
 void TabbyFrame::OnTipa(wxCommandEvent& event)
 {
-
+	// TODO: IMPLEMENTA
 }
 
 void TabbyFrame::OnEsci(wxCommandEvent& event)

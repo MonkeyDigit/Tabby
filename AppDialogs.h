@@ -146,6 +146,26 @@ public:
 	DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta);
 };
 
+
+class DlgDisco : public wxDialog {
+public:
+	DlgDisco(wxWindow* parent, TabbyGame& game);
+
+private:
+	TabbyGame& m_game;
+	int m_selectedIndex; // Indice della discoteca selezionata (-1 se nessuna)
+
+	// GUI Elements
+	std::vector<wxRadioButton*> m_radios;
+	wxStaticText* m_lblDescrizione;
+	wxStaticText* m_lblPrezzo; // Opzionale, per mostrare info extra
+	wxStaticText* m_lblSoldiAttuali;
+
+	// Eventi
+	void OnRadioSelect(wxCommandEvent& event);
+	void OnOk(wxCommandEvent& event);
+};
+
 class DlgEvento : public wxDialog {
 public:
 	DlgEvento(wxWindow* parent, Messaggio& msg);

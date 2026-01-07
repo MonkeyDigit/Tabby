@@ -1198,3 +1198,47 @@ void TabbyGame::AzioneSciopera()
         // TODO: AGGIORNA LAVORO
     }
 }
+
+void TabbyGame::AzionePagaDisco(int discoIndex)
+{
+    const Disco& disco = discoteche[discoIndex];
+    if (m_date.GetWeekDay() == disco.m_giornoChiuso)
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Giorno di chiusura", "Un cartello recita che oggi è il giorno di chiusura settimanale...", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    if (disco.m_fuoriPorta && m_tabbyGuy.GetScooter().GetAttivita() != Attivita::IN_GIRO)
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Discoteca fuori porta", "Senza lo scooter non puoi andare nelle discoteche fuori porta...", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    // TODO: SESSO
+    if (m_tabbyGuy.GetFama() < disco.m_reqFama)
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Selezione all'ingresso", "Mi dispiace signore, conciato così, qui non può entrare...\nVenga vestito meglio la prossima volta, signore.", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    // TODO: PREZZO RIDOTTO SE FEMMINA
+
+    if (!m_tabbyGuy.SpendiSoldi(disco.m_prezzoIngresso))
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Bella figura di merda...", "Appena entraro ti accorgi di non avere abbastanza soldi per pagare il biglietto.\nUn energumeno buttafuori ti deposita gentilmente in un cassonetto della spazzatura poco distante dalla discoteca.", "" };
+        PushMessaggio(msg);
+    }
+    else
+    {
+        // FINALMENTE VAI IN DISCO
+        // TODO: SUONO
+        WriteLog("AzionePagaDisco: Paga " + GetSoldiStr(disco.m_prezzoIngresso));
+        m_tabbyGuy.IncFama(disco.m_incFama);
+        m_tabbyGuy.IncRep(disco.m_incRep);
+    }
+    
+    NuovoGiorno();
+}

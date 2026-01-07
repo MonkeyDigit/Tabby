@@ -11,7 +11,7 @@ struct Ditta {
     std::string m_nome;
     long long m_fatturato;
     std::string m_sede;
-    std::string m_presetazione;
+    std::string m_presentazione;
     std::string m_produzioni;
     OffertaLavoro m_offerta;
     std::string m_immagine;

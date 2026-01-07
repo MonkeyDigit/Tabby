@@ -91,18 +91,22 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 
 void DlgScooter::OnConcessionario(wxCommandEvent& event)
 {
+	// TODO: IMPLEMENTA
 }
 
 void DlgScooter::OnTrucca(wxCommandEvent& event)
 {
+	// TODO: IMPLEMENTA
 }
 
 void DlgScooter::OnRipara(wxCommandEvent& event)
 {
+	// TODO: IMPLEMENTA
 }
 
 void DlgScooter::OnFaiBenza(wxCommandEvent& event)
 {
+	// TODO: IMPLEMENTA
 }
 
 void DlgScooter::AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxString value)
@@ -114,6 +118,7 @@ void DlgScooter::AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxStr
 
 void DlgScooter::AggiornaInterfaccia()
 {
+	// TODO: IMPLEMENTA
 }
 
 // SCUOLA
@@ -185,6 +190,8 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 	// Settiamo il sizer
 	pnlVoti->SetSizer(wrapperSizer);
 	sizerTop->Add(pnlVoti, 0, wxEXPAND | wxALL, 5);
+
+	// TODO: FOTO
 
 	// Bottoni del pannello a destra
 	sizerButtons->AddStretchSpacer();
@@ -359,9 +366,6 @@ DlgEvento::DlgEvento(wxWindow* parent, Messaggio& eventoDati)
 	}
 	else if (msgref.m_tipo == TipoMsg::SCELTA)
 	{
-		// Caso scelta: SÌ e NO
-		// TODO: accetta e rifiuta
-		// TODO: aggiungi stringhe speciali per roba tipo lascia tipa, fai questo fai quello
 		wxButton* btnSi = new wxButton(this, wxID_YES, "Sì");
 		wxButton* btnNo = new wxButton(this, wxID_NO, "No");
 
@@ -474,7 +478,7 @@ DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 	wxPanel* pnlBody	= new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN};
 	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
-	wxPanel* pnlFoto	= new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxSize(300,200), wxBORDER_SUNKEN};
+	wxPanel* pnlFoto	= new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxSize(300,200), wxBORDER_SUNKEN };
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
 	wxPanel* pnlButtons = new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
@@ -486,11 +490,12 @@ DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
 	// Foto
 	pnlFoto->SetSizer(sizerFoto);
 	sizerBody->Add(pnlFoto, 0, wxALL, 5);
+	sizerBody->AddStretchSpacer();
 
 	// Bottoni
 	wxButton* btnCercaLavoro = new wxButton{ pnlButtons, wxID_ANY, "Cerca lavoro", wxDefaultPosition, wxSize(300, 40) };
 	wxButton* btnLicenziati = new wxButton{ pnlButtons, wxID_ANY, "Licenziati", wxDefaultPosition, wxSize(300, 40) };
-	wxButton* btnInformazioni = new wxButton{ pnlButtons, wxID_ANY, "Informazioni", wxDefaultPosition, wxSize(300, 40) };
+	wxButton* btnInformazioni = new wxButton{ pnlButtons, wxID_ANY, "Elenco Ditte", wxDefaultPosition, wxSize(300, 40) };
 	wxButton* btnLavora = new wxButton{ pnlButtons, wxID_ANY, "Lavora", wxDefaultPosition, wxSize(300, 40) };
 	wxButton* btnLeccaculo = new wxButton{ pnlButtons, wxID_ANY, "Fai il Leccaculo", wxDefaultPosition, wxSize(300,40) };
 	wxButton* btnAumento = new wxButton{ pnlButtons, wxID_ANY, "Chiedi aumento salario", wxDefaultPosition, wxSize(300,40) };
@@ -506,14 +511,14 @@ DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
 
 	sizerButtons->Add(btnCercaLavoro, 0, wxTOP | wxRIGHT | wxLEFT, 10);
 	sizerButtons->Add(btnLicenziati, 0, wxALL & ~wxTOP, 10);
-	sizerButtons->Add(btnInformazioni, 0, wxALL,10);
+	sizerButtons->Add(btnInformazioni, 0, wxALL, 10);
 	sizerButtons->Add(btnLavora, 0, wxALL & ~wxBOTTOM, 10);
 	sizerButtons->Add(btnLeccaculo, 0, wxALL & ~(wxBOTTOM | wxTOP), 10);
 	sizerButtons->Add(btnAumento, 0, wxALL & ~(wxBOTTOM | wxTOP), 10);
 	sizerButtons->Add(btnSciopera, 0, wxALL & ~wxTOP, 10);
 
 	pnlButtons->SetSizer(sizerButtons);
-	sizerBody->Add(pnlButtons, 0, wxEXPAND | wxALL, 5);
+	sizerBody->Add(pnlButtons, 0, wxALL, 5);
 
 	pnlBody->SetSizer(sizerBody);
 
@@ -537,7 +542,7 @@ DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
 	pnlBottom->SetSizer(sizerBottom);
 
 	mainSizer->Add(pnlBody, 0, wxEXPAND | wxALL, 5);
-	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL, 5);
+	mainSizer->Add(pnlBottom, 1, wxEXPAND | wxALL, 5);
 
 	this->SetSizerAndFit(mainSizer);
 	this->AggiornaInterfaccia();
@@ -552,7 +557,6 @@ void DlgLavoro::OnCercaLavoro(wxCommandEvent& event)
 		dlg.ShowModal();
 	}
 
-	// TODO: TOGLIERE ???
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
 }
@@ -566,7 +570,9 @@ void DlgLavoro::OnLicenziati(wxCommandEvent& event)
 
 void DlgLavoro::OnInformazioni(wxCommandEvent& event)
 {
-	m_game.AzioneInformazioni();
+	DlgElencoDitte dlg{ this, m_game };
+	dlg.Centre();
+	dlg.ShowModal();
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
 }
@@ -604,9 +610,11 @@ void DlgLavoro::AggiornaInterfaccia()
 	TabbyGuy& guy = m_game.GetTabbyGuy();
 
 	m_lblDitta->SetLabel("Ditta: " + guy.GetCarriera().GetNomeDitta());
-	m_lblImpegno->SetLabel("Impegno " + std::to_string(guy.GetCarriera().GetImpegno()) + "/100");
+	m_lblImpegno->SetLabel("< Impegno " + std::to_string(guy.GetCarriera().GetImpegno()) + "/100 >");
 	m_lblStipendio->SetLabel("Stipendio: " + m_game.GetSoldiStr(guy.GetCarriera().GetStipendio()));
 	m_lblSoldi->SetLabel("Soldi: " + m_game.GetSoldiStr(guy.GetSoldi()));
+	this->Fit();
+	this->Layout();
 }
 
 DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, TabbyGame& game)
@@ -614,7 +622,7 @@ DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, TabbyGame& game)
 	m_game{game}
 {
 	this->SetFont(parent->GetFont());
-	this->SetBackgroundColour(*wxBLACK);
+	this->SetBackgroundColour(wxColor(25, 25, 25));
 	this->SetForegroundColour(*wxRED);
 
 	// Chiediamo al CERVELLO (TabbyGame) quale lavoro esce per il nostro tabbozzo
@@ -754,4 +762,191 @@ void DlgQuiz::OnFinito(wxCommandEvent& event)
 	// Inviamo i dati al cervello
 	m_game.AzioneTerminaQuiz(conteggi, m_ditta);
 	this->EndModal(wxID_ANY);
+}
+
+DlgElencoDitte::DlgElencoDitte(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Elenco Aziende e multinazionali", wxDefaultPosition, wxDefaultSize }, // Nota: wxDefaultSize, la calcoliamo dopo
+	m_game{ game }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+
+	// TITOLO
+	wxStaticText* lblTitolo = new wxStaticText(this, wxID_ANY, "DATABASE AZIENDE E MULTINAZIONALI");
+	wxFont fontTitolo = lblTitolo->GetFont();
+	fontTitolo.SetWeight(wxFONTWEIGHT_BOLD);
+	fontTitolo.SetPointSize(12);
+	lblTitolo->SetFont(fontTitolo);
+
+	mainSizer->Add(lblTitolo, 0, wxALL | wxALIGN_CENTER, 10);
+
+	// ======================================================================================
+	// PUNTO 1: BORDI (Grid Lines)
+	// Aggiungiamo wxLC_HRULES (orizzontali) e wxLC_VRULES (verticali) allo stile.
+	// ======================================================================================
+	long style = wxLC_REPORT | wxLC_SINGLE_SEL | wxBORDER_SUNKEN | wxLC_HRULES | wxLC_VRULES;
+
+	m_lista = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(600, 300), style);
+
+	// Creiamo le colonne
+	m_lista->InsertColumn(0, "Nome Ditta", wxLIST_FORMAT_LEFT);
+	m_lista->InsertColumn(1, "Sede", wxLIST_FORMAT_LEFT);
+	m_lista->InsertColumn(2, "Fatturato", wxLIST_FORMAT_RIGHT);
+
+	// Riempiamo la lista
+	for (size_t i = 0; i < ditte.size(); i++)
+	{
+		const Ditta& d = ditte[i];
+
+		// ==================================================================================
+		// PUNTO 2: PADDING DEL TESTO
+		// Il trucco più semplice è aggiungere spazi manualmente alla stringa ("  " + testo + "  ")
+		// perché wxListCtrl non supporta il CSS o il padding nativo facilmente.
+		// ==================================================================================
+
+		wxString nomePad = "  " + d.m_nome + "  ";
+		long index = m_lista->InsertItem(i, nomePad);
+
+		wxString sedePad = "  " + d.m_sede + "  ";
+		m_lista->SetItem(index, 1, sedePad);
+
+		wxString fatturatoStr;
+		if (d.m_fatturato == -1)
+			fatturatoStr = "Sconosciuto";
+		else
+			fatturatoStr = m_game.GetSoldiStr(d.m_fatturato);
+
+		// Padding anche per il fatturato
+		m_lista->SetItem(index, 2, fatturatoStr + "  ");
+
+		m_lista->SetItemData(index, i);
+	}
+
+	// Calcoliamo le larghezze automatiche ORA che c'è il testo (anche con gli spazi extra)
+	m_lista->SetColumnWidth(0, wxLIST_AUTOSIZE);
+	m_lista->SetColumnWidth(1, wxLIST_AUTOSIZE);
+	m_lista->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER); // UseHeader evita che diventi minuscola se "Sconosciuto"
+
+	// ======================================================================================
+	// PUNTO 3: ESTENDERE LA FINESTRA (Niente scroll orizzontale)
+	// Calcoliamo la somma delle larghezze delle colonne e allarghiamo la finestra.
+	// ======================================================================================
+	int larghezzaTotale = 0;
+	larghezzaTotale += m_lista->GetColumnWidth(0);
+	larghezzaTotale += m_lista->GetColumnWidth(1);
+	larghezzaTotale += m_lista->GetColumnWidth(2);
+
+	// Aggiungiamo un po' di margine (es. 60px) per la barra di scorrimento verticale e i bordi della finestra
+	int larghezzaFinestra = larghezzaTotale + 60;
+
+	// Impostiamo un minimo (es. 600) per non farla troppo stretta se ci sono pochi dati
+	if (larghezzaFinestra < 600) larghezzaFinestra = 600;
+
+	// Impostiamo la dimensione della finestra (Larghezza calcolata, Altezza fissa 450)
+	this->SetSize(larghezzaFinestra, 450);
+
+	// Bind evento
+	m_lista->Bind(wxEVT_LIST_ITEM_ACTIVATED, &DlgElencoDitte::OnDittaSelezionata, this);
+
+	mainSizer->Add(m_lista, 1, wxEXPAND | wxALL, 10);
+
+	// Bottone Chiudi
+	wxButton* btnChiudi = new wxButton(this, wxID_CANCEL, "Chiudi", wxDefaultPosition, wxSize(100, 35));
+	mainSizer->Add(btnChiudi, 0, wxALIGN_RIGHT | wxALL, 10);
+
+	this->SetSizer(mainSizer);
+	// Non chiamiamo Fit() qui perché abbiamo settato manualmente la dimensione con SetSize sopra
+	this->Layout();
+	this->Centre();
+}
+
+void DlgElencoDitte::OnDittaSelezionata(wxListEvent& event)
+{
+	long dittaIndex = event.GetItem().GetData();
+
+	if (dittaIndex >= 0 && dittaIndex < ditte.size())
+	{
+		// Creiamo e mostriamo la finestra INFO (senza offerta lavoro)
+		DlgInfoDitta dlg(this, m_game, ditte[dittaIndex]);
+		dlg.ShowModal();
+	}
+}
+
+DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta)
+	: wxDialog{ parent, wxID_ANY, "Informazioni Azienda", wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+
+	// TODO: IMMAGINE
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(500, 300), wxBORDER_SUNKEN };
+	mainSizer->Add(pnlFoto, 0, wxALIGN_CENTER | wxALL, 10);
+
+	// Separatore
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxALL, 10);
+
+	// 2. DATI PRINCIPALI (Nome, Sede, Fatturato)
+	wxBoxSizer* headerSizer = new wxBoxSizer{ wxVERTICAL };
+
+	// Nome Ditta (Grande e Grassetto)
+	wxStaticText* lblNome = new wxStaticText(this, wxID_ANY, ditta.m_nome);
+	wxFont fontGrande = lblNome->GetFont();
+	fontGrande.SetPointSize(14);
+	fontGrande.SetWeight(wxFONTWEIGHT_BOLD);
+	lblNome->SetFont(fontGrande);
+
+	headerSizer->Add(lblNome, 0, wxALL, 10);
+
+	// Sede
+	headerSizer->Add(new wxStaticText(this, wxID_ANY, "Sede: " + ditta.m_sede), 0, wxALL, 5);
+
+	// Fatturato
+	wxString fatturatoStr;
+	if (ditta.m_fatturato == -1)
+		fatturatoStr = "Sconosciuto";
+	else
+		fatturatoStr = game.GetSoldiStr(ditta.m_fatturato);
+
+	headerSizer->Add(new wxStaticText(this, wxID_ANY, "Fatturato annuo: " + fatturatoStr), 0, wxALL, 5);
+
+	mainSizer->Add(headerSizer, 0, wxEXPAND | wxALL, 5);
+
+	// Separatore
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxALL, 10);
+
+	// 3. DESCRIZIONI (Presentazione e Produzioni)
+	wxBoxSizer* descSizer = new wxBoxSizer{ wxVERTICAL };
+
+	// Presentazione
+	if (!ditta.m_presentazione.empty())
+	{
+		wxStaticText* lblPres = new wxStaticText(this, wxID_ANY, ditta.m_presentazione);
+		lblPres->Wrap(550); // Manda a capo
+		descSizer->Add(lblPres, 0, wxALL, 5);
+	}
+
+	// Produzioni (Elenco prodotti)
+	if (!ditta.m_produzioni.empty())
+	{
+		wxStaticText* lblProd = new wxStaticText(this, wxID_ANY, ditta.m_produzioni);
+		lblProd->Wrap(550);
+		lblProd->SetForegroundColour(*wxBLUE);
+		descSizer->Add(lblProd, 0, wxALL, 5);
+	}
+
+	mainSizer->Add(descSizer, 0, wxEXPAND | wxALL, 10);
+
+	// Separatore
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxALL, 10);
+
+	// BOTTONE CHIUDI
+	wxButton* btnOk = new wxButton(this, wxID_OK, "Chiudi", wxDefaultPosition, wxSize(150, 35));
+	mainSizer->Add(btnOk, 0, wxALIGN_CENTER | wxALL, 15);
+
+	this->SetSizerAndFit(mainSizer);
+	this->Centre();
 }

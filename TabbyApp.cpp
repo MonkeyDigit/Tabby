@@ -242,8 +242,7 @@ TabbyFrame::TabbyFrame()
 	// IMPLEMENTAZIONE BODY
 	mainSizer->Add(sizerBody, 1, wxEXPAND);
 	// IMPLEMENTAZIONE FINALE
-	this->SetSizer(mainSizer);
-	this->Fit();	// Chiede al Sizer principale (mainSizer) quanto spazio gli serve al minimo per far stare dentro tutti i widget (bottoni, pannelli, immagini) senza schiacciarli. Poi ridimensiona la finestra (TabbyFrame) esattamente a quella misura
+	this->SetSizerAndFit(mainSizer); // Chiede al Sizer principale (mainSizer) quanto spazio gli serve al minimo per far stare dentro tutti i widget (bottoni, pannelli, immagini) senza schiacciarli. Poi ridimensiona la finestra (TabbyFrame) esattamente a quella misura
 	this->Centre();	// Posiziona la finestra al centro dello schermo. Senza, la finestra si aprirebbe nell'angolo in alto a sinistra (coordinate 0,0) o dove decide Windows a caso
 	this->AggiornaInterfaccia();	// AGGIORNA INTERFACCIA
 }

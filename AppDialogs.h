@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/statline.h>
+#include <wx/listctrl.h>
 #include "TabbyGame.h"
 #define WIN_BKG wxColor(194, 196, 184)
 
@@ -127,7 +128,23 @@ private:
 	void OnFinito(wxCommandEvent& event);
 };
 
+class DlgElencoDitte : public wxDialog {
+public:
+	DlgElencoDitte(wxWindow* parent, TabbyGame& game);
 
+private:
+	TabbyGame& m_game;
+	wxListCtrl* m_lista; // Il controllo lista
+
+	// Evento doppio clic sulla lista
+	void OnDittaSelezionata(wxListEvent& event);
+};
+
+class DlgInfoDitta : public wxDialog {
+public:
+	// Prende la ditta specifica come parametro const reference
+	DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta);
+};
 
 class DlgEvento : public wxDialog {
 public:

@@ -712,18 +712,12 @@ void TabbyGame::ApplicaScelta(MsgAzione msgAzione, bool sceltaYes)
         break;
 
     case MsgAzione::LICENZIATI:
-        // TODO: COMPLETA
-        /*
-        if (accetto == IDYES)
-            {
-                numeroditta = 0;
-                impegno = 0;
-                giorni_di_lavoro = 0;
-                stipendio = 0;
-                Evento(hDlg);
-            }
-            AggiornaLavoro(hDlg);
-        */
+
+        if (sceltaYes)
+        {
+            m_tabbyGuy.GetCarriera().Licenziati();
+            NuovoGiorno();
+        }
         break;
     }
     
@@ -1036,19 +1030,8 @@ void TabbyGame::AzioneLicenziati()
         if (!TriggerLavoro())
             return;
         
-        // TODO: COMPLETARE
-        std::string nomeDitta = "NOME DITTA";
-        Messaggio msg{ TipoMsg::SCELTA, MsgAzione::LICENZIATI, "Licenziati", "Sei proprio sicuro di voler dare le dimissioni dalla " + nomeDitta + " ?", ""};
+        Messaggio msg{ TipoMsg::SCELTA, MsgAzione::LICENZIATI, "Licenziati", "Sei proprio sicuro di voler dare le dimissioni dalla " + m_tabbyGuy.GetCarriera().GetNomeDitta() + " ?", ""};
         PushMessaggio(msg);
-    }
-}
-
-void TabbyGame::AzioneInformazioni()
-{
-    // TODO: ELENCO DITTE
-    if (TriggerLavoro())
-    {
-        // TODO: COMPLETA
     }
 }
 

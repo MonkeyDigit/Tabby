@@ -100,7 +100,6 @@ public:
     void AzioneTerminaQuiz(const std::vector<int>& countRisposte, std::string nomeDitta);  // Controlla se il quiz è stato compilato correttamente (1 risposta per domanda)
     bool AzioneCercaLavoro();   	// Restituisce true se possiamo procedere con la ricerca, false altrimenti (es. festivo)
     void AzioneLicenziati();
-    void AzioneInformazioni();
     void AzioneLavora();
     void AzioneLeccaculo();
     void AzioneAumentoSalario();

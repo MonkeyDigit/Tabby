@@ -669,6 +669,7 @@ void DlgOffertaLavoro::OnAccetta(wxCommandEvent& event)
 {
 	const QuizScheda& quiz = m_game.AssegnaQuiz();
 	this->EndModal(wxID_ANY);
+	// TODO: IL QUIZ LO POSSO GENERARE DENTRO
 	DlgQuiz dlg{ this, m_game, quiz, m_ditta };
 	dlg.Centre();
 	dlg.ShowModal();
@@ -972,7 +973,7 @@ DlgDisco::DlgDisco(wxWindow* parent, TabbyGame& game)
 	wxBoxSizer* sizerLocali = new wxBoxSizer{ wxVERTICAL };
 
 	// Creiamo i radio button dinamicamente
-	for (size_t i = 0; i < discoteche.size(); i++)
+	for (int i = 0; i < discoteche.size(); i++)
 	{
 		// wxRB_GROUP solo al primo, ma vogliamo deselezionarli all'inizio
 		long style = (i == 0) ? wxRB_GROUP : 0;
@@ -982,7 +983,7 @@ DlgDisco::DlgDisco(wxWindow* parent, TabbyGame& game)
 		rad->SetValue(false);
 		// Bind dell'evento (usiamo una lambda per catturare l'indice 'i')
 		rad->Bind(wxEVT_RADIOBUTTON, [this, i](wxCommandEvent& ev) {
-			m_selectedIndex = (int)i;
+			m_selectedIndex = i;
 			OnRadioSelect(ev);
 			});
 
@@ -1052,20 +1053,8 @@ void DlgDisco::OnRadioSelect(wxCommandEvent& event)
 	m_lblDescrizione->SetLabel(d.m_descrizione);
 	m_lblDescrizione->Wrap(500); // Wrappa il testo per stare nel pannello
 
-	// Aggiorna Prezzo e Info
-	wxString info = "Ingresso: " + m_game.GetSoldiStr(d.m_prezzoIngresso);
-
-	// Verifica Scooter (solo visuale qui)
-	bool haScooter = (m_game.GetTabbyGuy().GetScooter().GetNome() != "Nessuno");
-	if (d.m_fuoriPorta && !haScooter) {
-		info += "\n(Serve Scooter!)";
-		m_lblPrezzo->SetForegroundColour(*wxRED);
-	}
-	else {
-		m_lblPrezzo->SetForegroundColour(*wxBLACK);
-	}
-
-	m_lblPrezzo->SetLabel(info);
+	// Aggiorna Prezzo
+	m_lblPrezzo->SetLabel("Ingresso: " + m_game.GetSoldiStr(d.m_prezzoIngresso));
 
 	// Aggiorna layout del pannello descrizione
 	m_lblDescrizione->GetParent()->Layout();
@@ -1082,19 +1071,204 @@ void DlgDisco::OnOk(wxCommandEvent& event)
 	}
 
 	const Disco& d = discoteche[m_selectedIndex];
-
-	// 2. Controllo Scooter (Logica bloccante)
-	bool haScooter = (m_game.GetTabbyGuy().GetScooter().GetNome() != "Nessuno");
-	if (d.m_fuoriPorta && !haScooter) {
-		wxMessageBox("Questo locale e' fuori citta'!\nTi serve lo scooter per arrivarci, sfigato!", "A piedi?", wxOK | wxICON_HAND);
-		return; // Non chiude la finestra
-	}
-
-	// 4. Esegui Azione nel Gioco (che controllerà i soldi e la fama)
 	// Chiama la funzione logica che hai già in TabbyGame
 	m_game.AzionePagaDisco(m_selectedIndex);
 	ManifestaEventi(this, m_game);
 
 	// Chiudi la finestra
 	EndModal(wxID_OK);
+}
+
+// TODO: SISTEMA
+DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Tipa"},
+		m_game{ game }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+
+	// --- CORPO CENTRALE (Foto + Bottoni) ---
+	wxPanel* pnlBody = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
+
+	// FOTO (Sinistra)
+	wxPanel* pnlFoto = new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxSize(200, 150), wxBORDER_SUNKEN };
+	// TODO: Caricare immagine tipa qui
+	sizerBody->Add(pnlFoto, 0, wxALL, 5);
+
+	// BOTTONI (Destra)
+	wxPanel* pnlButtons = new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerBtn = new wxBoxSizer{ wxVERTICAL };
+
+	wxButton* btnCerca = new wxButton(pnlButtons, wxID_ANY, "Cerca tipa", wxDefaultPosition, wxSize(300, 40));
+	wxButton* btnLascia = new wxButton(pnlButtons, wxID_ANY, "Lascia Tipa", wxDefaultPosition, wxSize(300, 40));
+	wxButton* btnTelefona = new wxButton(pnlButtons, wxID_ANY, "Telefona alla tipa", wxDefaultPosition, wxSize(300, 40));
+	wxButton* btnEsci = new wxButton(pnlButtons, wxID_ANY, "Esci con la tipa", wxDefaultPosition, wxSize(300, 40));
+
+	// Bind eventi
+	btnCerca->Bind(wxEVT_BUTTON, &DlgTipa::OnCercaTipa, this);
+	btnLascia->Bind(wxEVT_BUTTON, &DlgTipa::OnLasciaTipa, this);
+	btnTelefona->Bind(wxEVT_BUTTON, &DlgTipa::OnTelefonaTipa, this);
+	btnEsci->Bind(wxEVT_BUTTON, &DlgTipa::OnEsciTipa, this);
+
+	sizerBtn->Add(btnCerca, 0, wxALL & ~wxBOTTOM, 5);
+	sizerBtn->Add(btnLascia, 0, wxALL & ~wxTOP, 5);
+	sizerBtn->Add(new wxStaticLine(pnlButtons), 0, wxEXPAND | wxALL, 5);
+	sizerBtn->Add(btnTelefona, 0, wxALL & ~wxBOTTOM, 5);
+	sizerBtn->Add(btnEsci, 0, wxALL & ~wxTOP, 5);
+
+	pnlButtons->SetSizer(sizerBtn);
+	sizerBody->Add(pnlButtons, 1, wxEXPAND | wxALL, 5);
+
+	pnlBody->SetSizer(sizerBody);
+	mainSizer->Add(pnlBody, 0, wxEXPAND | wxALL, 5);
+
+	// --- PANNELLO INFO (Sotto) ---
+	wxPanel* pnlInfo = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerInfo = new wxBoxSizer{ wxVERTICAL };
+
+	// Label statiche e Valori dinamici
+	m_lblNome = new wxStaticText(pnlInfo, wxID_ANY, "");
+	wxFont fBold = m_lblNome->GetFont(); fBold.SetWeight(wxFONTWEIGHT_BOLD); m_lblNome->SetFont(fBold);
+	sizerInfo->Add(m_lblNome, 0, wxALIGN_LEFT);
+
+	m_lblFamaTipa = new wxStaticText(pnlInfo, wxID_ANY, "");
+	sizerInfo->Add(m_lblFamaTipa, 0, wxALIGN_LEFT);
+
+	m_lblRapportiTipa = new wxStaticText(pnlInfo, wxID_ANY, "");
+	sizerInfo->Add(m_lblRapportiTipa, 0, wxALIGN_LEFT);
+
+	// Centriamo la griglia nel pannello
+	wxBoxSizer* infoWrapper = new wxBoxSizer(wxVERTICAL);
+	infoWrapper->Add(sizerInfo, 1, wxALL, 10);
+	pnlInfo->SetSizer(infoWrapper);
+
+	mainSizer->Add(pnlInfo, 0, wxEXPAND | wxALL, 5);
+
+	// --- FOOTER (Soldi + OK) ---
+	wxBoxSizer* footerSizer = new wxBoxSizer(wxHORIZONTAL);
+
+	// Icona e figosità
+	footerSizer->Add(new wxStaticText(this, wxID_ANY, "[ICON]"), 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
+	m_lblFama = new wxStaticText(this, wxID_ANY, "");
+	footerSizer->Add(m_lblFama, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
+
+	footerSizer->AddStretchSpacer();
+
+	wxButton* btnOk = new wxButton(this, wxID_OK, "OK", wxDefaultPosition, wxSize(80, 30));
+	footerSizer->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 10);
+
+	mainSizer->Add(footerSizer, 0, wxEXPAND | wxBOTTOM, 10);
+
+	this->SetSizerAndFit(mainSizer);
+
+	// Aggiorniamo lo stato iniziale (bottoni abilitati/disabilitati)
+	AggiornaInterfaccia();
+
+	this->Centre();
+}
+
+void DlgTipa::OnCercaTipa(wxCommandEvent& event)
+{
+	DlgIncontroTipa dlg{ this, m_game };
+	dlg.Centre();
+	dlg.ShowModal();
+
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
+}
+
+void DlgTipa::OnLasciaTipa(wxCommandEvent& event)
+{
+	m_game.AzioneLasciaTipa();
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
+}
+
+void DlgTipa::OnTelefonaTipa(wxCommandEvent& event)
+{
+	m_game.AzioneTelefonaTipa();
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
+}
+
+void DlgTipa::OnEsciTipa(wxCommandEvent& event)
+{
+	m_game.AzioneEsciTipa();
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
+}
+
+void DlgTipa::AggiornaInterfaccia()
+{
+	if (m_game.GetTabbyGuy().HaTipa())
+	{
+		const Tipa& tipa = m_game.GetTabbyGuy().GetTipa();
+		m_lblNome->SetLabel("Nome: "+tipa.GetNome());
+		m_lblFamaTipa->SetLabel("Figosità: "+std::to_string(tipa.GetFama())+"/100");
+		m_lblRapportiTipa->SetLabel("Quanto state bene insieme: "+std::to_string(m_game.GetTabbyGuy().GetRapporti())+"/100");
+	}
+	else
+	{
+		m_lblNome->SetLabel("");
+		m_lblFamaTipa->SetLabel("");
+		m_lblRapportiTipa->SetLabel("");
+	}
+
+	m_lblFama->SetLabel("< Figosità " + std::to_string(m_game.GetTabbyGuy().GetFama()) + "/100 >");
+
+	this->Layout();
+}
+
+DlgIncontroTipa::DlgIncontroTipa(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Esci allo scoperto...", wxDefaultPosition, wxDefaultSize, wxCAPTION },
+	m_game{game}
+{
+	// TODO: REFERENCE ??
+	Tipa tipa = m_game.GeneraTipa();
+
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+
+	wxPanel* pnlInfo = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerInfo = new wxBoxSizer{ wxVERTICAL };
+
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
+
+	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, "Nome:"), 0, wxALL & ~wxBOTTOM, 5);
+	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, tipa.GetNome(), wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
+	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, "Figosità:"), 0, wxALL & ~wxBOTTOM, 5);
+	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, std::to_string(tipa.GetFama())+"/100", wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
+	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, "Giudizio\ncomplessivo:"), 0, wxALL & ~wxBOTTOM, 5);
+	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, tipa.GetDesc(), wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
+	sizerInfo->AddStretchSpacer();
+
+	wxButton* btnProvaci = new wxButton(pnlInfo, wxID_ANY, "Ci provo !", wxDefaultPosition, wxSize(250, -1));
+	wxButton* btnLasciaStare = new wxButton(pnlInfo, wxID_ANY, "Ritorno a casa...", wxDefaultPosition, wxSize(250, -1));
+	btnProvaci->Bind(wxEVT_BUTTON, &DlgIncontroTipa::OnProvaci, this);
+	btnLasciaStare->Bind(wxEVT_BUTTON, &DlgIncontroTipa::OnLasciaStare, this);
+	sizerInfo->Add(btnProvaci, 0, wxALL & ~wxBOTTOM, 5);
+	sizerInfo->Add(btnLasciaStare, 0, wxALL & ~wxTOP, 5);
+
+	pnlInfo->SetSizer(sizerInfo);
+	mainSizer->Add(pnlInfo, 0, wxALL, 5);
+
+	mainSizer->Add(pnlFoto, 0, wxALL, 5);
+
+	this->SetSizerAndFit(mainSizer);
+	this->Centre();
+}
+
+void DlgIncontroTipa::OnProvaci(wxCommandEvent& event)
+{
+}
+
+void DlgIncontroTipa::OnLasciaStare(wxCommandEvent& event)
+{
+	this->EndModal(wxID_ANY);
 }

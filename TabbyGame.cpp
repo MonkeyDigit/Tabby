@@ -367,7 +367,7 @@ void TabbyGame::GestioneLavoro()
         if (rnd < 2)
         {
             // Perdi il lavoro
-            m_tabbyGuy.GetCarriera().Licenziati();
+            m_tabbyGuy.Licenziati();
 
             // TODO: Dialog licenziato + suono
             Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Perdi il lavoro...", "Un bel giorno ti svegli e scopri di essere stato licenziato", "" };
@@ -671,8 +671,8 @@ void TabbyGame::ApplicaScelta(MsgAzione msgAzione, bool sceltaYes)
         }
 
         NuovoGiorno();
-        
         break;
+
     case MsgAzione::GARA:
         if (sceltaYes)  // TODO: COMPLETA
         {
@@ -715,7 +715,29 @@ void TabbyGame::ApplicaScelta(MsgAzione msgAzione, bool sceltaYes)
 
         if (sceltaYes)
         {
-            m_tabbyGuy.GetCarriera().Licenziati();
+            m_tabbyGuy.Licenziati();
+            NuovoGiorno();
+        }
+        break;
+
+    case MsgAzione::LASCIA_TIPA:
+        if (sceltaYes)
+        {
+            // TODO: SUONO
+            // TODO: SESSO
+            if (m_tabbyGuy.GetTipa().GetFama() >= 79)
+            {
+                Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Coglione...", "Appena vengono a sapere quello che hai fatto, i tuoi amici ti prendono a scarpate.\nQualcuno più furbo di te, va a consolarla...", "" };
+                PushMessaggio(msg);
+
+                m_tabbyGuy.DecRep(8);
+            }
+            else if (m_tabbyGuy.GetTipa().GetFama() <= 40)
+            {
+                m_tabbyGuy.IncRep(4);
+            }
+
+            m_tabbyGuy.LasciaTipa();
             NuovoGiorno();
         }
         break;
@@ -959,6 +981,13 @@ const QuizScheda& TabbyGame::AssegnaQuiz()
     return schede[rnd];
 }
 
+Tipa TabbyGame::GeneraTipa()
+{
+    int fama = GenRandomInt(30, 100);
+    std::string nome = nomiTipe[GenRandomInt(0, nomiTipe.size() - 1)];
+    return Tipa{ nome, fama };
+}
+
 void TabbyGame::AzioneTerminaQuiz(const std::vector<int>& countRisposte, std::string nomeDitta)
 {
     bool errore = false;
@@ -1133,44 +1162,31 @@ void TabbyGame::AzioneAumentoSalario()
         if (!TriggerLavoro())
             return;
         
-        // TODO: COMPLETA
-        /*
-        if (impegno > 90)
+        if (m_tabbyGuy.GetCarriera().GetImpegno() > 90)
             {
-                if ((30 + Fortuna) > (30 + random(50)))
+                if (m_tabbyGuy.GetFortuna() > (GenRandomInt(0, 49)))
                 {
-                    sprintf(tmp, "Forse per questa volta potremmo darti qualcosina in più...");
-                    MessageBox(hDlg, tmp,
-                               "Chiedi aumento salario", MB_OK | MB_ICONINFORMATION);
-                    stipendio += ((random(1) + 1) * 100);
-                    impegno -= 30;
-                    Evento(hDlg);
+                    Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Aumento salario", "Forse per questa volta potremmo darti qualcosina in più...", "" };
+                    PushMessaggio(msg);
+                    m_tabbyGuy.GetCarriera().IncStipendio(GenRandomInt(1, 2) * 50);
+                    m_tabbyGuy.GetCarriera().DecImpegno(30);
                 }
                 else
                 {
-                    if (sesso == 'M')
-                        MessageBox(hDlg,
-                                   "Vedi di scordartelo,bastardo...",
-                                   "Chiedi aumento salario", MB_OK | MB_ICONHAND);
-                    else
-                        MessageBox(hDlg,
-                                   "Vedi di scordartelo,stronzetta...",
-                                   "Chiedi aumento salario", MB_OK | MB_ICONHAND);
+                    // TODO: SESSO
 
-                    impegno -= 20;
-                    Evento(hDlg);
+                    Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Come osi...", "Vedi di scordartelo, bastardo...", "" };
+                    PushMessaggio(msg);
+                    m_tabbyGuy.GetCarriera().DecImpegno(20);
                 }
+
+                NuovoGiorno();
             }
             else
             {
-                MessageBox(hDlg,
-                           "Che cosa vorresti ??? SCORDATELO !!!!",
-                           "Chiedi aumento salario", MB_OK | MB_ICONHAND);
+                Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Sei impazzito ???", "Che cosa vorresti ??? SCORDATELO !!!", "" };
+                PushMessaggio(msg);
             }
-
-            AggiornaLavoro(hDlg);
-            return (TRUE);
-        */
     }
 }
 
@@ -1241,4 +1257,96 @@ void TabbyGame::AzionePagaDisco(int discoIndex)
     }
     
     NuovoGiorno();
+}
+
+void TabbyGame::AzioneLasciaTipa()
+{
+    if (!m_tabbyGuy.HaTipa())
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Hai le allucinazioni ???", "Scusa, che ragazza avresti intenzione di lasciare ???", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    // TODO: IMPLEMENTA SCELTA
+    Messaggio msg{ TipoMsg::SCELTA, MsgAzione::LASCIA_TIPA, "Lascia tipa", "Sei proprio sicuro di voler lasciare "+m_tabbyGuy.GetTipa().GetNome()+" ?", "" };
+    PushMessaggio(msg);
+}
+
+void TabbyGame::AzioneEsciTipa()
+{
+    // TODO: SESSO
+    if (!m_tabbyGuy.HaTipa())
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non sei molto intelligente...", "Scusa, con che tipa vorresti uscire ???", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    if (!m_tabbyGuy.HaScooter())
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Compra lo scooter", "Finché non comprerai lo scooter, non usciremo più insieme...", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    if (m_tabbyGuy.GetScooter().GetAttivita() != Attivita::IN_GIRO)
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Risistema lo scooter", "Finché il tuo scooter resterà "+m_tabbyGuy.GetScooter().GetAttivitaStr(true) + " non potremo uscire insieme...", ""};
+        PushMessaggio(msg);
+        return;
+    }
+
+    if (m_tabbyGuy.GetScooter().GetStato() <= 35)
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ripara lo scooter", "Finché non riparerai lo scooter, non usciremo più insieme...", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    // FINALMENTE ESCI CON LA TIPA
+    if (!m_tabbyGuy.SpendiSoldi(10))
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Sei povero", "Se mi vuoi portare fuori, cerca di avere almeno un po' di soldi...", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    WriteLog("AzioneEsciTipa: Esci con la tipa " + GetSoldiStr(10));
+
+    m_tabbyGuy.IncRapporti(5);
+    if (m_tabbyGuy.GetTipa().GetFama() > m_tabbyGuy.GetFama())
+        m_tabbyGuy.IncFama(1);
+
+    m_tabbyGuy.GetScooter().DecBenzina(3);
+    // TODO: CALCOLA VELOCITA
+}
+
+void TabbyGame::AzioneTelefonaTipa()
+{
+    if (!m_tabbyGuy.HaTipa())
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non sei molto intelligente...", "Scusa, che ragazza vorresti chiamare ???", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    if (!m_tabbyGuy.HaTelefono() && m_tabbyGuy.GetSoldi() <= 5 && m_tabbyGuy.GetOperatore().GetCredito() < 2)
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non toccare quel telefono...", "\"Se ti azzardi a fare anche una singola telefonata, ti spezzo le gambe\", disse tuo padre con un'accetta in mano...", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    // TODO: PLAY SUONO
+    // TODO: LOGICA STRANA
+    if (m_tabbyGuy.HaTelefono() && m_tabbyGuy.GetOperatore().GetCredito() <= 2)
+        m_tabbyGuy.GetOperatore().DecCredito(2);
+    else
+        m_tabbyGuy.SpendiSoldi(5);
+
+    WriteLog("AzioneTelefonaTipa: Telefona alla tipa " + GetSoldiStr(5));
+
+    if (m_tabbyGuy.GetRapporti() <= 60)
+        m_tabbyGuy.IncRapporti(1);
 }

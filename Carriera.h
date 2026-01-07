@@ -24,7 +24,7 @@ public:
     // Metodi di stato
     bool IsDisoccupato() const { return (m_nomeDitta == ""); }
 
-    void Licenziati() {
+    void Azzera() {
         m_nomeDitta = "";
         m_stipendio = 0;
         m_impegno = 0;
@@ -37,6 +37,7 @@ public:
     int GetImpegno() const { return m_impegno; }
     void IncImpegno(int punti) {
         if (punti > 0) m_impegno += punti;
+        if (m_impegno > 100) m_impegno = 100;
     }
     void DecImpegno(int punti) {
         if (punti > 0)
@@ -54,10 +55,15 @@ public:
         m_giorniLavorati = gg;
         if (m_giorniLavorati < 0) m_giorniLavorati = 0;
     }
+    void IncStipendio(long long importo) {
+        if (importo > 0) m_stipendio += importo;
+    }
     void SetStipendio(long long soldi) {
         m_stipendio = soldi;
         if (m_stipendio < 0) m_stipendio = 0;
     }
+
+
     void SetDitta(std::string nomeDitta) { m_nomeDitta = nomeDitta; };
 
 

@@ -171,5 +171,32 @@ public:
 	DlgEvento(wxWindow* parent, Messaggio& msg);
 };
 
+class DlgTipa : public wxDialog {
+public:
+	DlgTipa(wxWindow* parent, TabbyGame& game);
+private:
+	TabbyGame& m_game;
+	wxStaticText* m_lblRapportiTipa;
+	wxStaticText* m_lblNome;
+	wxStaticText* m_lblFamaTipa;
+	wxStaticText* m_lblFama;
+
+	void OnCercaTipa(wxCommandEvent& event);
+	void OnLasciaTipa(wxCommandEvent& event);
+	void OnTelefonaTipa(wxCommandEvent& event);
+	void OnEsciTipa(wxCommandEvent& event);
+	void AggiornaInterfaccia();
+};
+
+class DlgIncontroTipa : public wxDialog {
+public:
+	DlgIncontroTipa(wxWindow* parent, TabbyGame& game);
+private:
+	TabbyGame& m_game;
+
+	void OnProvaci(wxCommandEvent& event);
+	void OnLasciaStare(wxCommandEvent& event);
+};
+
 // Funzione helper
 void ManifestaEventi(wxWindow* parent, TabbyGame& game);

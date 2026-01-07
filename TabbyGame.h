@@ -39,7 +39,9 @@ enum class MsgAzione {
     // Compagnia
     GARA,
     // Lavoro
-    LICENZIATI
+    LICENZIATI,
+    // TIPA
+    LASCIA_TIPA
 };
 
 struct Messaggio {
@@ -98,6 +100,8 @@ public:
     const Ditta& ProponiDitta();
     void AzioneRifiutaProposta();
     const QuizScheda& AssegnaQuiz();
+    // TODO: REFEREMCE ???
+    Tipa GeneraTipa();
     void AzioneTerminaQuiz(const std::vector<int>& countRisposte, std::string nomeDitta);  // Controlla se il quiz è stato compilato correttamente (1 risposta per domanda)
     bool AzioneCercaLavoro();   	// Restituisce true se possiamo procedere con la ricerca, false altrimenti (es. festivo)
     void AzioneLicenziati();
@@ -107,6 +111,10 @@ public:
     void AzioneSciopera();
     // Discoteca
     void AzionePagaDisco(int discoIndex);
+    // Tipa
+    void AzioneLasciaTipa();
+    void AzioneEsciTipa();
+    void AzioneTelefonaTipa();
 
     // Stringa formattata (es. "1.000 L." o "5 €")
     std::string GetSoldiStr(long long valoreBase) const;
@@ -147,6 +155,29 @@ private:
 	long long ConvertiValuta(long long valoreBase) const;
 };
 
+static const std::vector<std::string> nomiTipe{
+"Marcella",
+"Giovanna",
+"Concetta",
+"Elisa",
+"Federica",
+"Ilaria",
+"Simona",
+"Assunta",
+"Maria",
+"Elena",
+"Margherita",
+"Giorgia",
+"Silvia",
+"Teresa",
+"Grazia",
+"Elisabetta",
+"Alessia",
+"Chiara",
+"Alessandra",
+"Rosa"
+};
+
 static const std::vector<Disco> discoteche = {
         {
             "Splush",
@@ -170,7 +201,7 @@ static const std::vector<Disco> discoteche = {
         },
         {
             "Spoking",
-            "Da sempre nome di grande richiamo per modelle, modaioli, giovani della Milano bene, tabbozzi e non. Per chi ama gli ambienti modaioli. A due passi dalla discarica di Cerro Maggiore.\n Chiuso il Lunedì",
+            "Da sempre nome di grande richiamo per modelle, modaioli, giovani della Milano bene, tabbozzi e non. Per chi ama gli ambienti modaioli. A due passi dalla discarica di Cerro Maggiore.\nChiuso il Lunedì",
             Chrono::WeekDay::monday,
             false,
             16,

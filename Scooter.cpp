@@ -1,9 +1,9 @@
 #include "Scooter.h"
 
 Scooter::Scooter()
-	: m_nome{"Mizzubisci R200 Millenium"}, 
+	: m_nome{""}, 
 	m_velocita{-1}, m_cilindrata{-1}, 
-	m_efficienza{75}, m_benzina{-1.0},
+	m_efficienza{}, m_benzina{-1.0},
 	m_stato{-1}, m_fama{-1}, m_marmitta{0},
 	m_carburatore{0}, m_filtro{0}, m_attivita{Attivita::NESSUNA},
 	m_prezzo{3800}
@@ -53,6 +53,18 @@ std::string Scooter::GetAttivitaStr(bool tolower) const
 		break;
 	case Attivita::IN_GIRO:
 		s = "In giro";
+		break;
+	case Attivita::INGRIPPATO:
+		s = "Ingrippato";
+		break;
+	case Attivita::INVASATO:
+		s = "Invasato";
+		break;
+	case Attivita::SEQUESTRATO:
+		s = "Sequestrato";
+		break;
+	case Attivita::A_SECCO:
+		s = "A secco";
 	}
 
 	if (tolower)

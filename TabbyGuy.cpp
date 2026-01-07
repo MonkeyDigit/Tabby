@@ -117,3 +117,13 @@ void TabbyGuy::DecRapporti(int punti) {
 		if (m_rapporti < 0) m_rapporti = 0;
 	}
 }
+
+void TabbyGuy::LasciaTipa()
+{
+	m_tipa.Azzera();
+}
+
+void TabbyGuy::Licenziati()
+{
+	m_carriera.Azzera();
+}

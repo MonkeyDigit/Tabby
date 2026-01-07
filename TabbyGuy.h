@@ -39,15 +39,21 @@ public:
 	void CalcolaStudio();
 	// FORTUNA
 	void SetFortuna(int fortuna);
+	// SIGARETTE
 	void IncSizze(int sizze);
 	void DecSizze(int sizze);
+	// REPUTAZIONE
 	void IncRep(int punti);
 	void DecRep(int punti);
+	// FIGOSITA'
 	void IncFama(int punti);
 	void DecFama(int punti);
 	// RAPPORTO TIPA
 	void IncRapporti(int punti);
 	void DecRapporti(int punti);
+	void LasciaTipa();
+	// LAVORO
+	void Licenziati();
 	// TODO: RIORDINA TUTTA STA MERDA
 	long long GetSoldi() const { return m_soldi; };
 	long long GetSoldiDelta() const { return m_soldiDelta; };
@@ -75,6 +81,9 @@ public:
 
 	// Funzione helper
 	bool HaUnLavoro() const { return !m_carriera.IsDisoccupato(); }
+	bool HaTipa() const { return !m_tipa.GetNome().empty(); };
+	bool HaScooter() const { return !m_scooter.GetNome().empty(); };
+	bool HaTelefono() const { return !m_telefono.GetNome().empty(); };
 
 private:
 	CartaIdentita m_identita;

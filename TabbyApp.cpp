@@ -20,6 +20,10 @@
 // TODO: Separare addday da avanzacalendario ???
 // TODO: TOGLI TUTTI I ; DALLE DEFINIZIONI NEGLI HEADER
 // TODO: TOGLI i cpp CORTI E INCORPORA NEGLI HEADER
+// TODO: SISTEMA GETTER E SETTER PER FUNZIONI CON RANGED VALUES
+// TODO: PER I MEMBRI CLASSE FAI LE FUNZIONI HAROBA()
+// TODO: AL POSTO DI == "" fai .empty
+// TODO: AL MESSAGGIO PASSA ANCHE IL SUONO
 
 bool TabbyApp::OnInit()
 {
@@ -232,6 +236,11 @@ TabbyFrame::TabbyFrame()
 	wxButton* btnAbout = new wxButton{ pnlDate, ID_ABOUT, "About", wxDefaultPosition, wxSize(140, -1) };
 	sizerDate->Add(btnAbout, 0, wxALL, 2);
 	gridStats->Add(pnlDate, wxGBPosition(19, 0), wxGBSpan(1, 3), wxEXPAND | wxALL, 5);
+
+	// PILASTRO INVISIBILE
+	// Lo mettiamo alla riga 20 (libera), colonna 0.
+	// Add(width, height, ...)
+	gridStats->Add(350, 0, wxGBPosition(20, 0));
 	
 	// FISSIAMO LA GRID AL SIZER
 	gridStats->AddGrowableCol(0);
@@ -252,9 +261,20 @@ void TabbyFrame::AggiornaInterfaccia()
 	TabbyGuy& guy = m_game.GetTabbyGuy();
 
 	m_lblNomeTabby->SetLabel(guy.GetID().m_nome + " " + guy.GetID().m_cognome + " ");
-	m_lblNomeTipa->SetLabel(guy.GetTipa().GetNome() + " ");
-	m_lblRapportoTipa->SetLabel(wxString::Format("< Rapporto con la tipa %d/100 >", guy.GetRapporti()));
-	m_barTipa->SetValue(guy.GetRapporti());
+	if (m_game.GetTabbyGuy().HaTipa())
+	{
+		m_lblNomeTipa->SetLabel(guy.GetTipa().GetNome() + " ");
+		m_lblRapportoTipa->SetLabel(wxString::Format("< Rapporto con la tipa %d/100 >", guy.GetRapporti()));
+		m_barTipa->Show(true);
+		m_barTipa->SetValue(guy.GetRapporti());
+	}
+	else
+	{
+		m_lblNomeTipa->SetLabel("");
+		m_lblRapportoTipa->SetLabel("");
+		m_barTipa->Hide();
+	}
+	
 	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(guy.GetSoldi()) + " >");
 	// Delta soldi
 	long long delta = m_game.GetTabbyGuy().GetSoldiDelta();
@@ -280,8 +300,19 @@ void TabbyFrame::AggiornaInterfaccia()
 	m_barFigo->SetValue(guy.GetFama());
 	m_lblStudio->SetLabel(wxString::Format("< Profitto scolastico %d/100 >", guy.GetStudio()));
 	m_barStudio->SetValue(guy.GetStudio());
-	m_lblScooter->SetLabel(wxString::Format("< %s >\n< Stato scooter %d/100 >", guy.GetScooter().GetNome(), guy.GetScooter().GetEfficienza()));
-	m_barScooter->SetValue(guy.GetScooter().GetEfficienza());
+	// Lo scooter viene mostrato solo se posseduto
+	if (m_game.GetTabbyGuy().HaScooter())
+	{
+		m_lblScooter->SetLabel(wxString::Format("< %s >\n< Stato scooter %d/100 >", guy.GetScooter().GetNome(), guy.GetScooter().GetEfficienza()));
+		m_barScooter->Show(true);
+		m_barScooter->SetValue(guy.GetScooter().GetEfficienza());
+	}
+	else
+	{
+		m_lblScooter->SetLabel("");
+		m_barScooter->Hide();
+	}
+
 	m_lblDate->SetLabel(" " + 
 		wxString::Format("%s %d %s %d",
 		m_game.GetDate().GetWeekDayStr().c_str(),
@@ -360,7 +391,10 @@ void TabbyFrame::OnFamiglia(wxCommandEvent& event)
 
 void TabbyFrame::OnTipa(wxCommandEvent& event)
 {
-	// TODO: IMPLEMENTA
+	DlgTipa dlg{ this, m_game };
+	dlg.Centre();
+	dlg.ShowModal();
+	this->AggiornaInterfaccia();
 }
 
 void TabbyFrame::OnEsci(wxCommandEvent& event)

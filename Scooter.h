@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-enum class Attivita { NESSUNA, PARCHEGGIATO, IN_GIRO };
+enum class Attivita { NESSUNA, PARCHEGGIATO, IN_GIRO, INGRIPPATO, INVASATO, SEQUESTRATO, A_SECCO };
 
 class Scooter {
 public:

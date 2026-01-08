@@ -104,6 +104,8 @@ public:
     void AzioneLasciaTipa();
     void AzioneEsciTipa();
     void AzioneTelefonaTipa();
+    // Negozi
+    bool AzioneCompra(const Prodotto& prod);
 
     // Stringa formattata (es. "1.000 L." o "5 €")
     std::string GetSoldiStr(long long valoreBase) const;
@@ -147,23 +149,23 @@ private:
 // TODO: CAMBIA FIGOSITA'
 static const std::vector<Negozio> negozi{
     {
-        "Bau House",
+        "Bau House", TipoProd::GIUBBOTTO,
         {
-            {TipoProd::GIUBBOTTO, "Giubbotto Fatiscenza OG", "Giubbotto originale \"Fatiscenza\", elegante e raffinato, e' adatto a tutte le occasioni, dalla serata con gli amici, alle feste piu' esclusive.", "", 175, 30},
+            {TipoProd::GIUBBOTTO, "Giubbotto Fatiscenza OG", "Giubbotto originale \"Fatiscenza\", elegante e raffinato, è adatto a tutte le occasioni, dalla serata con gli amici, alle feste più esclusive.", "", 175, 30},
             {TipoProd::GIUBBOTTO, "Giubbotto Fatiscenza NEW", "Giubbotto \"Fatiscenza\", nella sua nuova versione, per essere sempre in linea con i tempi che cambiano.", "", 190, 65},
-            {TipoProd::GIUBBOTTO, "Giubbotto Ricercato", "Ecco qualcosa per i piu' ricercati!\nCome puo' mancare nell' armadio un vestito come questo ???\nCompratelo subito, non ve ne pentirete.", "", 150, 90}
+            {TipoProd::GIUBBOTTO, "Giubbotto Ricercato", "Ecco qualcosa per i più ricercati!\nCome può mancare nell'armadio un vestito come questo ???\nCompratelo subito, non ve ne pentirete.", "", 150, 90}
         },
     },
     {
-        "Blue Riders",
+        "Blue Riders", TipoProd::GIUBBOTTO,
         {
-            {TipoProd::GIUBBOTTO, "Giacca di pelle", "Giacca di pelle... cos' altro dire ?", "", 125, 40},
+            {TipoProd::GIUBBOTTO, "Giacca di pelle", "Giacca di pelle... cos'altro dire ?", "", 125, 40},
             {TipoProd::GIUBBOTTO, "Fatiscenza Green", "Giubbotto \"Fatiscenza\" Green Line*, per tutti quelli che possono permetterselo.", "", 190, 60},
-            {TipoProd::GIUBBOTTO, "Fatiscenza White", "\"Fatiscenza White\" con una comoda imbottitura in piumino sintetico *, e' adatto per tutte le stagioni.", "", 210, 75}
+            {TipoProd::GIUBBOTTO, "Fatiscenza White", "\"Fatiscenza White\" con una comoda imbottitura in piumino sintetico*, è adatto per tutte le stagioni.\n\n*Tutti i giubbotti della linea \"Fatiscenza\" sono fatti con materiali altamente infiammabili, da tenere lontano da fonti di calore....", "", 210, 75}
         }
     },
     {
-        "Zoccolaro",
+        "Zoccolaro", TipoProd::PANTALONI,
         {
             {TipoProd::PANTALONI, "Pantaloni Gessati", "Pantaloni gessati stile anni '30, comunque sono tornati di moda ed ogni zarro che si rispetti doverebbe averne un paio.", "", 45, 45},
             {TipoProd::PANTALONI, "Pantaloni Firmati", "Pantaloni per il tempo libero firmati da una delle marche più prestigiose e costose di abbigliamento sportivo.", "", 85, 75},
@@ -172,7 +174,7 @@ static const std::vector<Negozio> negozi{
         }
     },
     {
-        "Footsmocker",
+        "Footsmocker", TipoProd::SCARPE,
         {
             {TipoProd::SCARPE, "Scarpe Old Style", "Comode ed eleganti, dalla linea Old style, se avete un po' di soldi da buttare, dovete assolutemente comprarle.", "", 60, 50},
             {TipoProd::SCARPE, "Scarpe Scomode", "Il massimo della tendenza per i giovani d'oggi ! Queste scarpe, scomode e brutte, fanno sicuramente per voi !", "", 110, 70},
@@ -180,7 +182,7 @@ static const std::vector<Negozio> negozi{
         }
     },
     {
-        "Footsmocker II",
+        "Footsmocker II", TipoProd::SCARPE,
         {   // TODO: VARIAZIONI ?
             {TipoProd::SCARPE, "Scarpe Design", "Stile e semplicità in una scarpa dal desing moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.", "", 75, 80},
             {TipoProd::SCARPE, "Scarpe Prugna", "Come poteva mancare il massimo della tendenza per i giovani d'oggi nella nuova colorazione Prugna?", "", 120, 90},
@@ -188,7 +190,7 @@ static const std::vector<Negozio> negozi{
         }
     },
     {
-        "Bar Tabacchi",
+        "Bar Tabacchi", TipoProd::SIGARETTE,
         {
             {TipoProd::SIGARETTE, "Barclay", "Condensato: 5 Nicotina: 0.5", "", 6, 2},
             {TipoProd::SIGARETTE, "Camel", "Condensato: 8 Nicotina: 0.7", "", 6, 1},

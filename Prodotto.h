@@ -50,5 +50,6 @@ private:
 
 struct Negozio {
 	std::string m_nome;
+	TipoProd m_merce;
 	std::vector<Prodotto> m_catalogo;
 };

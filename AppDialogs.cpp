@@ -955,7 +955,7 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 }
 
 DlgDisco::DlgDisco(wxWindow* parent, TabbyGame& game)
-	: wxDialog{ parent, wxID_ANY, "Disco", wxDefaultPosition, wxDefaultSize, wxCAPTION },
+	: wxDialog{ parent, wxID_ANY, "Disco", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }, m_selectedIndex{ -1 }
 {
 	this->SetFont(parent->GetFont());
@@ -1328,9 +1328,146 @@ void DlgElencoNegozi::AggiornaInterfaccia()
 	this->Layout();
 }
 
-DlgNegozio::DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio)
-	: wxDialog{ parent, wxID_ANY, negozio.m_nome, wxDefaultPosition, wxDefaultSize },
-	m_game{ game }, m_shop{ negozio }
+PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game, const Prodotto& prod)
+	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED), // Altezza -1 = Auto
+	m_game(game), m_prodotto(prod), m_parentDlg(mainDlg)
 {
-	// TODO: COMPLETARE
+	this->SetBackgroundColour(wxColour(255, 240, 170));
+
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+
+	// 1. TITOLO
+	wxStaticText* lblNome = new wxStaticText(this, wxID_ANY, m_prodotto.GetNome());
+	wxFont fTitle = lblNome->GetFont();
+	fTitle.SetWeight(wxFONTWEIGHT_BOLD);
+	fTitle.SetPointSize(12);
+	lblNome->SetFont(fTitle);
+	lblNome->SetForegroundColour(wxColor(0, 0, 150));
+
+	mainSizer->Add(lblNome, 0, wxALL, 8);
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
+
+	// 2. CORPO (Icona + Descrizione)
+	wxBoxSizer* bodySizer = new wxBoxSizer(wxHORIZONTAL);
+
+	// Icona
+	wxPanel* pnlIcon = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(128, 128), wxBORDER_SIMPLE);
+	pnlIcon->SetBackgroundColour(wxColor(220, 220, 220));
+	// Qui andrà l'icona vera
+	bodySizer->Add(pnlIcon, 0, wxALL, 10);
+
+	// Descrizione
+	wxStaticText* lblDesc = new wxStaticText(this, wxID_ANY, m_prodotto.GetDesc());
+	wxFont fDesc = lblDesc->GetFont();
+	fDesc.SetPointSize(10);
+	lblDesc->SetFont(fDesc);
+	lblDesc->Wrap(350); // Manda a capo il testo per stare nella larghezza rimanente
+
+	bodySizer->Add(lblDesc, 0, wxEXPAND | wxALL, 5);
+
+	mainSizer->Add(bodySizer, 0, wxEXPAND | wxALL, 5); // Proportion 0 qui, lascia che sia il contenuto a spingere
+
+	// 3. DATI E BOTTONE
+	wxBoxSizer* footerSizer = new wxBoxSizer(wxHORIZONTAL);
+
+	wxStaticText* lblPrezzo = new wxStaticText(this, wxID_ANY, m_game.GetSoldiStr(m_prodotto.GetPrezzo()));
+	wxFont fPrice = lblPrezzo->GetFont(); fPrice.SetWeight(wxFONTWEIGHT_BOLD); lblPrezzo->SetFont(fPrice);
+	footerSizer->Add(lblPrezzo, 0, wxALIGN_CENTER_VERTICAL | wxALL, 15);
+
+	footerSizer->AddStretchSpacer();
+
+	// BOTTONE COMPRA VERDE
+	wxButton* btnCompra = new wxButton(this, wxID_ANY, "COMPRA", wxDefaultPosition, wxSize(90, 40));
+	btnCompra->SetBackgroundColour(wxColor(0, 180, 0)); // Verde scuro
+	btnCompra->SetForegroundColour(*wxWHITE);           // Testo bianco
+	wxFont fBtn = btnCompra->GetFont(); fBtn.SetWeight(wxFONTWEIGHT_BOLD); btnCompra->SetFont(fBtn);
+
+	btnCompra->Bind(wxEVT_BUTTON, &PnlProdotto::OnCompra, this);
+
+	footerSizer->Add(btnCompra, 0, wxALL | wxALIGN_CENTER_VERTICAL, 10);
+
+	mainSizer->Add(footerSizer, 0, wxEXPAND); // Footer in fondo
+
+	this->SetSizerAndFit(mainSizer);	// Calcola l'altezza necessaria per far stare tutto il testo
+}
+
+void PnlProdotto::OnCompra(wxCommandEvent& event)
+{
+	if (m_game.AzioneCompra(m_prodotto)) {
+		wxMessageBox("Hai comprato: " + m_prodotto.GetNome(), "Fatto!", wxOK);
+		// Aggiorna la label dei soldi nella finestra principale
+	}
+	else {
+		wxMessageBox("Non hai abbastanza soldi!", "Barbone", wxOK );
+	}
+}
+
+
+DlgNegozio::DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio)
+	: wxDialog{ parent, wxID_ANY, negozio.m_nome, wxDefaultPosition, wxDefaultSize},
+	m_game{ game }, m_negozio{ negozio }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+
+	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+
+	// TITOLO
+	wxStaticText* title = new wxStaticText(this, wxID_ANY, "BENVENUTO DA " + m_negozio.m_nome);
+	wxFont fTitle = title->GetFont(); fTitle.SetWeight(wxFONTWEIGHT_BOLD); fTitle.SetPointSize(14);
+	title->SetFont(fTitle);
+	title->SetForegroundColour(wxColor(50, 50, 50));
+	mainSizer->Add(title, 0, wxALL & ~wxBOTTOM, 15);
+
+	// --- AREA SCORREVOLE ---
+	wxScrolledWindow* scrollWin = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
+	scrollWin->SetScrollRate(0, 20); // Scroll verticale attivo
+	scrollWin->SetBackgroundColour(wxColor(40, 40, 40));
+
+	// --- GRIGLIA DEI PRODOTTI ---
+	wxGridSizer* gridSizer = new wxGridSizer(0, 2, 10, 10);
+
+	for (const auto& prod : m_negozio.m_catalogo) {
+		PnlProdotto* scheda = new PnlProdotto(scrollWin, this, m_game, prod);
+
+		// Aggiungiamo alla griglia.
+		gridSizer->Add(scheda, 0, wxEXPAND | wxALL, 5);
+	}
+	scrollWin->SetSizer(gridSizer);
+
+	// --- CALCOLO AUTOMATICO DIMENSIONI ---
+	// 1. Chiediamo al Sizer: "Quanto spazio ti serve MINIMO per far stare tutto?"
+	wxSize gridSize = gridSizer->GetMinSize();
+	// 2. Aggiungiamo un margine per la barra di scorrimento verticale (circa 20-30px)
+	int larghezzaTotale = gridSize.x + 40;
+	// 3. Imponiamo questa larghezza alla finestra di scroll.
+	scrollWin->SetMinSize(wxSize(larghezzaTotale, 650));
+	mainSizer->Add(scrollWin, 0, wxEXPAND | wxALL, 5);
+
+	// --- BARRA INFERIORE ---
+	wxPanel* pnlBottom = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED);
+	wxBoxSizer* bottomSizer = new wxBoxSizer(wxHORIZONTAL);
+
+	m_lblSoldi = new wxStaticText(pnlBottom, wxID_ANY, "---");
+	wxFont fSoldi = m_lblSoldi->GetFont(); fSoldi.SetWeight(wxFONTWEIGHT_BOLD); fSoldi.SetPointSize(12);
+	m_lblSoldi->SetFont(fSoldi);
+
+	bottomSizer->Add(m_lblSoldi, 0, wxALL | wxALIGN_CENTER_VERTICAL, 20);
+	bottomSizer->AddStretchSpacer();
+
+	wxButton* btnEsci = new wxButton(pnlBottom, wxID_CANCEL, "Esci", wxDefaultPosition, wxSize(150, 50));
+	bottomSizer->Add(btnEsci, 0, wxALL | wxALIGN_CENTER_VERTICAL, 10);
+
+	pnlBottom->SetSizer(bottomSizer);
+	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL, 0);
+
+	this->SetSizerAndFit(mainSizer);
+	this->Centre();
+	AggiornaInterfaccia();
+}
+
+void DlgNegozio::AggiornaInterfaccia()
+{
+	m_lblSoldi->SetLabel("< Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi())+" >");
+	this->Layout();
 }

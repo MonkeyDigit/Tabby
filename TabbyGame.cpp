@@ -1396,3 +1396,9 @@ void TabbyGame::AzioneTelefonaTipa()
     if (m_tabbyGuy.GetRapporti() <= 60)
         m_tabbyGuy.IncRapporti(1);
 }
+
+bool TabbyGame::AzioneCompra(const Prodotto& prod)
+{
+    // TODO: IMPLEMENTA
+    return false;
+}

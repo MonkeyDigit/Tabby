@@ -5,6 +5,7 @@
 #endif
 #include <wx/statline.h>
 #include <wx/listctrl.h>
+#include <wx/scrolwin.h> // Necessario per lo scroll
 #include "TabbyGame.h"
 #define WIN_BKG wxColor(194, 196, 184)
 
@@ -212,7 +213,29 @@ public:
 	DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio);
 private:
 	TabbyGame& m_game;
-	const Negozio& m_shop;
+	const Negozio& m_negozio;
+	wxStaticText* m_lblNome;
+	wxStaticText* m_lblDesc;
+	wxStaticText* m_lblPrezzo;
+	wxStaticText* m_lblSoldi;
+	wxStaticText* m_lblFama;
+
+	void OnSelect(wxCommandEvent& event);
+	void OnCompra(wxCommandEvent& event);
+	void AggiornaInterfaccia();
+};
+
+// Questa classe rappresenta la singola "Casella" o "Scheda" del prodotto
+class PnlProdotto : public wxPanel {
+public:
+	PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game, const Prodotto& prod);
+
+private:
+	TabbyGame& m_game;
+	Prodotto m_prodotto;
+	DlgNegozio* m_parentDlg; // Riferimento alla finestra padre per aggiornare i soldi
+
+	void OnCompra(wxCommandEvent& event);
 };
 
 // Funzione helper

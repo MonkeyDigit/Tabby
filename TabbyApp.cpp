@@ -41,6 +41,10 @@
 // TODO: TOGLI TUTTI I Centre()
 // TODO: CONTROLLA LE REFERENCE NEI DLG (Tipa& ?)
 // TODO: FAI EXPAND AI BOTTONI AL POSTO DI DARE IL SIZE, PER UNIFORMARLI
+// TODO: METTI LE GRAFFE NEGLI INIZIALIZZATORI
+// TODO: LA FAMA DEI VESTITI E? SMINCHIATA ?
+// TODO: NON PER TUTTI I SIZER SERVE IL PANEL
+// TODO: this fit this layout non si capisce nulla
 
 bool TabbyApp::OnInit()
 {
@@ -80,13 +84,28 @@ TabbyFrame::TabbyFrame()
 	menuAttivita->Append(ID_FAMIGLIA, "Famiglia");
 	menuAttivita->Append(ID_TIPA, "Tipa");
 	// Negozi
-	menuNegozi->Append(ID_BAU_HOUSE, "Bau House");
-	menuNegozi->Append(ID_BLUE_RIDER, "Blue Rider");
-	menuNegozi->Append(ID_ZOCCOLARO, "Zoccolaro");
-	menuNegozi->Append(ID_FOOTSMOCKER, "Footsmocker");
-	menuNegozi->Append(ID_FOOTSMOCKER_II, "Footsmocker II");
+	for (int i = 0; i < negozi.size(); i++)
+	{
+		// Aggiungiamo la voce al menu. 
+		// Usiamo wxID_ANY: wxWidgets assegnerà un ID numerico univoco automatico.
+		// Salviamo il puntatore 'item' per recuperare questo ID subito dopo.
+		wxMenuItem* item = menuNegozi->Append(wxID_ANY, negozi[i].m_nome);
+
+		// 2. Bindiamo l'evento "al volo".
+		// Usiamo una lambda che cattura 'this' (per usare m_game) e 'i' (l'indice del negozio).
+		// Il bind viene fatto sull'ID specifico di questo item (item->GetId()).
+		this->Bind(wxEVT_MENU, [this, i](wxCommandEvent& evt) {
+
+			// Apriamo il negozio
+			DlgNegozio dlg(this, m_game, negozi[i]);
+			dlg.ShowModal();
+
+			// Aggiorniamo l'interfaccia al ritorno
+			this->AggiornaInterfaccia();
+
+			}, item->GetId());
+	}
 	menuNegozi->AppendSeparator();
-	menuNegozi->Append(ID_BAR_TABACCHI, "Bar Tabacchi");
 	menuNegozi->Append(ID_PALESTRA, "Palestra");
 	menuNegozi->Append(ID_TELEFONINO, "Telefonino");
 	// Special

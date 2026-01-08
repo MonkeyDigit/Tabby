@@ -1303,6 +1303,7 @@ DlgElencoNegozi::DlgElencoNegozi(wxWindow* parent, TabbyGame& game)
 				DlgNegozio dlg{ this, m_game, negozi[i] };
 				dlg.ShowModal();
 				AggiornaInterfaccia();
+				this->EndModal(wxID_ANY);
 			}
 			ManifestaEventi(this, m_game);
 			
@@ -1399,7 +1400,7 @@ PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game,
 void PnlProdotto::OnCompra(wxCommandEvent& event)
 {
 	m_game.AzioneCompra(m_prodotto);
-	ManifestaEventi(this, m_game);
+	m_parentDlg->EndModal(wxID_ANY);	// Chiudiamo la finestra del negozio
 }
 
 

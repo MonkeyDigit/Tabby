@@ -1459,7 +1459,7 @@ void TabbyGame::AzioneCompra(const Prodotto& prod)
     {
         m_tabbyGuy.IncSizze(20);
         m_tabbyGuy.IncFama(prod.GetFama());
-        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "ART. 46 L. 29/12/1990 N.428", frasiSigarette[GenRandomInt(0,frasiSigarette.size())], "" };
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "ART. 46 L. 29/12/1990 n.428", frasiSigarette[GenRandomInt(0,frasiSigarette.size())], "" };
         PushMessaggio(msg);
         break;
     }

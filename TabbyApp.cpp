@@ -25,6 +25,22 @@
 // TODO: AL POSTO DI == "" fai .empty
 // TODO: AL MESSAGGIO PASSA ANCHE IL SUONO
 // TODO: FAI IL CLAMPING IN TUTTI GLI INC
+// TODO: RISOLVI IL DOPPIO SUNKEN: PANEL IN ECCESSO
+// TODO: IMPEDIRE DI COMPRARE VESTITI GIA' POSSEDUTI
+// TODO: ARMADIO VESTITI?
+// TODO: Data del compleanno
+// TODO: Calcola sesso
+// TODO: Reset me con anagrafica random
+// TODO: Init tabby con salvataggio
+// TODO: Fine programma
+// TODO: About
+// TODO: Logo
+// TODO: Spegnimi
+// TODO: Configuration
+// TODO: Personal info
+// TODO: TOGLI TUTTI I Centre()
+// TODO: CONTROLLA LE REFERENCE NEI DLG (Tipa& ?)
+// TODO: FAI EXPAND AI BOTTONI AL POSTO DI DARE IL SIZE, PER UNIFORMARLI
 
 bool TabbyApp::OnInit()
 {
@@ -358,7 +374,10 @@ void TabbyFrame::OnScuola(wxCommandEvent& event)
 
 void TabbyFrame::OnNegozi(wxCommandEvent& event)
 {
-	// TODO: IMPLEMENTA
+	DlgElencoNegozi dlg{ this, m_game };
+	dlg.Centre();
+	dlg.ShowModal();
+	this->AggiornaInterfaccia();
 }
 
 void TabbyFrame::OnLavoro(wxCommandEvent& event)

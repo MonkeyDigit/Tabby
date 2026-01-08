@@ -198,5 +198,22 @@ private:
 	void OnLasciaStare(wxCommandEvent& event);
 };
 
+class DlgElencoNegozi : public wxDialog {
+public:
+	DlgElencoNegozi(wxWindow* parent, TabbyGame& game);
+private:
+	TabbyGame& m_game;
+	wxStaticText* m_lblSoldi;
+	void AggiornaInterfaccia();
+};
+
+class DlgNegozio : public wxDialog {
+public:
+	DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio);
+private:
+	TabbyGame& m_game;
+	const Negozio& m_shop;
+};
+
 // Funzione helper
 void ManifestaEventi(wxWindow* parent, TabbyGame& game);

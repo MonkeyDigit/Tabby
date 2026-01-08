@@ -9,24 +9,13 @@
 constexpr float CAMBIO_EURO_LIRA = 1936.27;
 constexpr int ATTESA_MAX = 7;
 
-// TODO: Data del compleanno
-// TODO: Calcola sesso
-// TODO: Reset me con anagrafica random
-// TODO: Init tabby con salvataggio
-// TODO: Fine programma
-// TODO: About
-// TODO: Logo
-// TODO: Spegnimi
-// TODO: Configuration
-// TODO: Personal info
-
-
 // Sotto il cofano, i soldi di tabby e in generale il sistema monetario del gioco, viene gestito di base come euro, ma in base alla data sono messe a disposizione delle funzione per effettuare la conversione in lire, che fanno da "maschera"
 enum class Valuta { LIRE, EURO };
 
 enum class TipoMsg {
 	INFO,		// Solo tasto OK
-	SCELTA		// Tasti sì/no
+	SCELTA,		// Tasti sì/no
+    PAGELLA     // Così sappiamo di dover mostrare la finestra con la pagella
 };
 
 enum class MsgAzione {
@@ -153,6 +142,91 @@ private:
 	// LOGICA MONETARIA
 	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
 	long long ConvertiValuta(long long valoreBase) const;
+};
+
+// TODO: CAMBIA FIGOSITA'
+static const std::vector<Negozio> negozi{
+    {
+        "Bau House",
+        {
+            {TipoProd::GIUBBOTTO, "Giubbotto Fatiscenza OG", "Giubbotto originale \"Fatiscenza\", elegante e raffinato, e' adatto a tutte le occasioni, dalla serata con gli amici, alle feste piu' esclusive.", "", 175, 30},
+            {TipoProd::GIUBBOTTO, "Giubbotto Fatiscenza NEW", "Giubbotto \"Fatiscenza\", nella sua nuova versione, per essere sempre in linea con i tempi che cambiano.", "", 190, 65},
+            {TipoProd::GIUBBOTTO, "Giubbotto Ricercato", "Ecco qualcosa per i piu' ricercati!\nCome puo' mancare nell' armadio un vestito come questo ???\nCompratelo subito, non ve ne pentirete.", "", 150, 90}
+        },
+    },
+    {
+        "Blue Riders",
+        {
+            {TipoProd::GIUBBOTTO, "Giacca di pelle", "Giacca di pelle... cos' altro dire ?", "", 125, 40},
+            {TipoProd::GIUBBOTTO, "Fatiscenza Green", "Giubbotto \"Fatiscenza\" Green Line*, per tutti quelli che possono permetterselo.", "", 190, 60},
+            {TipoProd::GIUBBOTTO, "Fatiscenza White", "\"Fatiscenza White\" con una comoda imbottitura in piumino sintetico *, e' adatto per tutte le stagioni.", "", 210, 75}
+        }
+    },
+    {
+        "Zoccolaro",
+        {
+            {TipoProd::PANTALONI, "Pantaloni Gessati", "Pantaloni gessati stile anni '30, comunque sono tornati di moda ed ogni zarro che si rispetti doverebbe averne un paio.", "", 45, 45},
+            {TipoProd::PANTALONI, "Pantaloni Firmati", "Pantaloni per il tempo libero firmati da una delle marche più prestigiose e costose di abbigliamento sportivo.", "", 85, 75},
+            {TipoProd::PANTALONI, "Pantaloni Reciclati", "Pantaloni realizzati da uno dei più eccentrici e stravaganti stilisti del momento utilizzando fibra di bottiglie di plastica reciclate.", "", 125, 60},
+            {TipoProd::PANTALONI, "Pantaloni Scacchiera", "Hai sempre sognato di essere una scacchiera ??? Eccoti accontentato ! Realizzati in 100% acrilico.", "", 95, 50}
+        }
+    },
+    {
+        "Footsmocker",
+        {
+            {TipoProd::SCARPE, "Scarpe Old Style", "Comode ed eleganti, dalla linea Old style, se avete un po' di soldi da buttare, dovete assolutemente comprarle.", "", 60, 50},
+            {TipoProd::SCARPE, "Scarpe Scomode", "Il massimo della tendenza per i giovani d'oggi ! Queste scarpe, scomode e brutte, fanno sicuramente per voi !", "", 110, 70},
+            {TipoProd::SCARPE, "Scarpe Rialzate", "Volete essere alla moda spendendo poco ??? Queste scarpe rialzate con mattoni forati sono quello che ci vuole per voi !", "", 45, 20}
+        }
+    },
+    {
+        "Footsmocker II",
+        {   // TODO: VARIAZIONI ?
+            {TipoProd::SCARPE, "Scarpe Design", "Stile e semplicità in una scarpa dal desing moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.", "", 75, 80},
+            {TipoProd::SCARPE, "Scarpe Prugna", "Come poteva mancare il massimo della tendenza per i giovani d'oggi nella nuova colorazione Prugna?", "", 120, 90},
+            {TipoProd::SCARPE, "Scarpe Tendenza", "E per chi volesse osare ancora di più, ecco la nuova colorazione Tendenza, per non passare inosservati.", "", 90, 100}
+        }
+    },
+    {
+        "Bar Tabacchi",
+        {
+            {TipoProd::SIGARETTE, "Barclay", "Condensato: 5 Nicotina: 0.5", "", 6, 2},
+            {TipoProd::SIGARETTE, "Camel", "Condensato: 8 Nicotina: 0.7", "", 6, 1},
+            {TipoProd::SIGARETTE, "Davidoff Superior Lights", "These carefully selected tobaccos have been skillfully blended to assure your pleasure.\nCondensato: 7 Nicotina: 0.6", "", 6, 2},
+            {TipoProd::SIGARETTE, "Davidoff Mildnes", "These carefully selected tobaccos have been skillfully blended to assure your pleasure.\nCondensato: 7 Nicotina: 0.6", "", 6, 2},
+            {TipoProd::SIGARETTE, "Davidoff Classic", "These carefully selected tobaccos have been skillfully blended to assure your pleasure.\nCondensato: 13 Nicotina: 0.9", "", 6, 2},
+            {TipoProd::SIGARETTE, "Diana Blu", "Specially mild\nCondensato: 9 Nicotina 0.7", "", 5, 1},
+            {TipoProd::SIGARETTE, "Diana Rosse", "King size filter\nCondensato: 12 Nicotina 0.9", "", 5, 1},
+            {TipoProd::SIGARETTE, "Dunhill Lights", "Condensato: 8 Nicotina 0.7", "", 6, 0},
+            {TipoProd::SIGARETTE, "Merit", "Condensato: 7 Nicotina 0.5", "", 6, 0},
+            {TipoProd::SIGARETTE, "Gauloises Blu", "Condensato: 14 Nicotina 1.0", "", 6, 0},
+            {TipoProd::SIGARETTE, "Gauloises Rosse", "Condensato: 7 Nicotina 0.6", "", 6, 0},
+            {TipoProd::SIGARETTE, "Unlucky Strike", "Unluckies are a blend of the finest american, turkish and other choice tobaccos. Their manufacture includes the unlucky strike process. It's toasted.\nCondensato: 13 Nicotina 1.0", "", 6, 1},
+            {TipoProd::SIGARETTE, "Unlucky Strike Lights", "Unluckies are a blend of the finest american, turkish and other choice tobaccos. Their manufacture includes the unlucky strike process. It's toasted.\nCondensato: 9 Nicotina 0.7", "", 6, 1},
+            {TipoProd::SIGARETTE, "Malborro Medium", "Condensato: 8 Nicotina 0.6", "", 6, 2},
+            {TipoProd::SIGARETTE, "Malborro Rosse", "Condensato: 12 Nicotina 0.9", "", 6, 2},
+            {TipoProd::SIGARETTE, "Malborro Lights", "Condensato: 8 Nicotina 0.6", "", 6, 2},
+            {TipoProd::SIGARETTE, "NS Rosse", "Condensato: 11 Nicotina 1.0", "", 5, 0},
+            {TipoProd::SIGARETTE, "NS Mild", "Condensato: 9 Nicotina 0.9", "", 5, 0},
+            {TipoProd::SIGARETTE, "Poll Mon Blu", "Famous american cigarettes.\nWherever particular people congregat.\nCondensato: 9 Nicotina 0.7", "", 5, 1},
+            {TipoProd::SIGARETTE, "Poll Mon Rosse", "Famous american cigarettes.\nWherever particular people congregat.\nCondensato: 12 Nicotina 0.9", "", 5, 1},
+            {TipoProd::SIGARETTE, "Philip Morris", "Condensato: 12 Nicotina 1.0", "", 6, 2},
+            {TipoProd::SIGARETTE, "Philip Morris Super Light", "Condensato: 4 Nicotina 0.4", "", 6, 2},
+            {TipoProd::SIGARETTE, "Armadis", "Armadis contains an original blend of selected Burley, Virginia and Oriental tobaccos, whose natural curing processes guarantee its authentic flavour satisfaction.\nCondensato: 10 Nicotina 0.9", "", 5, 1},
+            {TipoProd::SIGARETTE, "Winston", "Condensato: 11 Nicotina 0.9", "", 5, 0}
+        }
+    }
+};
+
+static const std::vector<std::string> frasiSigarette{
+  "Nuoce gravemente alla salute",
+  "Il fumo nuoce alle persone che vi circondano",
+  "Ogni anno il tabagismo fa più vittime degli incidenti stradali",
+  "Proteggete i bambini: non fate loro respirare il vostro fumo",
+  "Il fumo nuoce alle persone che vi circondano",
+  "Il fumo provoca malattie cardiovascolari",
+  "Donne incinte: il fumo nuoce alla salute del vostro bambino",
+  "Il fumo provoca il cancro"
 };
 
 static const std::vector<std::string> frasiSfighe{

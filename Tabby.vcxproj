@@ -146,6 +146,7 @@
     <ClInclude Include="TabbyGuy.h" />
     <ClInclude Include="Telefonino.h" />
     <ClInclude Include="Tipa.h" />
+    <ClInclude Include="Prodotto.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,8 +1,12 @@
 #include "TabbyGuy.h"
 
 TabbyGuy::TabbyGuy()
-	: m_soldi{ 10 }, m_paghetta{ 20 }
+	: m_soldi{ 10 }, m_paghetta{ 20 }, 
+	m_giubotto{TipoProd::GIUBBOTTO, "Giubbotto", "Giubbotto iniziale", "", 0, 0}, 
+	m_pantaloni{TipoProd::PANTALONI, "Pantaloni", "Pantalone iniziale", "", 0, 0},
+	m_scarpe{TipoProd::SCARPE, "Scarpe", "Scarpe iniziali", "", 0, 0}
 {
+
 	m_identita.m_nome = "Alfonso";
 	m_identita.m_cognome = "Signorini";
 	m_identita.m_dataNascita = Chrono::Date{ 1973, 8, 10 };

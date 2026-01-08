@@ -217,6 +217,8 @@ void TabbyGame::AvanzaCalendario()
             m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
             // TODO: Roba tipa
 
+            // TODO: SISTEMA STA ROBA
+            /*
             if (m_date.GetDay() == 25)
             {   // TODO: VESTITI NATALIZI
                 if (m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubotto() == 19)
@@ -232,6 +234,7 @@ void TabbyGame::AvanzaCalendario()
                 PushMessaggio(msg);
                 m_tabbyGuy.DecFama(5);
             }
+            */
         }
     }
 

@@ -6,6 +6,7 @@
 #include "Scuola.h"
 #include "Telefonino.h"
 #include "Carriera.h"
+#include "Prodotto.h"
 
 struct CartaIdentita {
 	std::string m_nome;
@@ -64,13 +65,9 @@ public:
 	int GetFortuna() const { return m_fortuna; };
 	int GetRapporti() const { return m_rapporti; };
 	int GetPaghetta() const { return m_paghetta; };
-	int GetGiubotto() const { return m_giubotto; };
-	int GetPantaloni() const { return m_pantaloni; };
-	int GetScarpe() const { return m_scarpe; };
 	int GetSizze() const { return m_sizze; };
 
 	// PASS-BY REFERENCE
-	// CARRIERA LAVORATIVA
 	Carriera& GetCarriera() { return m_carriera; };
 	Chrono::Date& GetScadenzaGym() { return m_scadenzaGym; };
 	CartaIdentita& GetID() { return m_identita; };
@@ -79,6 +76,9 @@ public:
 	Tipa& GetTipa() { return m_tipa; };
 	Telefono& GetTelefono() { return m_telefono; };
 	OperatoreTel& GetOperatore() { return m_operatore; };
+	Prodotto& GetGiubotto() { return m_giubotto; };
+	Prodotto& GetPantaloni() { return m_pantaloni; };
+	Prodotto& GetScarpe() { return m_scarpe; };
 
 	// Funzione helper
 	bool HaUnLavoro() const { return !m_carriera.IsDisoccupato(); }
@@ -97,9 +97,9 @@ private:
 	int m_studio;
 	int m_fortuna;
 	int m_testa;	// abbronzatura
-	int m_giubotto;
-	int m_pantaloni;
-	int m_scarpe;
+	Prodotto m_giubotto;
+	Prodotto m_pantaloni;
+	Prodotto m_scarpe;
 	int m_sizze;	// sigarette
 	Carriera m_carriera;
 

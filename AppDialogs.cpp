@@ -798,7 +798,7 @@ DlgElencoDitte::DlgElencoDitte(wxWindow* parent, TabbyGame& game)
 	m_lista->InsertColumn(2, "Fatturato", wxLIST_FORMAT_RIGHT);
 
 	// Riempiamo la lista
-	for (size_t i = 0; i < ditte.size(); i++)
+	for (int i = 0; i < ditte.size(); i++)
 	{
 		const Ditta& d = ditte[i];
 
@@ -808,6 +808,7 @@ DlgElencoDitte::DlgElencoDitte(wxWindow* parent, TabbyGame& game)
 		// perché wxListCtrl non supporta il CSS o il padding nativo facilmente.
 		// ==================================================================================
 
+		// IMPORTANTE: wxListCtrl possiede ItemData, un contenitore in cui inserire dei dati
 		wxString nomePad = "  " + d.m_nome + "  ";
 		long index = m_lista->InsertItem(i, nomePad);
 
@@ -822,7 +823,7 @@ DlgElencoDitte::DlgElencoDitte(wxWindow* parent, TabbyGame& game)
 
 		// Padding anche per il fatturato
 		m_lista->SetItem(index, 2, fatturatoStr + "  ");
-
+		// VENGONO ASSOCIATI I DATI
 		m_lista->SetItemData(index, i);
 	}
 
@@ -1064,7 +1065,7 @@ void DlgDisco::OnRadioSelect(wxCommandEvent& event)
 
 void DlgDisco::OnOk(wxCommandEvent& event)
 {
-	// 1. Controllo Selezione
+	// Controllo Selezione
 	if (m_selectedIndex < 0) {
 		wxMessageBox("Non hai selezionato nessun locale!", "Tabboz Simulator", wxOK | wxICON_EXCLAMATION);
 		return;
@@ -1272,4 +1273,64 @@ void DlgIncontroTipa::OnProvaci(wxCommandEvent& event)
 void DlgIncontroTipa::OnLasciaStare(wxCommandEvent& event)
 {
 	this->EndModal(wxID_ANY);
+}
+
+DlgElencoNegozi::DlgElencoNegozi(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Negozi", wxDefaultPosition, wxDefaultSize },
+	m_game{ game }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+
+	wxPanel* pnlBody = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerBody = new wxBoxSizer{ wxVERTICAL };
+	
+	wxPanel* pnlBottom = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
+	sizerBody->AddSpacer(5);
+	// BOTTONI NEGOZI
+	for (int i = 0; i < negozi.size(); i++)
+	{
+		wxButton* btnNegozio = new wxButton{ pnlBody, wxID_ANY, negozi[i].m_nome, wxDefaultPosition, wxSize(-1, 40), wxEXPAND};
+		// Sfruttiamo una funzione lambda per associare in modo dinamico il bottone al negozio selezionato
+		sizerBody->Add(btnNegozio, 0, wxEXPAND | wxRIGHT | wxLEFT, 5);
+		btnNegozio->Bind(wxEVT_BUTTON, [this, i](wxCommandEvent&) {
+
+			DlgNegozio dlg{ this, m_game, negozi[i] };
+			dlg.ShowModal();
+			AggiornaInterfaccia();
+			});
+	}
+	sizerBody->AddSpacer(5);
+
+	// TODO: BOTTONI NEGOZI
+	pnlBody->SetSizer(sizerBody);
+	mainSizer->Add(pnlBody, 1, wxEXPAND | wxALL, 5);
+
+	m_lblSoldi = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
+	sizerBottom->Add(m_lblSoldi, 0, wxALIGN_CENTER_VERTICAL | wxALL, 10);
+	sizerBottom->AddStretchSpacer();
+	wxButton* btnChiudi = new wxButton{ pnlBottom, wxID_CANCEL, "Chiudi", wxDefaultPosition, wxSize(120, 40)};
+	sizerBottom->Add(btnChiudi, 1, wxEXPAND | wxALL, 10);
+
+	pnlBottom->SetSizer(sizerBottom);
+	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL, 5);
+
+	this->SetSizerAndFit(mainSizer);
+	this->AggiornaInterfaccia();
+}
+
+void DlgElencoNegozi::AggiornaInterfaccia()
+{
+	m_lblSoldi->SetLabel("Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
+	this->Layout();
+}
+
+DlgNegozio::DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio)
+	: wxDialog{ parent, wxID_ANY, negozio.m_nome, wxDefaultPosition, wxDefaultSize },
+	m_game{ game }, m_shop{ negozio }
+{
+	// TODO: COMPLETARE
 }

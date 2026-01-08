@@ -19,7 +19,7 @@ namespace Chrono {
 	}
 
 	Date::Date()
-		: m_year{2001}, m_month{Month::jan}, m_day{1}, m_weekDay{ WeekDay(1) }
+		: m_year{ 0 }, m_month{Month::jan}, m_day{1}, m_weekDay{ WeekDay(1) }
 	{ m_weekDay = dayOfWeek(*this); }
 
 	void Date::AddDay(int n)
@@ -162,6 +162,24 @@ namespace Chrono {
 
 		// Altrimenti 1 corrisponde a Monday, 2 a Tuesday, ecc.
 		return WeekDay(result);
+	}
+
+	bool operator>(const Date& a, const Date& b)
+	{
+		if (a.GetYear() > b.GetYear()) return true;
+		if (a.GetMonth() > b.GetMonth()) return true;
+		if (a.GetDay() > b.GetDay()) return true;
+
+		return false;
+	}
+
+	bool operator<(const Date& a, const Date& b)
+	{
+		if (a.GetYear() < b.GetYear()) return true;
+		if (a.GetMonth() < b.GetMonth()) return true;
+		if (a.GetDay() < b.GetDay()) return true;
+
+		return false;
 	}
 
 	//operator overloading-------------------------------------------------------------------------------

@@ -206,6 +206,8 @@ private:
 	TabbyGame& m_game;
 	wxStaticText* m_lblSoldi;
 	void AggiornaInterfaccia();
+	void OnPalestra(wxCommandEvent& event);
+	void OnTelefonino(wxCommandEvent& event);
 };
 
 class DlgNegozio : public wxDialog {
@@ -214,14 +216,8 @@ public:
 private:
 	TabbyGame& m_game;
 	const Negozio& m_negozio;
-	wxStaticText* m_lblNome;
-	wxStaticText* m_lblDesc;
-	wxStaticText* m_lblPrezzo;
 	wxStaticText* m_lblSoldi;
-	wxStaticText* m_lblFama;
 
-	void OnSelect(wxCommandEvent& event);
-	void OnCompra(wxCommandEvent& event);
 	void AggiornaInterfaccia();
 };
 
@@ -236,6 +232,22 @@ private:
 	DlgNegozio* m_parentDlg; // Riferimento alla finestra padre per aggiornare i soldi
 
 	void OnCompra(wxCommandEvent& event);
+};
+
+// PALESTRA
+class DlgPalestra : public wxDialog {
+public:
+	DlgPalestra(wxWindow* parent, TabbyGame& game);
+
+private:
+	TabbyGame& m_game;
+	wxStaticText* m_lblScadenza;
+	wxStaticText* m_lblPelle;
+	wxStaticText* m_lblSoldi;
+	wxStaticText* m_lblFama;
+	void AggiornaInterfaccia();
+	void OnVaiPalestra(wxCommandEvent& event);
+	void OnLampada(wxCommandEvent& event);
 };
 
 // Funzione helper

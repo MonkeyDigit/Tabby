@@ -1,7 +1,7 @@
 #include "TabbyGuy.h"
 
 TabbyGuy::TabbyGuy()
-	: m_soldi{ 10 }, m_paghetta{ 20 }, 
+	: m_soldi{ 10 }, m_paghetta{ 20 }, m_fama{ 0 }, m_rep{ 0 },
 	m_giubotto{TipoProd::GIUBBOTTO, "Giubbotto", "Giubbotto iniziale", "", 0, 0}, 
 	m_pantaloni{TipoProd::PANTALONI, "Pantaloni", "Pantalone iniziale", "", 0, 0},
 	m_scarpe{TipoProd::SCARPE, "Scarpe", "Scarpe iniziali", "", 0, 0}
@@ -126,6 +126,7 @@ void TabbyGuy::DecRapporti(int punti) {
 void TabbyGuy::LasciaTipa()
 {
 	m_tipa.Azzera();
+	m_rapporti = 0;
 }
 
 void TabbyGuy::Licenziati()
@@ -161,4 +162,33 @@ bool TabbyGuy::SetScarpe(const Prodotto& scarpe)
 	m_scarpe = scarpe;
 
 	return true;
+}
+
+void TabbyGuy::Abbronza()
+{
+	if (m_pelle < Pelle::ABBR_CARBONIZZATO)
+		m_pelle = Pelle((int)m_pelle + 1);
+}
+
+void TabbyGuy::Sbianca()
+{
+	if (m_pelle > Pelle::ABBR_NO)
+		m_pelle = Pelle((int)m_pelle - 1);
+}
+
+std::string TabbyGuy::GetPelleStr()
+{
+	switch (m_pelle)
+	{
+	case Pelle::ABBR_NO:
+		return "Non abbronzato";
+	case Pelle::ABBR_LIEVE:
+		return "Abbronzatura lieve";
+	case Pelle::ABBR_MEDIA:
+		return "Abbronzatura media";
+	case Pelle::ABBR_PESANTE:
+		return "Abbronzatura pesante";
+	case Pelle::ABBR_CARBONIZZATO:
+		return "Carbonizzato";
+	}
 }

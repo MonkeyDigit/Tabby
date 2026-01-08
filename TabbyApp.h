@@ -50,6 +50,8 @@ private:
 	// GESTORE EVENTI (Cosa succede quando clicchi)
 	void OnScooter(wxCommandEvent& event);
 	void OnNegozi(wxCommandEvent& event);
+	void OnPalestra(wxCommandEvent& event);
+	void OnTelefonino(wxCommandEvent& event);
 	void OnDisco(wxCommandEvent& event);
 	void OnScuola(wxCommandEvent& event);
 	void OnLavoro(wxCommandEvent& event);
@@ -57,6 +59,9 @@ private:
 	void OnFamiglia(wxCommandEvent& event);
 	void OnTipa(wxCommandEvent& event);
 	void OnEsci(wxCommandEvent& event);
+	void OnPersonalInfo(wxCommandEvent& event);
+	void OnConfig(wxCommandEvent& event);
+	void OnAbout(wxCommandEvent& event);
 };
 
 // In wxWidgets (e in Windows in generale), ogni singolo bottone, menu o casella di testo deve avere un'ID univoco (integer). wxWidgets ha già dei numeri prenotati per le sue cose interne (es. wxID_EXIT, wxID_OK, wxID_SAVE), solitamente sono numeri bassi o negativi, dunque per evitare conflitti si usano numeri alti per essere sicuri di stare fuori da quel range
@@ -66,8 +71,7 @@ enum Widget_ID {
 	ID_START_EVENT = wxID_HIGHEST + 1,
 	// Attività
 	ID_SCOOTER, ID_DISCO, ID_SCUOLA, ID_LAVORO, ID_COMPAGNIA, ID_FAMIGLIA, ID_TIPA,
-	// Negozi
-	ID_NEGOZI, ID_BAU_HOUSE, ID_BLUE_RIDER, ID_ZOCCOLARO, ID_FOOTSMOCKER, ID_FOOTSMOCKER_II, ID_BAR_TABACCHI, ID_PALESTRA, ID_TELEFONINO,
+	ID_NEGOZI, ID_PALESTRA, ID_TELEFONINO,
 	// Special
 	ID_INFO, ID_CONFIG,
 	// Help

@@ -465,6 +465,7 @@ void DlgFamiglia::AggiornaInterfaccia()
 {
 	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()) + " >");
 	m_lblPaghetta->SetLabel("< Paghetta " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetPaghetta()) + " >");
+	this->Fit();
 	this->Layout();
 }
 
@@ -1220,6 +1221,7 @@ void DlgTipa::AggiornaInterfaccia()
 
 	m_lblFama->SetLabel("< Figosità " + std::to_string(m_game.GetTabbyGuy().GetFama()) + "/100 >");
 
+	this->Fit();
 	this->Layout();
 }
 
@@ -1303,15 +1305,23 @@ DlgElencoNegozi::DlgElencoNegozi(wxWindow* parent, TabbyGame& game)
 				DlgNegozio dlg{ this, m_game, negozi[i] };
 				dlg.ShowModal();
 				AggiornaInterfaccia();
-				this->EndModal(wxID_ANY);
 			}
 			ManifestaEventi(this, m_game);
-			
 		});
 	}
+
+	// PALESTRA E TELEFONINO
+	wxButton* btnPalestra = new wxButton{ pnlBody, wxID_ANY, "Palestra", wxDefaultPosition, wxSize(-1,40), wxEXPAND };
+	wxButton* btnTelefonino = new wxButton{ pnlBody, wxID_ANY, "Telefonino", wxDefaultPosition, wxSize(-1,40), wxEXPAND };
+	sizerBody->Add(btnPalestra, 0, wxEXPAND | wxRIGHT | wxLEFT, 5);
+	sizerBody->Add(btnTelefonino, 0, wxEXPAND | wxRIGHT | wxLEFT, 5);
+
+	btnPalestra->Bind(wxEVT_BUTTON, &DlgElencoNegozi::OnPalestra, this);
+	btnTelefonino->Bind(wxEVT_BUTTON, &DlgElencoNegozi::OnTelefonino, this);
+
+
 	sizerBody->AddSpacer(5);
 
-	// TODO: BOTTONI NEGOZI
 	pnlBody->SetSizer(sizerBody);
 	mainSizer->Add(pnlBody, 1, wxEXPAND | wxALL, 5);
 
@@ -1319,7 +1329,7 @@ DlgElencoNegozi::DlgElencoNegozi(wxWindow* parent, TabbyGame& game)
 	sizerBottom->Add(m_lblSoldi, 0, wxALIGN_CENTER_VERTICAL | wxALL, 10);
 	sizerBottom->AddStretchSpacer();
 	wxButton* btnChiudi = new wxButton{ pnlBottom, wxID_CANCEL, "Chiudi", wxDefaultPosition, wxSize(120, 40)};
-	sizerBottom->Add(btnChiudi, 1, wxEXPAND | wxALL, 10);
+	sizerBottom->Add(btnChiudi, 0, wxALL, 10);
 
 	pnlBottom->SetSizer(sizerBottom);
 	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL, 5);
@@ -1331,7 +1341,25 @@ DlgElencoNegozi::DlgElencoNegozi(wxWindow* parent, TabbyGame& game)
 void DlgElencoNegozi::AggiornaInterfaccia()
 {
 	m_lblSoldi->SetLabel("Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
+	this->Fit();
 	this->Layout();
+}
+
+void DlgElencoNegozi::OnPalestra(wxCommandEvent& event)
+{
+	if (m_game.TriggerPalestra())
+	{
+		DlgPalestra dlg{ this, m_game };
+		dlg.ShowModal();
+		this->AggiornaInterfaccia();
+	}
+	else
+		ManifestaEventi(this, m_game);
+}
+
+void DlgElencoNegozi::OnTelefonino(wxCommandEvent& event)
+{
+	// TODO: IMPLEMENTA
 }
 
 PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game, const Prodotto& prod)
@@ -1372,8 +1400,9 @@ PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game,
 	bodySizer->Add(lblDesc, 0, wxEXPAND | wxALL, 5);
 
 	mainSizer->Add(bodySizer, 0, wxEXPAND | wxALL, 5); // Proportion 0 qui, lascia che sia il contenuto a spingere
-
+	
 	// 3. DATI E BOTTONE
+	mainSizer->AddStretchSpacer();
 	wxBoxSizer* footerSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	wxStaticText* lblPrezzo = new wxStaticText(this, wxID_ANY, m_game.GetSoldiStr(m_prodotto.GetPrezzo()));
@@ -1470,5 +1499,142 @@ DlgNegozio::DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio
 void DlgNegozio::AggiornaInterfaccia()
 {
 	m_lblSoldi->SetLabel("< Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi())+" >");
+	this->Fit();
 	this->Layout();
+}
+
+DlgPalestra::DlgPalestra(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Palestra", wxDefaultPosition, wxDefaultSize},
+	m_game{ game }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
+
+	wxPanel* pnlBottom = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
+
+	// FOTO
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(200,300), wxBORDER_SUNKEN};
+	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
+
+	pnlFoto->SetSizer(sizerFoto);
+	sizerBody->Add(pnlFoto, 0, wxEXPAND | wxALL, 5);
+	sizerBody->Add(new wxStaticLine(this), 0, wxEXPAND | wxRIGHT | wxLEFT, 5);
+	// BOTTONI
+	wxPanel* pnlButtons = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN};
+	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
+
+	wxButton* btnVaiPalestra = new wxButton{ pnlButtons, wxID_ANY, "Vai in palestra", wxDefaultPosition, wxSize(-1, 40) };
+	sizerButtons->Add(btnVaiPalestra, 0, wxEXPAND | wxALL, 5);
+	btnVaiPalestra->Bind(wxEVT_BUTTON, &DlgPalestra::OnVaiPalestra, this);
+
+	sizerButtons->Add(new wxStaticText(pnlButtons, wxID_ANY, "Prezzi abbonamenti palestra"), 0, wxALIGN_CENTER | wxALL & ~wxBOTTOM, 5);
+	// INFORMAZIONI ABBONAMENTI
+	wxPanel* pnlSub = new wxPanel{ pnlButtons, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };	// Faccio il panel solo per avere il rientro
+	wxGridSizer* gridSub = new wxGridSizer{ 2, 3, 10, 10 };	// Griglia da 2 righe e 3 colonne
+
+	gridSub->Add(new wxStaticText(pnlSub, wxID_ANY, m_game.GetSoldiStr(PALESTRA_ABB_1)), 0, wxALIGN_CENTER | wxALL & wxBOTTOM, 5);
+	gridSub->Add(new wxStaticText(pnlSub, wxID_ANY, m_game.GetSoldiStr(PALESTRA_ABB_6)), 0, wxALIGN_CENTER | wxALL & wxBOTTOM, 5);
+	gridSub->Add(new wxStaticText(pnlSub, wxID_ANY, m_game.GetSoldiStr(PALESTRA_ABB_12)), 0, wxALIGN_CENTER | wxALL & wxBOTTOM, 5);
+
+	wxButton* btnMesi1 = new wxButton{ pnlSub, wxID_ANY, "1 mese" };
+	wxButton* btnMesi6 = new wxButton{ pnlSub, wxID_ANY, "6 mesi" };
+	wxButton* btnMesi12 = new wxButton{ pnlSub, wxID_ANY, "1 anno" };
+
+	gridSub->Add(btnMesi1, 0, wxEXPAND | wxALL & ~wxTOP, 5);
+	gridSub->Add(btnMesi6, 0, wxEXPAND | wxALL & ~wxTOP, 5);
+	gridSub->Add(btnMesi12, 0, wxEXPAND | wxALL & ~wxTOP, 5);
+
+	btnMesi1->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		m_game.AzioneAbbonamento(1);
+		ManifestaEventi(this, m_game);
+		this->AggiornaInterfaccia();
+		});
+	btnMesi6->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		m_game.AzioneAbbonamento(6);
+		ManifestaEventi(this, m_game);
+		this->AggiornaInterfaccia();
+		});
+	btnMesi12->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		m_game.AzioneAbbonamento(12);
+		ManifestaEventi(this, m_game);
+		this->AggiornaInterfaccia();
+		});
+
+	pnlSub->SetSizer(gridSub);
+	sizerButtons->Add(pnlSub, 0, wxEXPAND | wxALL, 5);
+
+	m_lblScadenza = new wxStaticText{ pnlButtons, wxID_ANY, "---", wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN | wxALIGN_CENTER_HORIZONTAL };
+	sizerButtons->Add(m_lblScadenza, 0, wxEXPAND | wxALL, 5);
+
+	sizerButtons->Add(new wxStaticLine(pnlButtons), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
+
+	wxButton* btnLampada = new wxButton{ pnlButtons, wxID_ANY, "Lampada ("+m_game.GetSoldiStr(PREZZO_LAMPADA)+")"};
+	sizerButtons->Add(btnLampada, 0, wxALL, 5);
+	btnLampada->Bind(wxEVT_BUTTON, &DlgPalestra::OnLampada, this);
+
+	m_lblPelle = new wxStaticText{ pnlButtons, wxID_ANY, "---", wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN | wxALIGN_CENTER_HORIZONTAL };
+	sizerButtons->Add(m_lblPelle, 0, wxEXPAND | wxALL, 5);
+
+	pnlButtons->SetSizer(sizerButtons);
+
+	sizerBody->Add(pnlButtons, 1, wxEXPAND | wxALL, 5);
+	mainSizer->Add(sizerBody, 0, wxEXPAND | wxALL, 5);
+
+	m_lblSoldi = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
+	sizerBottom->Add(m_lblSoldi, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	sizerBottom->AddSpacer(50);
+	m_lblFama = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
+	sizerBottom->Add(m_lblFama, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+	sizerBottom->AddStretchSpacer();
+	wxButton* btnEsci = new wxButton(pnlBottom, wxID_CANCEL, "Esci", wxDefaultPosition, wxSize(100, 40));
+	sizerBottom->Add(btnEsci, 0, wxALL, 5);
+
+	pnlBottom->SetSizer(sizerBottom);
+	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL, 10);
+
+	this->SetSizerAndFit(mainSizer);
+	this->AggiornaInterfaccia();
+}
+
+void DlgPalestra::AggiornaInterfaccia()
+{
+	if (!m_game.AbbonamentoAttivo())
+		m_lblScadenza->SetLabel("Nessun abbonamento");
+	else
+	{
+		std::string s = "Scadenza: " + 
+			std::to_string(m_game.GetScadenzaPal().GetDay()) + " " + 
+			m_game.GetScadenzaPal().GetMonthStr() + " " + 
+			std::to_string(m_game.GetScadenzaPal().GetYear());
+		m_lblScadenza->SetLabel(s);
+	}
+	m_lblPelle->SetLabel(m_game.GetTabbyGuy().GetPelleStr());
+	m_lblSoldi->SetLabel("Soldi " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
+	m_lblFama->SetLabel("Figosità " + std::to_string(m_game.GetTabbyGuy().GetFama()) + "/100");
+
+	this->Fit();
+	this->Layout();
+}
+
+void DlgPalestra::OnVaiPalestra(wxCommandEvent& event)
+{
+	if (m_game.TriggerPalestra())
+		m_game.AzioneVaiPalestra();
+	
+	this->AggiornaInterfaccia();
+	ManifestaEventi(this, m_game);
+}
+
+void DlgPalestra::OnLampada(wxCommandEvent& event)
+{
+	if (m_game.TriggerPalestra())
+		m_game.AzioneLampada();
+
+	this->AggiornaInterfaccia();
+	ManifestaEventi(this, m_game);
 }

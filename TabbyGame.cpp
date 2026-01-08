@@ -120,7 +120,16 @@ void TabbyGame::AvanzaCalendario()
         PushMessaggio(msg);
     }
 
-    // TODO: abbronzatura
+    // Ogni 7 giorni cala l'abbronzatura
+    if (m_tabbyGuy.GetPelle() != Pelle::ABBR_NO)
+    {
+        m_coolDownPelle--;
+        if (m_coolDownPelle < 0)
+        {
+            m_tabbyGuy.Sbianca();
+            m_coolDownPelle = 7;
+        }
+    }
 
     // ---------------> S T I P E N D I O <---------------
 
@@ -153,7 +162,7 @@ void TabbyGame::AvanzaCalendario()
     }
 
     // ---------------> P A L E S T R A <---------------
-    if (m_date == m_tabbyGuy.GetScadenzaGym())
+    if (m_date == m_scadenzaPal)
     {
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Pagah", "E' appena scaduto il tuo abbonamento della palestra...", "" };
         PushMessaggio(msg);
@@ -326,7 +335,7 @@ void TabbyGame::GestioneRelazioni()
             m_tabbyGuy.DecRapporti(1);
     }
 
-    if (m_tabbyGuy.GetRapporti() > 0)
+    if (m_tabbyGuy.HaTipa())
     {
         if (m_tabbyGuy.GetRapporti() < 98)
         {
@@ -338,11 +347,11 @@ void TabbyGame::GestioneRelazioni()
                 // Da 1 a 10, la donna ti molla...
                 // TODO: Play sound
 
-                m_tabbyGuy.SetRapporti(0);
+                m_tabbyGuy.LasciaTipa();
 
                 // TODO: Dialog la tipa ti molla - sesso m f
-                // TODO: Messaggio speciale
-                Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "La tipa ti molla...", "[messaggio]", "" };
+                rnd = GenRandomInt(0, frasiSeparazione.size() - 1);
+                Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "La tipa ti molla...", frasiSeparazione[rnd], ""};
                 PushMessaggio(msg);
 
                 m_tabbyGuy.DecRep(11 - rnd);    // Quelle con numero più basso, sono peggiori...
@@ -528,7 +537,7 @@ void TabbyGame::GestioneEventiCasuali()
                 // TODO: Sesso m f
                 Tipa tipa = GeneraTipa();
                 // TODO: Dialog una tipa ci prova
-                Messaggio msg{ TipoMsg::SCELTA, MsgAzione::TIPA_CI_PROVA, "Qualcuno ti caga...", "Una tipa, di nome "+tipa.GetNome()+" (Figosità"+std::to_string(tipa.GetFama())+"), ci prova con te...\nCi stai ???", "" };
+                Messaggio msg{ TipoMsg::SCELTA, MsgAzione::TIPA_CI_PROVA, "Qualcuno ti caga...", "Una tipa, di nome "+tipa.GetNome()+" (Figosità "+std::to_string(tipa.GetFama())+"/100), ci prova con te...\nCi stai ???", "" };
                 PushMessaggio(msg);
             }
 
@@ -1314,7 +1323,6 @@ void TabbyGame::AzioneLasciaTipa()
         return;
     }
 
-    // TODO: IMPLEMENTA SCELTA
     Messaggio msg{ TipoMsg::SCELTA, MsgAzione::LASCIA_TIPA, "Lascia tipa", "Sei proprio sicuro di voler lasciare "+m_tabbyGuy.GetTipa().GetNome()+" ?", "" };
     PushMessaggio(msg);
 }
@@ -1466,5 +1474,126 @@ void TabbyGame::AzioneCompra(const Prodotto& prod)
     }
 
     WriteLog("AzioneCompra: acquista " + prod.GetNome() + " per " + GetSoldiStr(prod.GetPrezzo()));
+    NuovoGiorno();
+}
+
+bool TabbyGame::TriggerPalestra()
+{
+    if (m_tipoGiorno != TipoGiorno::FESTIVO)
+        return true;
+
+    Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Palestra", "Il tuo fisico da atleta dovrà aspettare... visto che oggi la palestra è chiusa...", "" };
+    PushMessaggio(msg);
+
+    return false;
+}
+
+void TabbyGame::AzioneVaiPalestra()
+{
+    if (!AbbonamentoAttivo())
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Palestra", "Prima di poter venire in palestra devi fare un abbonamento !", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    // TODO: SUONO
+    if (m_tabbyGuy.GetFama() < 82)
+        m_tabbyGuy.IncFama(1);
+
+    // EVENTI PALESTRA
+    int rnd = GenRandomInt(0, 28 + m_tabbyGuy.GetFortuna() * 0.5f);
+
+    // AVVIENE L'EVENTO RANDOMICO
+    if (rnd < 9)
+    {
+        rnd = GenRandomInt(0, frasiPalestra.size() - 1);
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Palestra...", frasiPalestra[rnd], "" };
+        PushMessaggio(msg);
+
+        if (m_tabbyGuy.GetRep() > 10)
+            m_tabbyGuy.DecRep(4);
+
+        WriteLog("AzioneVaiPalestra: Evento riguardante la palestra");
+    }
+}
+
+void TabbyGame::AzioneLampada()
+{
+    if (m_tabbyGuy.GetPelle() != Pelle::ABBR_CARBONIZZATO)
+    {
+        if (m_tabbyGuy.SpendiSoldi(PREZZO_LAMPADA))
+        {
+            m_tabbyGuy.Abbronza();
+            m_coolDownPelle = 7;
+
+            if (m_tabbyGuy.GetPelle() != Pelle::ABBR_CARBONIZZATO)
+            {
+                if (m_tabbyGuy.GetFama() < 20)
+                    m_tabbyGuy.IncFama(1);
+                if (m_tabbyGuy.GetFama() < 45)
+                    m_tabbyGuy.IncFama(1);
+                if (m_tabbyGuy.GetFama() < 96)
+                    m_tabbyGuy.IncFama(1);
+
+            }
+            else
+            {
+                m_tabbyGuy.DecFama(8);
+                m_tabbyGuy.DecRep(5);
+
+                Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Lampada", "L'eccessiva esposizione del tuo corpo ai raggi ultravioletti provoca un avanzato grado di carbonizzazione e pure qualche piccola mutazione genetica...", "" };
+                PushMessaggio(msg);
+            }
+
+            // TODO: SUONO
+
+            WriteLog("AzioneLampada: Paga " + GetSoldiStr(PREZZO_LAMPADA));
+        }
+        else
+        {
+            Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non hai abbastanza soldi...", "L'enorme istruttore di bodybulding ultra-palestrato ti suona come una zampogna e ti scaraventa fuori dalla palestra.", "" };
+            PushMessaggio(msg);
+        }
+    }
+
+    int rnd = GenRandomInt(0, 4 + m_tabbyGuy.GetFortuna());
+    if (rnd == 0)
+        NuovoGiorno();
+}
+
+void TabbyGame::AzioneAbbonamento(int mesi)
+{
+    long long importo{};
+    switch (mesi)
+    {
+    case 1:
+        importo = PALESTRA_ABB_1;
+        break;
+    case 6:
+        importo = PALESTRA_ABB_6;
+        break;
+    case 12:
+        importo = PALESTRA_ABB_12;
+        break;
+    }
+
+    if (AbbonamentoAttivo())   // Hai già un abbonamento
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ma che ?", "Hai già un abbonamento, perché te ne serve un altro ???", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    if (!m_tabbyGuy.SpendiSoldi(importo))
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non hai abbastanza soldi...", "L'enorme istruttore di bodybulding ultra-palestrato ti suona come una zampogna e ti scaraventa fuori dalla palestra.", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    // Abbonamento acquistato
+    m_scadenzaPal = m_date;
+    m_scadenzaPal.AddMonth(mesi);
     NuovoGiorno();
 }

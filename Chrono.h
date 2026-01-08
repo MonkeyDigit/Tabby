@@ -35,6 +35,8 @@ namespace Chrono {
 	bool leapYear(int y);
 	WeekDay dayOfWeek(const Date& d);
 	//Operator overloading
+	bool operator>(const Date& a, const Date& b);
+	bool operator<(const Date& a, const Date& b);
 	bool operator==(const Date& a, const Date& b);
 	bool operator!=(const Date& a, const Date& b);
 }

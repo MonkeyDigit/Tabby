@@ -8,6 +8,14 @@
 #include "Carriera.h"
 #include "Prodotto.h"
 
+enum class Pelle {
+	ABBR_NO,
+	ABBR_LIEVE,
+	ABBR_MEDIA,
+	ABBR_PESANTE,
+	ABBR_CARBONIZZATO
+};
+
 struct CartaIdentita {
 	std::string m_nome;
 	std::string m_cognome;
@@ -60,6 +68,9 @@ public:
 	bool SetGiubbotto(const Prodotto& giubbotto);	// Restituisce true se il prodotto è effettivamente un giubbotto
 	bool SetPantaloni(const Prodotto& pantaloni);
 	bool SetScarpe(const Prodotto& scarpe);
+	// ABBRONZATURA
+	void Abbronza();
+	void Sbianca();
 
 	// TODO: RIORDINA TUTTA STA MERDA
 	long long GetSoldi() const { return m_soldi; };
@@ -71,10 +82,11 @@ public:
 	int GetRapporti() const { return m_rapporti; };
 	int GetPaghetta() const { return m_paghetta; };
 	int GetSizze() const { return m_sizze; };
+	Pelle GetPelle() const { return m_pelle; };
+	std::string GetPelleStr();
 
 	// PASS-BY REFERENCE
 	Carriera& GetCarriera() { return m_carriera; };
-	Chrono::Date& GetScadenzaGym() { return m_scadenzaGym; };
 	CartaIdentita& GetID() { return m_identita; };
 	Scuola& GetScuola() { return m_scuola; };
 	Scooter& GetScooter() { return m_scooter; };
@@ -92,7 +104,6 @@ public:
 	bool HaTelefono() const { return !m_telefono.GetNome().empty(); };
 
 private:
-	CartaIdentita m_identita;
 	int m_rapporti;
 	long long m_soldi;			// intero a 64 bit (max 9 miliardi DI miliardi): il tabbozzo è rikko...
 	long long m_soldiDelta;		// Guadagno o perdita
@@ -101,15 +112,15 @@ private:
 	int m_fama;
 	int m_studio;
 	int m_fortuna;
-	int m_testa;	// abbronzatura
+	Pelle m_pelle;				// Abbronzatura
+	int m_sizze;				// sigarette
+
+	// Qua potevo usare dei puntatori inizializzando lo scooter e la tipa a NULL, ma non voglio fare un puttanaio con destructor e magagne dei puntatori
+	CartaIdentita m_identita;
 	Prodotto m_giubotto;
 	Prodotto m_pantaloni;
 	Prodotto m_scarpe;
-	int m_sizze;	// sigarette
 	Carriera m_carriera;
-
-	Chrono::Date m_scadenzaGym;
-	// Qua potevo usare dei puntatori inizializzando lo scooter e la tipa a NULL, ma non voglio fare un puttanaio con destructor e magagne dei puntatori
 	Scuola m_scuola;
 	Scooter m_scooter;
 	Tipa m_tipa;

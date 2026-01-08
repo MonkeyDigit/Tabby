@@ -47,6 +47,15 @@
 // TODO: this fit this layout non si capisce nulla
 // TODO: RINOMINARE MESSAGGIO A NOTIFICA/AVVISO?
 // TODO: ATTENTO ALL'ORDINE DI CHIUSURA E MANIFESTAEVENTI
+// TODO: wxgridbag flexgrid gridsizer ???
+// TODO: CONTROLLA PUNTI E ACCENTI perché è
+// TODO: MACRO DEI PREZZI ?
+// TODO: NELLE FUNZIONI TRIGGER INVERTI I BOOL COSI TOGLI LE PARENTESI
+// TODO: OFFERTA NATALIZIA
+// TODO: METTI LINEE ORIZZONTALI TRA SIZER AL POSTO DI DOPPI SUNKEN
+// TODO: ATTENTO ALLA STRINGA DEI SOLDI LUNGA -> USA align center al posto di wxexpand
+// TODO: METTI FIT IN AGGIORNAINTERFACCIA
+// TODO: ATTENTO AI BUG TIPO RAPPORTI > 0 e invece ci andava hatipa
 
 bool TabbyApp::OnInit()
 {
@@ -125,13 +134,14 @@ TabbyFrame::TabbyFrame()
 	// Diciamo alla finestra di usare questa barra
 	this->SetMenuBar(menuBar);
 	// Le funzioni vengono associati alle funzioni
-	Bind(wxEVT_MENU, &TabbyFrame::OnScooter, this, ID_SCOOTER);
-	Bind(wxEVT_MENU, &TabbyFrame::OnDisco, this, ID_DISCO);
-	Bind(wxEVT_MENU, &TabbyFrame::OnScuola, this, ID_SCUOLA);
-	Bind(wxEVT_MENU, &TabbyFrame::OnLavoro, this, ID_LAVORO);
-	Bind(wxEVT_MENU, &TabbyFrame::OnCompagnia, this, ID_COMPAGNIA);
-	Bind(wxEVT_MENU, &TabbyFrame::OnFamiglia, this, ID_FAMIGLIA);
-	Bind(wxEVT_MENU, &TabbyFrame::OnTipa, this, ID_TIPA);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnScooter, this, ID_SCOOTER);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnDisco, this, ID_DISCO);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnScuola, this, ID_SCUOLA);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnLavoro, this, ID_LAVORO);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnCompagnia, this, ID_COMPAGNIA);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnFamiglia, this, ID_FAMIGLIA);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnTipa, this, ID_TIPA);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnPalestra, this, ID_PALESTRA);
 
 	// PANNELLI --------------------------------------------------------------------------------------
 	// SIZER GLOBALE (permette di mettere roba e di ridimensionare gli elementi)
@@ -402,6 +412,23 @@ void TabbyFrame::OnNegozi(wxCommandEvent& event)
 	this->AggiornaInterfaccia();
 }
 
+void TabbyFrame::OnPalestra(wxCommandEvent& event)
+{
+	if (m_game.TriggerPalestra())			// Dentro trigger palestra si controlla se è vacanza, e nel caso viene creato il dialog popup
+	{
+		DlgPalestra dlg{ this, m_game };
+		dlg.ShowModal();
+		this->AggiornaInterfaccia();
+	}
+	else
+		ManifestaEventi(this, m_game);
+}
+
+void TabbyFrame::OnTelefonino(wxCommandEvent& event)
+{
+	// TODO: IMPLEMENTARE
+}
+
 void TabbyFrame::OnLavoro(wxCommandEvent& event)
 {
 	if (m_game.TriggerLavoro())
@@ -412,7 +439,7 @@ void TabbyFrame::OnLavoro(wxCommandEvent& event)
 		this->AggiornaInterfaccia();
 	}
 	else
-		ManifestaEventi(this, m_game);	// Dentro trigger scuola si controlla se è vacanza, e nel caso viene creato il dialog popup
+		ManifestaEventi(this, m_game);
 }
 
 void TabbyFrame::OnCompagnia(wxCommandEvent& event)
@@ -442,4 +469,19 @@ void TabbyFrame::OnTipa(wxCommandEvent& event)
 void TabbyFrame::OnEsci(wxCommandEvent& event)
 {
 	Close(true);
+}
+
+void TabbyFrame::OnPersonalInfo(wxCommandEvent& event)
+{
+	// TODO: IMPLEMENTA
+}
+
+void TabbyFrame::OnConfig(wxCommandEvent& event)
+{
+	// TODO: IMPLEMENTA
+}
+
+void TabbyFrame::OnAbout(wxCommandEvent& event)
+{
+	// TODO: IMPLEMENTA
 }

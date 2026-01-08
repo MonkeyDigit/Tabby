@@ -6,8 +6,12 @@
 #include "Chrono.h"
 // Per attivare il debug
 #define TABBY_DEBUG
-constexpr float CAMBIO_EURO_LIRA = 1936.27;
+constexpr double CAMBIO_EURO_LIRA = 1936.27;
 constexpr int ATTESA_MAX = 7;
+constexpr int PALESTRA_ABB_1 = 30;
+constexpr int PALESTRA_ABB_6 = 145;
+constexpr int PALESTRA_ABB_12 = 290;
+constexpr int PREZZO_LAMPADA = 7;
 
 // Sotto il cofano, i soldi di tabby e in generale il sistema monetario del gioco, viene gestito di base come euro, ma in base alla data sono messe a disposizione delle funzione per effettuare la conversione in lire, che fanno da "maschera"
 enum class Valuta { LIRE, EURO };
@@ -65,6 +69,7 @@ public:
 	Valuta GetValutaCorrente() const { return m_valutaCorrente; };
 	TabbyGuy& GetTabbyGuy() { return m_tabbyGuy; };
 	Chrono::Date& GetDate() { return m_date; };
+	Chrono::Date& GetScadenzaPal() { return m_scadenzaPal; };
     TipoGiorno GetTipoGiorno() const { return m_tipoGiorno; };
 	// LOGICA EVENTI
 	// Restituisce true se c'era un evento (e lo mette in outEvento), false se la coda eventi è vuota
@@ -107,6 +112,12 @@ public:
     // Negozi
     bool TriggerNegozio(TipoProd merce);
     void AzioneCompra(const Prodotto& prod);
+    // Palestra
+    bool TriggerPalestra();
+    bool AbbonamentoAttivo() const { return m_scadenzaPal > m_date; };
+    void AzioneVaiPalestra();
+    void AzioneLampada();
+    void AzioneAbbonamento(int mesi);
 
     // Stringa formattata (es. "1.000 L." o "5 €")
     std::string GetSoldiStr(long long valoreBase) const;
@@ -118,8 +129,10 @@ public:
 private:
 	TabbyGuy m_tabbyGuy;
 	Chrono::Date m_date;
+    Chrono::Date m_scadenzaPal;
 	Valuta m_valutaCorrente;
 	int m_coolDownPestaggio;
+	int m_coolDownPelle;
     int m_attesa;
 	std::vector<Messaggio> m_codaMsg;
 	TipoGiorno m_tipoGiorno;
@@ -145,6 +158,19 @@ private:
 	// LOGICA MONETARIA
 	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
 	long long ConvertiValuta(long long valoreBase) const;
+};
+
+static const std::vector<std::string> frasiPalestra{
+    "Guardi troppo a lungo la ragazza dell'istruttore di body-building e lui ti sacagna di botte.",
+    "Mentre attraversi un corridoio della palestra vieni travolto da una Cyclette impazzita.",
+    "Scopri di aver preso le pillole contro l'impotenza al posto degli anabolizzanti.",
+    "Un guasto alle tubature fa piovere merda dalla tua doccia...",
+    "Sollevando dei pesi, ti sbilanci e precipiti dalla finestra dietro le tue spalle.",
+    "Giochicciando con un bilancere, ti fracassi le palle.",
+    "Per un simpatico scherzo, il tuo armadietto viene dato alle fiamme.",
+    "Una ragazza ti guarda e ride per le vistose chiazze di sudore sotto le tue ascelle...",
+    "Dopo 5 Minuti di corsa cadi al suolo stremato...",
+    "Ti perdi per i meandri della tua palestra, solo l'intervento del guardiano notturno può salvarti."
 };
 
 // TODO: CAMBIA FIGOSITA'
@@ -230,6 +256,19 @@ static const std::vector<std::string> frasiSigarette{
   "Il fumo provoca malattie cardiovascolari",
   "Donne incinte: il fumo nuoce alla salute del vostro bambino",
   "Il fumo provoca il cancro"
+};
+
+static const std::vector<std::string> frasiSeparazione{
+"Sei sempre il solito ! Che bisogno c'è di gridare solo perchè sono andata a letto con un tuo amico ! Sei proprio un insensibile. Addio.",
+"Ho trovato un ragazzo che vale 1000 volte te, quindi, visto che sono una ragazza emancipata, ora ti lascio e mi metto con lui.",
+"Non bestemmi, non dici parolacce e non picchi i bambini. Sei proprio noioso...",
+"Sei la persona più spregievole che io abbia mai incontrato sulla faccia della terra. Spero che resteremo amici.",
+"Ci ho riflettuto a lungo... vaffanculo !",
+"Cioè zerella , mollami !",
+"Sono in un momento molto delicato della mia vita, in cui ho bisogno di tempo per fare delle scelte. Addio.",
+"Forse è meglio se non ci vediamo più per un po' di tempo...",
+"Capiscimi... devo prendere un po' di tempo per pensare al nostro futuro...",
+"Ti amo troppo per poter restare ancora insieme a te. Addio."
 };
 
 static const std::vector<std::string> frasiSfighe{

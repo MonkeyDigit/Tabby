@@ -75,7 +75,6 @@ public:
 	// Restituisce true se c'era un evento (e lo mette in outEvento), false se la coda eventi è vuota
 	bool PollMessaggi(Messaggio& outMsg);
 	void ApplicaScelta(MsgAzione mgsAzione, bool sceltaYes);
-	// TODO: BOOL / CODICE DI INFORMAZIONE / EVENTO CON MESSAGGIO
     // Scuola
     bool TriggerScuola();
 	void AzioneStudia(int materiaIndex);
@@ -114,7 +113,7 @@ public:
     void AzioneCompra(const Prodotto& prod);
     // Palestra
     bool TriggerPalestra();
-    bool AbbonamentoAttivo() const { return m_scadenzaPal > m_date; };
+    bool PalestraAttiva() const { return m_scadenzaPal > m_date; }; // E' ancora attivo l'abbonamento della palestra?
     void AzioneVaiPalestra();
     void AzioneLampada();
     void AzioneAbbonamento(int mesi);
@@ -158,6 +157,46 @@ private:
 	// LOGICA MONETARIA
 	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
 	long long ConvertiValuta(long long valoreBase) const;
+};
+
+// TODO: IMPOSTA LA FAMA DEI CELL
+static const std::vector<Telefono> telefoni{
+    {
+        "Motorolo D170",
+        "Libertà, versatilità e sicurezza di comunicazione a prezzo giusto, queste le caratteristiche del telefono cellulare GSM Motorolo d170.",
+        150,
+        0,
+        100,
+        0,
+        Abbonamento{},
+        ""
+    },
+    {
+        "Motorolo Macro TAC 8900",
+        "DUAL BAND 900/1800 Motorolo Macro Tac 8900 è il primo telefono cellulare in commercio in grado di passare automaticamente dalla banda di frequenza GSM 900 alla banda GSM 1800.",
+        150,
+        0,
+        100,
+        0,
+        Abbonamento{},
+        ""
+    },
+    {
+        "Motorolo 8700",
+        "Lo stile è classico e inconfondibile ma le prestazioni sono interamente rinnovate e di altissimo livello. Motorolo 8700 consente un'autonomia di conversazione sorprendente (ben 9 mesi!) e un tempo di standby fino a 135 anni.",
+        150,
+        0,
+        100,
+        0,
+        Abbonamento{},
+        ""
+    }
+};
+
+static const std::vector<Abbonamento> abbonamenti{
+    {"Onmitel Pronto Italia", 50, {30, 55}, ""},
+    {"Delecom Italia Mobile", 50, {30, 55}, ""},
+    {"Vind", 50, {25, 50}, ""}
 };
 
 static const std::vector<std::string> frasiPalestra{
@@ -317,7 +356,7 @@ static const std::vector<std::string> nomiTipe{
 "Rosa"
 };
 
-static const std::vector<Disco> discoteche = {
+static const std::vector<Disco> discoteche{
         {
             "Splush",
             "Questo locale buio e spazioso si estende per circa 134.000 metri quadrati sotto la città. Di grande effetto con degli enormi tubi fognari che rallegrano l'ambiente.\nChiuso il Lunedì.",
@@ -509,7 +548,7 @@ static const std::vector<Ditta> ditte{
 };
 
 // Quiz
-static std::vector<QuizScheda> schede = {
+static std::vector<QuizScheda> schede{
     {   "Sei ancora disoccupato ? Ah!ah!ah!...",
         "Sai, vorremmo assumerti subito ma, prima dovresti superare una piccola formalità , questo semplice test attitudinale sarà uno scherzo per una mente sveglia come la tua !",
         {
@@ -594,7 +633,7 @@ static std::vector<QuizScheda> schede = {
 
 
 // ------------------ TESTI MESSAGGI POPUP VARIABILI ---------------------------------------------------------------------
-static const std::vector<FestaFissa> feste = {
+static const std::vector<FestaFissa> feste{
     {1, 1, "Capodanno", "Oggi è Capodanno!"},
     {6, 1, "Epifania", "Tutte le feste si porta via..."},
     {25, 4, "Anniversario Liberazione", "La vera festa della liberazione ci sarà quando ci saremo liberati di tutti gli stronzi di questo mondo..."},
@@ -607,7 +646,7 @@ static const std::vector<FestaFissa> feste = {
     {26, 12, "Santo Stefano", "Buon Santo Stefano..."}
 };
 
-static const std::vector<std::string> frasiMetallari = {
+static const std::vector<std::string> frasiMetallari{
     "Cerchi la rissa con un metallaro che passa in {LUOGO} e lui ti spacca tutte le ossa.",
     "Incontri un metallaro in {LUOGO}, lo minacci e lui ti spacca tutte le ossa.",
     "Insulti un gruppo di metallari che passano in {LUOGO} e uno di questi ti spacca le ossa.",
@@ -615,7 +654,7 @@ static const std::vector<std::string> frasiMetallari = {
     "Cerchi la rissa con un metallaro e lui ti spacca tutte le ossa.",
     "Senza un preciso motivo, prendi per il culo un manovale che, essendo privo di senso dell'umorismo, ti fa a pezzi."
 };
-static const std::vector<std::string> frasiFortuna = {
+static const std::vector<std::string> frasiFortuna{
     "Mentre cammini per il quartiere con la tua compagnia, un piccione ti caga in testa...",
     "Cadi nel laghetto di Parco Sempione.",
     "Mentre cammini per il quartiere con la tua compagnia, un cane ti piscia su una gamba...",
@@ -627,7 +666,7 @@ static const std::vector<std::string> frasiFortuna = {
     "La televisione si rompe e perdi l'ultima puntata di Tabby News.",
     "Qualcuno non apprezza il modo in cui sei vestito.",
 };
-static const std::vector<std::string> frasiScuola = {
+static const std::vector<std::string> frasiScuola{
     "Senza una precisa ragione, picchi il prof di {MATERIA}",
     "Con lo scooter di un tuo amico, ti scontri contro la macchina del prof di {MATERIA}.",
     "Sputi dalla finestra della tua classe e centri il prof di {MATERIA}.",
@@ -640,7 +679,7 @@ static const std::vector<std::string> frasiScuola = {
     "Vai male in una interrogazione di {MATERIA}."
 };
 
-static const std::vector<std::string> vieStr = {
+static const std::vector<std::string> vieStr{
     "Via Lorenteggio",
     "Corso Vercelli",
     "Viale Papiniano",

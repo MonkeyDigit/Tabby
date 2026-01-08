@@ -92,7 +92,6 @@ public:
 	Scooter& GetScooter() { return m_scooter; };
 	Tipa& GetTipa() { return m_tipa; };
 	Telefono& GetTelefono() { return m_telefono; };
-	OperatoreTel& GetOperatore() { return m_operatore; };
 	Prodotto& GetGiubotto() { return m_giubotto; };
 	Prodotto& GetPantaloni() { return m_pantaloni; };
 	Prodotto& GetScarpe() { return m_scarpe; };
@@ -125,5 +124,4 @@ private:
 	Scooter m_scooter;
 	Tipa m_tipa;
 	Telefono m_telefono;
-	OperatoreTel m_operatore;
 };

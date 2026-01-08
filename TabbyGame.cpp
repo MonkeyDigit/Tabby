@@ -295,18 +295,18 @@ void TabbyGame::GestioneConsumi()
     }
 
     // Abbonamento
-    if (m_tabbyGuy.GetOperatore().GetCredito() > 0 && m_tabbyGuy.GetTelefono().GetStato() > -1)
+    if (m_tabbyGuy.HaTelefono() && m_tabbyGuy.GetTelefono().GetCredito() > 0)
     {
-        m_tabbyGuy.GetOperatore().DecCredito(1);
+        m_tabbyGuy.GetTelefono().DecCredito(1);
         if (m_tabbyGuy.GetFama() < 55)
             m_tabbyGuy.IncFama(1);
 
-        if (m_tabbyGuy.GetOperatore().GetCredito() == 0)
+        if (m_tabbyGuy.GetTelefono().GetCredito() == 0)
         {
             Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Telefonino", "Cerchi di telefonare e ti accorgi di aver finito i soldi a tua disposizione...", "" };
             PushMessaggio(msg);
         }
-        else if (m_tabbyGuy.GetOperatore().GetCredito() < 3)
+        else if (m_tabbyGuy.GetTelefono().GetCredito() < 3)
         {
             Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Telefonino", "Ti accorgi che stai per finire la ricarica del tuo telefonino", "" };
             PushMessaggio(msg);
@@ -318,6 +318,7 @@ void TabbyGame::GestioneConsumi()
     {
         // Cellulare morente
         m_tabbyGuy.GetTelefono().DecStato(1);
+        // TODO: AZZERA TELEFONO
 
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Telefonino", "Dopo una vita di duro lavoro, a furia di prendere botte, il tuo cellulare si spacca...", "" };
         PushMessaggio(msg);
@@ -1385,7 +1386,7 @@ void TabbyGame::AzioneTelefonaTipa()
         return;
     }
 
-    if (!m_tabbyGuy.HaTelefono() && m_tabbyGuy.GetSoldi() <= 5 && m_tabbyGuy.GetOperatore().GetCredito() < 2)
+    if (!m_tabbyGuy.HaTelefono() && m_tabbyGuy.GetSoldi() <= 5 && m_tabbyGuy.GetTelefono().GetCredito() < 2)
     {
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non toccare quel telefono...", "\"Se ti azzardi a fare anche una singola telefonata, ti spezzo le gambe\", disse tuo padre con un'accetta in mano...", "" };
         PushMessaggio(msg);
@@ -1394,8 +1395,8 @@ void TabbyGame::AzioneTelefonaTipa()
 
     // TODO: PLAY SUONO
     // TODO: LOGICA STRANA
-    if (m_tabbyGuy.HaTelefono() && m_tabbyGuy.GetOperatore().GetCredito() <= 2)
-        m_tabbyGuy.GetOperatore().DecCredito(2);
+    if (m_tabbyGuy.HaTelefono() && m_tabbyGuy.GetTelefono().GetCredito() <= 2)
+        m_tabbyGuy.GetTelefono().DecCredito(2);
     else
         m_tabbyGuy.SpendiSoldi(5);
 
@@ -1490,7 +1491,7 @@ bool TabbyGame::TriggerPalestra()
 
 void TabbyGame::AzioneVaiPalestra()
 {
-    if (!AbbonamentoAttivo())
+    if (!PalestraAttiva())
     {
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Palestra", "Prima di poter venire in palestra devi fare un abbonamento !", "" };
         PushMessaggio(msg);
@@ -1578,7 +1579,7 @@ void TabbyGame::AzioneAbbonamento(int mesi)
         break;
     }
 
-    if (AbbonamentoAttivo())   // Hai già un abbonamento
+    if (PalestraAttiva())   // Hai già un abbonamento
     {
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ma che ?", "Hai già un abbonamento, perché te ne serve un altro ???", "" };
         PushMessaggio(msg);

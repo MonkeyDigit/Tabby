@@ -250,5 +250,22 @@ private:
 	void OnLampada(wxCommandEvent& event);
 };
 
+class DlgTelefono : public wxDialog {
+public:
+	DlgTelefono(wxWindow* parent, TabbyGame& game);
+
+private:
+	TabbyGame& m_game;
+	wxStaticText* m_lblNomeTel;
+	wxStaticText* m_lblOperatore;
+	wxStaticText* m_lblCredito;
+	wxStaticText* m_lblSoldi;
+
+	void AggiornaInterfaccia();
+	void OnCompraTel(wxCommandEvent& event);
+	void OnVendiTel(wxCommandEvent& event);
+	void OnRicarica(wxCommandEvent& event);
+};
+
 // Funzione helper
 void ManifestaEventi(wxWindow* parent, TabbyGame& game);

@@ -1359,7 +1359,10 @@ void DlgElencoNegozi::OnPalestra(wxCommandEvent& event)
 
 void DlgElencoNegozi::OnTelefonino(wxCommandEvent& event)
 {
-	// TODO: IMPLEMENTA
+	DlgTelefono dlg{ this, m_game };
+	dlg.Centre();
+	dlg.ShowModal();
+	this->AggiornaInterfaccia();
 }
 
 PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game, const Prodotto& prod)
@@ -1603,7 +1606,7 @@ DlgPalestra::DlgPalestra(wxWindow* parent, TabbyGame& game)
 
 void DlgPalestra::AggiornaInterfaccia()
 {
-	if (!m_game.AbbonamentoAttivo())
+	if (!m_game.PalestraAttiva())
 		m_lblScadenza->SetLabel("Nessun abbonamento");
 	else
 	{
@@ -1637,4 +1640,106 @@ void DlgPalestra::OnLampada(wxCommandEvent& event)
 
 	this->AggiornaInterfaccia();
 	ManifestaEventi(this, m_game);
+}
+
+
+DlgTelefono::DlgTelefono(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Telefonino" },
+	m_game{ game }
+{
+	this->SetFont(parent->GetFont());
+	// Colore grigio plastica per il corpo del telefono
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+
+	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
+
+	// BOTTONI A SINISTRA
+	wxPanel* pnlButtons = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
+
+	wxButton* btnCompraTel = new wxButton{ pnlButtons, wxID_ANY, "Compra telefonino", wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnVendiTel = new wxButton{ pnlButtons, wxID_ANY, "Vendi telefonino", wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnRicarica = new wxButton{ pnlButtons, wxID_ANY, "Ricarica telefonino", wxDefaultPosition, wxSize(-1, 40) };
+
+	sizerButtons->Add(btnCompraTel, 0, wxEXPAND | wxALL, 5);
+	sizerButtons->Add(btnVendiTel, 0, wxEXPAND | wxALL, 5);
+	sizerButtons->Add(new wxStaticLine(pnlButtons), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
+	sizerButtons->AddSpacer(10);
+	sizerButtons->Add(btnRicarica, 0, wxEXPAND | wxALL, 5);
+
+	btnCompraTel->Bind(wxEVT_BUTTON, &DlgTelefono::OnCompraTel, this);
+	btnVendiTel->Bind(wxEVT_BUTTON, &DlgTelefono::OnVendiTel, this);
+	btnRicarica->Bind(wxEVT_BUTTON, &DlgTelefono::OnRicarica, this);
+
+	pnlButtons->SetSizer(sizerButtons);
+	sizerBody->Add(pnlButtons, 0, wxEXPAND | wxALL, 5);
+
+	// DATI TELEFONO
+	wxPanel* pnlDati = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerDati = new wxBoxSizer{ wxVERTICAL };
+
+	wxStaticText* lblTel = new wxStaticText{ pnlDati, wxID_ANY, "Telefono:" };
+	wxStaticText* lblAbb = new wxStaticText{ pnlDati, wxID_ANY, "Abbonamento:" };
+	wxStaticText* lblCred = new wxStaticText{ pnlDati, wxID_ANY, "Credito restante:" };
+	m_lblNomeTel = new wxStaticText{ pnlDati, wxID_ANY, "---", wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN | wxALIGN_CENTER };
+	m_lblOperatore = new wxStaticText{ pnlDati, wxID_ANY, "---", wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN | wxALIGN_CENTER };
+	m_lblCredito = new wxStaticText{ pnlDati, wxID_ANY, "---", wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN | wxALIGN_CENTER };
+
+	sizerDati->Add(lblTel, 0, wxALIGN_CENTER_HORIZONTAL | wxALL & ~wxBOTTOM, 5);
+	sizerDati->Add(m_lblNomeTel, 0, wxEXPAND | wxALL, 5);
+	sizerDati->Add(lblAbb, 0, wxALIGN_CENTER_HORIZONTAL | wxALL & ~wxBOTTOM, 5);
+	sizerDati->Add(m_lblOperatore, 0, wxEXPAND | wxALL, 5);
+	sizerDati->Add(lblCred, 0, wxALIGN_CENTER_HORIZONTAL | wxALL & ~wxBOTTOM, 5);
+	sizerDati->Add(m_lblCredito, 0, wxEXPAND | wxALL, 5);
+
+	pnlDati->SetSizer(sizerDati);
+	sizerBody->Add(pnlDati, 0, wxEXPAND | wxALL, 5);
+	// CHIUDIAMO SIZERBODY
+	mainSizer->Add(sizerBody, 0, wxEXPAND | wxALL, 5);
+
+	// SOLDI E TASTO OK
+	wxPanel* pnlBottom = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
+
+	// TODO: ADD ICON
+	m_lblSoldi = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
+	wxButton* btnOk = new wxButton{ pnlBottom, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 40) };
+
+	sizerBottom->Add(m_lblSoldi, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	sizerBottom->AddStretchSpacer();
+	sizerBottom->Add(btnOk, 0, wxALL, 5);
+
+	pnlBottom->SetSizer(sizerBottom);
+	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL, 10);
+
+	this->SetSizerAndFit(mainSizer);
+	this->AggiornaInterfaccia();
+}
+
+void DlgTelefono::AggiornaInterfaccia()
+{
+	m_lblNomeTel->SetLabel(m_game.GetTabbyGuy().GetTelefono().GetNome());
+	// TODO: SISTEMA STA MERDA
+	m_lblOperatore->SetLabel(m_game.GetTabbyGuy().GetTelefono().GetAbbonamento().GetNome());
+	m_lblCredito->SetLabel(m_game.GetSoldiStr(m_game.GetTabbyGuy().GetTelefono().GetCredito()));
+	m_lblSoldi->SetLabel("Soldi: "+m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
+
+	this->Fit();
+	this->Layout();
+}
+
+void DlgTelefono::OnCompraTel(wxCommandEvent& event)
+{
+	// TODO: IMPLEMENTA
+}
+
+void DlgTelefono::OnVendiTel(wxCommandEvent& event)
+{
+	// TODO: IMPLEMENTA
+}
+
+void DlgTelefono::OnRicarica(wxCommandEvent& event)
+{
+	// TODO: IMPLEMENTA
 }

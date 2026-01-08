@@ -56,6 +56,9 @@
 // TODO: ATTENTO ALLA STRINGA DEI SOLDI LUNGA -> USA align center al posto di wxexpand
 // TODO: METTI FIT IN AGGIORNAINTERFACCIA
 // TODO: ATTENTO AI BUG TIPO RAPPORTI > 0 e invece ci andava hatipa
+// TODO: RICORDA DI METTERE LE MINI ICONE + ICONA GIOCO
+// TODO: SOSTITUISCI TUTTI I PULSANTI CHIUDI E ESCI CON OK
+// TODO: AGGIUNGI COSTRUTTORI DEFAULT
 
 bool TabbyApp::OnInit()
 {
@@ -142,6 +145,10 @@ TabbyFrame::TabbyFrame()
 	this->Bind(wxEVT_MENU, &TabbyFrame::OnFamiglia, this, ID_FAMIGLIA);
 	this->Bind(wxEVT_MENU, &TabbyFrame::OnTipa, this, ID_TIPA);
 	this->Bind(wxEVT_MENU, &TabbyFrame::OnPalestra, this, ID_PALESTRA);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnTelefonino, this, ID_TELEFONINO);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnPersonalInfo, this, ID_INFO);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnAbout, this, ID_ABOUT);
+	this->Bind(wxEVT_MENU, &TabbyFrame::OnConfig, this, ID_CONFIG);
 
 	// PANNELLI --------------------------------------------------------------------------------------
 	// SIZER GLOBALE (permette di mettere roba e di ridimensionare gli elementi)
@@ -426,7 +433,10 @@ void TabbyFrame::OnPalestra(wxCommandEvent& event)
 
 void TabbyFrame::OnTelefonino(wxCommandEvent& event)
 {
-	// TODO: IMPLEMENTARE
+	DlgTelefono dlg{ this, m_game };
+	dlg.Centre();
+	dlg.ShowModal();
+	this->AggiornaInterfaccia();
 }
 
 void TabbyFrame::OnLavoro(wxCommandEvent& event)

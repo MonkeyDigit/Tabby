@@ -1397,8 +1397,74 @@ void TabbyGame::AzioneTelefonaTipa()
         m_tabbyGuy.IncRapporti(1);
 }
 
-bool TabbyGame::AzioneCompra(const Prodotto& prod)
+bool TabbyGame::TriggerNegozio(TipoProd merce)
+{
+    if (m_tipoGiorno == TipoGiorno::FESTIVO)
+    {
+        std::string str{};
+        if (merce == TipoProd::SIGARETTE)
+            str = "Rimani fisso a guardare la saracinesca del tabaccaio irrimediabilmente chiusa...";
+        else
+            str = "Oh, tipo... i negozi sono chiusi di festa...";
+
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Torna a casa", str, "" };
+        PushMessaggio(msg);
+        return false;
+    }
+
+    return true;
+}
+
+// TODO: PASSARE NEGOZIO ??
+void TabbyGame::AzioneCompra(const Prodotto& prod)
 {
     // TODO: IMPLEMENTA
-    return false;
+
+    if (!m_tabbyGuy.SpendiSoldi(prod.GetPrezzo()))
+    {
+        std::string str{};
+        switch (prod.GetTipoProd())
+        {
+        case TipoProd::GIUBBOTTO:
+        case TipoProd::PANTALONI:
+        case TipoProd::SCARPE:
+            str = "Con cosa avresti intenzione di pagare, stronzetto ??? Caramelle ??? ";
+            break;
+        case TipoProd::SIGARETTE:
+            str = "\"Vai fuori dal mio locale, brutto pezzente !\", esclama il tabaccaio con un'AK-47 in mano...";
+            break;
+        }
+
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non hai abbastanza soldi...", str, "" };
+        PushMessaggio(msg);
+
+        return;
+    }
+
+    switch (prod.GetTipoProd())
+    {
+    case TipoProd::GIUBBOTTO:
+        m_tabbyGuy.SetGiubbotto(prod);
+        m_tabbyGuy.IncFama(prod.GetFama());
+        break;
+    case TipoProd::PANTALONI:
+        m_tabbyGuy.SetPantaloni(prod);
+        m_tabbyGuy.IncFama(prod.GetFama());
+        break;
+    case TipoProd::SCARPE:
+        m_tabbyGuy.SetScarpe(prod);
+        m_tabbyGuy.IncFama(prod.GetFama());
+        break;
+    case TipoProd::SIGARETTE:
+    {
+        m_tabbyGuy.IncSizze(20);
+        m_tabbyGuy.IncFama(prod.GetFama());
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "ART. 46 L. 29/12/1990 N.428", frasiSigarette[GenRandomInt(0,frasiSigarette.size())], "" };
+        PushMessaggio(msg);
+        break;
+    }
+    }
+
+    WriteLog("AzioneCompra: acquista " + prod.GetNome() + " per " + GetSoldiStr(prod.GetPrezzo()));
+    NuovoGiorno();
 }

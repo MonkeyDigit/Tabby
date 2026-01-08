@@ -1298,10 +1298,15 @@ DlgElencoNegozi::DlgElencoNegozi(wxWindow* parent, TabbyGame& game)
 		sizerBody->Add(btnNegozio, 0, wxEXPAND | wxRIGHT | wxLEFT, 5);
 		btnNegozio->Bind(wxEVT_BUTTON, [this, i](wxCommandEvent&) {
 
-			DlgNegozio dlg{ this, m_game, negozi[i] };
-			dlg.ShowModal();
-			AggiornaInterfaccia();
-			});
+			if(m_game.TriggerNegozio(negozi[i].m_merce))
+			{
+				DlgNegozio dlg{ this, m_game, negozi[i] };
+				dlg.ShowModal();
+				AggiornaInterfaccia();
+			}
+			ManifestaEventi(this, m_game);
+			
+		});
 	}
 	sizerBody->AddSpacer(5);
 
@@ -1393,13 +1398,8 @@ PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game,
 
 void PnlProdotto::OnCompra(wxCommandEvent& event)
 {
-	if (m_game.AzioneCompra(m_prodotto)) {
-		wxMessageBox("Hai comprato: " + m_prodotto.GetNome(), "Fatto!", wxOK);
-		// Aggiorna la label dei soldi nella finestra principale
-	}
-	else {
-		wxMessageBox("Non hai abbastanza soldi!", "Barbone", wxOK );
-	}
+	m_game.AzioneCompra(m_prodotto);
+	ManifestaEventi(this, m_game);
 }
 
 

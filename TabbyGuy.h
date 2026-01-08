@@ -56,6 +56,11 @@ public:
 	void LasciaTipa();
 	// LAVORO
 	void Licenziati();
+	// VESTITI
+	bool SetGiubbotto(const Prodotto& giubbotto);	// Restituisce true se il prodotto è effettivamente un giubbotto
+	bool SetPantaloni(const Prodotto& pantaloni);
+	bool SetScarpe(const Prodotto& scarpe);
+
 	// TODO: RIORDINA TUTTA STA MERDA
 	long long GetSoldi() const { return m_soldi; };
 	long long GetSoldiDelta() const { return m_soldiDelta; };

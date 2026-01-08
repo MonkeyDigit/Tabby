@@ -73,7 +73,6 @@ public:
 	// TODO: BOOL / CODICE DI INFORMAZIONE / EVENTO CON MESSAGGIO
     // Scuola
     bool TriggerScuola();
-    bool TriggerLavoro();
 	void AzioneStudia(int materiaIndex);
 	void AzioneMinaccia(int materiaIndex);
 	void AzioneCorrompi(int materiaIndex);
@@ -86,6 +85,7 @@ public:
     void AzioneSoldiExtra();
     void AzioneChiediSoldi();
     // Lavoro
+    bool TriggerLavoro();
     const Ditta& ProponiDitta();
     void AzioneRifiutaProposta();
     const QuizScheda& AssegnaQuiz();
@@ -105,7 +105,8 @@ public:
     void AzioneEsciTipa();
     void AzioneTelefonaTipa();
     // Negozi
-    bool AzioneCompra(const Prodotto& prod);
+    bool TriggerNegozio(TipoProd merce);
+    void AzioneCompra(const Prodotto& prod);
 
     // Stringa formattata (es. "1.000 L." o "5 €")
     std::string GetSoldiStr(long long valoreBase) const;

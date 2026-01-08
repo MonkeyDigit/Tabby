@@ -45,6 +45,7 @@
 // TODO: LA FAMA DEI VESTITI E? SMINCHIATA ?
 // TODO: NON PER TUTTI I SIZER SERVE IL PANEL
 // TODO: this fit this layout non si capisce nulla
+// TODO: RINOMINARE MESSAGGIO A NOTIFICA/AVVISO?
 
 bool TabbyApp::OnInit()
 {
@@ -96,14 +97,15 @@ TabbyFrame::TabbyFrame()
 		// Il bind viene fatto sull'ID specifico di questo item (item->GetId()).
 		this->Bind(wxEVT_MENU, [this, i](wxCommandEvent& evt) {
 
-			// Apriamo il negozio
-			DlgNegozio dlg(this, m_game, negozi[i]);
-			dlg.ShowModal();
+			if (m_game.TriggerNegozio(negozi[i].m_merce))
+			{
+				DlgNegozio dlg{ this, m_game, negozi[i] };
+				dlg.ShowModal();
+				this->AggiornaInterfaccia();
+			}
+			ManifestaEventi(this, m_game);
 
-			// Aggiorniamo l'interfaccia al ritorno
-			this->AggiornaInterfaccia();
-
-			}, item->GetId());
+			},  item->GetId());
 	}
 	menuNegozi->AppendSeparator();
 	menuNegozi->Append(ID_PALESTRA, "Palestra");

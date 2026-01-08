@@ -132,3 +132,33 @@ void TabbyGuy::Licenziati()
 {
 	m_carriera.Azzera();
 }
+
+bool TabbyGuy::SetGiubbotto(const Prodotto& giubbotto)
+{
+	if(giubbotto.GetTipoProd() != TipoProd::GIUBBOTTO)
+		return false;
+
+	m_giubotto = giubbotto;
+
+	return true;
+}
+
+bool TabbyGuy::SetPantaloni(const Prodotto& pantaloni)
+{
+	if (pantaloni.GetTipoProd() != TipoProd::PANTALONI)
+		return false;
+
+	m_pantaloni = pantaloni;
+
+	return true;
+}
+
+bool TabbyGuy::SetScarpe(const Prodotto& scarpe)
+{
+	if (scarpe.GetTipoProd() != TipoProd::SCARPE)
+		return false;
+
+	m_scarpe = scarpe;
+
+	return true;
+}

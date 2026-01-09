@@ -1463,8 +1463,8 @@ DlgNegozio::DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio
 	// --- GRIGLIA DEI PRODOTTI ---
 	wxGridSizer* gridSizer = new wxGridSizer(0, 2, 10, 10);
 
-	for (const auto& prod : m_negozio.m_catalogo) {
-		PnlProdotto* scheda = new PnlProdotto(scrollWin, this, m_game, prod);
+	for (const auto& prodPtr : m_negozio.m_catalogo) {
+		PnlProdotto* scheda = new PnlProdotto(scrollWin, this, m_game, *prodPtr);
 
 		// Aggiungiamo alla griglia.
 		gridSizer->Add(scheda, 0, wxEXPAND | wxALL, 5);

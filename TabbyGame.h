@@ -63,7 +63,7 @@ struct FestaFissa {
 struct Negozio {
     std::string m_nome;
     CategoriaOggetto m_merce;
-    std::vector<Acquistabile> m_catalogo;
+    std::vector<Acquistabile*> m_catalogo;  // ATTENZIONE !!! Siccome Acquistabile è una classe base, è di vitale importanza utilizzare dei puntatori, perchè se mettessi la variabile intera, nel momenti in cui inserisci acquistabili di diverso tipo, il vettore troncherebbe le informazioni aggiuntive della classe figlia
 };
 
 class TabbyGame
@@ -223,72 +223,72 @@ static const std::vector<Negozio> negozi{
     {
         "Bau House", CategoriaOggetto::VESTITO,
         {
-            Vestito{TipoVestito::GIUBBOTTO, "Giubbotto Fatiscenza OG", "Giubbotto originale \"Fatiscenza\", elegante e raffinato, è adatto a tutte le occasioni, dalla serata con gli amici, alle feste più esclusive.", "", 175, 30},
-            Vestito{TipoVestito::GIUBBOTTO, "Giubbotto Fatiscenza NEW", "Giubbotto \"Fatiscenza\", nella sua nuova versione, per essere sempre in linea con i tempi che cambiano.", "", 190, 65},
-            Vestito{TipoVestito::GIUBBOTTO, "Giubbotto Ricercato", "Ecco qualcosa per i più ricercati!\nCome può mancare nell'armadio un vestito come questo ???\nCompratelo subito, non ve ne pentirete.", "", 150, 90}
+            new Vestito{TipoVestito::GIUBBOTTO, "Giubbotto Fatiscenza OG", "Giubbotto originale \"Fatiscenza\", elegante e raffinato, è adatto a tutte le occasioni, dalla serata con gli amici, alle feste più esclusive.", "", 175, 30},
+            new Vestito{TipoVestito::GIUBBOTTO, "Giubbotto Fatiscenza NEW", "Giubbotto \"Fatiscenza\", nella sua nuova versione, per essere sempre in linea con i tempi che cambiano.", "", 190, 65},
+            new Vestito{TipoVestito::GIUBBOTTO, "Giubbotto Ricercato", "Ecco qualcosa per i più ricercati!\nCome può mancare nell'armadio un vestito come questo ???\nCompratelo subito, non ve ne pentirete.", "", 150, 90}
         },
     },
     {
         "Blue Riders", CategoriaOggetto::VESTITO,
         {
-            Vestito{TipoVestito::GIUBBOTTO, "Giacca di pelle", "Giacca di pelle... cos'altro dire ?", "", 125, 40},
-            Vestito{TipoVestito::GIUBBOTTO, "Fatiscenza Green", "Giubbotto \"Fatiscenza\" Green Line*, per tutti quelli che possono permetterselo.", "", 190, 60},
-            Vestito{TipoVestito::GIUBBOTTO, "Fatiscenza White", "\"Fatiscenza White\" con una comoda imbottitura in piumino sintetico*, è adatto per tutte le stagioni.\n\n*Tutti i giubbotti della linea \"Fatiscenza\" sono fatti con materiali altamente infiammabili, da tenere lontano da fonti di calore....", "", 210, 75}
+            new Vestito{TipoVestito::GIUBBOTTO, "Giacca di pelle", "Giacca di pelle... cos'altro dire ?", "", 125, 40},
+            new Vestito{TipoVestito::GIUBBOTTO, "Fatiscenza Green", "Giubbotto \"Fatiscenza\" Green Line*, per tutti quelli che possono permetterselo.", "", 190, 60},
+            new Vestito{TipoVestito::GIUBBOTTO, "Fatiscenza White", "\"Fatiscenza White\" con una comoda imbottitura in piumino sintetico*, è adatto per tutte le stagioni.\n\n*Tutti i giubbotti della linea \"Fatiscenza\" sono fatti con materiali altamente infiammabili, da tenere lontano da fonti di calore....", "", 210, 75}
         }
     },
     {
         "Zoccolaro", CategoriaOggetto::VESTITO,
         {
-            Vestito{TipoVestito::PANTALONI, "Pantaloni Gessati", "Pantaloni gessati stile anni '30, comunque sono tornati di moda ed ogni zarro che si rispetti doverebbe averne un paio.", "", 45, 45},
-            Vestito{TipoVestito::PANTALONI, "Pantaloni Firmati", "Pantaloni per il tempo libero firmati da una delle marche più prestigiose e costose di abbigliamento sportivo.", "", 85, 75},
-            Vestito{TipoVestito::PANTALONI, "Pantaloni Reciclati", "Pantaloni realizzati da uno dei più eccentrici e stravaganti stilisti del momento utilizzando fibra di bottiglie di plastica reciclate.", "", 125, 60},
-            Vestito{TipoVestito::PANTALONI, "Pantaloni Scacchiera", "Hai sempre sognato di essere una scacchiera ??? Eccoti accontentato ! Realizzati in 100% acrilico.", "", 95, 50}
+            new Vestito{TipoVestito::PANTALONI, "Pantaloni Gessati", "Pantaloni gessati stile anni '30, comunque sono tornati di moda ed ogni zarro che si rispetti doverebbe averne un paio.", "", 45, 45},
+            new Vestito{TipoVestito::PANTALONI, "Pantaloni Firmati", "Pantaloni per il tempo libero firmati da una delle marche più prestigiose e costose di abbigliamento sportivo.", "", 85, 75},
+            new Vestito{TipoVestito::PANTALONI, "Pantaloni Reciclati", "Pantaloni realizzati da uno dei più eccentrici e stravaganti stilisti del momento utilizzando fibra di bottiglie di plastica reciclate.", "", 125, 60},
+            new Vestito{TipoVestito::PANTALONI, "Pantaloni Scacchiera", "Hai sempre sognato di essere una scacchiera ??? Eccoti accontentato ! Realizzati in 100% acrilico.", "", 95, 50}
         }
     },
     {
         "Footsmocker", CategoriaOggetto::VESTITO,
         {
-            Vestito{TipoVestito::SCARPE, "Scarpe Old Style", "Comode ed eleganti, dalla linea Old style, se avete un po' di soldi da buttare, dovete assolutemente comprarle.", "", 60, 50},
-            Vestito{TipoVestito::SCARPE, "Scarpe Scomode", "Il massimo della tendenza per i giovani d'oggi ! Queste scarpe, scomode e brutte, fanno sicuramente per voi !", "", 110, 70},
-            Vestito{TipoVestito::SCARPE, "Scarpe Rialzate", "Volete essere alla moda spendendo poco ??? Queste scarpe rialzate con mattoni forati sono quello che ci vuole per voi !", "", 45, 20}
+            new Vestito{TipoVestito::SCARPE, "Scarpe Old Style", "Comode ed eleganti, dalla linea Old style, se avete un po' di soldi da buttare, dovete assolutemente comprarle.", "", 60, 50},
+            new Vestito{TipoVestito::SCARPE, "Scarpe Scomode", "Il massimo della tendenza per i giovani d'oggi ! Queste scarpe, scomode e brutte, fanno sicuramente per voi !", "", 110, 70},
+            new Vestito{TipoVestito::SCARPE, "Scarpe Rialzate", "Volete essere alla moda spendendo poco ??? Queste scarpe rialzate con mattoni forati sono quello che ci vuole per voi !", "", 45, 20}
         }
     },
     {
         "Footsmocker II", CategoriaOggetto::VESTITO,
         {   // TODO: VARIAZIONI ?
-            Vestito{TipoVestito::SCARPE, "Scarpe Design", "Stile e semplicità in una scarpa dal desing moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.", "", 75, 80},
-            Vestito{TipoVestito::SCARPE, "Scarpe Prugna", "Come poteva mancare il massimo della tendenza per i giovani d'oggi nella nuova colorazione Prugna?", "", 120, 90},
-            Vestito{TipoVestito::SCARPE, "Scarpe Tendenza", "E per chi volesse osare ancora di più, ecco la nuova colorazione Tendenza, per non passare inosservati.", "", 90, 100}
+            new Vestito{TipoVestito::SCARPE, "Scarpe Design", "Stile e semplicità in una scarpa dal desing moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.", "", 75, 80},
+            new Vestito{TipoVestito::SCARPE, "Scarpe Prugna", "Come poteva mancare il massimo della tendenza per i giovani d'oggi nella nuova colorazione Prugna?", "", 120, 90},
+            new Vestito{TipoVestito::SCARPE, "Scarpe Tendenza", "E per chi volesse osare ancora di più, ecco la nuova colorazione Tendenza, per non passare inosservati.", "", 90, 100}
         }
     },
     {
         "Bar Tabacchi", CategoriaOggetto::CONSUMABILE,
         {
             // TODO: CLASSE SIZZE
-            Sizze{"Barclay", "Condensato: 5 Nicotina: 0.5", "", 6, 2},
-            Sizze{"Camel", "Condensato: 8 Nicotina: 0.7", "", 6, 1},
-            Sizze{"Davidoff Superior Lights", "These carefully selected tobaccos have been skillfully blended to assure your pleasure.\nCondensato: 7 Nicotina: 0.6", "", 6, 2},
-            Sizze{"Davidoff Mildnes", "These carefully selected tobaccos have been skillfully blended to assure your pleasure.\nCondensato: 7 Nicotina: 0.6", "", 6, 2},
-            Sizze{"Davidoff Classic", "These carefully selected tobaccos have been skillfully blended to assure your pleasure.\nCondensato: 13 Nicotina: 0.9", "", 6, 2},
-            Sizze{"Diana Blu", "Specially mild\nCondensato: 9 Nicotina 0.7", "", 5, 1},
-            Sizze{"Diana Rosse", "King size filter\nCondensato: 12 Nicotina 0.9", "", 5, 1},
-            Sizze{"Dunhill Lights", "Condensato: 8 Nicotina 0.7", "", 6, 0},
-            Sizze{"Merit", "Condensato: 7 Nicotina 0.5", "", 6, 0},
-            Sizze{"Gauloises Blu", "Condensato: 14 Nicotina 1.0", "", 6, 0},
-            Sizze{"Gauloises Rosse", "Condensato: 7 Nicotina 0.6", "", 6, 0},
-            Sizze{"Unlucky Strike", "Unluckies are a blend of the finest american, turkish and other choice tobaccos. Their manufacture includes the unlucky strike process. It's toasted.\nCondensato: 13 Nicotina 1.0", "", 6, 1},
-            Sizze{"Unlucky Strike Lights", "Unluckies are a blend of the finest american, turkish and other choice tobaccos. Their manufacture includes the unlucky strike process. It's toasted.\nCondensato: 9 Nicotina 0.7", "", 6, 1},
-            Sizze{"Malborro Medium", "Condensato: 8 Nicotina 0.6", "", 6, 2},
-            Sizze{"Malborro Rosse", "Condensato: 12 Nicotina 0.9", "", 6, 2},
-            Sizze{"Malborro Lights", "Condensato: 8 Nicotina 0.6", "", 6, 2},
-            Sizze{"NS Rosse", "Condensato: 11 Nicotina 1.0", "", 5, 0},
-            Sizze{"NS Mild", "Condensato: 9 Nicotina 0.9", "", 5, 0},
-            Sizze{"Poll Mon Blu", "Famous american cigarettes.\nWherever particular people congregat.\nCondensato: 9 Nicotina 0.7", "", 5, 1},
-            Sizze{"Poll Mon Rosse", "Famous american cigarettes.\nWherever particular people congregat.\nCondensato: 12 Nicotina 0.9", "", 5, 1},
-            Sizze{"Philip Morris", "Condensato: 12 Nicotina 1.0", "", 6, 2},
-            Sizze{"Philip Morris Super Light", "Condensato: 4 Nicotina 0.4", "", 6, 2},
-            Sizze{"Armadis", "Armadis contains an original blend of selected Burley, Virginia and Oriental tobaccos, whose natural curing processes guarantee its authentic flavour satisfaction.\nCondensato: 10 Nicotina 0.9", "", 5, 1},
-            Sizze{"Winston", "Condensato: 11 Nicotina 0.9", "", 5, 0}
+            new Sizze{"Barclay", "Condensato: 5 Nicotina: 0.5", "", 6, 2},
+            new Sizze{"Camel", "Condensato: 8 Nicotina: 0.7", "", 6, 1},
+            new Sizze{"Davidoff Superior Lights", "These carefully selected tobaccos have been skillfully blended to assure your pleasure.\nCondensato: 7 Nicotina: 0.6", "", 6, 2},
+            new Sizze{"Davidoff Mildnes", "These carefully selected tobaccos have been skillfully blended to assure your pleasure.\nCondensato: 7 Nicotina: 0.6", "", 6, 2},
+            new Sizze{"Davidoff Classic", "These carefully selected tobaccos have been skillfully blended to assure your pleasure.\nCondensato: 13 Nicotina: 0.9", "", 6, 2},
+            new Sizze{"Diana Blu", "Specially mild\nCondensato: 9 Nicotina 0.7", "", 5, 1},
+            new Sizze{"Diana Rosse", "King size filter\nCondensato: 12 Nicotina 0.9", "", 5, 1},
+            new Sizze{"Dunhill Lights", "Condensato: 8 Nicotina 0.7", "", 6, 0},
+            new Sizze{"Merit", "Condensato: 7 Nicotina 0.5", "", 6, 0},
+            new Sizze{"Gauloises Blu", "Condensato: 14 Nicotina 1.0", "", 6, 0},
+            new Sizze{"Gauloises Rosse", "Condensato: 7 Nicotina 0.6", "", 6, 0},
+            new Sizze{"Unlucky Strike", "Unluckies are a blend of the finest american, turkish and other choice tobaccos. Their manufacture includes the unlucky strike process. It's toasted.\nCondensato: 13 Nicotina 1.0", "", 6, 1},
+            new Sizze{"Unlucky Strike Lights", "Unluckies are a blend of the finest american, turkish and other choice tobaccos. Their manufacture includes the unlucky strike process. It's toasted.\nCondensato: 9 Nicotina 0.7", "", 6, 1},
+            new Sizze{"Malborro Medium", "Condensato: 8 Nicotina 0.6", "", 6, 2},
+            new Sizze{"Malborro Rosse", "Condensato: 12 Nicotina 0.9", "", 6, 2},
+            new Sizze{"Malborro Lights", "Condensato: 8 Nicotina 0.6", "", 6, 2},
+            new Sizze{"NS Rosse", "Condensato: 11 Nicotina 1.0", "", 5, 0},
+            new Sizze{"NS Mild", "Condensato: 9 Nicotina 0.9", "", 5, 0},
+            new Sizze{"Poll Mon Blu", "Famous american cigarettes.\nWherever particular people congregat.\nCondensato: 9 Nicotina 0.7", "", 5, 1},
+            new Sizze{"Poll Mon Rosse", "Famous american cigarettes.\nWherever particular people congregat.\nCondensato: 12 Nicotina 0.9", "", 5, 1},
+            new Sizze{"Philip Morris", "Condensato: 12 Nicotina 1.0", "", 6, 2},
+            new Sizze{"Philip Morris Super Light", "Condensato: 4 Nicotina 0.4", "", 6, 2},
+            new Sizze{"Armadis", "Armadis contains an original blend of selected Burley, Virginia and Oriental tobaccos, whose natural curing processes guarantee its authentic flavour satisfaction.\nCondensato: 10 Nicotina 0.9", "", 5, 1},
+            new Sizze{"Winston", "Condensato: 11 Nicotina 0.9", "", 5, 0}
         }
     }
 };

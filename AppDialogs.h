@@ -228,7 +228,7 @@ public:
 
 private:
 	TabbyGame& m_game;
-	Acquistabile m_prodotto;
+	const Acquistabile& m_prodotto;
 	DlgNegozio* m_parentDlg; // Riferimento alla finestra padre per aggiornare i soldi
 
 	void OnCompra(wxCommandEvent& event);

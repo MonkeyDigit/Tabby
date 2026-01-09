@@ -1,6 +1,9 @@
 # FORMATO: [NEGOZIO] | Nome | Categoria (0=Gen, 1=Vest, 2=Tel, 3=Cons, 4=Scooter 5=Scooter Part)
-# ITEM | VESTITO | Tipo (0=Giu,1=Pan,2=Sca) | Nome | Desc | Img | Prezzo | Fama
+# ITEM | VESTITO | Tipo (0=Giubbotto,1=Pantaloni,2=Scarpe) | Nome | Desc | Img | Prezzo | Fama
 # ITEM | SIZZE   | Nome | Desc | Img | Prezzo | Fama
+# ITEM |  TEL    | Nome | Desc | Img | Prezzo | Fama | Stato
+# ITEM | SCOOTER | Nome | Img  | Prezzo | Fama | Stato | Velocita
+# ITEM |  PEZZO  | Tipo (0=Nessuno,1=Marmitta,2=Carburatore,3=Pistone,4=Filtro) | Nome | Img | Prezzo
 
 [NEGOZIO]|Bau House|1
 ITEM|VESTITO|0|Giubbotto Fatiscenza OG|Giubbotto originale "Fatiscenza", elegante e raffinato, è adatto a tutte le occasioni, dalla serata con gli amici, alle feste più esclusive.|img/giubbotti/fatiscenza_og.png|175|30
@@ -53,3 +56,33 @@ ITEM|SIZZE|Philip Morris|Condensato: 12 Nicotina 1.0|img/sizze/philip.png|6|2
 ITEM|SIZZE|Philip Morris Super Light|Condensato: 4 Nicotina 0.4|img/sizze/philip.png|6|2
 ITEM|SIZZE|Armadis|Armadis contains an original blend of selected Burley. Condensato: 10 Nicotina 0.9|img/sizze/armadis.png|5|1
 ITEM|SIZZE|Winston|Condensato: 11 Nicotina 0.9|img/sizze/winston.png|5|0
+
+[TELEFONIA]|Telefonia|2
+ITEM|TEL|Motorolo D170|Libertà, versatilità e sicurezza di comunicazione a prezzo giusto, queste le caratteristiche del telefono cellulare GSM Motorolo d170.|img/tel_d170.png|150|0|100
+ITEM|TEL|Motorolo Macro TAC 8900|DUAL BAND 900/1800 Motorolo Macro Tac 8900 è il primo telefono cellulare in commercio in grado di passare automaticamente dalla banda di frequenza GSM 900 alla banda GSM 1800.|img/tel_8900.png|500|0|100
+ITEM|TEL|Motorolo 8700|Lo stile è classico e inconfondibile ma le prestazioni sono interamente rinnovate e di altissimo livello. Motorolo 8700 consente un'autonomia di conversazione sorprendente (ben 9 mesi!) e un tempo di standby fino a 135 anni.|img/tel_8700.png|300|0|100
+
+[CONCESSIONARIO]|Concessionario|4
+ITEM|SCOOTER|Magutty Firecow|magutty_firecow.png|1300|5|100|65
+ITEM|SCOOTER|Magutty Firecow+|magutty_firecow_plus.png|2220|7|100|75
+ITEM|SCOOTER|Magutty Firecow II|magutty_firecow2.png|3100|10|100|100
+ITEM|SCOOTER|Honda F98|hondaf98.png|2250|10|100|75
+ITEM|SCOOTER|Honda F98s|hondaf98s.png|3300|13|100|100
+ITEM|SCOOTER|Mizzubisci R200 Millenium|mizzubisci_r200_millenium.png|3360|15|100|105
+
+[MECCANICO]|Meccanico|5
+ITEM|PEZZO|1|Marmitta silenziosa|marmitta.png|210
+ITEM|PEZZO|1|Marmitta rumorosa|marmitta.png|260
+ITEM|PEZZO|1|Marmitta rumorosissima|marmitta.png|320
+ITEM|PEZZO|2|16/16|carburatore.png|155
+ITEM|PEZZO|2|19/19|carburatore.png|245
+ITEM|PEZZO|2|20/20|carburatore.png|340
+ITEM|PEZZO|2|24/24|carburatore.png|420
+ITEM|PEZZO|3|70cc|cilindro.png|105
+ITEM|PEZZO|3|90cc|cilindro.png|210
+ITEM|PEZZO|3|120cc|cilindro.png|420
+ITEM|PEZZO|3|150cc|cilindro.png|530
+ITEM|PEZZO|4|P1|filtro.png|30
+ITEM|PEZZO|4|P2|filtro.png|65
+ITEM|PEZZO|4|P2+|filtro.png|150
+ITEM|PEZZO|4|Extreme|filtro.png|230

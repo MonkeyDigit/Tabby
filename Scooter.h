@@ -3,17 +3,33 @@
 #include "Acquistabile.h"
 
 enum class Attivita { NESSUNA, PARCHEGGIATO, IN_GIRO, INGRIPPATO, INVASATO, SEQUESTRATO, A_SECCO };
+enum class TipoPezzo { NESSUNO, MARMITTA, CARBURATORE, PISTONE, FILTRO };
+
+class Pezzo : public Acquistabile {
+public:
+	Pezzo()
+		: Acquistabile{}, m_tipo{ TipoPezzo::NESSUNO }
+	{}
+
+	Pezzo(TipoPezzo tipo, std::string nome, std::string img, long long prezzo)
+		: Acquistabile{ nome, "", img, prezzo, CategoriaOggetto::SCOOTER}, m_tipo{tipo}
+	{}
+
+	TipoPezzo GetTipo() const { return m_tipo; }
+private:	// TODO: COMPLETA
+	TipoPezzo m_tipo;
+};
 
 class Scooter : public Acquistabile {
 public:
 	Scooter()
-		: Acquistabile{}, m_fama{ 0 }, m_stato{ 0 }, m_attivita{Attivita::NESSUNA}, m_benza{0.f}, m_velocita{0}
+		: Acquistabile{}, m_fama{ 0 }, m_stato{ 0 }, m_attivita{Attivita::NESSUNA}, m_benza{0.f}, m_velocita{0}	// TODO: INIZiALIZZA PEZZI
 	{}
 
 	// TODO: CLASSE MARMITTA, CARBURATORE, CILINDRATA. FILTRO
 	// TODO: COMPLETA CONSTRUCTOR
-	Scooter(std::string nome, std::string desc, std::string img, long long prezzo, int fama, int stato, int velocita, float benza)
-		: Acquistabile{nome, desc, img, prezzo, CategoriaOggetto::SCOOTER },
+	Scooter(std::string nome, std::string img, long long prezzo, int fama, int stato, int velocita, float benza)
+		: Acquistabile{nome, "", img, prezzo, CategoriaOggetto::SCOOTER},
 		m_fama{fama}, m_stato{stato}, m_velocita{velocita}, m_benza{benza}, m_attivita{Attivita::IN_GIRO}
 	{}
 
@@ -80,6 +96,10 @@ public:
 		return s;
 	}
 
+	Pezzo& GetMarmitta() { return m_marmitta; }
+	Pezzo& GetCarburatore() { return m_carburatore; }
+	Pezzo& GetCilindrata() { return m_cilindrata; }
+	Pezzo& GetFiltro() { return m_filtro; }
 
 private:
 	int m_fama;
@@ -87,4 +107,9 @@ private:
 	int m_velocita;
 	float m_benza;
 	Attivita m_attivita;
+	// PEZZI
+	Pezzo m_marmitta;
+	Pezzo m_carburatore;
+	Pezzo m_cilindrata;
+	Pezzo m_filtro;
 };

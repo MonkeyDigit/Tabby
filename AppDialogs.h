@@ -14,14 +14,20 @@ public:
 	DlgScooter(wxWindow* parent, TabbyGame& game);
 private:
 	TabbyGame& m_game;	// Il riferimento al motore di gioco
+	wxStaticText* m_lblSoldi;
+	wxStaticText* m_lblNome;
+	wxStaticText* m_lblVelocita;
+	wxStaticText* m_lblBenza;
+	wxStaticText* m_lblStato; // Aggiungi questo per vedere lo stato (riparazioni)
 
 	// Eventi interni alla finestra
 	void OnConcessionario(wxCommandEvent& event);
 	void OnTrucca(wxCommandEvent& event);
 	void OnRipara(wxCommandEvent& event);
 	void OnFaiBenza(wxCommandEvent& event);
+	void OnUsa(wxCommandEvent& event);
 	// Funzione helper
-	void AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxString value);
+	wxStaticText* AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxString value);
 	// Funzione per aggiornare i testi dei bottoni
 	void AggiornaInterfaccia();
 };

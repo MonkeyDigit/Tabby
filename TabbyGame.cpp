@@ -26,8 +26,8 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     CaricaFeste();
     CaricaNegozi();
     CaricaQuiz();
-    CaricaTelefoni();
 
+    // TODO: sistema telefonia
     m_telefonia.m_merce = CategoriaOggetto::TELEFONO;
 
     WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
@@ -1393,6 +1393,25 @@ void TabbyGame::CaricaNegozi() {
             m_negozi.push_back(n);
             currentNegozio = &m_negozi.back(); // Puntiamo all'ultimo inserito
         }
+        else if (tokens[0] == "[TELEFONIA]")
+        {
+            m_telefonia.m_nome = tokens[1];
+            // Cast int -> Enum Categoria
+            m_telefonia.m_merce = (CategoriaOggetto)ParseInt(tokens[2]);
+            currentNegozio = &m_telefonia;
+        }
+        else if (tokens[0] == "[CONCESSIONARIO]")
+        {
+            m_concessionario.m_nome = tokens[1];
+            m_concessionario.m_merce = (CategoriaOggetto)ParseInt(tokens[2]);
+            currentNegozio = &m_concessionario;
+        }
+        else if (tokens[0] == "[MECCANICO]")
+        {
+            m_meccanico.m_nome = tokens[1];
+            m_meccanico.m_merce = (CategoriaOggetto)ParseInt(tokens[2]);
+            currentNegozio = &m_meccanico;
+        }
         // --- ITEM (OGGETTO) ---
         else if (tokens[0] == "ITEM" && currentNegozio != nullptr) {
             std::string tipo = tokens[1];
@@ -1407,8 +1426,17 @@ void TabbyGame::CaricaNegozi() {
                 // ITEM|SIZZE|Nome|Desc|Img|Prezzo|Fama
                 nuovoItem = new Sizze(tokens[2], tokens[3], tokens[4], ParseLong(tokens[5]), ParseInt(tokens[6]));
             }
-            else if (tipo == "TEL" && tokens.size() >= 7) {
-                // TODO: CAMBIA
+            else if (tipo == "TEL" && tokens.size() >= 8) {
+                nuovoItem = new Telefono{ tokens[2], tokens[3], tokens[4], ParseLong(tokens[5]), ParseInt(tokens[6]), ParseInt(tokens[7]), 0, Abbonamento() };
+            }
+            else if (tipo == "SCOOTER" && tokens.size() >= 8)
+            {
+                nuovoItem = new Scooter{ tokens[2], tokens[3], ParseLong(tokens[4]), ParseInt(tokens[5]), ParseInt(tokens[6]), ParseInt(tokens[7]), 5.0f };
+            }
+            else if (tipo == "PEZZO" && tokens.size() >= 6)
+            {
+                TipoPezzo tp = (TipoPezzo)ParseInt(tokens[2]);
+                nuovoItem = new Pezzo{ tp, tokens[3], tokens[4], ParseLong(tokens[5]) };
             }
 
             if (nuovoItem) {
@@ -1479,40 +1507,6 @@ void TabbyGame::CaricaQuiz()
                     }
                 }
             }
-        }
-    }
-}
-
-void TabbyGame::CaricaTelefoni()
-{
-    m_telefonia.m_catalogo.clear();
-    std::ifstream file("dati/telefoni.txt");
-    if (!file.is_open()) return;
-
-    std::string riga;
-    while (std::getline(file, riga))
-    {
-        trimString(riga);
-        if (riga.empty() || riga[0] == '#') continue;
-
-        auto tokens = SplitString(riga, '|');
-        // FORMATO: Nome | Descrizione | Immagine | Prezzo | Batteria | Ricezione
-        if (tokens.size() >= 5)
-        {
-            // Nota: La classe Telefono non ha 'Ricezione' nel costruttore standard mostrato,
-            // ma ha 'Stato' (usiamo Batteria) e 'Credito' (iniziale 0).
-            // Fama inizializzata a 0 di default.
-
-            std::string nome = tokens[0];
-            std::string desc = tokens[1];
-            std::string img = tokens[2];
-            long long prezzo = ParseLong(tokens[3]);
-            int stato = ParseInt(tokens[4]);
-            // int ricezione = ParseInt(tokens[5]); // Se decidessi di usarla in futuro
-
-            // Costruttore: Nome, Desc, Img, Prezzo, Fama, Stato, Credito, Abbonamento
-            Telefono* t = new Telefono(nome, desc, img, prezzo, 0, stato, 0, Abbonamento{});
-            m_telefonia.m_catalogo.push_back(t);
         }
     }
 }
@@ -2062,4 +2056,24 @@ void TabbyGame::AzioneRicarica(long long taglio, std::string nomeOp)
     if(ha telefono)
         suono
     */
+}
+
+void TabbyGame::AzioneTruccaScooter()
+{
+    // TODO: IMPLEMENTA
+}
+
+void TabbyGame::AzioneRiparaScooter()
+{
+    // TODO: IMPLEMENTA
+}
+
+void TabbyGame::AzioneUsaScooter()
+{
+    // TODO: IMPLEMENTA
+}
+
+void TabbyGame::AzioneFaiBenza()
+{
+    // TODO: IMPLEMENTA
 }

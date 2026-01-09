@@ -129,6 +129,11 @@ public:
     void AzioneVendiTelefono();
     void AzioneAttivaSim(int abbonIndex);
     void AzioneRicarica(long long taglio, std::string nomeOp);
+    // Scooter
+    void AzioneTruccaScooter();
+    void AzioneRiparaScooter();
+    void AzioneUsaScooter();
+    void AzioneFaiBenza();
 
     // Stringa formattata (es. "1.000 L." o "5 €")
     std::string GetSoldiStr(long long valoreBase) const;
@@ -138,6 +143,8 @@ public:
     void WriteLog(const std::string& messaggio);
 
     Negozio& GetTelefonia() { return m_telefonia; }
+    Negozio& GetConcessionario() { return m_concessionario; }
+    Negozio& GetMeccanico() { return m_meccanico; }
     std::vector<Abbonamento>& GetAbbonamenti() { return m_abbonamenti; }
     std::vector<Negozio>& GetNegozi() { return m_negozi; }
     std::vector<Disco>& GetDiscoteche() { return m_discoteche; }
@@ -182,6 +189,8 @@ private:
     // CONTENUTI DI GIOCO
     std::vector<Abbonamento> m_abbonamenti;
     Negozio m_telefonia;
+    Negozio m_concessionario;
+    Negozio m_meccanico;
     // TODO: CAMBIA FIGOSITA'
     std::vector<Negozio> m_negozi;
     std::vector<Disco> m_discoteche;
@@ -207,7 +216,6 @@ private:
     void CaricaFeste();
     void CaricaNegozi();
     void CaricaQuiz();
-    void CaricaTelefoni();
 };
 
 // TODO: IMPOSTA LA FAMA DEI CELL

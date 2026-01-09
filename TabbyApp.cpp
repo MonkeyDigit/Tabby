@@ -63,6 +63,8 @@
 // TODO: SOSTITUISCI I -1 con 0
 // TODO: COSTRUTTORE DEFAULT ACQUISTABILE IN AZZERA() ???
 // TODO: HEADER UTILITY CON LE FUNZIONI DEFINITE NEI CPP
+// TODO: RIFAI TUTTI GLI AZZERA E RESET ASSEGNANDO THIS
+// TODO: CONTROLLA TUTTI GLI ELSE MANIFESTAEVENTO
 
 bool TabbyApp::OnInit()
 {
@@ -243,9 +245,9 @@ TabbyFrame::TabbyFrame()
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL), wxGBPosition(0,1), wxGBSpan(4,1), wxEXPAND & ~wxLEFT, 5);
 	
 	// Bottoni
-	gridStats->Add(btnTipa, wxGBPosition(0, 2), wxDefaultSpan, wxALL, 7);
-	gridStats->Add(btnCompagnia, wxGBPosition(2, 2), wxDefaultSpan, wxALL, 7);
-	gridStats->Add(btnFamiglia, wxGBPosition(3, 2), wxDefaultSpan, wxALL, 7);
+	gridStats->Add(btnTipa, wxGBPosition(0, 2), wxDefaultSpan, wxALL | wxALIGN_RIGHT, 7);
+	gridStats->Add(btnCompagnia, wxGBPosition(2, 2), wxDefaultSpan, wxALL | wxALIGN_RIGHT, 7);
+	gridStats->Add(btnFamiglia, wxGBPosition(3, 2), wxDefaultSpan, wxALL | wxALIGN_RIGHT, 7);
 	
 	// Soldi
 	wxBoxSizer* sizerSoldiRow = new wxBoxSizer(wxHORIZONTAL);

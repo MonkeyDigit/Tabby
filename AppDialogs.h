@@ -267,5 +267,19 @@ private:
 	void OnRicarica(wxCommandEvent& event);
 };
 
+class DlgRicariche : public wxDialog
+{
+public:
+	DlgRicariche(wxWindow* parent, TabbyGame& game);
+
+private:
+	TabbyGame& m_game;
+	wxStaticText* m_lblSoldi;
+	wxStaticText* m_lblOperatoreAttuale;
+	wxStaticText* m_lblCreditoAttuale;
+
+	void AggiornaInterfaccia();
+};
+
 // Funzione helper
 void ManifestaEventi(wxWindow* parent, TabbyGame& game);

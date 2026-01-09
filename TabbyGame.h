@@ -30,11 +30,13 @@ enum class MsgAzione {
     GARA,
     // Lavoro
     LICENZIATI,
-    // TIPA
+    // Tipa
     LASCIA_TIPA,
     TIPA_MI_AMI,
     TIPA_INGRASSATA,
-    TIPA_CI_PROVA
+    TIPA_CI_PROVA,
+    // Telefono
+    VENDI_TEL
 };
 
 struct Messaggio {
@@ -123,6 +125,10 @@ public:
     void AzioneVaiPalestra();
     void AzioneLampada();
     void AzioneAbbonamento(int mesi);
+    // Telefono
+    void AzioneVendiTelefono();
+    void AzioneAttivaSim(int abbonIndex);
+    void AzioneRicarica(long long taglio, std::string nomeOp);
 
     // Stringa formattata (es. "1.000 L." o "5 €")
     std::string GetSoldiStr(long long valoreBase) const;
@@ -131,8 +137,8 @@ public:
     // SCRITTURA LOG DI DEBUG
     void WriteLog(const std::string& messaggio);
 
+    Negozio& GetTelefonia() { return m_telefonia; }
     std::vector<Abbonamento>& GetAbbonamenti() { return m_abbonamenti; }
-    std::vector<Telefono>& GetTelefono() { return m_telefoni; }
     std::vector<Negozio>& GetNegozi() { return m_negozi; }
     std::vector<Disco>& GetDiscoteche() { return m_discoteche; }
     std::vector<Ditta>& GetDitte() { return m_ditte; }
@@ -150,6 +156,7 @@ private:
 	std::vector<Messaggio> m_codaMsg;
 	TipoGiorno m_tipoGiorno;
     long long m_costoCorruzione;
+    long long m_offertaTel;
     int m_materiaIndex;
     int m_scooterAvversarioIndex;
 	// IL MOTORE DI NUMERI CASUALI
@@ -174,7 +181,7 @@ private:
 
     // CONTENUTI DI GIOCO
     std::vector<Abbonamento> m_abbonamenti;
-    std::vector<Telefono> m_telefoni;
+    Negozio m_telefonia;
     // TODO: CAMBIA FIGOSITA'
     std::vector<Negozio> m_negozi;
     std::vector<Disco> m_discoteche;

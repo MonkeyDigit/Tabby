@@ -61,6 +61,11 @@ public:
 	}
 
 	bool HaSim() const { return !m_abb.GetNome().empty(); }
+
+	void Azzera() {
+		*this = Telefono{};
+	}
+
 private:
 	int m_fama;
 	int m_stato;

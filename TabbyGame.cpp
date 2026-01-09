@@ -28,6 +28,8 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     CaricaQuiz();
     CaricaTelefoni();
 
+    m_telefonia.m_merce = CategoriaOggetto::TELEFONO;
+
     WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
     // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
@@ -771,6 +773,25 @@ void TabbyGame::ApplicaScelta(MsgAzione msgAzione, bool sceltaYes)
             NuovoGiorno();
         }
         break;
+    case MsgAzione::VENDI_TEL:
+        if (sceltaYes)
+        {
+            // Trasferiamo sim e credito
+            Abbonamento abb = m_tabbyGuy.GetTelefono().GetAbbonamento();
+            long long cred = m_tabbyGuy.GetTelefono().GetCredito();
+
+            m_tabbyGuy.GetTelefono().Azzera();
+
+            m_tabbyGuy.GetTelefono().IncCredito(cred);
+            m_tabbyGuy.GetTelefono().GetAbbonamento() = abb;
+            m_tabbyGuy.GuadagnaSoldi(m_offertaTel);
+        }
+        else
+        {
+            Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Telefonino", "Allora vai a farti fottere, pirletta !", "" };
+            PushMessaggio(msg);
+        }
+        break;
     }
     
 }
@@ -1464,7 +1485,7 @@ void TabbyGame::CaricaQuiz()
 
 void TabbyGame::CaricaTelefoni()
 {
-    m_telefoni.clear();
+    m_telefonia.m_catalogo.clear();
     std::ifstream file("dati/telefoni.txt");
     if (!file.is_open()) return;
 
@@ -1486,12 +1507,12 @@ void TabbyGame::CaricaTelefoni()
             std::string desc = tokens[1];
             std::string img = tokens[2];
             long long prezzo = ParseLong(tokens[3]);
-            int batteria = ParseInt(tokens[4]);
+            int stato = ParseInt(tokens[4]);
             // int ricezione = ParseInt(tokens[5]); // Se decidessi di usarla in futuro
 
             // Costruttore: Nome, Desc, Img, Prezzo, Fama, Stato, Credito, Abbonamento
-            Telefono t(nome, desc, img, prezzo, 0, batteria, 0, Abbonamento{});
-            m_telefoni.push_back(t);
+            Telefono* t = new Telefono(nome, desc, img, prezzo, 0, stato, 0, Abbonamento{});
+            m_telefonia.m_catalogo.push_back(t);
         }
     }
 }
@@ -1808,6 +1829,9 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
         case CategoriaOggetto::CONSUMABILE:
             str = "\"Vai fuori dal mio locale, brutto pezzente !\", esclama il tabaccaio con un'AK-47 in mano...";
             break;
+        case CategoriaOggetto::TELEFONO:
+            str = "Forse non ti sei accorto di non avere abbastanza soldi, stronzetto...";
+            break;
         }
 
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non hai abbastanza soldi...", str, "" };
@@ -1844,6 +1868,18 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
         m_tabbyGuy.IncFama(sizze.GetFama());
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "ART. 46 L. 29/12/1990 n. 428", m_frasiSigarette[GenRandomInt(0, m_frasiSigarette.size()-1)], "" };
         PushMessaggio(msg);
+    }
+    else if (prod.GetCategoria() == CategoriaOggetto::TELEFONO)
+    {
+        const Telefono& tel{ static_cast<const Telefono&>(prod) };
+        // Trasferiamo la sim e il credito
+        Abbonamento abb = m_tabbyGuy.GetTelefono().GetAbbonamento();
+        long long cred = m_tabbyGuy.GetTelefono().GetCredito();
+
+        m_tabbyGuy.GetTelefono() = tel;
+        m_tabbyGuy.GetTelefono().GetAbbonamento() = abb;
+        m_tabbyGuy.GetTelefono().IncCredito(cred);
+        m_tabbyGuy.IncFama(tel.GetFama());
     }
 
     WriteLog("AzioneCompra: acquista " + prod.GetNome() + " per " + GetSoldiStr(prod.GetPrezzo()));
@@ -1969,4 +2005,61 @@ void TabbyGame::AzioneAbbonamento(int mesi)
     m_scadenzaPal = m_date;
     m_scadenzaPal.AddMonth(mesi);
     NuovoGiorno();
+}
+
+void TabbyGame::AzioneVendiTelefono()
+{
+    if (!m_tabbyGuy.HaTelefono())
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ma che ???", "Che telefonino vuoi vendere, pirletta ???", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    m_offertaTel = m_tabbyGuy.GetTelefono().GetPrezzo() * 0.5 + 8;
+
+    Messaggio msg{ TipoMsg::SCELTA, MsgAzione::VENDI_TEL, "Un buon affare...", "Ti posso dare " + GetSoldiStr(m_offertaTel) + " per il tuo telefonino... Vuoi vendermelo ?", "" };
+    PushMessaggio(msg);
+}
+
+void TabbyGame::AzioneAttivaSim(int abbonIndex)
+{
+    if (!m_tabbyGuy.SpendiSoldi(m_abbonamenti[abbonIndex].GetCostoAttivazione()))
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non hai abbastanza soldi...", "Forse non ti sei accorto di non avere abbastanza soldi, stronzetto...", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    m_tabbyGuy.GetTelefono().GetAbbonamento() = m_abbonamenti[abbonIndex];
+    // TODO: SUONO
+    /*
+    if(ha telefono)
+        suono
+    */
+}
+
+void TabbyGame::AzioneRicarica(long long taglio, std::string nomeOp)
+{
+    if (m_tabbyGuy.GetTelefono().GetAbbonamento().GetNome() != nomeOp)
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Svegliati...", "Oh, che te ne fai di una ricarica se non hai la sim ???", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    if (!m_tabbyGuy.SpendiSoldi(taglio))
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non hai abbastanza soldi...", "Forse non ti sei accorto di non avere abbastanza soldi, stronzetto...", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    m_tabbyGuy.GetTelefono().IncCredito(taglio);
+
+    // TODO: SUONO
+    /*
+    if(ha telefono)
+        suono
+    */
 }

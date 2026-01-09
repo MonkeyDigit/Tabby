@@ -1737,15 +1737,202 @@ void DlgTelefono::AggiornaInterfaccia()
 
 void DlgTelefono::OnCompraTel(wxCommandEvent& event)
 {
-	// TODO: IMPLEMENTA
+	if (m_game.TriggerNegozio(m_game.GetTelefonia().m_merce))
+	{
+		DlgNegozio dlg{ this, m_game, m_game.GetTelefonia() };
+		dlg.ShowModal();
+
+		this->AggiornaInterfaccia();
+	}
+	
+	ManifestaEventi(this, m_game);
 }
 
 void DlgTelefono::OnVendiTel(wxCommandEvent& event)
 {
-	// TODO: IMPLEMENTA
+	if (m_game.TriggerNegozio(m_game.GetTelefonia().m_merce))
+		m_game.AzioneVendiTelefono();
+	
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
 }
 
 void DlgTelefono::OnRicarica(wxCommandEvent& event)
 {
-	// TODO: IMPLEMENTA
+	if (m_game.TriggerNegozio(m_game.GetTelefonia().m_merce))
+	{
+		DlgRicariche dlg{ this, m_game };
+		dlg.ShowModal();
+		this->AggiornaInterfaccia();
+	}
+	else
+		ManifestaEventi(this, m_game);
+	
+}
+
+DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Negozio Telefonia", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE }, // Tolto wxRESIZE_BORDER
+	m_game{ game }
+{
+	this->SetFont(parent->GetFont());
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+
+	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+
+	// --- INFO UTENTE (Alto) ---
+	wxPanel* pnlInfo = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
+	wxBoxSizer* infoSizer = new wxBoxSizer(wxVERTICAL);
+
+	m_lblOperatoreAttuale = new wxStaticText(pnlInfo, wxID_ANY, "---");
+	m_lblCreditoAttuale = new wxStaticText(pnlInfo, wxID_ANY, "---");
+
+	// Grassetto per l'operatore
+	wxFont fBold = m_lblOperatoreAttuale->GetFont();
+	fBold.SetWeight(wxFONTWEIGHT_BOLD);
+	m_lblOperatoreAttuale->SetFont(fBold);
+
+	infoSizer->Add(m_lblOperatoreAttuale, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+	infoSizer->Add(m_lblCreditoAttuale, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+	pnlInfo->SetSizer(infoSizer);
+
+	mainSizer->Add(pnlInfo, 0, wxEXPAND | wxALL, 10);
+
+	// --- AREA SCORREVOLE PER GLI ABBONAMENTI ---
+	wxScrolledWindow* scrollWin = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxSize(580, 400), wxBORDER_NONE);
+	scrollWin->SetScrollRate(0, 20);
+
+	wxBoxSizer* scrollSizer = new wxBoxSizer(wxVERTICAL);
+
+	// Recuperiamo la lista abbonamenti
+	const std::vector<Abbonamento>& abbonamenti = m_game.GetAbbonamenti();
+
+	for (int i = 0; i < abbonamenti.size(); ++i)
+	{
+		const Abbonamento& abb = abbonamenti[i];
+
+		// Riquadro per ogni operatore
+		wxStaticBoxSizer* groupSizer = new wxStaticBoxSizer(wxVERTICAL, scrollWin, abb.GetNome());
+
+		// Contenitore Orizzontale: [LOGO] | [BOTTONI]
+		wxBoxSizer* contentSizer = new wxBoxSizer(wxHORIZONTAL);
+
+		// 1. Placeholder Immagine (Sinistra)
+		wxPanel* imgPlaceholder = new wxPanel(scrollWin, wxID_ANY, wxDefaultPosition, wxSize(80, 80), wxBORDER_SIMPLE);
+		imgPlaceholder->SetBackgroundColour(wxColor(200, 200, 200)); // Grigio chiaro
+
+		// Centriamo la scritta LOGO nel placeholder
+		wxBoxSizer* imgSizer = new wxBoxSizer(wxVERTICAL);
+		imgSizer->AddStretchSpacer();
+		imgSizer->Add(new wxStaticText(imgPlaceholder, wxID_ANY, "LOGO"), 0, wxALIGN_CENTER);
+		imgSizer->AddStretchSpacer();
+		imgPlaceholder->SetSizer(imgSizer);
+
+		contentSizer->Add(imgPlaceholder, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+		// 2. Colonna Bottoni (Destra)
+		wxBoxSizer* rightSizer = new wxBoxSizer(wxVERTICAL);
+
+		// Tasto Attivazione
+		wxString labelAttiva = "Nuova Scheda (" + m_game.GetSoldiStr(abb.GetCostoAttivazione()) + ")";
+		wxButton* btnAttiva = new wxButton(scrollWin, wxID_ANY, labelAttiva, wxDefaultPosition, wxSize(-1, 30));
+		btnAttiva->SetForegroundColour(wxColor(0, 0, 150));
+
+		btnAttiva->Bind(wxEVT_BUTTON, [this, i](wxCommandEvent&) {
+			if (m_game.TriggerNegozio(CategoriaOggetto::TELEFONO))
+				m_game.AzioneAttivaSim(i);
+
+			ManifestaEventi(this, m_game);
+			this->AggiornaInterfaccia();
+			});
+
+		rightSizer->Add(btnAttiva, 0, wxEXPAND | wxBOTTOM, 5);
+
+		// Griglia Ricariche
+		wxGridSizer* ricaricheGrid = new wxGridSizer(2, 4, 5); // 2 righe, gap 4px e 5px
+
+		const std::vector<long long>& tagli = abb.GetRicariche();
+		for (long long taglio : tagli)
+		{
+			// Abbreviamo la label per farla stare nei bottoni piccoli
+			wxString labelRic = m_game.GetSoldiStr(taglio);
+			wxButton* btnRic = new wxButton(scrollWin, wxID_ANY, labelRic);
+
+			std::string nomeOp = abb.GetNome();
+			btnRic->Bind(wxEVT_BUTTON, [this, taglio, nomeOp](wxCommandEvent&) {
+				m_game.AzioneRicarica(taglio, nomeOp);
+				ManifestaEventi(this, m_game);
+				this->AggiornaInterfaccia();
+				});
+
+			ricaricheGrid->Add(btnRic, 0, wxEXPAND);
+		}
+
+		rightSizer->Add(ricaricheGrid, 0, wxEXPAND);
+
+		// Aggiungiamo la colonna di destra al contenitore orizzontale
+		contentSizer->Add(rightSizer, 1, wxEXPAND | wxLEFT, 10); // proportion 1 per espandersi
+
+		// Aggiungiamo il contentSizer al gruppo
+		groupSizer->Add(contentSizer, 1, wxEXPAND | wxALL, 5);
+
+		// Aggiungiamo il gruppo alla lista principale
+		scrollSizer->Add(groupSizer, 0, wxEXPAND | wxALL, 5);
+	}
+
+	scrollWin->SetSizer(scrollSizer);
+	mainSizer->Add(scrollWin, 1, wxEXPAND | wxALL, 5);
+
+	// --- BARRA INFERIORE (Soldi + Chiudi) ---
+	wxPanel* pnlBottom = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED);
+	wxBoxSizer* bottomSizer = new wxBoxSizer(wxHORIZONTAL);
+
+	m_lblSoldi = new wxStaticText(pnlBottom, wxID_ANY, "---");
+	wxFont fSoldi = m_lblSoldi->GetFont();
+	fSoldi.SetWeight(wxFONTWEIGHT_BOLD);
+	m_lblSoldi->SetFont(fSoldi);
+
+	wxButton* btnChiudi = new wxButton(pnlBottom, wxID_CANCEL, "Chiudi", wxDefaultPosition, wxSize(-1, 40));
+
+	bottomSizer->Add(m_lblSoldi, 0, wxALIGN_CENTER_VERTICAL | wxALL, 15);
+	bottomSizer->AddStretchSpacer();
+	bottomSizer->Add(btnChiudi, 0, wxALIGN_CENTER_VERTICAL | wxALL, 10);
+
+	pnlBottom->SetSizer(bottomSizer);
+	mainSizer->Add(pnlBottom, 0, wxEXPAND);
+
+	this->SetSizerAndFit(mainSizer);
+	this->Centre();
+
+	AggiornaInterfaccia();
+}
+
+void DlgRicariche::AggiornaInterfaccia()
+{
+	// Aggiorna Soldi
+	m_lblSoldi->SetLabel("< Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()) + " >");
+
+	// Aggiorna Info Telefono
+	if (m_game.GetTabbyGuy().GetTelefono().HaSim())
+	{
+		Telefono& tel = m_game.GetTabbyGuy().GetTelefono();
+		// Se ha una sim
+		if (tel.HaSim())
+		{
+			m_lblOperatoreAttuale->SetLabel("Operatore: " + tel.GetAbbonamento().GetNome());
+			m_lblCreditoAttuale->SetLabel("Credito: " + m_game.GetSoldiStr(tel.GetCredito()));
+		}
+		else
+		{
+			m_lblOperatoreAttuale->SetLabel("Nessuna SIM inserita");
+			m_lblCreditoAttuale->SetLabel("");
+		}
+	}
+	else
+	{
+		m_lblOperatoreAttuale->SetLabel("Non hai sim attive !");
+		m_lblCreditoAttuale->SetLabel("");
+	}
+
+	this->Fit();
+	this->Layout();
 }

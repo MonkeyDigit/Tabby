@@ -7,14 +7,14 @@ enum class Attivita { NESSUNA, PARCHEGGIATO, IN_GIRO, INGRIPPATO, INVASATO, SEQU
 class Scooter : public Acquistabile {
 public:
 	Scooter()
-		: Acquistabile{} 
-	{ Azzera(); }
+		: Acquistabile{}, m_fama{ 0 }, m_stato{ 0 }, m_attivita{Attivita::NESSUNA}, m_benza{0.f}, m_velocita{0}
+	{}
 
 	// TODO: CLASSE MARMITTA, CARBURATORE, CILINDRATA. FILTRO
 	// TODO: COMPLETA CONSTRUCTOR
 	Scooter(std::string nome, std::string desc, std::string img, long long prezzo, int fama, int stato, int velocita, float benza)
 		: Acquistabile{nome, desc, img, prezzo, CategoriaOggetto::SCOOTER },
-		m_fama{fama}, m_stato{stato}, m_velocita{velocita}, m_benza{benza}
+		m_fama{fama}, m_stato{stato}, m_velocita{velocita}, m_benza{benza}, m_attivita{Attivita::IN_GIRO}
 	{}
 
 	void IncStato(int punti) {
@@ -39,16 +39,7 @@ public:
 		}
 	}
 
-	void Azzera()
-	{
-		// TODO: QUESTO FUNZIONA?
-		Acquistabile();
-		m_stato = 0;
-		m_velocita = 0;
-		m_fama = 0;
-		m_prezzo = 0;
-		m_attivita = Attivita::NESSUNA;
-	}
+	void Azzera() { *this = Scooter{}; }
 	
 	int GetStato() const { return m_stato; }
 	int GetFama() const { return m_fama; }

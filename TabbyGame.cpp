@@ -1,7 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS // Senza questa mi fotte la funzione localtime
-#include <fstream>  // Gestione file
-#include <ctime>    // Per l'orario nel log
-#include <iomanip>  // Per formattare l'orario
+#include <fstream>              // Gestione file
+#include <ctime>                // Per l'orario nel log
+#include <iomanip>              // Per formattare l'orario
+#include <iostream>             // Per cerr (errori)
 #include "TabbyGame.h"
 
 Messaggio::Messaggio() {}
@@ -17,6 +18,7 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     m_tipoGiorno{ TipoGiorno::NORMALE },
     m_attesa{ATTESA_MAX}
 {
+    CaricaContenuti();
     WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
     // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
@@ -351,8 +353,8 @@ void TabbyGame::GestioneRelazioni()
                 m_tabbyGuy.LasciaTipa();
 
                 // TODO: Dialog la tipa ti molla - sesso m f
-                rnd = GenRandomInt(0, frasiSeparazione.size() - 1);
-                Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "La tipa ti molla...", frasiSeparazione[rnd], ""};
+                rnd = GenRandomInt(0, m_frasiSeparazione.size() - 1);
+                Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "La tipa ti molla...", m_frasiSeparazione[rnd], ""};
                 PushMessaggio(msg);
 
                 m_tabbyGuy.DecRep(11 - rnd);    // Quelle con numero più basso, sono peggiori...
@@ -443,10 +445,10 @@ void TabbyGame::GestioneEventiCasuali()
             // TODO: FEMMINA
 
             m_tabbyGuy.DecRep(caso);
-            int rndFrase = GenRandomInt(0, frasiMetallari.size() - 1);
-            int rndVia = GenRandomInt(0, vieStr.size() - 1);
+            int rndFrase = GenRandomInt(0, m_frasiMetallari.size() - 1);
+            int rndVia = GenRandomInt(0, m_vieStr.size() - 1);
 
-            Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Vieni pestato", Sostituisci(frasiMetallari[rndFrase],"{LUOGO}", vieStr[rndVia]), ""};
+            Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Vieni pestato", Sostituisci(m_frasiMetallari[rndFrase],"{LUOGO}", m_vieStr[rndVia]), ""};
             PushMessaggio(msg);
             // DEBUG LOG
             WriteLog("GestioneEventiCasuali: Metallaro n. " + std::to_string(rndFrase));
@@ -508,8 +510,8 @@ void TabbyGame::GestioneEventiCasuali()
 
             m_tabbyGuy.DecFama(2);
 
-            int rndFrase = GenRandomInt(0, frasiFortuna.size() - 1);
-            Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Sei fortunato...", frasiFortuna[rndFrase], ""};
+            int rndFrase = GenRandomInt(0, m_frasiFortuna.size() - 1);
+            Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Sei fortunato...", m_frasiFortuna[rndFrase], ""};
             PushMessaggio(msg);
             // DEBUG LOG
             WriteLog("GestioneEventiCasuali: Evento riguardante la figosità...");
@@ -520,9 +522,9 @@ void TabbyGame::GestioneEventiCasuali()
             if (m_tipoGiorno == TipoGiorno::NORMALE)
             {
                 int rndMat = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size() - 1);
-                int rndFrase = GenRandomInt(0, frasiScuola.size() - 1);
+                int rndFrase = GenRandomInt(0, m_frasiScuola.size() - 1);
                 Materia& mat = m_tabbyGuy.GetScuola().m_materie[rndMat];
-                Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Scuola", Sostituisci(frasiScuola[rndFrase],"{MATERIA}",mat.GetNome()), ""};
+                Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Scuola", Sostituisci(m_frasiScuola[rndFrase],"{MATERIA}",mat.GetNome()), ""};
                 PushMessaggio(msg);
 
                 mat.DecVoto(2);
@@ -1003,7 +1005,7 @@ const QuizScheda& TabbyGame::AssegnaQuiz()
 Tipa TabbyGame::GeneraTipa()
 {
     int fama = GenRandomInt(30, 100);
-    std::string nome = nomiTipe[GenRandomInt(0, nomiTipe.size() - 1)];
+    std::string nome = m_nomiTipe[GenRandomInt(0, m_nomiTipe.size() - 1)];
     return Tipa{ nome, fama };
 }
 
@@ -1035,8 +1037,8 @@ void TabbyGame::AzioneProvaci(const Tipa& tipa)
         m_tabbyGuy.DecFama(2);
 
         // TODO: CARICA MESSAGGIO SPECIALE TIPA
-        int rnd = GenRandomInt(0, frasiSfighe.size() - 1);
-        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Due di picche", frasiSfighe[rnd], "" };
+        int rnd = GenRandomInt(0, m_frasiSfighe.size() - 1);
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Due di picche", m_frasiSfighe[rnd], "" };
         PushMessaggio(msg);
         // TODO: IMPLEMENTA LISTA FRASI
     }
@@ -1126,6 +1128,66 @@ long long TabbyGame::ConvertiValuta(long long valoreBase) const
 		return valoreBase;
 
 	return (long long)(valoreBase * CAMBIO_EURO_LIRA);
+}
+
+// Funzione helper locale per rimuovere spazi o caratteri di a capo residui (es. \r su Windows)
+static void trimString(std::string& s) {
+    while (!s.empty() && (s.back() == '\r' || s.back() == '\n' || s.back() == ' ')) {
+        s.pop_back();
+    }
+}
+
+void TabbyGame::CaricaContenuti()
+{
+    std::ifstream file("dati/strings.txt");
+
+    if (!file.is_open())
+    {
+        WriteLog("ERRORE CRITICO: Impossibile trovare dati/strings.txt");
+        return;
+    }
+
+    std::string riga;
+    std::vector<std::string>* vettoreCorrente = nullptr; // Puntatore al vettore che stiamo riempiendo - ATTENZIONE: qua non posso usare la reference, perchè in C++ non possono essere riassegnate
+
+    while (std::getline(file, riga))
+    {
+        trimString(riga); // Pulisce spazi finali o \r
+
+        // Salta righe vuote
+        if (riga.empty()) continue;
+
+        // Se la riga inizia con '[' e finisce con ']', è un TAG (es. [METALLARI])
+        if (riga.front() == '[' && riga.back() == ']')
+        {
+            // Estrai il nome del tag (togli le parentesi)
+            std::string tag = riga.substr(1, riga.size() - 2);
+
+            // Selettore del vettore attivo
+            if (tag == "METALLARI")      vettoreCorrente = &m_frasiMetallari;
+            else if (tag == "SCUOLA")    vettoreCorrente = &m_frasiScuola;
+            else if (tag == "FORTUNA")   vettoreCorrente = &m_frasiFortuna;
+            else if (tag == "SFIGHE")    vettoreCorrente = &m_frasiSfighe;
+            else if (tag == "SEPARAZIONE") vettoreCorrente = &m_frasiSeparazione;
+            else if (tag == "PALESTRA")  vettoreCorrente = &m_frasiPalestra;
+            else if (tag == "SIGARETTE") vettoreCorrente = &m_frasiSigarette;
+            else if (tag == "NOMI_TIPE") vettoreCorrente = &m_nomiTipe;
+            else if (tag == "VIE")       vettoreCorrente = &m_vieStr;
+            else {
+                vettoreCorrente = nullptr; // Tag sconosciuto, ignora le righe successive
+                WriteLog("WARNING: Tag sconosciuto nel file frasi: " + tag);
+            }
+        }
+        else
+        {
+            // E' una frase
+            if (vettoreCorrente != nullptr)
+                vettoreCorrente->push_back(riga);
+        }
+    }
+
+    file.close();
+    WriteLog("Caricamento frasi completato da file unico.");
 }
 
 std::string TabbyGame::GetSoldiStr(long long valoreBase) const
@@ -1474,7 +1536,7 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
         const Sizze& sizze{ static_cast<const Sizze&>(prod) };
         m_tabbyGuy.IncSizze(20);
         m_tabbyGuy.IncFama(sizze.GetFama());
-        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "ART. 46 L. 29/12/1990 n. 428", frasiSigarette[GenRandomInt(0,frasiSigarette.size()-1)], "" };
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "ART. 46 L. 29/12/1990 n. 428", m_frasiSigarette[GenRandomInt(0, m_frasiSigarette.size()-1)], "" };
         PushMessaggio(msg);
     }
 
@@ -1512,8 +1574,8 @@ void TabbyGame::AzioneVaiPalestra()
     // AVVIENE L'EVENTO RANDOMICO
     if (rnd < 9)
     {
-        rnd = GenRandomInt(0, frasiPalestra.size() - 1);
-        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Palestra...", frasiPalestra[rnd], "" };
+        rnd = GenRandomInt(0, m_frasiPalestra.size() - 1);
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Palestra...", m_frasiPalestra[rnd], "" };
         PushMessaggio(msg);
 
         if (m_tabbyGuy.GetRep() > 10)

@@ -163,6 +163,29 @@ private:
 	// LOGICA MONETARIA
 	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
 	long long ConvertiValuta(long long valoreBase) const;
+
+    // CONTENUTI DI GIOCO
+    std::vector<Abbonamento> m_abbonamenti;
+    std::vector<Telefono> m_telefoni;
+    // TODO: CAMBIA FIGOSITA'
+    std::vector<Negozio> m_negozi;
+    std::vector<Disco> m_discoteche;
+    std::vector<Ditta> m_ditte;
+    std::vector<QuizScheda> m_schede;  // Quiz
+
+    // ------------------ TESTI MESSAGGI POPUP VARIABILI ---------------------------------------------------------------------
+    std::vector<FestaFissa> m_feste;
+    std::vector<std::string> m_nomiTipe;
+    std::vector<std::string> m_frasiSeparazione;
+    std::vector<std::string> m_frasiSfighe;
+    std::vector<std::string> m_frasiPalestra;
+    std::vector<std::string> m_frasiSigarette;
+    std::vector<std::string> m_frasiMetallari;
+    std::vector<std::string> m_frasiFortuna;
+    std::vector<std::string> m_frasiScuola;
+    std::vector<std::string> m_vieStr;
+
+    void CaricaContenuti();
 };
 
 // TODO: IMPOSTA LA FAMA DEI CELL
@@ -203,19 +226,6 @@ static const std::vector<Abbonamento> abbonamenti{
     {"Onmitel Pronto Italia", "", 50, {30, 55}},
     {"Delecom Italia Mobile", "", 50, {30, 55}},
     {"Vind", "", 50, {25, 50}}
-};
-
-static const std::vector<std::string> frasiPalestra{
-    "Guardi troppo a lungo la ragazza dell'istruttore di body-building e lui ti sacagna di botte.",
-    "Mentre attraversi un corridoio della palestra vieni travolto da una Cyclette impazzita.",
-    "Scopri di aver preso le pillole contro l'impotenza al posto degli anabolizzanti.",
-    "Un guasto alle tubature fa piovere merda dalla tua doccia...",
-    "Sollevando dei pesi, ti sbilanci e precipiti dalla finestra dietro le tue spalle.",
-    "Giochicciando con un bilancere, ti fracassi le palle.",
-    "Per un simpatico scherzo, il tuo armadietto viene dato alle fiamme.",
-    "Una ragazza ti guarda e ride per le vistose chiazze di sudore sotto le tue ascelle...",
-    "Dopo 5 Minuti di corsa cadi al suolo stremato...",
-    "Ti perdi per i meandri della tua palestra, solo l'intervento del guardiano notturno può salvarti."
 };
 
 // TODO: CAMBIA FIGOSITA'
@@ -291,76 +301,6 @@ static const std::vector<Negozio> negozi{
             new Sizze{"Winston", "Condensato: 11 Nicotina 0.9", "", 5, 0}
         }
     }
-};
-
-static const std::vector<std::string> frasiSigarette{
-  "Nuoce gravemente alla salute",
-  "Il fumo nuoce alle persone che vi circondano",
-  "Ogni anno il tabagismo fa più vittime degli incidenti stradali",
-  "Proteggete i bambini: non fate loro respirare il vostro fumo",
-  "Il fumo nuoce alle persone che vi circondano",
-  "Il fumo provoca malattie cardiovascolari",
-  "Donne incinte: il fumo nuoce alla salute del vostro bambino",
-  "Il fumo provoca il cancro"
-};
-
-static const std::vector<std::string> frasiSeparazione{
-"Sei sempre il solito ! Che bisogno c'è di gridare solo perchè sono andata a letto con un tuo amico ! Sei proprio un insensibile. Addio.",
-"Ho trovato un ragazzo che vale 1000 volte te, quindi, visto che sono una ragazza emancipata, ora ti lascio e mi metto con lui.",
-"Non bestemmi, non dici parolacce e non picchi i bambini. Sei proprio noioso...",
-"Sei la persona più spregievole che io abbia mai incontrato sulla faccia della terra. Spero che resteremo amici.",
-"Ci ho riflettuto a lungo... vaffanculo !",
-"Cioè zerella , mollami !",
-"Sono in un momento molto delicato della mia vita, in cui ho bisogno di tempo per fare delle scelte. Addio.",
-"Forse è meglio se non ci vediamo più per un po' di tempo...",
-"Capiscimi... devo prendere un po' di tempo per pensare al nostro futuro...",
-"Ti amo troppo per poter restare ancora insieme a te. Addio."
-};
-
-static const std::vector<std::string> frasiSfighe{
-    "Non ti caga nemmeno di striscio...",
-    "Mi dispiace...insomma, ho già il ragazzo.. ",
-    "Non vorrei offendere i tuoi sentimenti, ma mi fai proprio cagare...",
-    "Ti amo troppo ma non potrei mai riuscire a stare con te...",
-    "Sei la persona più spregevole che ho incontrato sulla faccia della terra...",
-    "Meglio morire che mettermi con uno come te...",
-    "Spero che tu stia scerzando... in caso contrario devo informati che il mio ragazzo è campione di lotta libera...",
-    "Vorrei tanto mettermi con te, davvero... ora però devo prendermi una pausa per riflettere, spero che tu mi capisca...",
-    "Sono già impegnata... se solo me lo avessi chiesto due giorni fa...",
-    "Mi dispiace ma non credo che tu sia il mio tipo... Il mio amore è alto, biondo con gli occhi azzurri...",
-    "No.",
-    "Sono appena uscita da una storia molto triste ed ora non mi fido più di voi uomini.",
-    "Voi uomini siete tutti stronzi... Chissà quante altre povere ragazze hai ingannato con il tuo sorrisetto di merda...",
-    "Cioè zerella... non ci sto dentro...",
-    "Mettermi con te ???? Ha,ha,ha !",
-    "Nooooooo !",
-    "Comincia a ritirati su i pantaloni...",
-    "Forse mi hai preso per la ragazza sbagliata...",
-    "Vai a farti fottere...",
-    "O, scusa, mi sono dimenticata di dirti che sono impegnata..."
-};
-
-static const std::vector<std::string> nomiTipe{
-"Marcella",
-"Giovanna",
-"Concetta",
-"Elisa",
-"Federica",
-"Ilaria",
-"Simona",
-"Assunta",
-"Maria",
-"Elena",
-"Margherita",
-"Giorgia",
-"Silvia",
-"Teresa",
-"Grazia",
-"Elisabetta",
-"Alessia",
-"Chiara",
-"Alessandra",
-"Rosa"
 };
 
 static const std::vector<Disco> discoteche{
@@ -651,90 +591,4 @@ static const std::vector<FestaFissa> feste{
     {8, 12, "Immacolata Concezione", "Oggi è festa"},
     {25, 12, "Natale", "Buon Natale !!!"},
     {26, 12, "Santo Stefano", "Buon Santo Stefano..."}
-};
-
-static const std::vector<std::string> frasiMetallari{
-    "Cerchi la rissa con un metallaro che passa in {LUOGO} e lui ti spacca tutte le ossa.",
-    "Incontri un metallaro in {LUOGO}, lo minacci e lui ti spacca tutte le ossa.",
-    "Insulti un gruppo di metallari che passano in {LUOGO} e uno di questi ti spacca le ossa.",
-    "Mentre cammini per {LUOGO} cerchi la rissa con un metallaro e lui ti spacca tutte le ossa.",
-    "Cerchi la rissa con un metallaro e lui ti spacca tutte le ossa.",
-    "Senza un preciso motivo, prendi per il culo un manovale che, essendo privo di senso dell'umorismo, ti fa a pezzi."
-};
-static const std::vector<std::string> frasiFortuna{
-    "Mentre cammini per il quartiere con la tua compagnia, un piccione ti caga in testa...",
-    "Cadi nel laghetto di Parco Sempione.",
-    "Mentre cammini per il quartiere con la tua compagnia, un cane ti piscia su una gamba...",
-    "Un attacco di diarrea ti costringe a restare a casa.",
-    "Bevi due bicchieri di birra e vomiti per tutta la sera.",
-    "Sei seduto al bar con i tuoi amici, passa una ragazza e fai dei commenti... Poi si gira e ti accorgi che è un uomo.",
-    "Sei fermo al semaforo, un TIR ti passa vicino e solleva un ondata di fango.",
-    "Ti perdi e non arrivi ad un appuntamento importante.",
-    "La televisione si rompe e perdi l'ultima puntata di Tabby News.",
-    "Qualcuno non apprezza il modo in cui sei vestito.",
-};
-static const std::vector<std::string> frasiScuola{
-    "Senza una precisa ragione, picchi il prof di {MATERIA}",
-    "Con lo scooter di un tuo amico, ti scontri contro la macchina del prof di {MATERIA}.",
-    "Sputi dalla finestra della tua classe e centri il prof di {MATERIA}.",
-    "Forse dovevi studiare di più {MATERIA}.",
-    "Non riesci a dire una parola durante l'interrogazione di {MATERIA}.",
-    "Offendi la moralità della madre del prof di {MATERIA}.",
-    "Ti sei dimenticato del compito in classe di {MATERIA}.",
-    "Non ti impegni abbastanza delle ore di {MATERIA}.",
-    "Non ti metti di impegno a studiare {MATERIA}.",
-    "Vai male in una interrogazione di {MATERIA}."
-};
-
-static const std::vector<std::string> vieStr{
-    "Via Lorenteggio",
-    "Corso Vercelli",
-    "Viale Papiniano",
-    "Via Forze Armate",
-    "Via Pontaccio",
-    "Via Padova",
-    "Via Porpora",
-    "Corso Buenos Aires",
-    "Viale Monza",
-    "Via Leoncavallo",
-    "Via Bagarotti",
-    "Via Viterbo",
-    "Via Fratelli Zoia",
-    "Via dei Ciclamini",
-    "Via Bassi",
-    "Viale Monte Ceneri",
-    "Viale Certosa",
-    "Via Lamarmora",
-    "Corso XII Marzo",
-    "Viale dei Mille",
-    "Via Goldoni",
-    "Via Melchiorre Gioia",
-    "Corso Lodi",
-    "Viale Umbria",
-    "Viale Puglie",
-    "Via Tertulliano",
-    "Viale Cassala",
-    "Viale Liguria",
-    "Viale Beatrice D'Este",
-    "Viale Filippetti",
-    "Viale Toscana",
-    "Viale Famagosta",
-    "Via La Spezia",
-    "Via Giambellino",
-    "Via Inganni",
-    "Via Savona",
-    "Viale Lomellina",
-    "Via Galileo Galilei",
-    "Viale Faenza",
-    "Viale Jenner",
-    "Via Fiuggi",
-    "Via Imbonati",
-    "Via Pio II",
-    "Viale Tunisia",
-    "Via Pergolesi",
-    "Via Sammartini",
-    "Via Primaticcio",
-    "Via Archimede",
-    "Corso Venezia",
-    "Via Karl Marx"
 };

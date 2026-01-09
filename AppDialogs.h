@@ -224,11 +224,11 @@ private:
 // Questa classe rappresenta la singola "Casella" o "Scheda" del prodotto
 class PnlProdotto : public wxPanel {
 public:
-	PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game, const Prodotto& prod);
+	PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game, const Acquistabile& prod);
 
 private:
 	TabbyGame& m_game;
-	Prodotto m_prodotto;
+	Acquistabile m_prodotto;
 	DlgNegozio* m_parentDlg; // Riferimento alla finestra padre per aggiornare i soldi
 
 	void OnCompra(wxCommandEvent& event);

@@ -3,23 +3,11 @@
 // TODO: INIZIALIZZA TELEFONO E ALTRI DATI
 TabbyGuy::TabbyGuy()
 	: m_soldi{ 10 }, m_paghetta{ 20 }, m_fama{ 0 }, m_rep{ 0 },
-	m_giubotto{TipoProd::GIUBBOTTO, "Giubbotto", "Giubbotto iniziale", "", 0, 0}, 
-	m_pantaloni{TipoProd::PANTALONI, "Pantaloni", "Pantalone iniziale", "", 0, 0},
-	m_scarpe{TipoProd::SCARPE, "Scarpe", "Scarpe iniziali", "", 0, 0}
-{
-
-	m_identita.m_nome = "Alfonso";
-	m_identita.m_cognome = "Signorini";
-	m_identita.m_dataNascita = Chrono::Date{ 1973, 8, 10 };
-	m_identita.m_attoNascita = "Atto n. 6333 P. 1 S. A";
-	m_identita.m_luogoNascita = "Cusano Milanino";
-	m_identita.m_provinciaNascita = "MI";
-	m_identita.m_cittadinanza = "Italiana";
-	m_identita.m_residenza = "Milano";
-	m_identita.m_indirizzo = "Via Bagarotti n.123";
-	m_identita.m_statoCivile = "Celibe";
-	m_identita.m_professione = "Sfruttato";
-}
+	m_giubotto{ TipoVestito::GIUBBOTTO, "Giubbotto", "Giubbotto iniziale", "", 0, 0 }, 
+	m_pantaloni{ TipoVestito::PANTALONI,"Pantaloni", "Pantaloni iniziali", "", 0, 0 }, 
+	m_scarpe{ TipoVestito::SCARPE, "Scarpe", "Scarpe iniziali", "", 0, 0 },
+	m_identita{"Alfonso", "Signorino", Chrono::Date(1973, 8, 10), "Atto n. 6333 P. 1 S. A.", "Cusano Milanino", "MI", "Italiana", "Milano", "Via Bagarotti n. 123", "Celibe", "Sfruttato" }
+{}	// TODO: CITTA E VIA RANDOM - TABBY VA INIZIALIZZATO IN TABBYGAME
 
 void TabbyGuy::SetRapporti(int rapporti)
 {
@@ -135,9 +123,9 @@ void TabbyGuy::Licenziati()
 	m_carriera.Azzera();
 }
 
-bool TabbyGuy::SetGiubbotto(const Prodotto& giubbotto)
+bool TabbyGuy::SetGiubbotto(const Vestito& giubbotto)
 {
-	if(giubbotto.GetTipoProd() != TipoProd::GIUBBOTTO)
+	if(giubbotto.GetTipoVestito() != TipoVestito::GIUBBOTTO)
 		return false;
 
 	m_giubotto = giubbotto;
@@ -145,9 +133,9 @@ bool TabbyGuy::SetGiubbotto(const Prodotto& giubbotto)
 	return true;
 }
 
-bool TabbyGuy::SetPantaloni(const Prodotto& pantaloni)
+bool TabbyGuy::SetPantaloni(const Vestito& pantaloni)
 {
-	if (pantaloni.GetTipoProd() != TipoProd::PANTALONI)
+	if (pantaloni.GetTipoVestito() != TipoVestito::PANTALONI)
 		return false;
 
 	m_pantaloni = pantaloni;
@@ -155,9 +143,9 @@ bool TabbyGuy::SetPantaloni(const Prodotto& pantaloni)
 	return true;
 }
 
-bool TabbyGuy::SetScarpe(const Prodotto& scarpe)
+bool TabbyGuy::SetScarpe(const Vestito& scarpe)
 {
-	if (scarpe.GetTipoProd() != TipoProd::SCARPE)
+	if (scarpe.GetTipoVestito() != TipoVestito::SCARPE)
 		return false;
 
 	m_scarpe = scarpe;

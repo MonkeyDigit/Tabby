@@ -6,7 +6,7 @@
 #include "Scuola.h"
 #include "Telefonino.h"
 #include "Carriera.h"
-#include "Prodotto.h"
+#include "Acquistabile.h"
 
 enum class Pelle {
 	ABBR_NO,
@@ -65,9 +65,9 @@ public:
 	// LAVORO
 	void Licenziati();
 	// VESTITI
-	bool SetGiubbotto(const Prodotto& giubbotto);	// Restituisce true se il prodotto è effettivamente un giubbotto
-	bool SetPantaloni(const Prodotto& pantaloni);
-	bool SetScarpe(const Prodotto& scarpe);
+	bool SetGiubbotto(const Vestito& giubbotto);	// Restituisce true se il prodotto è effettivamente un giubbotto
+	bool SetPantaloni(const Vestito& pantaloni);
+	bool SetScarpe(const Vestito& scarpe);
 	// ABBRONZATURA
 	void Abbronza();
 	void Sbianca();
@@ -92,9 +92,9 @@ public:
 	Scooter& GetScooter() { return m_scooter; };
 	Tipa& GetTipa() { return m_tipa; };
 	Telefono& GetTelefono() { return m_telefono; };
-	Prodotto& GetGiubotto() { return m_giubotto; };
-	Prodotto& GetPantaloni() { return m_pantaloni; };
-	Prodotto& GetScarpe() { return m_scarpe; };
+	Vestito& GetGiubotto() { return m_giubotto; };
+	Vestito& GetPantaloni() { return m_pantaloni; };
+	Vestito& GetScarpe() { return m_scarpe; };
 
 	// Funzione helper
 	bool HaUnLavoro() const { return !m_carriera.IsDisoccupato(); }
@@ -116,9 +116,9 @@ private:
 
 	// Qua potevo usare dei puntatori inizializzando lo scooter e la tipa a NULL, ma non voglio fare un puttanaio con destructor e magagne dei puntatori
 	CartaIdentita m_identita;
-	Prodotto m_giubotto;
-	Prodotto m_pantaloni;
-	Prodotto m_scarpe;
+	Vestito m_giubotto;
+	Vestito m_pantaloni;
+	Vestito m_scarpe;
 	Carriera m_carriera;
 	Scuola m_scuola;
 	Scooter m_scooter;

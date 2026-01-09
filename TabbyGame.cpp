@@ -455,7 +455,7 @@ void TabbyGame::GestioneEventiCasuali()
         }
         else if (11 <= caso && caso <= 20)   // SCOOTER
         {
-            if (m_tabbyGuy.GetScooter().GetStato() != -1 && m_tabbyGuy.GetScooter().GetAttivita() == Attivita::IN_GIRO)
+            if (m_tabbyGuy.HaScooter() && m_tabbyGuy.GetScooter().GetAttivita() == Attivita::IN_GIRO)
             {
                 if (m_tabbyGuy.GetTelefono().GetStato() > -1)
                 {
@@ -487,7 +487,7 @@ void TabbyGame::GestioneEventiCasuali()
 
                 if (m_tabbyGuy.GetScooter().GetStato() <= 0)
                 {
-                    m_tabbyGuy.GetScooter().Reset();
+                    m_tabbyGuy.GetScooter().Azzera();
                     Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Scooter Distrutto", "Quando ti rialzi ti accorgi che il tuo scooter è ormai ridotto a un ammasso di rottami", "" };
                     PushMessaggio(msg);
                     // DEBUG LOG
@@ -724,7 +724,7 @@ void TabbyGame::ApplicaScelta(MsgAzione msgAzione, bool sceltaYes)
             if (m_tabbyGuy.GetRep() > 10)
                 m_tabbyGuy.DecRep(2);
         }
-        m_tabbyGuy.GetScooter().DecBenzina(5);
+        m_tabbyGuy.GetScooter().DecBenza(5);
         // TODO: CalocolaVelocita
 
         NuovoGiorno();
@@ -1373,7 +1373,7 @@ void TabbyGame::AzioneEsciTipa()
     if (m_tabbyGuy.GetTipa().GetFama() > m_tabbyGuy.GetFama())
         m_tabbyGuy.IncFama(1);
 
-    m_tabbyGuy.GetScooter().DecBenzina(3);
+    m_tabbyGuy.GetScooter().DecBenza(3);
     // TODO: CALCOLA VELOCITA
 }
 
@@ -1406,12 +1406,12 @@ void TabbyGame::AzioneTelefonaTipa()
         m_tabbyGuy.IncRapporti(1);
 }
 
-bool TabbyGame::TriggerNegozio(TipoProd merce)
+bool TabbyGame::TriggerNegozio(CategoriaOggetto merce)
 {
     if (m_tipoGiorno == TipoGiorno::FESTIVO)
     {
         std::string str{};
-        if (merce == TipoProd::SIGARETTE)
+        if (merce == CategoriaOggetto::CONSUMABILE)
             str = "Rimani fisso a guardare la saracinesca del tabaccaio irrimediabilmente chiusa...";
         else
             str = "Oh, tipo... i negozi sono chiusi di festa...";
@@ -1425,21 +1425,19 @@ bool TabbyGame::TriggerNegozio(TipoProd merce)
 }
 
 // TODO: PASSARE NEGOZIO ??
-void TabbyGame::AzioneCompra(const Prodotto& prod)
+void TabbyGame::AzioneCompra(const Acquistabile& prod)
 {
     // TODO: IMPLEMENTA
 
     if (!m_tabbyGuy.SpendiSoldi(prod.GetPrezzo()))
     {
         std::string str{};
-        switch (prod.GetTipoProd())
+        switch (prod.GetCategoria())
         {
-        case TipoProd::GIUBBOTTO:
-        case TipoProd::PANTALONI:
-        case TipoProd::SCARPE:
+        case CategoriaOggetto::VESTITO:
             str = "Con cosa avresti intenzione di pagare, stronzetto ??? Caramelle ??? ";
             break;
-        case TipoProd::SIGARETTE:
+        case CategoriaOggetto::CONSUMABILE:
             str = "\"Vai fuori dal mio locale, brutto pezzente !\", esclama il tabaccaio con un'AK-47 in mano...";
             break;
         }
@@ -1450,28 +1448,34 @@ void TabbyGame::AzioneCompra(const Prodotto& prod)
         return;
     }
 
-    switch (prod.GetTipoProd())
+
+    if (prod.GetCategoria() == CategoriaOggetto::VESTITO)
     {
-    case TipoProd::GIUBBOTTO:
-        m_tabbyGuy.SetGiubbotto(prod);
-        m_tabbyGuy.IncFama(prod.GetFama());
-        break;
-    case TipoProd::PANTALONI:
-        m_tabbyGuy.SetPantaloni(prod);
-        m_tabbyGuy.IncFama(prod.GetFama());
-        break;
-    case TipoProd::SCARPE:
-        m_tabbyGuy.SetScarpe(prod);
-        m_tabbyGuy.IncFama(prod.GetFama());
-        break;
-    case TipoProd::SIGARETTE:
-    {
-        m_tabbyGuy.IncSizze(20);
-        m_tabbyGuy.IncFama(prod.GetFama());
-        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "ART. 46 L. 29/12/1990 n.428", frasiSigarette[GenRandomInt(0,frasiSigarette.size())], "" };
-        PushMessaggio(msg);
-        break;
+        // VIENE EFFETTUATO UN CAST STATICO PER REPERIRE LE INFORMAZIONI DEL VESTITO
+        const Vestito& v{ static_cast<const Vestito&>(prod) };
+        switch (v.GetTipoVestito())
+        {
+        case TipoVestito::GIUBBOTTO:
+            m_tabbyGuy.SetGiubbotto(v);
+            m_tabbyGuy.IncFama(v.GetFama());
+            break;
+        case TipoVestito::PANTALONI:
+            m_tabbyGuy.SetPantaloni(v);
+            m_tabbyGuy.IncFama(v.GetFama());
+            break;
+        case TipoVestito::SCARPE:
+            m_tabbyGuy.SetScarpe(v);
+            m_tabbyGuy.IncFama(v.GetFama());
+            break;
+        }
     }
+    else if (prod.GetCategoria() == CategoriaOggetto::CONSUMABILE)
+    {
+        const Sizze& sizze{ static_cast<const Sizze&>(prod) };
+        m_tabbyGuy.IncSizze(20);
+        m_tabbyGuy.IncFama(sizze.GetFama());
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "ART. 46 L. 29/12/1990 n. 428", frasiSigarette[GenRandomInt(0,frasiSigarette.size()-1)], "" };
+        PushMessaggio(msg);
     }
 
     WriteLog("AzioneCompra: acquista " + prod.GetNome() + " per " + GetSoldiStr(prod.GetPrezzo()));

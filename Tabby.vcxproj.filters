@@ -24,28 +24,13 @@
     <ClCompile Include="TabbyGuy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tipa.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scooter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Chrono.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Telefonino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AppDialogs.h">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="AppDialogs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scuola.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Disco.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,7 +65,7 @@
     <ClInclude Include="Disco.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Prodotto.h">
+    <ClInclude Include="Acquistabile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

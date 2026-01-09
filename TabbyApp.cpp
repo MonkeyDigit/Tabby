@@ -59,6 +59,9 @@
 // TODO: RICORDA DI METTERE LE MINI ICONE + ICONA GIOCO
 // TODO: SOSTITUISCI TUTTI I PULSANTI CHIUDI E ESCI CON OK
 // TODO: AGGIUNGI COSTRUTTORI DEFAULT
+// TODO: CHIAMA TUTTI I RESET AZZERA
+// TODO: SOSTITUISCI I -1 con 0
+// TODO: COSTRUTTORE DEFAULT ACQUISTABILE IN AZZERA() ???
 
 bool TabbyApp::OnInit()
 {
@@ -359,9 +362,9 @@ void TabbyFrame::AggiornaInterfaccia()
 	// Lo scooter viene mostrato solo se posseduto
 	if (m_game.GetTabbyGuy().HaScooter())
 	{
-		m_lblScooter->SetLabel(wxString::Format("< %s >\n< Stato scooter %d/100 >", guy.GetScooter().GetNome(), guy.GetScooter().GetEfficienza()));
+		m_lblScooter->SetLabel(wxString::Format("< %s >\n< Stato scooter %d/100 >", guy.GetScooter().GetNome(), guy.GetScooter().GetStato()));
 		m_barScooter->Show(true);
-		m_barScooter->SetValue(guy.GetScooter().GetEfficienza());
+		m_barScooter->SetValue(guy.GetScooter().GetStato());
 	}
 	else
 	{

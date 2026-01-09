@@ -126,14 +126,9 @@
     <ClCompile Include="AppDialogs.cpp" />
     <ClCompile Include="Chrono.cpp" />
     <ClCompile Include="AppDialogs.h" />
-    <ClCompile Include="Disco.cpp" />
-    <ClCompile Include="Scooter.cpp" />
-    <ClCompile Include="Scuola.cpp" />
     <ClCompile Include="TabbyApp.cpp" />
     <ClCompile Include="TabbyGame.cpp" />
     <ClCompile Include="TabbyGuy.cpp" />
-    <ClCompile Include="Telefonino.cpp" />
-    <ClCompile Include="Tipa.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chrono.h" />
@@ -146,7 +141,7 @@
     <ClInclude Include="TabbyGuy.h" />
     <ClInclude Include="Telefonino.h" />
     <ClInclude Include="Tipa.h" />
-    <ClInclude Include="Prodotto.h" />
+    <ClInclude Include="Acquistabile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -67,9 +67,12 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	wxFlexGridSizer* gridStats = new wxFlexGridSizer{ 2, 5, 10 }; // 2 Colonne, gap di 5px e 10px
 
 	AddStat(pnlStats, gridStats, "Velocità:", wxString::Format("%d km/h", scootref.GetVelocita()));
+	// TODO: COMPLETA
+	/*
 	AddStat(pnlStats, gridStats, "Cilindrata:", wxString::Format("%d cc", scootref.GetCilindrata()));
 	// scrivo %% per escapeare '%'
 	AddStat(pnlStats, gridStats, "Efficienza:", wxString::Format("%d %%", scootref.GetEfficienza()));
+	*/
 	AddStat(pnlStats, gridStats, "Benzina:", wxString::Format("%.2f l", scootref.GetBenza()));
 
 	sizerStats->Add(gridStats, 0, wxALIGN_CENTER | wxALL & ~wxTOP, 5);
@@ -1365,7 +1368,7 @@ void DlgElencoNegozi::OnTelefonino(wxCommandEvent& event)
 	this->AggiornaInterfaccia();
 }
 
-PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game, const Prodotto& prod)
+PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game, const Acquistabile& prod)
 	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED), // Altezza -1 = Auto
 	m_game(game), m_prodotto(prod), m_parentDlg(mainDlg)
 {
@@ -1394,7 +1397,7 @@ PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game,
 	bodySizer->Add(pnlIcon, 0, wxALL, 10);
 
 	// Descrizione
-	wxStaticText* lblDesc = new wxStaticText(this, wxID_ANY, m_prodotto.GetDesc());
+	wxStaticText* lblDesc = new wxStaticText(this, wxID_ANY, m_prodotto.GetDescrizione());
 	wxFont fDesc = lblDesc->GetFont();
 	fDesc.SetPointSize(10);
 	lblDesc->SetFont(fDesc);

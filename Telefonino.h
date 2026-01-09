@@ -1,49 +1,69 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "Acquistabile.h"
 
 class Abbonamento {
 public:
-	Abbonamento() {};
-	Abbonamento(std::string nome, long long attivazione, const std::vector<long long>& ricariche, std::string icon);
+	Abbonamento() : m_nome{ "" }, m_img{ "" }, m_attivazione { 0 }
+	{}
+
+	Abbonamento(std::string nome, std::string img, long long attivazione, const std::vector<long long>& ricariche)
+		: m_nome{ nome }, m_img{ img }, m_attivazione { attivazione }, m_ricariche{ ricariche }
+	{}
+
 	std::string GetNome() const { return m_nome; }
+	std::string GetImgStr() const { return m_img; }
 	long long GetCostoAttivazione() const { return m_attivazione; }
 	const std::vector<long long>& GetRicariche() const { return m_ricariche; }
 private:
 	std::string m_nome;
+	std::string m_img;
 	long long m_attivazione;
 	std::vector<long long> m_ricariche;
-	std::string m_icon;
 };
 
-class Telefono
-{
+class Telefono : public Acquistabile {
 public:
-	Telefono() {};
-	Telefono(std::string nome, std::string desc, long long prezzo, int fama, int stato, long long credito, const Abbonamento& abb, std::string icon);
-	std::string GetNome() const { return m_nome; }
-	std::string GetDesc() const { return m_desc; }
-	long long GetPrezzo() const { return m_prezzo; }
+	Telefono() : Acquistabile{}, m_fama{ 0 }, m_stato{ 0 }, m_credito{ 0 }, m_abb{}
+	{}
+
+	Telefono(std::string nome, std::string desc, std::string img, long long prezzo, int fama, int stato, long long credito, const Abbonamento& abb)
+		: Acquistabile{ nome, desc, img, prezzo, CategoriaOggetto::TELEFONO },
+		m_fama{fama}, m_stato{stato}, m_credito{credito}, m_abb{abb}
+	{}
+
 	int GetFama() const { return m_fama; }
 	int GetStato() const { return m_stato; }
 	long long GetCredito() const { return m_credito; }
 	Abbonamento& GetAbbonamento() { return m_abb; }
 
-	void SetAbbonamento(const Abbonamento& abb) { m_abb = abb; }
-	void IncStato(int punti);
-	void DecStato(int punti);
+	void IncStato(int punti) {
+		if (punti > 0) m_stato += punti;
+	}
+	void DecStato(int punti) {
+		if (punti > 0)
+		{
+			m_stato -= punti;
+			if (m_stato < 0) m_stato = 0;
+		}
+	}
 
-	void IncCredito(int punti);
-	void DecCredito(int punti);
+	void IncCredito(int punti) {
+		if (punti > 0) m_credito += punti;
+	}
+	void DecCredito(int punti) {
+		if (punti > 0)
+		{
+			m_credito -= punti;
+			if (m_credito < 0) m_credito = 0;
+		}
+	}
 
 	bool HaSim() const { return !m_abb.GetNome().empty(); }
 private:
-	std::string m_nome;
-	std::string m_desc;
-	long long m_prezzo;
-	int m_fama;	// figosità
+	int m_fama;
 	int m_stato;
 	long long m_credito;
 	Abbonamento m_abb;
-	std::string m_icon;
 };

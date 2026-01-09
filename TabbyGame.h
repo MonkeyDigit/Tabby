@@ -63,7 +63,6 @@ struct FestaFissa {
 struct Negozio {
     std::string m_nome;
     CategoriaOggetto m_merce;
-    // TODO: DESTRUCTOR NECESSARIO ???
     std::vector<Acquistabile*> m_catalogo;  // ATTENZIONE !!! Siccome Acquistabile è una classe base, è di vitale importanza utilizzare dei puntatori, perchè se mettessi la variabile intera, nel momenti in cui inserisci acquistabili di diverso tipo, il vettore troncherebbe le informazioni aggiuntive della classe figlia
 };
 

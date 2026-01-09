@@ -1,0 +1,55 @@
+# FORMATO: [NEGOZIO] | Nome | Categoria (0=Gen, 1=Vest, 2=Tel, 3=Cons, 4=Scooter 5=Scooter Part)
+# ITEM | VESTITO | Tipo (0=Giu,1=Pan,2=Sca) | Nome | Desc | Img | Prezzo | Fama
+# ITEM | SIZZE   | Nome | Desc | Img | Prezzo | Fama
+
+[NEGOZIO]|Bau House|1
+ITEM|VESTITO|0|Giubbotto Fatiscenza OG|Giubbotto originale "Fatiscenza", elegante e raffinato, è adatto a tutte le occasioni, dalla serata con gli amici, alle feste più esclusive.|img/giubbotti/fatiscenza_og.png|175|30
+ITEM|VESTITO|0|Giubbotto Fatiscenza NEW|Giubbotto "Fatiscenza", nella sua nuova versione, per essere sempre in linea con i tempi che cambiano.|img/giubbotti/fatiscenza_new.png|190|65
+ITEM|VESTITO|0|Giubbotto Ricercato|Ecco qualcosa per i più ricercati! Come può mancare nell'armadio un vestito come questo ??? Compratelo subito, non ve ne pentirete.|img/giubbotti/ricercato.png|150|90
+
+[NEGOZIO]|Blue Riders|1
+ITEM|VESTITO|0|Giacca di pelle|Giacca di pelle... cos'altro dire ?|img/giubbotti/pelle.png|125|40
+ITEM|VESTITO|0|Fatiscenza Green|Giubbotto "Fatiscenza" Green Line*, per tutti quelli che possono permetterselo.|img/giubbotti/green.png|190|60
+ITEM|VESTITO|0|Fatiscenza White|"Fatiscenza White" con una comoda imbottitura in piumino sintetico*, è adatto per tutte le stagioni. *Tutti i giubbotti della linea "Fatiscenza" sono fatti con materiali altamente infiammabili.|img/giubbotti/white.png|210|75
+
+[NEGOZIO]|Zoccolaro|1
+ITEM|VESTITO|1|Pantaloni Gessati|Pantaloni gessati stile anni '30, comunque sono tornati di moda ed ogni zarro che si rispetti doverebbe averne un paio.|img/pantaloni/gessati.png|45|45
+ITEM|VESTITO|1|Pantaloni Firmati|Pantaloni per il tempo libero firmati da una delle marche più prestigiose e costose di abbigliamento sportivo.|img/pantaloni/firmati.png|85|75
+ITEM|VESTITO|1|Pantaloni Reciclati|Pantaloni realizzati da uno dei più eccentrici e stravaganti stilisti del momento utilizzando fibra di bottiglie di plastica reciclate.|img/pantaloni/reciclati.png|125|60
+ITEM|VESTITO|1|Pantaloni Scacchiera|Hai sempre sognato di essere una scacchiera ??? Eccoti accontentato ! Realizzati in 100% acrilico.|img/pantaloni/scacchiera.png|95|50
+
+[NEGOZIO]|Footsmocker|1
+ITEM|VESTITO|2|Scarpe Old Style|Comode ed eleganti, dalla linea Old style, se avete un po' di soldi da buttare, dovete assolutemente comprarle.|img/scarpe/oldstyle.png|60|50
+ITEM|VESTITO|2|Scarpe Scomode|Il massimo della tendenza per i giovani d'oggi ! Queste scarpe, scomode e brutte, fanno sicuramente per voi !|img/scarpe/scomode.png|110|70
+ITEM|VESTITO|2|Scarpe Rialzate|Volete essere alla moda spendendo poco ??? Queste scarpe rialzate con mattoni forati sono quello che ci vuole per voi !|img/scarpe/rialzate.png|45|20
+
+[NEGOZIO]|Footsmocker II|1
+ITEM|VESTITO|2|Scarpe Design|Stile e semplicità in una scarpa dal design moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.|img/scarpe/design.png|75|80
+ITEM|VESTITO|2|Scarpe Prugna|Come poteva mancare il massimo della tendenza per i giovani d'oggi nella nuova colorazione Prugna?|img/scarpe/prugna.png|120|90
+ITEM|VESTITO|2|Scarpe Tendenza|E per chi volesse osare ancora di più, ecco la nuova colorazione Tendenza, per non passare inosservati.|img/scarpe/tendenza.png|90|100
+
+[NEGOZIO]|Bar Tabacchi|3
+ITEM|SIZZE|Barclay|Condensato: 5 Nicotina: 0.5|img/sizze/barclay.png|6|2
+ITEM|SIZZE|Camel|Condensato: 8 Nicotina: 0.7|img/sizze/camel.png|6|1
+ITEM|SIZZE|Davidoff Superior Lights|These carefully selected tobaccos have been skillfully blended to assure your pleasure. Condensato: 7 Nicotina: 0.6|img/sizze/davidoff.png|6|2
+ITEM|SIZZE|Davidoff Mildnes|Condensato: 7 Nicotina: 0.6|img/sizze/davidoff.png|6|2
+ITEM|SIZZE|Davidoff Classic|Condensato: 13 Nicotina: 0.9|img/sizze/davidoff.png|6|2
+ITEM|SIZZE|Diana Blu|Specially mild. Condensato: 9 Nicotina 0.7|img/sizze/diana_blu.png|5|1
+ITEM|SIZZE|Diana Rosse|King size filter. Condensato: 12 Nicotina 0.9|img/sizze/diana_rosse.png|5|1
+ITEM|SIZZE|Dunhill Lights|Condensato: 8 Nicotina 0.7|img/sizze/dunhill.png|6|0
+ITEM|SIZZE|Merit|Condensato: 7 Nicotina 0.5|img/sizze/merit.png|6|0
+ITEM|SIZZE|Gauloises Blu|Condensato: 14 Nicotina 1.0|img/sizze/gauloises_blu.png|6|0
+ITEM|SIZZE|Gauloises Rosse|Condensato: 7 Nicotina 0.6|img/sizze/gauloises_rosse.png|6|0
+ITEM|SIZZE|Unlucky Strike|Unluckies are a blend of the finest american, turkish and other choice tobaccos. Condensato: 13 Nicotina 1.0|img/sizze/lucky.png|6|1
+ITEM|SIZZE|Unlucky Strike Lights|Condensato: 9 Nicotina 0.7|img/sizze/lucky_light.png|6|1
+ITEM|SIZZE|Malborro Medium|Condensato: 8 Nicotina 0.6|img/sizze/marlboro.png|6|2
+ITEM|SIZZE|Malborro Rosse|Condensato: 12 Nicotina 0.9|img/sizze/marlboro.png|6|2
+ITEM|SIZZE|Malborro Lights|Condensato: 8 Nicotina 0.6|img/sizze/marlboro.png|6|2
+ITEM|SIZZE|NS Rosse|Condensato: 11 Nicotina 1.0|img/sizze/ns.png|5|0
+ITEM|SIZZE|NS Mild|Condensato: 9 Nicotina 0.9|img/sizze/ns.png|5|0
+ITEM|SIZZE|Poll Mon Blu|Famous american cigarettes. Condensato: 9 Nicotina 0.7|img/sizze/pallmall.png|5|1
+ITEM|SIZZE|Poll Mon Rosse|Famous american cigarettes. Condensato: 12 Nicotina 0.9|img/sizze/pallmall.png|5|1
+ITEM|SIZZE|Philip Morris|Condensato: 12 Nicotina 1.0|img/sizze/philip.png|6|2
+ITEM|SIZZE|Philip Morris Super Light|Condensato: 4 Nicotina 0.4|img/sizze/philip.png|6|2
+ITEM|SIZZE|Armadis|Armadis contains an original blend of selected Burley. Condensato: 10 Nicotina 0.9|img/sizze/armadis.png|5|1
+ITEM|SIZZE|Winston|Condensato: 11 Nicotina 0.9|img/sizze/winston.png|5|0

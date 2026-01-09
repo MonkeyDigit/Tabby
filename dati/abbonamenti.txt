@@ -1,0 +1,4 @@
+# FORMATO: Nome | Img | CostoFisso | CostoVariabile1 | CostoVariabile2
+Onmitel Pronto Italia||50|30|55
+Delecom Italia Mobile||50|30|55
+Vind||50|25|50

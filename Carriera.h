@@ -81,11 +81,11 @@ private:
 
 struct QuizDomanda {
     std::string m_testo;
-    std::string m_risposte[3];
+    std::vector<std::string> m_risposte;
 };
 
 struct QuizScheda {
     std::string m_titolo;
     std::string m_intro;
-    QuizDomanda m_domande[3];
+    std::vector<QuizDomanda> m_domande;
 };

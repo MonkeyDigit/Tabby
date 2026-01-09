@@ -802,6 +802,7 @@ DlgElencoDitte::DlgElencoDitte(wxWindow* parent, TabbyGame& game)
 	m_lista->InsertColumn(2, "Fatturato", wxLIST_FORMAT_RIGHT);
 
 	// Riempiamo la lista
+	std::vector<Ditta>& ditte = m_game.GetDitte();
 	for (int i = 0; i < ditte.size(); i++)
 	{
 		const Ditta& d = ditte[i];
@@ -872,7 +873,7 @@ DlgElencoDitte::DlgElencoDitte(wxWindow* parent, TabbyGame& game)
 void DlgElencoDitte::OnDittaSelezionata(wxListEvent& event)
 {
 	long dittaIndex = event.GetItem().GetData();
-
+	std::vector<Ditta>& ditte = m_game.GetDitte();
 	if (dittaIndex >= 0 && dittaIndex < ditte.size())
 	{
 		// Creiamo e mostriamo la finestra INFO (senza offerta lavoro)
@@ -978,6 +979,7 @@ DlgDisco::DlgDisco(wxWindow* parent, TabbyGame& game)
 	wxBoxSizer* sizerLocali = new wxBoxSizer{ wxVERTICAL };
 
 	// Creiamo i radio button dinamicamente
+	std::vector<Disco>& discoteche = m_game.GetDiscoteche();
 	for (int i = 0; i < discoteche.size(); i++)
 	{
 		// wxRB_GROUP solo al primo, ma vogliamo deselezionarli all'inizio
@@ -1052,7 +1054,7 @@ void DlgDisco::OnRadioSelect(wxCommandEvent& event)
 {
 	if (m_selectedIndex < 0) return;
 
-	const Disco& d = discoteche[m_selectedIndex];
+	const Disco& d = m_game.GetDiscoteche()[m_selectedIndex];
 
 	// Aggiorna Descrizione
 	m_lblDescrizione->SetLabel(d.m_descrizione);
@@ -1075,7 +1077,7 @@ void DlgDisco::OnOk(wxCommandEvent& event)
 		return;
 	}
 
-	const Disco& d = discoteche[m_selectedIndex];
+	const Disco& d = m_game.GetDiscoteche()[m_selectedIndex];
 	// Chiama la funzione logica che hai già in TabbyGame
 	m_game.AzionePagaDisco(m_selectedIndex);
 	ManifestaEventi(this, m_game);
@@ -1296,12 +1298,13 @@ DlgElencoNegozi::DlgElencoNegozi(wxWindow* parent, TabbyGame& game)
 	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
 	sizerBody->AddSpacer(5);
 	// BOTTONI NEGOZI
+	std::vector<Negozio>& negozi = m_game.GetNegozi();
 	for (int i = 0; i < negozi.size(); i++)
 	{
 		wxButton* btnNegozio = new wxButton{ pnlBody, wxID_ANY, negozi[i].m_nome, wxDefaultPosition, wxSize(-1, 40), wxEXPAND};
 		// Sfruttiamo una funzione lambda per associare in modo dinamico il bottone al negozio selezionato
 		sizerBody->Add(btnNegozio, 0, wxEXPAND | wxRIGHT | wxLEFT, 5);
-		btnNegozio->Bind(wxEVT_BUTTON, [this, i](wxCommandEvent&) {
+		btnNegozio->Bind(wxEVT_BUTTON, [this, negozi, i](wxCommandEvent&) {
 
 			if(m_game.TriggerNegozio(negozi[i].m_merce))
 			{

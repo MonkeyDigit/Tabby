@@ -1,0 +1,4 @@
+# FORMATO: Nome | Descrizione | Immagine | Prezzo | Batteria | Ricezione
+Motorolo D170|Libertà, versatilità e sicurezza di comunicazione a prezzo giusto, queste le caratteristiche del telefono cellulare GSM Motorolo d170.|img/tel_d170.png|150|100|0
+Motorolo Macro TAC 8900|DUAL BAND 900/1800 Motorolo Macro Tac 8900 è il primo telefono cellulare in commercio in grado di passare automaticamente dalla banda di frequenza GSM 900 alla banda GSM 1800.|img/tel_8900.png|150|100|0
+Motorolo 8700|Lo stile è classico e inconfondibile ma le prestazioni sono interamente rinnovate e di altissimo livello. Motorolo 8700 consente un'autonomia di conversazione sorprendente (ben 9 mesi!) e un tempo di standby fino a 135 anni.|img/tel_8700.png|150|100|0

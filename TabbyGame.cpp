@@ -3,6 +3,7 @@
 #include <ctime>                // Per l'orario nel log
 #include <iomanip>              // Per formattare l'orario
 #include <iostream>             // Per cerr (errori)
+#include <sstream>
 #include "TabbyGame.h"
 
 Messaggio::Messaggio() {}
@@ -18,7 +19,15 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     m_tipoGiorno{ TipoGiorno::NORMALE },
     m_attesa{ATTESA_MAX}
 {
-    CaricaContenuti();
+    CaricaStringhe();
+    CaricaAbbonamenti();
+    CaricaDiscoteche();
+    CaricaDitte();
+    CaricaFeste();
+    CaricaNegozi();
+    CaricaQuiz();
+    CaricaTelefoni();
+
     WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
     // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
@@ -254,7 +263,7 @@ void TabbyGame::AvanzaCalendario()
         m_tipoGiorno = TipoGiorno::FESTIVO;
 
     // Cicla eventi delle feste fisse
-    for (const auto& festa : feste)
+    for (const auto& festa : m_feste)
     {
         if (m_date.GetMonth() == (Chrono::Month)festa.m_mese && m_date.GetDay() == festa.m_giorno)
         {
@@ -986,8 +995,8 @@ void TabbyGame::AzioneChiediSoldi()
 // TODO: POSSIBILE CASINO DI DISTRUZIONE DELLA VARIABILE?
 const Ditta& TabbyGame::ProponiDitta()
 {
-    int indiceLavoro = GenRandomInt(0, ditte.size() - 1);
-    return ditte[indiceLavoro];
+    int indiceLavoro = GenRandomInt(0, m_ditte.size() - 1);
+    return m_ditte[indiceLavoro];
 }
 
 void TabbyGame::AzioneRifiutaProposta()
@@ -998,8 +1007,8 @@ void TabbyGame::AzioneRifiutaProposta()
 
 const QuizScheda& TabbyGame::AssegnaQuiz()
 {
-    int rnd = GenRandomInt(0, schede.size() - 1);
-    return schede[rnd];
+    int rnd = GenRandomInt(0, m_schede.size() - 1);
+    return m_schede[rnd];
 }
 
 Tipa TabbyGame::GeneraTipa()
@@ -1137,7 +1146,7 @@ static void trimString(std::string& s) {
     }
 }
 
-void TabbyGame::CaricaContenuti()
+void TabbyGame::CaricaStringhe()
 {
     std::ifstream file("dati/strings.txt");
 
@@ -1188,6 +1197,303 @@ void TabbyGame::CaricaContenuti()
 
     file.close();
     WriteLog("Caricamento frasi completato da file unico.");
+}
+
+
+std::vector<std::string> SplitString(const std::string& s, char delimiter) {
+    std::vector<std::string> tokens;
+    std::string token;
+    std::istringstream tokenStream(s);
+    while (std::getline(tokenStream, token, delimiter)) {
+        // Rimuovi eventuali spazi bianchi iniziali/finali
+        tokens.push_back(token);
+    }
+    return tokens;
+}
+
+// Helper per convertire stringa in enum/int senza impazzire con le eccezioni
+int ParseInt(const std::string& s) {
+    try { return std::stoi(s); }
+    catch (...) { return 0; }
+}
+long long ParseLong(const std::string& s) {
+    try { return std::stoll(s); }
+    catch (...) { return 0; }
+}
+
+void TabbyGame::CaricaAbbonamenti()
+{
+    m_abbonamenti.clear();
+    std::ifstream file("dati/abbonamenti.txt");
+    if (!file.is_open()) return;
+
+    std::string riga;
+    while (std::getline(file, riga))
+    {
+        trimString(riga);
+        if (riga.empty() || riga[0] == '#') continue;
+
+        auto tokens = SplitString(riga, '|');
+        // FORMATO: Nome | Img | CostoFisso | CostoVariabile1 | CostoVariabile2
+        if (tokens.size() >= 5)
+        {
+            std::string nome = tokens[0];
+            std::string img = tokens[1];
+            long long fisso = ParseLong(tokens[2]);
+            long long var1 = ParseLong(tokens[3]);
+            long long var2 = ParseLong(tokens[4]);
+
+            // Costruttore: Nome, Img, CostoAttivazione, VectorRicariche
+            Abbonamento abb(nome, img, fisso, { var1, var2 });
+            m_abbonamenti.push_back(abb);
+        }
+    }
+}
+
+void TabbyGame::CaricaDiscoteche() {
+    m_discoteche.clear();
+    std::ifstream file("dati/discoteche.txt");
+    if (!file.is_open()) { WriteLog("ERR: discoteche.txt missing"); return; }
+
+    std::string riga;
+    while (std::getline(file, riga)) {
+        trimString(riga);
+        if (riga.empty() || riga[0] == '#') continue; // Salta commenti e vuote
+
+        auto tokens = SplitString(riga, '|');
+        if (tokens.size() >= 8) {
+            Disco d;
+            d.m_nome = tokens[0];
+            d.m_descrizione = tokens[1];
+            d.m_giornoChiuso = (Chrono::WeekDay)ParseInt(tokens[2]);
+            d.m_fuoriPorta = (bool)ParseInt(tokens[3]);
+            d.m_reqFama = ParseInt(tokens[4]);
+            d.m_prezzoIngresso = ParseLong(tokens[5]);
+            d.m_incFama = ParseInt(tokens[6]);
+            d.m_incRep = ParseInt(tokens[7]);
+
+            m_discoteche.push_back(d);
+        }
+    }
+}
+
+void TabbyGame::CaricaDitte() {
+    m_ditte.clear();
+    std::ifstream file("dati/ditte.txt");
+    std::string riga;
+
+    while (std::getline(file, riga)) {
+        trimString(riga);
+        if (riga == "[DITTA]") {
+            Ditta d;
+
+            // Riga 1: Dati Base
+            if (!std::getline(file, riga)) break;
+            auto tokens = SplitString(riga, '|');
+            if (tokens.size() < 3) continue;
+
+            d.m_nome = tokens[0];
+            d.m_sede = tokens[1];
+            d.m_fatturato = ParseLong(tokens[2]);
+
+            // Riga 2: Offerta
+            if (!std::getline(file, riga)) break;
+            auto offTokens = SplitString(riga, '|');
+            if (offTokens.size() >= 3) {
+                d.m_offerta.m_descrizione = offTokens[0];
+                d.m_offerta.m_accettaStr = offTokens[1];
+                d.m_offerta.m_rifiutaStr = offTokens[2];
+            }
+
+            // Riga 3: Presentazione
+            if (!std::getline(file, riga)) break;
+            d.m_presentazione = riga;
+
+            // Riga 4: Produzioni
+            if (!std::getline(file, riga)) break;
+            d.m_produzioni = riga;
+
+            m_ditte.push_back(d);
+        }
+    }
+}
+
+void TabbyGame::CaricaFeste()
+{
+    m_feste.clear();
+    std::ifstream file("dati/feste.txt");
+    if (!file.is_open()) return;
+
+    std::string riga;
+    while (std::getline(file, riga))
+    {
+        trimString(riga);
+        if (riga.empty() || riga[0] == '#') continue;
+
+        auto tokens = SplitString(riga, '|');
+        // FORMATO: Giorno | Mese | Nome | Messaggio
+        if (tokens.size() >= 4)
+        {
+            FestaFissa f;
+            f.m_giorno = ParseInt(tokens[0]);
+            f.m_mese = ParseInt(tokens[1]);
+            f.m_nome = tokens[2];
+            f.m_messaggio = tokens[3];
+            m_feste.push_back(f);
+        }
+    }
+}
+
+void TabbyGame::CaricaNegozi() {
+    // IMPORTANTE: Se usi puntatori grezzi nel vettore, devi prima pulirli!
+    // (Se hai il distruttore in Negozio come ti ho detto prima, basta clear())
+    m_negozi.clear();
+
+    std::ifstream file("dati/negozi.txt");
+    if (!file.is_open()) return;
+
+    Negozio* currentNegozio = nullptr;
+    std::string riga;
+
+    while (std::getline(file, riga)) {
+        trimString(riga);
+        if (riga.empty() || riga[0] == '#') continue;
+
+        auto tokens = SplitString(riga, '|');
+        if (tokens.empty()) continue;
+
+        // --- NUOVO NEGOZIO ---
+        if (tokens[0] == "[NEGOZIO]") {
+            Negozio n;
+            n.m_nome = tokens[1];
+            // Cast int -> Enum Categoria
+            n.m_merce = (CategoriaOggetto)ParseInt(tokens[2]);
+
+            m_negozi.push_back(n);
+            currentNegozio = &m_negozi.back(); // Puntiamo all'ultimo inserito
+        }
+        // --- ITEM (OGGETTO) ---
+        else if (tokens[0] == "ITEM" && currentNegozio != nullptr) {
+            std::string tipo = tokens[1];
+            Acquistabile* nuovoItem = nullptr;
+
+            if (tipo == "VESTITO" && tokens.size() >= 8) {
+                // ITEM|VESTITO|TipoVest|Nome|Desc|Img|Prezzo|Fama
+                TipoVestito tv = (TipoVestito)ParseInt(tokens[2]);
+                nuovoItem = new Vestito(tv, tokens[3], tokens[4], tokens[5], ParseLong(tokens[6]), ParseInt(tokens[7]));
+            }
+            else if (tipo == "SIZZE" && tokens.size() >= 7) {
+                // ITEM|SIZZE|Nome|Desc|Img|Prezzo|Fama
+                nuovoItem = new Sizze(tokens[2], tokens[3], tokens[4], ParseLong(tokens[5]), ParseInt(tokens[6]));
+            }
+            else if (tipo == "TEL" && tokens.size() >= 7) {
+                // TODO: CAMBIA
+            }
+
+            if (nuovoItem) {
+                currentNegozio->m_catalogo.push_back(nuovoItem);
+            }
+        }
+    }
+}
+
+void TabbyGame::CaricaQuiz()
+{
+    m_schede.clear();
+    std::ifstream file("dati/quiz.txt");
+    if (!file.is_open()) return;
+
+    std::string riga;
+    QuizScheda* currentQuiz = nullptr;
+
+    // Macchina a stati per parsare il quiz
+    enum State { FIND_QUIZ, READ_TITLE, READ_INTRO, READ_QUESTIONS };
+    State state = FIND_QUIZ;
+
+    while (std::getline(file, riga))
+    {
+        trimString(riga);
+        if (riga.empty()) continue;
+
+        if (riga == "[QUIZ]")
+        {
+            // Inizia nuova scheda
+            m_schede.push_back(QuizScheda{});
+            currentQuiz = &m_schede.back();
+            state = READ_TITLE;
+            continue;
+        }
+
+        if (currentQuiz == nullptr) continue;
+
+        if (state == READ_TITLE)
+        {
+            currentQuiz->m_titolo = riga;
+            state = READ_INTRO;
+        }
+        else if (state == READ_INTRO)
+        {
+            currentQuiz->m_intro = riga;
+            state = READ_QUESTIONS;
+        }
+        else if (state == READ_QUESTIONS)
+        {
+            // Cerchiamo [DOMANDA]|Testo
+            if (riga.find("[DOMANDA]|") == 0)
+            {
+                std::string testoDomanda = riga.substr(10); // Salta "[DOMANDA]|"
+
+                // Leggiamo subito la riga successiva per le risposte
+                std::string rigaRisposte;
+                if (std::getline(file, rigaRisposte))
+                {
+                    trimString(rigaRisposte);
+                    auto risposte = SplitString(rigaRisposte, '|');
+
+                    if (risposte.size() >= 3)
+                    {
+                        // Aggiunge la domanda alla scheda corrente
+                        // QuizDomanda { testo, vector<string> risposte }
+                        currentQuiz->m_domande.push_back({ testoDomanda, risposte });
+                    }
+                }
+            }
+        }
+    }
+}
+
+void TabbyGame::CaricaTelefoni()
+{
+    m_telefoni.clear();
+    std::ifstream file("dati/telefoni.txt");
+    if (!file.is_open()) return;
+
+    std::string riga;
+    while (std::getline(file, riga))
+    {
+        trimString(riga);
+        if (riga.empty() || riga[0] == '#') continue;
+
+        auto tokens = SplitString(riga, '|');
+        // FORMATO: Nome | Descrizione | Immagine | Prezzo | Batteria | Ricezione
+        if (tokens.size() >= 5)
+        {
+            // Nota: La classe Telefono non ha 'Ricezione' nel costruttore standard mostrato,
+            // ma ha 'Stato' (usiamo Batteria) e 'Credito' (iniziale 0).
+            // Fama inizializzata a 0 di default.
+
+            std::string nome = tokens[0];
+            std::string desc = tokens[1];
+            std::string img = tokens[2];
+            long long prezzo = ParseLong(tokens[3]);
+            int batteria = ParseInt(tokens[4]);
+            // int ricezione = ParseInt(tokens[5]); // Se decidessi di usarla in futuro
+
+            // Costruttore: Nome, Desc, Img, Prezzo, Fama, Stato, Credito, Abbonamento
+            Telefono t(nome, desc, img, prezzo, 0, batteria, 0, Abbonamento{});
+            m_telefoni.push_back(t);
+        }
+    }
 }
 
 std::string TabbyGame::GetSoldiStr(long long valoreBase) const
@@ -1335,7 +1641,7 @@ void TabbyGame::AzioneSciopera()
 
 void TabbyGame::AzionePagaDisco(int discoIndex)
 {
-    const Disco& disco = discoteche[discoIndex];
+    const Disco& disco = m_discoteche[discoIndex];
     if (m_date.GetWeekDay() == disco.m_giornoChiuso)
     {
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Giorno di chiusura", "Un cartello recita che oggi è il giorno di chiusura settimanale...", "" };

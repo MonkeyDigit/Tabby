@@ -1,0 +1,9 @@
+# FORMATO: Nome | Descrizione | GiornoChiusura (0=Lun..6=Dom) | FuoriPorta(0/1) | FamaReq | Prezzo | IncFama | IncRep
+Splush|Questo locale buio e spazioso si estende per circa 134.000 metri quadrati sotto la città. Di grande effetto con degli enormi tubi fognari che rallegrano l'ambiente. Chiuso il Lunedì.|0|0|20|30|15|2
+QB|Spaziosa discoteca di tendenza ricavata da un'antica stalla. Odori e sapori tipici di una volta; si balla tra vagonate di letame e mangime. A mezzanotte casola e cotiche per tutti. Chiuso il Giovedì|3|0|15|0|7|1
+Spoking|Da sempre nome di grande richiamo per modelle, modaioli, giovani della Milano bene, tabbozzi e non. Per chi ama gli ambienti modaioli. A due passi dalla discarica di Cerro Maggiore. Chiuso il Lunedì|0|0|16|0|8|1
+Madame Close|Elegante discobar e discoteca dove non mancano le sorprese. Ex bordello di periferio ora trasformato in un lussuoso bordello del centro storico. Selezione all'ingresso - Chiuso il Lunedì.|0|0|20|35|15|3
+Number 0|Che dire di questo storico locale? Meglio non dire niente... Chiuso il Mercoledì.|2|0|15|0|6|2
+Spuce|Il massimo dell'economico per il tabbozzo che non deve chiedere mai (ai genitori i soldi per comprare le sigarette). Chiuso il Martedì|1|0|10|0|5|2
+Honeywood|Locale di tendenza ispirato ad una acciaieria. All'interno tra altiforni e colate di acciao bollente, potete degustare ottimi piatti caraibici. Chiuso il Lunedì|0|0|16|0|8|3
+Strap Line|Discoteca fuori porta, con ampie terrazze dove si può ballare all'aperto ed una splendida vista sulle montagne innevate del bassopiano siberiano orientale. Autostrada del Brennero uscita Novosibirsk - Chiuso la Domenica.|6|1|20|0|9|2

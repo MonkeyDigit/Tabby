@@ -62,6 +62,7 @@
 // TODO: CHIAMA TUTTI I RESET AZZERA
 // TODO: SOSTITUISCI I -1 con 0
 // TODO: COSTRUTTORE DEFAULT ACQUISTABILE IN AZZERA() ???
+// TODO: HEADER UTILITY CON LE FUNZIONI DEFINITE NEI CPP
 
 bool TabbyApp::OnInit()
 {
@@ -101,6 +102,7 @@ TabbyFrame::TabbyFrame()
 	menuAttivita->Append(ID_FAMIGLIA, "Famiglia");
 	menuAttivita->Append(ID_TIPA, "Tipa");
 	// Negozi
+	std::vector<Negozio>& negozi = m_game.GetNegozi();
 	for (int i = 0; i < negozi.size(); i++)
 	{
 		// Aggiungiamo la voce al menu. 
@@ -111,7 +113,7 @@ TabbyFrame::TabbyFrame()
 		// 2. Bindiamo l'evento "al volo".
 		// Usiamo una lambda che cattura 'this' (per usare m_game) e 'i' (l'indice del negozio).
 		// Il bind viene fatto sull'ID specifico di questo item (item->GetId()).
-		this->Bind(wxEVT_MENU, [this, i](wxCommandEvent& evt) {
+		this->Bind(wxEVT_MENU, [this, negozi, i](wxCommandEvent& evt) {
 
 			if (m_game.TriggerNegozio(negozi[i].m_merce))
 			{

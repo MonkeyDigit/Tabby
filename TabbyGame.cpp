@@ -1852,6 +1852,7 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
             break;
         case CategoriaOggetto::SCOOTER:
             str = "Ti piacerebbe comprare lo scooter, vero ?\nPurtroppo, non hai abbastanza soldi...";
+            if (m_tabbyGuy.GetRep() > 3) m_tabbyGuy.DecRep(1);
             break;
         case CategoriaOggetto::SCOOTER_PART:
             str = "L'enorme meccanico ti afferra con una sola mano, ti riempie di pugni, e non esita a scaraventare te e il tuo motorino merdoso fuori dall'officina.";
@@ -1862,7 +1863,7 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
 
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non hai abbastanza soldi...", str, "" };
         PushMessaggio(msg);
-
+        // TODO: C'E' EVENTO !!!!
         return;
     }
 
@@ -1905,6 +1906,36 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
         m_tabbyGuy.GetTelefono().GetAbbonamento() = abb;
         m_tabbyGuy.GetTelefono().IncCredito(cred);
         m_tabbyGuy.IncFama(tel.GetFama());
+    }
+    else if (prod.GetCategoria() == CategoriaOggetto::SCOOTER)
+    {
+        // TODO: IMPLEMENTA
+        if (m_tabbyGuy.HaScooter())
+        {
+            long long rottam = 600;
+            Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Incentivi", "Per il tuo vecchio scooter da rottamare ti diamo "+GetSoldiStr(rottam)+" di supervalutazione...", ""};
+            PushMessaggio(msg);
+
+            m_tabbyGuy.GuadagnaSoldi(rottam);
+        }
+        
+        const Scooter& scooter{ static_cast<const Scooter&>(prod) };
+
+        m_tabbyGuy.GetScooter().Azzera();
+        m_tabbyGuy.GetScooter() = scooter;
+        m_tabbyGuy.GetScooter().SetBenza(2);
+        m_tabbyGuy.GetScooter().SetAttivita(Attivita::IN_GIRO);
+
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Lo scooter nuovo...", "Fai un giro del quartiere per farti vedere con lo scooter nuovo...", ""};
+        PushMessaggio(msg);
+
+        m_tabbyGuy.IncRep(4);
+        NuovoGiorno();
+        
+    }
+    else if (prod.GetCategoria() == CategoriaOggetto::SCOOTER_PART)
+    {
+        // TODO: IMPLEMENTA
     }
 
     WriteLog("AzioneCompra: acquista " + prod.GetNome() + " per " + GetSoldiStr(prod.GetPrezzo()));
@@ -2127,10 +2158,10 @@ void TabbyGame::AzioneUsaScooter()
             PushMessaggio(msg);
         }
         else
-            m_tabbyGuy.GetScooter().SetAttivita(Attivita::PARCHEGGIATO);
+            m_tabbyGuy.GetScooter().SetAttivita(Attivita::IN_GIRO);
     }
     else
-        m_tabbyGuy.GetScooter().SetAttivita(Attivita::IN_GIRO);
+        m_tabbyGuy.GetScooter().SetAttivita(Attivita::PARCHEGGIATO);
 }
 
 void TabbyGame::AzioneFaiBenza()

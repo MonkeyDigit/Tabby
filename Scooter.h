@@ -12,7 +12,7 @@ public:
 	{}
 
 	Pezzo(TipoPezzo tipo, std::string nome, std::string img, long long prezzo)
-		: Acquistabile{ nome, "", img, prezzo, CategoriaOggetto::SCOOTER}, m_tipo{tipo}
+		: Acquistabile{ nome, "", img, prezzo, CategoriaOggetto::SCOOTER_PART}, m_tipo{tipo}
 	{}
 
 	TipoPezzo GetTipo() const { return m_tipo; }

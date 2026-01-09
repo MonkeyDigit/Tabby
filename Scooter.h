@@ -44,6 +44,7 @@ public:
 		}
 	}
 
+	void SetBenza(int litri) { if (litri > 0) m_benza = litri; }
 	void IncBenza(int litri) {
 		if (litri > 0) m_benza += litri;
 	}
@@ -56,6 +57,8 @@ public:
 	}
 
 	void Azzera() { *this = Scooter{}; }
+	void Ripara() { m_stato = 100; }
+	void SetAttivita(Attivita a) { m_attivita = a; }
 	
 	int GetStato() const { return m_stato; }
 	int GetFama() const { return m_fama; }

@@ -74,15 +74,15 @@ ITEM|SCOOTER|Mizzubisci R200 Millenium|mizzubisci_r200_millenium.png|3360|15|100
 ITEM|PEZZO|1|Marmitta silenziosa|marmitta.png|210
 ITEM|PEZZO|1|Marmitta rumorosa|marmitta.png|260
 ITEM|PEZZO|1|Marmitta rumorosissima|marmitta.png|320
-ITEM|PEZZO|2|16/16|carburatore.png|155
-ITEM|PEZZO|2|19/19|carburatore.png|245
-ITEM|PEZZO|2|20/20|carburatore.png|340
-ITEM|PEZZO|2|24/24|carburatore.png|420
-ITEM|PEZZO|3|70cc|cilindro.png|105
-ITEM|PEZZO|3|90cc|cilindro.png|210
-ITEM|PEZZO|3|120cc|cilindro.png|420
-ITEM|PEZZO|3|150cc|cilindro.png|530
-ITEM|PEZZO|4|P1|filtro.png|30
-ITEM|PEZZO|4|P2|filtro.png|65
-ITEM|PEZZO|4|P2+|filtro.png|150
-ITEM|PEZZO|4|Extreme|filtro.png|230
+ITEM|PEZZO|2|Carburatore 16/16|carburatore.png|155
+ITEM|PEZZO|2|Carburatore 19/19|carburatore.png|245
+ITEM|PEZZO|2|Carburatore 20/20|carburatore.png|340
+ITEM|PEZZO|2|Carburatore 24/24|carburatore.png|420
+ITEM|PEZZO|3|Pistoni 70cc|cilindro.png|105
+ITEM|PEZZO|3|Pistoni 90cc|cilindro.png|210
+ITEM|PEZZO|3|Pistoni 120cc|cilindro.png|420
+ITEM|PEZZO|3|Pistoni 150cc|cilindro.png|530
+ITEM|PEZZO|4|Filtro dell'aria P1|filtro.png|30
+ITEM|PEZZO|4|Filtro dell'aria P2|filtro.png|65
+ITEM|PEZZO|4|Filtro dell'aria P2+|filtro.png|150
+ITEM|PEZZO|4|Filtro dell'aria Extreme|filtro.png|230

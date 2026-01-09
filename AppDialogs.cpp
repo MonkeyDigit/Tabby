@@ -96,13 +96,13 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	// BOTTONI IN BASSO A DESTRA
 	sizerStats->AddStretchSpacer();
 
-	wxButton* btnUsa = new wxButton(pnlStats, wxID_ANY, "Usa scooter", wxDefaultPosition, wxSize(350, 45));
+	m_btnUsa = new wxButton(pnlStats, wxID_ANY, "---", wxDefaultPosition, wxSize(350, 45));
 	wxButton* btnBenza = new wxButton(pnlStats, wxID_ANY, "Fai benza", wxDefaultPosition, wxSize(350, 45));
 
-	btnUsa->Bind(wxEVT_BUTTON, &DlgScooter::OnUsa, this);
+	m_btnUsa->Bind(wxEVT_BUTTON, &DlgScooter::OnUsa, this);
 	btnBenza->Bind(wxEVT_BUTTON, &DlgScooter::OnFaiBenza, this);
 
-	sizerStats->Add(btnUsa, 0, wxALIGN_CENTER_HORIZONTAL | wxALL & ~wxBOTTOM, 5);
+	sizerStats->Add(m_btnUsa, 0, wxALIGN_CENTER_HORIZONTAL | wxALL & ~wxBOTTOM, 5);
 	sizerStats->Add(btnBenza, 0, wxALIGN_CENTER_HORIZONTAL | wxALL & ~wxTOP, 5);
 
 	pnlStats->SetSizer(sizerStats);
@@ -115,7 +115,7 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	this->SetSizerAndFit(mainSizer);
 
 	// Popola tutti i testi
-	AggiornaInterfaccia();
+	this->AggiornaInterfaccia();
 }
 
 void DlgScooter::OnConcessionario(wxCommandEvent& event)
@@ -132,7 +132,12 @@ void DlgScooter::OnConcessionario(wxCommandEvent& event)
 
 void DlgScooter::OnTrucca(wxCommandEvent& event)
 {
-	m_game.AzioneTruccaScooter();
+	if (m_game.TriggerMeccanico())
+	{
+		DlgNegozio dlg{ this, m_game, m_game.GetMeccanico() };
+		dlg.ShowModal();
+	}
+
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
 }
@@ -181,6 +186,10 @@ void DlgScooter::AggiornaInterfaccia()
 	m_lblVelocita->SetLabel(wxString::Format("%d km/h", s.GetVelocita()));
 	m_lblBenza->SetLabel(wxString::Format("%.2f l", s.GetBenza()));
 	m_lblStato->SetLabel(wxString::Format("%d%%", s.GetStato()));
+	if (m_game.GetTabbyGuy().GetScooter().GetAttivita() != Attivita::PARCHEGGIATO)
+		m_btnUsa->SetLabel("Parcheggia scooter");
+	else
+		m_btnUsa->SetLabel("Usa scooter");
 
 	this->Layout();
 }

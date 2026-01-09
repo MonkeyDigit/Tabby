@@ -14,7 +14,7 @@ Messaggio::Messaggio(TipoMsg tipo, MsgAzione id, std::string titolo, std::string
 
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
 	: m_tabbyGuy{}, m_date{1991, 9, 16}, 
-    m_valutaCorrente{Valuta::LIRE}, 
+    m_valutaCorrente{Valuta::EURO}, 
     m_coolDownPestaggio{ 5 }, 
     m_tipoGiorno{ TipoGiorno::NORMALE },
     m_attesa{ATTESA_MAX}
@@ -26,9 +26,6 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     CaricaFeste();
     CaricaNegozi();
     CaricaQuiz();
-
-    // TODO: sistema telefonia
-    m_telefonia.m_merce = CategoriaOggetto::TELEFONO;
 
     WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
@@ -790,6 +787,23 @@ void TabbyGame::ApplicaScelta(MsgAzione msgAzione, bool sceltaYes)
         {
             Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Telefonino", "Allora vai a farti fottere, pirletta !", "" };
             PushMessaggio(msg);
+        }
+        break;
+
+    case MsgAzione::RIPARA_SCOOTER:
+        if (sceltaYes)
+        {
+            if (m_tabbyGuy.SpendiSoldi(m_costoRiparazione))
+            {
+                // TODO: SUONO
+                m_tabbyGuy.GetScooter().Ripara();
+                WriteLog("AzioneRiparaScooter: Paga riparazione " + GetSoldiStr(m_costoRiparazione));
+            }
+            else
+            {
+                Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non hai abbastanza soldi...", "L'enorme meccanico ti afferra con una sola mano, ti riempie di pugni, e non esita a scaraventare te e il tuo motorino merdoso fuori dall'officina.", "" };
+                PushMessaggio(msg);
+            }
         }
         break;
     }
@@ -1794,10 +1808,20 @@ bool TabbyGame::TriggerNegozio(CategoriaOggetto merce)
     if (m_tipoGiorno == TipoGiorno::FESTIVO)
     {
         std::string str{};
-        if (merce == CategoriaOggetto::CONSUMABILE)
+        switch (merce)
+        {
+        case CategoriaOggetto::CONSUMABILE:
             str = "Rimani fisso a guardare la saracinesca del tabaccaio irrimediabilmente chiusa...";
-        else
+            break;
+        case CategoriaOggetto::SCOOTER:
+            str = "Oh, tipo... oggi il concessionario è chiuso...";
+            break;
+        case CategoriaOggetto::SCOOTER_PART:
+            str = "Oh, tipo... oggi il meccanico è chiuso...";
+            break;
+        default:
             str = "Oh, tipo... i negozi sono chiusi di festa...";
+        }
 
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Torna a casa", str, "" };
         PushMessaggio(msg);
@@ -1826,6 +1850,14 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
         case CategoriaOggetto::TELEFONO:
             str = "Forse non ti sei accorto di non avere abbastanza soldi, stronzetto...";
             break;
+        case CategoriaOggetto::SCOOTER:
+            str = "Ti piacerebbe comprare lo scooter, vero ?\nPurtroppo, non hai abbastanza soldi...";
+            break;
+        case CategoriaOggetto::SCOOTER_PART:
+            str = "L'enorme meccanico ti afferra con una sola mano, ti riempie di pugni, e non esita a scaraventare te e il tuo motorino merdoso fuori dall'officina.";
+            break;
+        default:
+            str = "Te sei bruciato tutti i soldi, coglione...";
         }
 
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Non hai abbastanza soldi...", str, "" };
@@ -1833,7 +1865,6 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
 
         return;
     }
-
 
     if (prod.GetCategoria() == CategoriaOggetto::VESTITO)
     {
@@ -2058,22 +2089,86 @@ void TabbyGame::AzioneRicarica(long long taglio, std::string nomeOp)
     */
 }
 
-void TabbyGame::AzioneTruccaScooter()
-{
-    // TODO: IMPLEMENTA
-}
-
 void TabbyGame::AzioneRiparaScooter()
 {
-    // TODO: IMPLEMENTA
+    if (!m_tabbyGuy.HaScooter())
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Hai le allucinazioni ???", "Mi spieghi come fai a farti riparare lo scooter se manco ce l'hai ???", "" };
+        PushMessaggio(msg);
+        return;
+    }
+    else if (m_tabbyGuy.GetScooter().GetStato() == 100)
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ripara lo scooter", "Che motivi hai per voler riparare il tuo scooter visto ch è al 100% di efficienza ???", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    m_costoRiparazione = m_tabbyGuy.GetScooter().GetPrezzo() * 0.01 * (100 - m_tabbyGuy.GetScooter().GetStato()) + 10;
+
+    Messaggio msg{ TipoMsg::SCELTA, MsgAzione::RIPARA_SCOOTER, "Ripara scooter", "Vuoi riparare lo scooter per " + GetSoldiStr(m_costoRiparazione) + " ?", "" };
+    PushMessaggio(msg);
 }
 
 void TabbyGame::AzioneUsaScooter()
 {
-    // TODO: IMPLEMENTA
+    if (!m_tabbyGuy.HaScooter())
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ma che ???", "Mi spieghi come fai a parcheggiare lo scooter se manco ce l'hai ???", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    if (m_tabbyGuy.GetScooter().GetAttivita() != Attivita::IN_GIRO)
+    {
+        if (m_tabbyGuy.GetScooter().GetAttivita() != Attivita::PARCHEGGIATO)
+        {
+            Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ma che ???", "Mi spieghi come fai a parcheggiare lo scooter visto che è "+m_tabbyGuy.GetScooter().GetAttivitaStr(true), ""};
+            PushMessaggio(msg);
+        }
+        else
+            m_tabbyGuy.GetScooter().SetAttivita(Attivita::PARCHEGGIATO);
+    }
+    else
+        m_tabbyGuy.GetScooter().SetAttivita(Attivita::IN_GIRO);
 }
 
 void TabbyGame::AzioneFaiBenza()
 {
-    // TODO: IMPLEMENTA
+    if (!m_tabbyGuy.HaScooter())
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ma che ???", "Mi spieghi come fai a far benzina allo scooter se manco ce l'hai ???", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    long long costoBenza = 10;
+
+    if (!m_tabbyGuy.SpendiSoldi(costoBenza))
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Fai benzina", "Al distributore automatico puoi fare un minimo di "+GetSoldiStr(costoBenza)+" di benzina...", "" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    // TODO: IMPLEMENTA STA ROBA, GUARDA CODICE SORGENTE
+    // 85 litri, per la macchinina un po' figa...
+    /*
+    if(m_tabbyGuy.GetScooter().GetCilindrata() = 5)
+        setbenza 85 litri
+    */
+    m_tabbyGuy.GetScooter().SetBenza(5);
+    // TODO: CALCOLA VELOCITA
+}
+
+bool TabbyGame::TriggerMeccanico()
+{
+    if (!m_tabbyGuy.HaScooter())
+    {
+        Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ma che ???", "Scusa, ma quale scooter avresti intenzione di truccare visto che non ne hai neanche uno ???", "" };
+        PushMessaggio(msg);
+        return false;
+    }
+
+    return true;
 }

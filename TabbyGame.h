@@ -36,7 +36,9 @@ enum class MsgAzione {
     TIPA_INGRASSATA,
     TIPA_CI_PROVA,
     // Telefono
-    VENDI_TEL
+    VENDI_TEL,
+    // Scooter
+    RIPARA_SCOOTER
 };
 
 struct Messaggio {
@@ -130,10 +132,10 @@ public:
     void AzioneAttivaSim(int abbonIndex);
     void AzioneRicarica(long long taglio, std::string nomeOp);
     // Scooter
-    void AzioneTruccaScooter();
     void AzioneRiparaScooter();
     void AzioneUsaScooter();
     void AzioneFaiBenza();
+    bool TriggerMeccanico();
 
     // Stringa formattata (es. "1.000 L." o "5 €")
     std::string GetSoldiStr(long long valoreBase) const;
@@ -163,6 +165,7 @@ private:
 	std::vector<Messaggio> m_codaMsg;
 	TipoGiorno m_tipoGiorno;
     long long m_costoCorruzione;
+    long long m_costoRiparazione;
     long long m_offertaTel;
     int m_materiaIndex;
     int m_scooterAvversarioIndex;

@@ -18,7 +18,8 @@ private:
 	wxStaticText* m_lblNome;
 	wxStaticText* m_lblVelocita;
 	wxStaticText* m_lblBenza;
-	wxStaticText* m_lblStato; // Aggiungi questo per vedere lo stato (riparazioni)
+	wxStaticText* m_lblStato;
+	wxButton* m_btnUsa;
 
 	// Eventi interni alla finestra
 	void OnConcessionario(wxCommandEvent& event);

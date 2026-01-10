@@ -86,6 +86,12 @@ Il fumo provoca malattie cardiovascolari
 Donne incinte: il fumo nuoce alla salute del vostro bambino
 Il fumo provoca il cancro
 
+[CAMIONISTA]
+Facendo il pirla con lo scooter in {LUOGO} riesci a far incazzare un camionista.
+
+[MURO]
+Mentre giri per la città con il tuo scooter, incontri sfortunatamente un muro...
+
 [NOMI_TIPE]
 Marcella
 Giovanna

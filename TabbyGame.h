@@ -136,6 +136,7 @@ public:
     void AzioneUsaScooter();
     void AzioneFaiBenza();
     bool TriggerMeccanico();
+    Scooter GeneraScooter();
 
     // Stringa formattata (es. "1.000 L." o "5 €")
     std::string GetSoldiStr(long long valoreBase) const;
@@ -167,8 +168,9 @@ private:
     long long m_costoCorruzione;
     long long m_costoRiparazione;
     long long m_offertaTel;
+    Tipa m_tipaRnd;
+    Scooter m_scooterRnd;
     int m_materiaIndex;
-    int m_scooterAvversarioIndex;
 	// IL MOTORE DI NUMERI CASUALI
 	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile
 	std::mt19937 m_rng;
@@ -208,6 +210,8 @@ private:
     std::vector<std::string> m_frasiPalestra;
     std::vector<std::string> m_frasiSigarette;
     std::vector<std::string> m_frasiMetallari;
+    std::vector<std::string> m_frasiCamionista;
+    std::vector<std::string> m_frasiMuro;
     std::vector<std::string> m_frasiFortuna;
     std::vector<std::string> m_frasiScuola;
     std::vector<std::string> m_vieStr;

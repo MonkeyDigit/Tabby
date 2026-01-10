@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "Acquistabile.h"
-
+// TODO: PUO' ESSERE SIA PARCHEGGIATO CHE A SECCO
 enum class Attivita { NESSUNA, PARCHEGGIATO, IN_GIRO, INGRIPPATO, INVASATO, SEQUESTRATO, A_SECCO };
 enum class TipoPezzo { NESSUNO, MARMITTA, CARBURATORE, PISTONE, FILTRO };
 
@@ -44,15 +44,18 @@ public:
 		}
 	}
 
-	void SetBenza(int litri) { if (litri > 0) m_benza = litri; }
-	void IncBenza(int litri) {
+	void SetBenza(float litri) { if (litri > 0) m_benza = litri; }
+	void IncBenza(float litri) {
 		if (litri > 0) m_benza += litri;
 	}
-	void DecBenza(int litri) {
+	void DecBenza(float litri) {
 		if (litri > 0)
 		{
 			m_benza -= litri;
-			if (m_benza < 0) m_benza = 0;
+			if (m_benza < 0)
+			{
+				m_benza = 0;
+			}
 		}
 	}
 

@@ -19,6 +19,10 @@ private:
 	wxStaticText* m_lblVelocita;
 	wxStaticText* m_lblBenza;
 	wxStaticText* m_lblStato;
+	wxStaticText* m_lblCilindrata;
+	wxStaticText* m_lblCarburatore;
+	wxStaticText* m_lblMarmitta;
+	wxStaticText* m_lblFiltro;
 	wxButton* m_btnUsa;
 
 	// Eventi interni alla finestra

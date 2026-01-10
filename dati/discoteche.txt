@@ -1,4 +1,4 @@
-# FORMATO: Nome | Descrizione | GiornoChiusura (0=Lun..6=Dom) | FuoriPorta(0/1) | FamaReq | Prezzo | IncFama | IncRep
+# FORMATO: Nome | Descrizione | GiornoChiusura (0=Lun..6=Dom) | FuoriPorta(0/1) | Prezzo | FamaReq | IncFama | IncRep
 Splush|Questo locale buio e spazioso si estende per circa 134.000 metri quadrati sotto la città. Di grande effetto con degli enormi tubi fognari che rallegrano l'ambiente. Chiuso il Lunedì.|0|0|20|30|15|2
 QB|Spaziosa discoteca di tendenza ricavata da un'antica stalla. Odori e sapori tipici di una volta; si balla tra vagonate di letame e mangime. A mezzanotte casola e cotiche per tutti. Chiuso il Giovedì|3|0|15|0|7|1
 Spoking|Da sempre nome di grande richiamo per modelle, modaioli, giovani della Milano bene, tabbozzi e non. Per chi ama gli ambienti modaioli. A due passi dalla discarica di Cerro Maggiore. Chiuso il Lunedì|0|0|16|0|8|1

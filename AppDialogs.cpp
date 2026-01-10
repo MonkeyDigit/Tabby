@@ -36,25 +36,27 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	wxPanel* pnlConcessionario = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerConcessionario = new wxBoxSizer{ wxVERTICAL };
 
-	wxButton* btnConcessionario = new wxButton(pnlConcessionario, wxID_ANY, "Concessionario", wxDefaultPosition, wxSize(350, 45));
+	wxButton* btnConcessionario = new wxButton(pnlConcessionario, wxID_ANY, "Concessionario", wxDefaultPosition, wxSize(-1, 45));
 	btnConcessionario->Bind(wxEVT_BUTTON, &DlgScooter::OnConcessionario, this);
 
-	sizerConcessionario->Add(btnConcessionario, 0, wxALIGN_CENTER | wxALL, 5);
+	sizerConcessionario->Add(btnConcessionario, 0, wxEXPAND | wxALL, 5);
 	pnlConcessionario->SetSizer(sizerConcessionario);
+	// TODO: SOSTITUISCI STRETCH SPACER CON PANNELLO IMMAGINE
+	leftCol->AddStretchSpacer();
 	leftCol->Add(pnlConcessionario, 0, wxEXPAND | wxALL, 5);
 
 	// 2. MODIFICHE
 	wxPanel* pnlModifiche = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerModifiche = new wxBoxSizer{ wxVERTICAL };
 
-	wxButton* btnTrucca = new wxButton(pnlModifiche, wxID_ANY, "Trucca scooter", wxDefaultPosition, wxSize(350, 45));
-	wxButton* btnRipara = new wxButton(pnlModifiche, wxID_ANY, "Ripara scooter", wxDefaultPosition, wxSize(350, 45));
+	wxButton* btnTrucca = new wxButton(pnlModifiche, wxID_ANY, "Trucca scooter", wxDefaultPosition, wxSize(-1, 45));
+	wxButton* btnRipara = new wxButton(pnlModifiche, wxID_ANY, "Ripara scooter", wxDefaultPosition, wxSize(-1, 45));
 
 	btnTrucca->Bind(wxEVT_BUTTON, &DlgScooter::OnTrucca, this);
 	btnRipara->Bind(wxEVT_BUTTON, &DlgScooter::OnRipara, this);
 
-	sizerModifiche->Add(btnTrucca, 0, wxALIGN_CENTER | wxALL, 5);
-	sizerModifiche->Add(btnRipara, 0, wxALIGN_CENTER | wxALL & ~wxTOP, 5);
+	sizerModifiche->Add(btnTrucca, 0, wxEXPAND | wxALL, 5);
+	sizerModifiche->Add(btnRipara, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 	pnlModifiche->SetSizer(sizerModifiche);
 	leftCol->Add(pnlModifiche, 0, wxEXPAND | wxALL, 5);
 
@@ -64,7 +66,7 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 
 	sizerBottom->Add(new wxStaticText(pnlBottom, wxID_ANY, "[IMG]"), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	m_lblSoldi = new wxStaticText(pnlBottom, wxID_ANY, "---"); // Inizializzato vuoto, ci pensa AggiornaInterfaccia
+	m_lblSoldi = new wxStaticText(pnlBottom, wxID_ANY, ""); // Inizializzato vuoto, ci pensa AggiornaInterfaccia
 	sizerBottom->Add(m_lblSoldi, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 	sizerBottom->AddStretchSpacer();
@@ -80,30 +82,34 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	sizerStats->Add(new wxStaticText(pnlStats, wxID_ANY, "Statistiche scooter"), 0, wxALIGN_CENTER_HORIZONTAL);
 
 	// Nome Scooter
-	m_lblNome = new wxStaticText(pnlStats, wxID_ANY, "---", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN);
-	sizerStats->Add(m_lblNome, 0, wxALIGN_CENTER_HORIZONTAL | wxALL & ~wxTOP, 10);
+	m_lblNome = new wxStaticText(pnlStats, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER | wxBORDER_SUNKEN);
+	sizerStats->Add(m_lblNome, 0, wxEXPAND | wxALL & ~wxTOP, 10);
 
 	// GRIGLIA DATI
 	wxFlexGridSizer* gridStats = new wxFlexGridSizer{ 2, 5, 10 };
 
 	// Salviamo i puntatori restituiti da AddStat per poterli aggiornare dopo
-	m_lblVelocita = AddStat(pnlStats, gridStats, "Velocità:", "---");
-	m_lblBenza = AddStat(pnlStats, gridStats, "Benzina:", "---");
-	m_lblStato = AddStat(pnlStats, gridStats, "Stato:", "---"); // Aggiunto Stato (riparazione)
+	m_lblVelocita = AddStat(pnlStats, gridStats, "Velocità:", "");
+	m_lblBenza = AddStat(pnlStats, gridStats, "Benzina:", "");
+	m_lblStato = AddStat(pnlStats, gridStats, "Stato:", "");
+	m_lblCilindrata = AddStat(pnlStats, gridStats, "Cilindrata:", "");
+	m_lblMarmitta = AddStat(pnlStats, gridStats, "Marmitta:", "");
+	m_lblCarburatore = AddStat(pnlStats, gridStats, "Carb.:", "");
+	m_lblFiltro = AddStat(pnlStats, gridStats, "Filtro:", "");
 
-	sizerStats->Add(gridStats, 0, wxALIGN_CENTER | wxALL & ~wxTOP, 5);
+	sizerStats->Add(gridStats, 0, wxALL & ~wxTOP, 5);
 
 	// BOTTONI IN BASSO A DESTRA
 	sizerStats->AddStretchSpacer();
 
-	m_btnUsa = new wxButton(pnlStats, wxID_ANY, "---", wxDefaultPosition, wxSize(350, 45));
-	wxButton* btnBenza = new wxButton(pnlStats, wxID_ANY, "Fai benza", wxDefaultPosition, wxSize(350, 45));
+	m_btnUsa = new wxButton(pnlStats, wxID_ANY, "---", wxDefaultPosition, wxSize(-1, 45));
+	wxButton* btnBenza = new wxButton(pnlStats, wxID_ANY, "Fai benza", wxDefaultPosition, wxSize(-1, 45));
 
 	m_btnUsa->Bind(wxEVT_BUTTON, &DlgScooter::OnUsa, this);
 	btnBenza->Bind(wxEVT_BUTTON, &DlgScooter::OnFaiBenza, this);
 
-	sizerStats->Add(m_btnUsa, 0, wxALIGN_CENTER_HORIZONTAL | wxALL & ~wxBOTTOM, 5);
-	sizerStats->Add(btnBenza, 0, wxALIGN_CENTER_HORIZONTAL | wxALL & ~wxTOP, 5);
+	sizerStats->Add(m_btnUsa, 0, wxEXPAND | wxALL & ~wxBOTTOM, 5);
+	sizerStats->Add(btnBenza, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 
 	pnlStats->SetSizer(sizerStats);
 	rightCol->Add(pnlStats, 1, wxEXPAND | wxALL, 5);
@@ -167,14 +173,15 @@ void DlgScooter::OnUsa(wxCommandEvent& event)
 wxStaticText* DlgScooter::AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxString value)
 {
 	sizer->Add(new wxStaticText(parent, wxID_ANY, label, wxDefaultPosition, wxSize(-1, 25)));
-	wxStaticText* valueBox = new wxStaticText{ parent, wxID_ANY, value, wxDefaultPosition, wxSize(200, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
-	sizer->Add(valueBox, 0, wxALIGN_RIGHT);
+	wxStaticText* valueBox = new wxStaticText{ parent, wxID_ANY, value, wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
+	valueBox->SetMinSize(wxSize(300, -1));
+	sizer->Add(valueBox, 0, wxEXPAND);
 	return valueBox;
 }
 
 void DlgScooter::AggiornaInterfaccia()
 {
-	const Scooter& s = m_game.GetTabbyGuy().GetScooter();
+	Scooter& s = m_game.GetTabbyGuy().GetScooter();
 
 	// Aggiorna Soldi
 	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()) + " >");
@@ -182,15 +189,24 @@ void DlgScooter::AggiornaInterfaccia()
 	// Aggiorna Nome (con spazi padding per estetica)
 	m_lblNome->SetLabel("  " + s.GetNome() + "  ");
 
-	// Aggiorna Statistiche
-	m_lblVelocita->SetLabel(wxString::Format("%d km/h", s.GetVelocita()));
-	m_lblBenza->SetLabel(wxString::Format("%.2f l", s.GetBenza()));
-	m_lblStato->SetLabel(wxString::Format("%d%%", s.GetStato()));
+	if (m_game.GetTabbyGuy().HaScooter())
+	{
+		// Aggiorna Statistiche
+		m_lblVelocita->SetLabel(std::to_string(s.GetVelocita())+" km/h");
+		m_lblBenza->SetLabel(wxString::Format("%.1f l", s.GetBenza()));
+		m_lblStato->SetLabel(std::to_string(s.GetStato())+"%");
+		m_lblMarmitta->SetLabel(s.GetMarmitta().GetNome());
+		m_lblCilindrata->SetLabel(s.GetCilindrata().GetNome());
+		m_lblCarburatore->SetLabel(s.GetCarburatore().GetNome());
+		m_lblFiltro->SetLabel(s.GetFiltro().GetNome());
+	}
+
 	if (m_game.GetTabbyGuy().GetScooter().GetAttivita() != Attivita::PARCHEGGIATO)
 		m_btnUsa->SetLabel("Parcheggia scooter");
 	else
 		m_btnUsa->SetLabel("Usa scooter");
 
+	this->Fit();
 	this->Layout();
 }
 

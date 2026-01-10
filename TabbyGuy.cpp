@@ -76,7 +76,12 @@ void TabbyGuy::DecSizze(int sizze) {
 }
 
 void TabbyGuy::IncRep(int punti) {
-	if (punti > 0) m_rep += punti;
+	if (punti > 0)
+	{
+		m_rep += punti;
+		if (m_rep > 100)
+			m_rep = 100;
+	}
 }
 
 void TabbyGuy::DecRep(int punti) {
@@ -101,7 +106,11 @@ void TabbyGuy::DecFama(int punti) {
 }
 
 void TabbyGuy::IncRapporti(int punti) {
-	if (punti > 0) m_rapporti += punti;
+	if (punti > 0)
+	{
+		m_rapporti += punti;
+		if (m_rapporti > 100) m_rapporti = 100;
+	}
 }
 
 void TabbyGuy::DecRapporti(int punti) {

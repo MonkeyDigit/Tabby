@@ -28,7 +28,7 @@ public:
 		else if (m_fama > 45)
 			m_desc = "Passabile";
 		else if (m_fama > 35)
-			m_desc = "Puo' piacere..";
+			m_desc = "Può piacere..";
 		else
 			m_desc = "E' un tipo...";
 	}

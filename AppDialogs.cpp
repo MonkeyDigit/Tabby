@@ -18,6 +18,7 @@ void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 	// Usciti dal while, la coda è sicuramente vuota
 }
 
+// TODO: VENDI SCOOTER
 DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Scooter", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }
@@ -92,12 +93,20 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	m_lblVelocita = AddStat(pnlStats, gridStats, "Velocità:", "");
 	m_lblBenza = AddStat(pnlStats, gridStats, "Benzina:", "");
 	m_lblStato = AddStat(pnlStats, gridStats, "Stato:", "");
-	m_lblCilindrata = AddStat(pnlStats, gridStats, "Cilindrata:", "");
-	m_lblMarmitta = AddStat(pnlStats, gridStats, "Marmitta:", "");
-	m_lblCarburatore = AddStat(pnlStats, gridStats, "Carb.:", "");
-	m_lblFiltro = AddStat(pnlStats, gridStats, "Filtro:", "");
 
+	m_lblMarmitta = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN};
+	m_lblCarburatore = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN};
+	m_lblCilindrata = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN};
+	m_lblFiltro = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN};
 	sizerStats->Add(gridStats, 0, wxALL & ~wxTOP, 5);
+
+	sizerStats->AddSpacer(15);
+	sizerStats->Add(new wxStaticText(pnlStats, wxID_ANY, "Componenti"), 0, wxALIGN_CENTER);
+	sizerStats->Add(m_lblMarmitta, 0, wxEXPAND | wxALL, 5);
+	sizerStats->Add(m_lblCarburatore, 0, wxEXPAND | wxALL, 5);
+	sizerStats->Add(m_lblCilindrata, 0, wxEXPAND | wxALL, 5);
+	sizerStats->Add(m_lblFiltro, 0, wxEXPAND | wxALL, 5);
+
 
 	// BOTTONI IN BASSO A DESTRA
 	sizerStats->AddStretchSpacer();
@@ -126,9 +135,9 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 
 void DlgScooter::OnConcessionario(wxCommandEvent& event)
 {
-	if (m_game.TriggerNegozio(m_game.GetConcessionario().m_merce))
+	if (m_game.TriggerNegozio(CategoriaOggetto::SCOOTER))
 	{
-		DlgNegozio dlg{ this, m_game, m_game.GetConcessionario() };
+		DlgConcessionario dlg(this, m_game);
 		dlg.ShowModal();
 	}
 
@@ -192,12 +201,18 @@ void DlgScooter::AggiornaInterfaccia()
 	if (m_game.GetTabbyGuy().HaScooter())
 	{
 		// Aggiorna Statistiche
-		m_lblVelocita->SetLabel(std::to_string(s.GetVelocita())+" km/h");
+		if (s.GetAttivita() != Attivita::IN_GIRO)
+		{
+			m_lblVelocita->SetLabel("("+s.GetAttivitaStr(false)+")");
+		}
+		else
+			m_lblVelocita->SetLabel(std::to_string(s.GetVelocita())+" km/h");
+
 		m_lblBenza->SetLabel(wxString::Format("%.1f l", s.GetBenza()));
 		m_lblStato->SetLabel(std::to_string(s.GetStato())+"%");
 		m_lblMarmitta->SetLabel(s.GetMarmitta().GetNome());
-		m_lblCilindrata->SetLabel(s.GetCilindrata().GetNome());
 		m_lblCarburatore->SetLabel(s.GetCarburatore().GetNome());
+		m_lblCilindrata->SetLabel(s.GetCilindrata().GetNome());
 		m_lblFiltro->SetLabel(s.GetFiltro().GetNome());
 	}
 
@@ -2021,4 +2036,180 @@ void DlgRicariche::AggiornaInterfaccia()
 
 	this->Fit();
 	this->Layout();
+}
+
+DlgConcessionario::DlgConcessionario(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Concessionario", wxDefaultPosition, wxDefaultSize },
+	m_game{ game }
+{
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+	this->SetFont(parent->GetFont());
+
+	m_catalogoPtr = m_game.GetConcessionario().m_catalogo;
+
+	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer* sizerContent = new wxBoxSizer(wxHORIZONTAL);
+
+	// --- COLONNA SINISTRA: LISTA SCOOTER ---
+	wxScrolledWindow* scrollList = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxSize(-1, 350), wxBORDER_SUNKEN);
+	scrollList->SetScrollRate(0, 20);
+	wxBoxSizer* sizerList = new wxBoxSizer(wxVERTICAL);
+
+	for (size_t i = 0; i < m_catalogoPtr.size(); ++i)
+	{
+		Scooter* s = static_cast<Scooter*>(m_catalogoPtr[i]);
+
+		wxPanel* pnlItem = new wxPanel(scrollList, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED);
+		wxBoxSizer* sizerItem = new wxBoxSizer(wxHORIZONTAL);
+
+		// Immagine piccola sinistra
+		wxPanel* imgPlaceholder = new wxPanel(pnlItem, wxID_ANY, wxDefaultPosition, wxSize(60, 40), wxBORDER_SIMPLE);
+		imgPlaceholder->SetBackgroundColour(*wxWHITE);
+
+		// Radio Button (Senza stile wxRB_GROUP perché sono su parent diversi)
+		wxRadioButton* radio = new wxRadioButton(pnlItem, 1000 + i, s->GetNome());
+
+		// Evento click
+		radio->Bind(wxEVT_RADIOBUTTON, &DlgConcessionario::OnSelezionaScooter, this);
+
+		sizerItem->Add(imgPlaceholder, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+		sizerItem->Add(radio, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+		pnlItem->SetSizer(sizerItem);
+		sizerList->Add(pnlItem, 0, wxEXPAND | wxALL, 2);
+	}
+
+	scrollList->SetSizer(sizerList);
+	sizerContent->Add(scrollList, 0, wxEXPAND | wxALL, 5);
+
+	// --- COLONNA DESTRA: STATISTICHE ---
+	wxPanel* pnlStats = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
+	wxBoxSizer* sizerStats = new wxBoxSizer(wxVERTICAL);
+
+	// 1. IMMAGINE GRANDE (SOPRA)
+	m_pnlImgBig = new wxPanel(pnlStats, wxID_ANY, wxDefaultPosition, wxSize(200, 120), wxBORDER_DOUBLE);
+	m_pnlImgBig->SetBackgroundColour(*wxWHITE);
+	// Centriamo l'immagine nel pannello di destra
+	sizerStats->Add(m_pnlImgBig, 0, wxALL, 10);
+
+	// 2. GRIGLIA STATISTICHE
+	// 2 Colonne, gap verticale 5, orizzontale 10
+	wxFlexGridSizer* gridStats = new wxFlexGridSizer(2, 5, 10);
+
+	m_lblCosto = AddStat(pnlStats, gridStats, "Costo", "");
+	m_lblVelocita = AddStat(pnlStats, gridStats, "Velocità:", "");
+	sizerStats->Add(gridStats, 0, wxALL, 5);
+
+	m_lblMarmitta = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
+	m_lblCarburatore = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
+	m_lblCilindrata = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
+	m_lblFiltro = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
+
+	sizerStats->AddSpacer(15);
+	sizerStats->Add(new wxStaticText(pnlStats, wxID_ANY, "Componenti"), 0, wxALIGN_CENTER);
+	sizerStats->Add(m_lblMarmitta, 0, wxEXPAND | wxALL, 5);
+	sizerStats->Add(m_lblCarburatore, 0, wxEXPAND | wxALL, 5);
+	sizerStats->Add(m_lblCilindrata, 0, wxEXPAND | wxALL, 5);
+	sizerStats->Add(m_lblFiltro, 0, wxEXPAND | wxALL, 5);
+
+	pnlStats->SetSizer(sizerStats);
+	pnlStats->SetMinSize(wxSize(300, -1));
+
+	// Assegnamo proporzione 1 alla parte destra così si prende tutto lo spazio rimasto
+	sizerContent->Add(pnlStats, 1, wxEXPAND | wxALL, 5);
+
+	// --- BARRA INFERIORE ---
+	wxPanel* bottomPnl = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED);
+	wxBoxSizer* bottomSizer = new wxBoxSizer(wxHORIZONTAL);
+
+	m_lblSoldi = new wxStaticText(bottomPnl, wxID_ANY, "Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
+	wxFont fBold = m_lblSoldi->GetFont(); fBold.SetWeight(wxFONTWEIGHT_BOLD); m_lblSoldi->SetFont(fBold);
+
+	wxButton* btnCompra = new wxButton(bottomPnl, wxID_ANY, "Compra", wxDefaultPosition, wxSize(80, 40));
+	wxButton* btnCancel = new wxButton(bottomPnl, wxID_CANCEL, "Esci", wxDefaultPosition, wxSize(80, 40));
+
+	btnCompra->Bind(wxEVT_BUTTON, &DlgConcessionario::OnCompra, this);
+
+	bottomSizer->Add(m_lblSoldi, 1, wxALIGN_CENTER_VERTICAL | wxALL, 15);
+	bottomSizer->Add(btnCompra, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	bottomSizer->Add(btnCancel, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	bottomPnl->SetSizer(bottomSizer);
+
+	mainSizer->Add(sizerContent, 1, wxEXPAND);
+	mainSizer->Add(bottomPnl, 0, wxEXPAND);
+
+	this->SetSizerAndFit(mainSizer);
+	this->Centre();
+
+	if (!m_catalogoPtr.empty()) {
+		// Simuliamo il click sul primo per inizializzare (accende radio + aggiorna stat)
+		wxCommandEvent fakeEvent(wxEVT_RADIOBUTTON, 1000);
+		OnSelezionaScooter(fakeEvent);
+
+		// Dobbiamo settare visivamente il primo radio a true perché l'evento fake non lo fa sulla GUI
+		wxWindow* w = FindWindow(1000);
+		if (w) ((wxRadioButton*)w)->SetValue(true);
+	}
+}
+
+void DlgConcessionario::OnSelezionaScooter(wxCommandEvent& event)
+{
+	int selectedId = event.GetId();
+	m_selectedIndex = selectedId - 1000;
+
+	// --- FIX RADIO BUTTONS ---
+	// Poiché i radio button sono su pannelli diversi, wxWidgets non gestisce l'esclusività.
+	// Dobbiamo spegnere manualmente tutti quelli che NON sono quello cliccato.
+	for (size_t i = 0; i < m_catalogoPtr.size(); ++i)
+	{
+		int currentId = 1000 + i;
+		if (currentId == selectedId) continue; // Salta quello appena cliccato
+
+		// Cerchiamo il controllo nella finestra tramite ID
+		wxWindow* w = FindWindow(currentId);
+		if (w)
+		{
+			wxRadioButton* rb = wxDynamicCast(w, wxRadioButton);
+			if (rb) {
+				// Lo spegniamo senza generare un altro evento
+				rb->SetValue(false);
+			}
+		}
+	}
+
+	AggiornaStatistiche();
+}
+
+void DlgConcessionario::AggiornaStatistiche()
+{
+	if (m_selectedIndex < 0 || m_selectedIndex >= m_catalogoPtr.size()) return;
+
+	const Scooter* s = static_cast<const Scooter*>(m_catalogoPtr[m_selectedIndex]);
+
+	m_lblMarmitta->SetLabel(s->GetMarmitta().GetNome());
+	m_lblCarburatore->SetLabel(s->GetCarburatore().GetNome());
+	m_lblCilindrata->SetLabel(s->GetCilindrata().GetNome());
+	m_lblFiltro->SetLabel(s->GetFiltro().GetNome());
+
+	m_lblCosto->SetLabel(m_game.GetSoldiStr(s->GetPrezzo()));
+
+	// Aggiorna layout se i testi cambiano dimensione
+	this->Layout();
+}
+
+void DlgConcessionario::OnCompra(wxCommandEvent& event)
+{
+	if (m_selectedIndex >= 0) {
+		m_game.AzioneCompra(*m_catalogoPtr[m_selectedIndex]);
+		EndModal(wxID_OK);
+	}
+}
+
+wxStaticText* DlgConcessionario::AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxString value)
+{
+	sizer->Add(new wxStaticText(parent, wxID_ANY, label, wxDefaultPosition, wxSize(-1, 25)));
+	wxStaticText* valueBox = new wxStaticText{ parent, wxID_ANY, value, wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
+	valueBox->SetMinSize(wxSize(300, -1));
+	sizer->Add(valueBox, 0, wxEXPAND);
+	return valueBox;
 }

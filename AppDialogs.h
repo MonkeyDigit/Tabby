@@ -292,5 +292,31 @@ private:
 	void AggiornaInterfaccia();
 };
 
+class DlgConcessionario : public wxDialog
+{
+public:
+	DlgConcessionario(wxWindow* parent, TabbyGame& game);
+
+private:
+	TabbyGame& m_game;
+	int m_selectedIndex = -1;
+	std::vector<Acquistabile*> m_catalogoPtr;
+
+	// GUI Destra
+	wxPanel* m_pnlImgBig;
+	wxStaticText* m_lblVelocita;
+	wxStaticText* m_lblMarmitta;
+	wxStaticText* m_lblCarburatore;
+	wxStaticText* m_lblCilindrata;
+	wxStaticText* m_lblFiltro;
+	wxStaticText* m_lblCosto;
+	wxStaticText* m_lblSoldi;
+
+	void OnSelezionaScooter(wxCommandEvent& event);
+	void OnCompra(wxCommandEvent& event);
+	void AggiornaStatistiche();
+	wxStaticText* AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxString value);
+};
+
 // Funzione helper
 void ManifestaEventi(wxWindow* parent, TabbyGame& game);

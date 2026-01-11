@@ -14,7 +14,7 @@ Messaggio::Messaggio(TipoMsg tipo, MsgAzione id, std::string titolo, std::string
 
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
 	: m_tabbyGuy{}, m_date{1991, 9, 16}, 
-    m_valutaCorrente{Valuta::EURO}, 
+    m_valutaCorrente{Valuta::LIRE}, 
     m_coolDownPestaggio{ 5 }, 
     m_tipoGiorno{ TipoGiorno::NORMALE },
     m_attesa{ATTESA_MAX}
@@ -491,7 +491,7 @@ void TabbyGame::GestioneEventiCasuali()
 
                 if (m_tabbyGuy.GetScooter().GetStato() <= 0)
                 {
-                    m_tabbyGuy.GetScooter().Azzera();
+                    m_tabbyGuy.PerdiScooter();
                     Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Scooter Distrutto", "Quando ti rialzi ti accorgi che il tuo scooter è ormai ridotto a un ammasso di rottami...", "" };
                     PushMessaggio(msg);
                     // DEBUG LOG
@@ -1197,7 +1197,7 @@ void TabbyGame::CaricaStringhe()
 }
 
 
-std::vector<std::string> SplitString(const std::string& s, char delimiter) {
+static std::vector<std::string> SplitString(const std::string& s, char delimiter) {
     std::vector<std::string> tokens;
     std::string token;
     std::istringstream tokenStream(s);
@@ -1209,11 +1209,11 @@ std::vector<std::string> SplitString(const std::string& s, char delimiter) {
 }
 
 // Helper per convertire stringa in enum/int senza impazzire con le eccezioni
-int ParseInt(const std::string& s) {
+static int ParseInt(const std::string& s) {
     try { return std::stoi(s); }
     catch (...) { return 0; }
 }
-long long ParseLong(const std::string& s) {
+static long long ParseLong(const std::string& s) {
     try { return std::stoll(s); }
     catch (...) { return 0; }
 }
@@ -1405,14 +1405,38 @@ void TabbyGame::CaricaNegozi() {
             else if (tipo == "TEL" && tokens.size() >= 8) {
                 nuovoItem = new Telefono{ tokens[2], tokens[3], tokens[4], ParseLong(tokens[5]), ParseInt(tokens[6]), ParseInt(tokens[7]), 0, Abbonamento() };
             }
-            else if (tipo == "SCOOTER" && tokens.size() >= 8)
+            else if (tipo == "SCOOTER")
             {
-                nuovoItem = new Scooter{ tokens[2], tokens[3], ParseLong(tokens[4]), ParseInt(tokens[5]), ParseInt(tokens[6]), ParseInt(tokens[7]), 5.0f };
+                // FORMATO NUOVO (23 token totali attesi):
+                // 0:ITEM | 1:SCOOTER | 2:Nome | 3:Img | 4:Prezzo | 5:Fama | 6:Benza |
+                // MARMITTA:    7:Nome | 8:Img | 9:Prezzo | 10:Power
+                // CARBURATORE: 11:Nome | 12:Img | 13:Prezzo | 14:Power
+                // PISTONE:     15:Nome | 16:Img | 17:Prezzo | 18:Power
+                // FILTRO:      19:Nome | 20:Img | 21:Prezzo | 22:Power
+
+                if (tokens.size() >= 23)
+                {
+                    // 1. Dati Base Scooter
+                    std::string nome = tokens[2];
+                    std::string img = tokens[3];
+                    long long prezzo = ParseLong(tokens[4]);
+                    int fama = ParseInt(tokens[5]);
+                    int benza = ParseInt(tokens[6]); // Capacità serbatoio o benza iniziale
+
+                    // 2. Costruzione Componenti
+                    Pezzo marmitta(TipoPezzo::MARMITTA, tokens[7], tokens[8], ParseLong(tokens[9]), ParseInt(tokens[10]));
+                    Pezzo carburatore(TipoPezzo::CARBURATORE, tokens[11], tokens[12], ParseLong(tokens[13]), ParseInt(tokens[14]));
+                    Pezzo pistone(TipoPezzo::PISTONE, tokens[15], tokens[16], ParseLong(tokens[17]), ParseInt(tokens[18]));
+                    Pezzo filtro(TipoPezzo::FILTRO, tokens[19], tokens[20], ParseLong(tokens[21]), ParseInt(tokens[22]));
+
+                    // 3. Creazione Scooter con i pezzi
+                    nuovoItem = new Scooter(nome, img, prezzo, fama, benza, marmitta, carburatore, pistone, filtro);
+                }
             }
-            else if (tipo == "PEZZO" && tokens.size() >= 6)
+            else if (tipo == "PEZZO" && tokens.size() >= 7)
             {
                 TipoPezzo tp = (TipoPezzo)ParseInt(tokens[2]);
-                nuovoItem = new Pezzo{ tp, tokens[3], tokens[4], ParseLong(tokens[5]) };
+                nuovoItem = new Pezzo{ tp, tokens[3], tokens[4], ParseLong(tokens[5]), ParseInt(tokens[6]) };
             }
 
             if (nuovoItem) {
@@ -1722,7 +1746,7 @@ void TabbyGame::AzioneEsciTipa()
     if (m_tabbyGuy.GetTipa().GetFama() > m_tabbyGuy.GetFama())
         m_tabbyGuy.IncFama(1);
 
-    m_tabbyGuy.GetScooter().DecBenza(3);
+    m_tabbyGuy.GetScooter().DecBenza(0.3);
     // TODO: CALCOLA VELOCITA
 }
 
@@ -1868,9 +1892,8 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
         
         const Scooter& scooter{ static_cast<const Scooter&>(prod) };
 
-        m_tabbyGuy.GetScooter().Azzera();
         m_tabbyGuy.GetScooter() = scooter;
-        m_tabbyGuy.GetScooter().SetBenza(2);
+        m_tabbyGuy.GetScooter().IncBenza(2);
         m_tabbyGuy.GetScooter().SetAttivita(Attivita::IN_GIRO);
 
         Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Lo scooter nuovo...", "Fai un giro del quartiere per farti vedere con lo scooter nuovo...", ""};
@@ -1883,22 +1906,7 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
     else if (prod.GetCategoria() == CategoriaOggetto::SCOOTER_PART)
     {
         const Pezzo& pezzo{ static_cast<const Pezzo&>(prod) };
-
-        switch (pezzo.GetTipo())
-        {
-        case TipoPezzo::MARMITTA:
-            m_tabbyGuy.GetScooter().GetMarmitta() = pezzo;
-            break;
-        case TipoPezzo::CARBURATORE:
-            m_tabbyGuy.GetScooter().GetCarburatore() = pezzo;
-            break;
-        case TipoPezzo::FILTRO:
-            m_tabbyGuy.GetScooter().GetFiltro() = pezzo;
-            break;
-        case TipoPezzo::PISTONE:
-            m_tabbyGuy.GetScooter().GetCilindrata() = pezzo;
-            break;
-        }
+        m_tabbyGuy.GetScooter().InstallaPezzo(pezzo);
     }
 
     WriteLog("AzioneCompra: acquista " + prod.GetNome() + " per " + GetSoldiStr(prod.GetPrezzo()));
@@ -2116,7 +2124,7 @@ void TabbyGame::AzioneUsaScooter()
     {
         if (m_tabbyGuy.GetScooter().GetAttivita() != Attivita::PARCHEGGIATO)
         {
-            Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ma che ???", "Mi spieghi come fai a parcheggiare lo scooter visto che è "+m_tabbyGuy.GetScooter().GetAttivitaStr(true), ""};
+            Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Ma che ???", "Mi spieghi come fai a parcheggiare lo scooter visto che è "+m_tabbyGuy.GetScooter().GetAttivitaStr(true)+" ???", ""};
             PushMessaggio(msg);
         }
         else
@@ -2150,7 +2158,7 @@ void TabbyGame::AzioneFaiBenza()
     if(m_tabbyGuy.GetScooter().GetCilindrata() = 5)
         setbenza 85 litri
     */
-    m_tabbyGuy.GetScooter().SetBenza(5);
+    m_tabbyGuy.GetScooter().IncBenza(5);
     // TODO: CALCOLA VELOCITA
 }
 

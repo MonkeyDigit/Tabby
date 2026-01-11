@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include "Acquistabile.h"
+constexpr int INGRIPPATO = -1;
+constexpr int INVASATO = -2;
 // TODO: PUO' ESSERE SIA PARCHEGGIATO CHE A SECCO
 enum class Attivita { NESSUNA, PARCHEGGIATO, IN_GIRO, INGRIPPATO, INVASATO, SEQUESTRATO, A_SECCO };
 enum class TipoPezzo { NESSUNO, MARMITTA, CARBURATORE, PISTONE, FILTRO };
@@ -8,30 +10,36 @@ enum class TipoPezzo { NESSUNO, MARMITTA, CARBURATORE, PISTONE, FILTRO };
 class Pezzo : public Acquistabile {
 public:
 	Pezzo()
-		: Acquistabile{}, m_tipo{ TipoPezzo::NESSUNO }
+		: Acquistabile{}, m_tipo{ TipoPezzo::NESSUNO }, m_power{ 0 }
 	{}
 
-	Pezzo(TipoPezzo tipo, std::string nome, std::string img, long long prezzo)
-		: Acquistabile{ nome, "", img, prezzo, CategoriaOggetto::SCOOTER_PART}, m_tipo{tipo}
+	Pezzo(TipoPezzo tipo, std::string nome, std::string img, long long prezzo, int power)
+		: Acquistabile{ nome, "", img, prezzo, CategoriaOggetto::SCOOTER_PART}, m_tipo{tipo}, m_power{ power }
 	{}
 
 	TipoPezzo GetTipo() const { return m_tipo; }
-private:	// TODO: COMPLETA
+	int GetPower() const { return m_power; }
+private:
 	TipoPezzo m_tipo;
+	int m_power;		// Punti che servono a calcolare la velocità dello scooter
 };
 
 class Scooter : public Acquistabile {
 public:
 	Scooter()
-		: Acquistabile{}, m_fama{ 0 }, m_stato{ 0 }, m_attivita{Attivita::NESSUNA}, m_benza{0.f}, m_velocita{0}	// TODO: INIZiALIZZA PEZZI
+		: Acquistabile{}, m_fama{ 0 }, m_stato{ 0 }, m_attivita{ Attivita::NESSUNA }, m_capSerbatoio{ 5.0f }, m_benza{ 0 }, m_velocita{ 0 },
+		m_marmitta{ TipoPezzo::MARMITTA, "Marmitta standard", "", 0, 0 }, m_carburatore{ TipoPezzo::CARBURATORE, "Carburatore 12/10", "", 0, 12 },
+		m_cilindrata{ TipoPezzo::PISTONE, "Pistone 50cc","", 0, 50 }, m_filtro{ TipoPezzo::FILTRO, "Filtro Standard", "", 0, 0 }
 	{}
 
-	// TODO: CLASSE MARMITTA, CARBURATORE, CILINDRATA. FILTRO
-	// TODO: COMPLETA CONSTRUCTOR
-	Scooter(std::string nome, std::string img, long long prezzo, int fama, int stato, int velocita, float benza)
+	Scooter(std::string nome, std::string img, long long prezzo, int fama, int capSerbatoio, Pezzo marmitta, Pezzo carburatore, Pezzo cilindrata, Pezzo filtro)
 		: Acquistabile{nome, "", img, prezzo, CategoriaOggetto::SCOOTER},
-		m_fama{fama}, m_stato{stato}, m_velocita{velocita}, m_benza{benza}, m_attivita{Attivita::IN_GIRO}
-	{}
+		m_fama{ fama }, m_stato{ 100 }, m_velocita{ 0 }, m_capSerbatoio{ (float)capSerbatoio }, m_benza{ 0 },
+		m_marmitta{ marmitta }, m_carburatore{ carburatore }, m_cilindrata{ cilindrata }, m_filtro{ filtro }, 
+		m_attivita { Attivita::IN_GIRO }
+	{
+		CalcolaVelocita();
+	}
 
 	void IncStato(int punti) {
 		if (punti > 0) m_stato += punti;
@@ -44,22 +52,31 @@ public:
 		}
 	}
 
-	void SetBenza(float litri) { if (litri > 0) m_benza = litri; }
 	void IncBenza(float litri) {
-		if (litri > 0) m_benza += litri;
+		if (litri > 0)
+		{
+			m_benza += litri;
+			if (m_benza > m_capSerbatoio) m_benza = m_capSerbatoio;
+
+			if (m_attivita == Attivita::A_SECCO)
+			{
+				m_attivita = Attivita::IN_GIRO;
+				CalcolaVelocita();
+			}
+		}
 	}
 	void DecBenza(float litri) {
 		if (litri > 0)
 		{
 			m_benza -= litri;
-			if (m_benza < 0)
+			if (m_benza <= 0)
 			{
 				m_benza = 0;
+				m_attivita = Attivita::A_SECCO;
 			}
 		}
 	}
 
-	void Azzera() { *this = Scooter{}; }
 	void Ripara() { m_stato = 100; }
 	void SetAttivita(Attivita a) { m_attivita = a; }
 	
@@ -67,6 +84,7 @@ public:
 	int GetFama() const { return m_fama; }
 	int GetVelocita() const { return m_velocita; }
 	float GetBenza() const { return m_benza; }
+	float GetCapienzaSerbatoio() const { return m_capSerbatoio; }
 	Attivita GetAttivita() const { return m_attivita; }
 
 	std::string GetAttivitaStr(bool tolower) const
@@ -102,20 +120,77 @@ public:
 		return s;
 	}
 
-	Pezzo& GetMarmitta() { return m_marmitta; }
-	Pezzo& GetCarburatore() { return m_carburatore; }
-	Pezzo& GetCilindrata() { return m_cilindrata; }
-	Pezzo& GetFiltro() { return m_filtro; }
+	void InstallaPezzo(const Pezzo& nuovoPezzo) {
+		switch (nuovoPezzo.GetTipo()) {
+		case TipoPezzo::MARMITTA: m_marmitta = nuovoPezzo; break;
+		case TipoPezzo::CARBURATORE: m_carburatore = nuovoPezzo; break;
+		case TipoPezzo::PISTONE: m_cilindrata = nuovoPezzo; break;
+		case TipoPezzo::FILTRO: m_filtro = nuovoPezzo; break;
+		default: break;
+		}
+		// Ogni volta che cambi un pezzo, ricalcoli la velocità
+		CalcolaVelocita();
+	}
+
+	// Calcola la velocità dello scooter, secondo il tipo di marmitta, carburatore, ecc...
+	void CalcolaVelocita() {
+		// INGRIPPATO:	se monti un carburatore piccolo su un cilindro troppo grosso, il motore non riceve abbastanza miscela/olio, si surriscalda e si grippa
+		// INVASATO:	Il motore non riesce a bruciare: se monti un carburatore troppo grande su un cilindro piccolo, entra troppa benzina che il motore non riesce a bruciare. Il motorino si "invasa" (si ingolfa/allaga pesantemente) e non parte
+		// TABELLA COMBINAZIONI CARBURATORE + CILINDRATA
+		static const int TABLE_SPEED[6][6] = {
+//  Cilindrata:   <=50      <=70      <=90			  <=120           <=150           >150           // Carburatore
+				{ 65,       70,       INGRIPPATO,     INGRIPPATO,     INGRIPPATO,     INGRIPPATO },  // <= 12/10
+				{ 70,       80,       95,             INGRIPPATO,     INGRIPPATO,     INGRIPPATO },  // <= 16/16
+				{ INVASATO, 90,       100,            115,            INGRIPPATO,     INGRIPPATO },  // <= 19/19
+				{ INVASATO, INVASATO, 110,            125,            135,            INGRIPPATO },  // <= 20/20
+				{ INVASATO, INVASATO, INVASATO,       130,            150,            INGRIPPATO },  // <= 24/24
+				{ INVASATO, INVASATO, INVASATO,       INVASATO,       INVASATO,       250        }   // > 24/24
+		};
+
+		// 1. CONVERSIONE AL VOLO: Valori Reali -> Indici Tabella (0-5)
+		int valCarb = m_carburatore.GetPower(); // es. 12, 19, 21...
+		int idxCarb = (valCarb <= 12) ? 0 :
+			(valCarb <= 16) ? 1 :
+			(valCarb <= 19) ? 2 :
+			(valCarb <= 21) ? 3 :
+			(valCarb <= 24) ? 4 : 5;
+
+		int valCil = m_cilindrata.GetPower(); // es. 50, 70, 90...
+		int idxCil = (valCil <= 50) ? 0 :
+			(valCil <= 70) ? 1 :
+			(valCil <= 90) ? 2 :
+			(valCil <= 120) ? 3 :
+			(valCil <= 150) ? 4 : 5;
+
+		// 2. LOOKUP
+		int baseSpeed = TABLE_SPEED[idxCarb][idxCil];
+
+		// 3. CHECK ERRORI (Ingrippato/Invasato)
+		if (baseSpeed == INGRIPPATO) { m_attivita = Attivita::INGRIPPATO; m_velocita = 0; return; }
+		if (baseSpeed == INVASATO) { m_attivita = Attivita::INVASATO;   m_velocita = 0; return; }
+
+		// Reset stato se risolto
+		if (m_attivita == Attivita::INGRIPPATO || m_attivita == Attivita::INVASATO) m_attivita = Attivita::PARCHEGGIATO;
+
+		// 4. SOMMA BONUS
+		m_velocita = baseSpeed + m_marmitta.GetPower() + m_filtro.GetPower();
+	}
+
+	const Pezzo& GetMarmitta() const { return m_marmitta; }
+	const Pezzo& GetCarburatore() const { return m_carburatore; }
+	const Pezzo& GetCilindrata() const { return m_cilindrata; }
+	const Pezzo& GetFiltro() const { return m_filtro; }
 
 private:
 	int m_fama;
 	int m_stato;
 	int m_velocita;
+	float m_capSerbatoio;
 	float m_benza;
 	Attivita m_attivita;
 	// PEZZI
-	Pezzo m_marmitta;
-	Pezzo m_carburatore;
+	Pezzo m_marmitta;		// + 0, 5, 10, 15
+	Pezzo m_filtro;			// + 0, 5, 10, 15, 20
+	Pezzo m_carburatore;	
 	Pezzo m_cilindrata;
-	Pezzo m_filtro;
 };

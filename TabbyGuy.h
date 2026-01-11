@@ -71,6 +71,8 @@ public:
 	// ABBRONZATURA
 	void Abbronza();
 	void Sbianca();
+	// SCOOTER
+	void PerdiScooter() { m_scooter = Scooter{}; }
 
 	// TODO: RIORDINA TUTTA STA MERDA
 	long long GetSoldi() const { return m_soldi; };

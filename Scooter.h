@@ -3,7 +3,7 @@
 #include "Acquistabile.h"
 constexpr int INGRIPPATO = -1;
 constexpr int INVASATO = -2;
-// TODO: PUO' ESSERE SIA PARCHEGGIATO CHE A SECCO
+
 enum class Attivita { NESSUNA, PARCHEGGIATO, IN_GIRO, INGRIPPATO, INVASATO, SEQUESTRATO, A_SECCO };
 enum class TipoPezzo { NESSUNO, MARMITTA, CARBURATORE, PISTONE, FILTRO };
 
@@ -42,7 +42,11 @@ public:
 	}
 
 	void IncStato(int punti) {
-		if (punti > 0) m_stato += punti;
+		if (punti > 0)
+		{
+			m_stato += punti;
+			if (m_stato > 100) m_stato = 100;
+		}
 	}
 	void DecStato(int punti) {
 		if (punti > 0)
@@ -148,6 +152,7 @@ public:
 		};
 
 		// 1. CONVERSIONE AL VOLO: Valori Reali -> Indici Tabella (0-5)
+		// Sfrutto un trick ricorsivo dell'operatore ternario perché sono troppo intelligente...
 		int valCarb = m_carburatore.GetPower(); // es. 12, 19, 21...
 		int idxCarb = (valCarb <= 12) ? 0 :
 			(valCarb <= 16) ? 1 :

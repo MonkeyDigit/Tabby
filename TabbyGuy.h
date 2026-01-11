@@ -43,7 +43,7 @@ public:
 	bool SpendiSoldi(long long importo);
 	void GuadagnaSoldi(long long importo);
 	void IncPaghetta(long long importo);
-	void ResetSoldiDelta() { m_soldiDelta = 0; };	// è solo un dato informativo...
+	void ResetSoldiDelta() { m_soldiDelta = 0; }	// è solo un dato informativo...
 	// SCUOLA
 	void CalcolaStudio();
 	// FORTUNA
@@ -60,7 +60,7 @@ public:
 	// RAPPORTO TIPA
 	void IncRapporti(int punti);
 	void DecRapporti(int punti);
-	void SetTipa(const Tipa& tipa) { m_tipa = tipa; };
+	void SetTipa(const Tipa& tipa) { m_tipa = tipa; }
 	void LasciaTipa();
 	// LAVORO
 	void Licenziati();
@@ -72,49 +72,53 @@ public:
 	void Abbronza();
 	void Sbianca();
 	// SCOOTER
-	void PerdiScooter() { m_scooter = Scooter{}; }
+	void SetScooter(const Scooter& scooter) { m_scooter = scooter; }
+	// TELEFONO
+	void SetTelefono(const Telefono& tel) { m_telefono = tel; }
+	// DOCUMENTO IDENTIFICATIVO
+	void SetIdentita(const CartaIdentita& id) { m_identita = id; }
 
 	// TODO: RIORDINA TUTTA STA MERDA
-	long long GetSoldi() const { return m_soldi; };
-	long long GetSoldiDelta() const { return m_soldiDelta; };
-	int GetRep() const { return m_rep; };
-	int GetFama() const { return m_fama; };
-	int GetStudio() const { return m_studio; };
-	int GetFortuna() const { return m_fortuna; };
-	int GetRapporti() const { return m_rapporti; };
-	int GetPaghetta() const { return m_paghetta; };
-	int GetSizze() const { return m_sizze; };
-	Pelle GetPelle() const { return m_pelle; };
+	long long GetSoldi() const { return m_soldi; }
+	long long GetSoldiDelta() const { return m_soldiDelta; }
+	int GetRep() const { return m_rep; }
+	int GetFama() const { return m_fama; }
+	int GetStudio() const { return m_studio; }
+	int GetFortuna() const { return m_fortuna; }
+	int GetRapporti() const { return m_rapporti; }
+	int GetPaghetta() const { return m_paghetta; }
+	int GetSizze() const { return m_sizze; }
+	Pelle GetPelle() const { return m_pelle; }
 	std::string GetPelleStr();
 
 	// PASS-BY REFERENCE
-	Carriera& GetCarriera() { return m_carriera; };
-	CartaIdentita& GetID() { return m_identita; };
-	Scuola& GetScuola() { return m_scuola; };
-	Scooter& GetScooter() { return m_scooter; };
-	Tipa& GetTipa() { return m_tipa; };
-	Telefono& GetTelefono() { return m_telefono; };
-	Vestito& GetGiubotto() { return m_giubotto; };
-	Vestito& GetPantaloni() { return m_pantaloni; };
-	Vestito& GetScarpe() { return m_scarpe; };
+	Carriera& GetCarriera() { return m_carriera; }
+	Scuola& GetScuola() { return m_scuola; }
+	Scooter& GetScooter() { return m_scooter; }
+	Telefono& GetTelefono() { return m_telefono; }
+	const CartaIdentita& GetID() { return m_identita; }
+	const Tipa& GetTipa() { return m_tipa; }
+	const Vestito& GetGiubotto() { return m_giubotto; }
+	const Vestito& GetPantaloni() { return m_pantaloni; }
+	const Vestito& GetScarpe() { return m_scarpe; }
 
 	// Funzione helper
 	bool HaUnLavoro() const { return !m_carriera.IsDisoccupato(); }
-	bool HaTipa() const { return !m_tipa.GetNome().empty(); };
-	bool HaScooter() const { return !m_scooter.GetNome().empty(); };
-	bool HaTelefono() const { return !m_telefono.GetNome().empty(); };
+	bool HaTipa() const { return !m_tipa.GetNome().empty(); }
+	bool HaScooter() const { return !m_scooter.GetNome().empty(); }
+	bool HaTelefono() const { return !m_telefono.GetNome().empty(); }
 
 private:
-	int m_rapporti;
 	long long m_soldi;			// intero a 64 bit (max 9 miliardi DI miliardi): il tabbozzo è rikko...
 	long long m_soldiDelta;		// Guadagno o perdita
 	int m_paghetta;
+	int m_rapporti;
 	int m_rep;
 	int m_fama;
 	int m_studio;
-	int m_fortuna;
-	Pelle m_pelle;				// Abbronzatura
 	int m_sizze;				// sigarette
+	Pelle m_pelle;				// Abbronzatura
+	int m_fortuna;
 
 	// Qua potevo usare dei puntatori inizializzando lo scooter e la tipa a NULL, ma non voglio fare un puttanaio con destructor e magagne dei puntatori
 	CartaIdentita m_identita;

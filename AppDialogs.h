@@ -178,7 +178,7 @@ private:
 
 class DlgEvento : public wxDialog {
 public:
-	DlgEvento(wxWindow* parent, Messaggio& msg);
+	DlgEvento(wxWindow* parent, Avviso& msg);
 };
 
 class DlgTipa : public wxDialog {

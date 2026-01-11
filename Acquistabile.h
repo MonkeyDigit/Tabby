@@ -60,7 +60,7 @@ private:
 // LE SIZZE
 class Sizze : public Acquistabile {
 public:
-    Sizze() : Acquistabile{}, m_fama{ -1 }
+    Sizze() : Acquistabile{}, m_fama{ 0 }
     {}
 
     Sizze(std::string nome, std::string desc, std::string img, long long prezzo, int fama)

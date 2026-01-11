@@ -28,11 +28,12 @@ public:
 	}
 
 	void SetVoto(int voto) {
-		if (0 <= voto && voto <= 10)
 			m_voto = voto;
+			if (m_voto < 0) m_voto = 0;
+			else if (m_voto > 10) m_voto = 10;
 	}
 
-	void Reset() { m_voto = 0; };
+	void Azzera() { m_voto = 0; }
 private:
 	std::string m_nome;
 	int m_voto;
@@ -52,9 +53,10 @@ struct Scuola {
 		Materia("Metallurgia")
 		}
 	{}
+
 	void Reset(){
 		for (auto& mat : m_materie)
-			mat.Reset();
+			mat.Azzera();
 	}
 
 	std::vector<Materia> m_materie;

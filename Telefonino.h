@@ -36,10 +36,15 @@ public:
 	int GetFama() const { return m_fama; }
 	int GetStato() const { return m_stato; }
 	long long GetCredito() const { return m_credito; }
-	Abbonamento& GetAbbonamento() { return m_abb; }
+	const Abbonamento& GetAbbonamento() const { return m_abb; }
+	void SetAbbonamento(const Abbonamento& abb) { m_abb = abb; }
 
 	void IncStato(int punti) {
-		if (punti > 0) m_stato += punti;
+		if (punti > 0)
+		{
+			m_stato += punti;
+			if (m_stato > 100) m_stato = 100;
+		}
 	}
 	void DecStato(int punti) {
 		if (punti > 0)

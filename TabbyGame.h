@@ -22,7 +22,7 @@ enum class TipoMsg {
     PAGELLA     // Così sappiamo di dover mostrare la finestra con la pagella
 };
 
-enum class MsgAzione {
+enum class Scelta {
     NONE,
     // Scuola
     CORROMPI,
@@ -41,11 +41,11 @@ enum class MsgAzione {
     RIPARA_SCOOTER
 };
 
-struct Messaggio {
-	Messaggio();
-	Messaggio(TipoMsg tipo, MsgAzione id, std::string titolo, std::string testo, std::string img);
+struct Avviso {
+	Avviso();
+	Avviso(TipoMsg tipo, Scelta id, std::string titolo, std::string testo, std::string img);
 	TipoMsg m_tipo = TipoMsg::INFO;
-    MsgAzione m_msgAzione = MsgAzione::NONE;
+    Scelta m_msgAzione = Scelta::NONE;
 	std::string m_titolo;
 	std::string m_testo;
 	std::string m_immagine;	// Nome del file immagine
@@ -67,7 +67,7 @@ struct FestaFissa {
 struct Negozio {
     std::string m_nome;
     CategoriaOggetto m_merce;
-    std::vector<Acquistabile*> m_catalogo;  // ATTENZIONE !!! Siccome Acquistabile è una classe base, è di vitale importanza utilizzare dei puntatori, perchè se mettessi la variabile intera, nel momenti in cui inserisci acquistabili di diverso tipo, il vettore troncherebbe le informazioni aggiuntive della classe figlia
+    std::vector<Acquistabile*> m_catalogo;  // ATTENZIONE !!! Siccome Acquistabile è una classe base, è di vitale importanza utilizzare dei puntatori, perché se mettessi la variabile intera, nel momenti in cui inserisci acquistabili di diverso tipo, il vettore troncherebbe le informazioni aggiuntive della classe figlia
 };
 
 class TabbyGame
@@ -82,9 +82,9 @@ public:
 	Chrono::Date& GetScadenzaPal() { return m_scadenzaPal; };
     TipoGiorno GetTipoGiorno() const { return m_tipoGiorno; };
 	// LOGICA EVENTI
-	// Restituisce true se c'era un evento (e lo mette in outEvento), false se la coda eventi è vuota
-	bool PollMessaggi(Messaggio& outMsg);
-	void ApplicaScelta(MsgAzione mgsAzione, bool sceltaYes);
+	// Restituisce true se c'era un evento (e lo mette in outMsg), false se la coda eventi è vuota
+	bool PollAvvisi(Avviso& outMsg);
+	void ApplicaScelta(Scelta mgsAzione, bool sceltaYes);
     // Scuola
     bool TriggerScuola();
 	void AzioneStudia(int materiaIndex);
@@ -163,7 +163,7 @@ private:
 	int m_coolDownPestaggio;
 	int m_coolDownPelle;
     int m_attesa;
-	std::vector<Messaggio> m_codaMsg;
+	std::vector<Avviso> m_codaMsg;
 	TipoGiorno m_tipoGiorno;
     long long m_costoCorruzione;
     long long m_costoRiparazione;
@@ -176,7 +176,7 @@ private:
 	std::mt19937 m_rng;
 
 	// Evento
-	void PushMessaggio(const Messaggio& e) { m_codaMsg.push_back(e); };
+	void PushMessaggio(const Avviso& e) { m_codaMsg.push_back(e); };
 
 	// Funzioni di gestione giornaliera
 	void NuovoGiorno();

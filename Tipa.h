@@ -33,9 +33,9 @@ public:
 			m_desc = "E' un tipo...";
 	}
 
-	std::string GetNome() const { return m_nome; };
-	std::string GetDesc() const { return m_desc; };
-	int GetFama() const { return m_fama; };
+	std::string GetNome() const { return m_nome; }
+	std::string GetDesc() const { return m_desc; }
+	int GetFama() const { return m_fama; }
 
 	void SetFama(int punti) {
 		m_fama = punti;
@@ -45,9 +45,7 @@ public:
 
 	void Azzera()
 	{
-		m_nome = "";
-		m_desc = "";
-		m_fama = 0;
+		*this = Tipa{};
 	}
 
 private:

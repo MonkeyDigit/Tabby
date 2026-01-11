@@ -2,9 +2,9 @@
 
 void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 {
-	Messaggio msg;
+	Avviso msg;
 
-	while (game.PollMessaggi(msg))
+	while (game.PollAvvisi(msg))
 	{
 		DlgEvento dlgEvento{ parent, msg };
 		// Nel caso di un pop up evento con scelta (previa implementazione degli appositi bottoni con wxID_YES e wxID_NO), gli id vengono restituiti alla finestra padre
@@ -189,7 +189,7 @@ wxStaticText* DlgScooter::AddStat(wxWindow* parent, wxSizer* sizer, wxString lab
 
 void DlgScooter::AggiornaInterfaccia()
 {
-	Scooter& s = m_game.GetTabbyGuy().GetScooter();
+	const Scooter& s = m_game.GetTabbyGuy().GetScooter();
 
 	// Aggiorna Soldi
 	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()) + " >");
@@ -232,7 +232,7 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 	this->SetBackgroundColour(parent->GetBackgroundColour());
 	this->SetFont(parent->GetFont());
 
-	Scuola& scuolaref = m_game.GetTabbyGuy().GetScuola();
+	const Scuola& scuolaref = m_game.GetTabbyGuy().GetScuola();
 
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 	wxBoxSizer* sizerTop = new wxBoxSizer{ wxHORIZONTAL };
@@ -274,7 +274,7 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 		gridVoti->Add(m_lblVoti[i], 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 5);
 
 		// Binding
-		// Sfrutto una funzione lambda per associare la materia che viene selezionata ai bottoni del pannello a destra, perchè sono troppo intelligente...
+		// Sfrutto una funzione lambda per associare la materia che viene selezionata ai bottoni del pannello a destra, perché sono troppo intelligente...
 		radio->Bind(wxEVT_RADIOBUTTON, [this, i](wxCommandEvent& ev) {
 			m_materiaIndex = i;
 			AggiornaInterfaccia();
@@ -345,7 +345,7 @@ void DlgScuola::OnCorrompi(wxCommandEvent& event)
 
 void DlgScuola::AggiornaInterfaccia()
 {
-	Scuola& scuolaref = m_game.GetTabbyGuy().GetScuola();
+	const Scuola& scuolaref = m_game.GetTabbyGuy().GetScuola();
 	m_btnStudia->SetLabel("Studia " + scuolaref.m_materie[m_materiaIndex].GetNome());
 	m_btnMinaccia->SetLabel("Minaccia il prof di " + scuolaref.m_materie[m_materiaIndex].GetNome());
 	m_btnCorrompi->SetLabel("Corrompi il prof di " + scuolaref.m_materie[m_materiaIndex].GetNome());
@@ -438,12 +438,12 @@ void DlgCompagnia::AggiornaInterfaccia()
 
 
 // TODO: ICONA INFO
-DlgEvento::DlgEvento(wxWindow* parent, Messaggio& eventoDati)
+DlgEvento::DlgEvento(wxWindow* parent, Avviso& eventoDati)
 	: wxDialog{ parent, wxID_ANY, eventoDati.m_titolo, wxDefaultPosition, wxDefaultSize, wxCAPTION | wxSTAY_ON_TOP }	// Stile: CAPTION (barra titolo) ma niente tasto X (CLOSE_BOX) così l'utente è obbligato a premere i bottoni
 {
 	this->SetFont(parent->GetFont());
-	this->CenterOnParent();	// Appare al centro della finestra padre
-	Messaggio& msgref = eventoDati;
+	this->CentreOnParent();	// Appare al centro della finestra padre
+	Avviso& msgref = eventoDati;
 	// TODO: implementa immagine
 
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
@@ -921,7 +921,7 @@ DlgElencoDitte::DlgElencoDitte(wxWindow* parent, TabbyGame& game)
 		m_lista->SetItem(index, 1, sedePad);
 
 		wxString fatturatoStr;
-		if (d.m_fatturato == -1)
+		if (d.m_fatturato <= 0)
 			fatturatoStr = "Sconosciuto";
 		else
 			fatturatoStr = m_game.GetSoldiStr(d.m_fatturato);
@@ -1014,7 +1014,7 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 
 	// Fatturato
 	wxString fatturatoStr;
-	if (ditta.m_fatturato == -1)
+	if (ditta.m_fatturato <= 0)
 		fatturatoStr = "Sconosciuto";
 	else
 		fatturatoStr = game.GetSoldiStr(ditta.m_fatturato);
@@ -2014,7 +2014,7 @@ void DlgRicariche::AggiornaInterfaccia()
 	// Aggiorna Info Telefono
 	if (m_game.GetTabbyGuy().GetTelefono().HaSim())
 	{
-		Telefono& tel = m_game.GetTabbyGuy().GetTelefono();
+		const Telefono& tel = m_game.GetTabbyGuy().GetTelefono();
 		// Se ha una sim
 		if (tel.HaSim())
 		{
@@ -2220,7 +2220,7 @@ DlgPersonalInfo::DlgPersonalInfo(wxWindow* parent, TabbyGame& game)
 {
 	this->SetFont(parent->GetFont());
 	this->SetBackgroundColour(wxColor(245, 235, 200));
-	CartaIdentita& id = m_game.GetTabbyGuy().GetID();
+	const CartaIdentita& id = m_game.GetTabbyGuy().GetID();
 
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer* contentSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -2359,7 +2359,7 @@ void DlgPersonalInfo::AddSeparator(wxGridBagSizer* sizer, int& row) {
 }
 
 void DlgPersonalInfo::OnOk(wxCommandEvent& event) {
-	CartaIdentita& id = m_game.GetTabbyGuy().GetID();
+	CartaIdentita id = m_game.GetTabbyGuy().GetID();
 
 	id.m_nome = m_txtNome->GetValue().ToStdString();
 	id.m_cognome = m_txtCognome->GetValue().ToStdString();
@@ -2369,6 +2369,8 @@ void DlgPersonalInfo::OnOk(wxCommandEvent& event) {
 
 	id.m_residenza = m_txtResidenza->GetValue().ToStdString();
 	id.m_indirizzo = m_txtIndirizzo->GetValue().ToStdString();
+
+	m_game.GetTabbyGuy().SetIdentita(id);
 
 	EndModal(wxID_OK);
 }

@@ -22,13 +22,10 @@ public:
     Carriera() : m_nomeDitta(""), m_stipendio(0), m_impegno(0), m_giorniLavorati(0) {}
 
     // Metodi di stato
-    bool IsDisoccupato() const { return (m_nomeDitta == ""); }
+    bool IsDisoccupato() const { return m_nomeDitta.empty(); }
 
     void Azzera() {
-        m_nomeDitta = "";
-        m_stipendio = 0;
-        m_impegno = 0;
-        m_giorniLavorati = 0;
+        *this = Carriera{};
     }
 
     // Getters & Setters

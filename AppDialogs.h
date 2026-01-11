@@ -25,6 +25,7 @@ private:
 
 	// Eventi interni alla finestra
 	void OnConcessionario(wxCommandEvent& event);
+	void OnVendi(wxCommandEvent& event);
 	void OnTrucca(wxCommandEvent& event);
 	void OnRipara(wxCommandEvent& event);
 	void OnFaiBenza(wxCommandEvent& event);

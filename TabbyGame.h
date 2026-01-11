@@ -43,7 +43,8 @@ enum class Scelta {
     // Telefono
     VENDI_TEL,
     // Scooter
-    RIPARA_SCOOTER
+    RIPARA_SCOOTER,
+    VENDI_SCOOTER
 };
 
 struct Messaggio {
@@ -137,6 +138,7 @@ public:
     void AzioneAttivaSim(int abbonIndex);
     void AzioneRicarica(long long taglio, std::string nomeOp);
     // Scooter
+    void AzioneVendiScooter();
     void AzioneRiparaScooter();
     void AzioneUsaScooter();
     void AzioneFaiBenza();
@@ -173,6 +175,7 @@ private:
     long long m_costoCorruzione;
     long long m_costoRiparazione;
     long long m_offertaTel;
+    long long m_offertaScooter;
     Tipa m_tipaRnd;
     Scooter m_scooterRnd;
     int m_materiaIndex;

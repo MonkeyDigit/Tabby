@@ -38,7 +38,7 @@ void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 	// Usciti dal while, la coda è sicuramente vuota
 }
 
-// TODO: VENDI SCOOTER
+// DIALOG SCOOTER
 DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Scooter", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }
@@ -53,18 +53,22 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 
 	// --- COLONNA SINISTRA --------------------------------------------------------------
 
-	// 1. CONCESSIONARIO
-	wxPanel* pnlConcessionario = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
-	wxBoxSizer* sizerConcessionario = new wxBoxSizer{ wxVERTICAL };
+	// 1. CONCESSIONARIO E VENDITA
+	wxPanel* pnlCompravendita = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerCompravendita = new wxBoxSizer{ wxVERTICAL };
 
-	wxButton* btnConcessionario = new wxButton(pnlConcessionario, wxID_ANY, "Concessionario", wxDefaultPosition, wxSize(-1, 45));
+	wxButton* btnConcessionario = new wxButton(pnlCompravendita, wxID_ANY, "Concessionario", wxDefaultPosition, wxSize(-1, 45));
 	btnConcessionario->Bind(wxEVT_BUTTON, &DlgScooter::OnConcessionario, this);
 
-	sizerConcessionario->Add(btnConcessionario, 0, wxEXPAND | wxALL, 5);
-	pnlConcessionario->SetSizer(sizerConcessionario);
+	wxButton* btnVendi = new wxButton(pnlCompravendita, wxID_ANY, "Vendi Scooter", wxDefaultPosition, wxSize(-1, 45));
+	btnVendi->Bind(wxEVT_BUTTON, &DlgScooter::OnVendi, this);
+
+	sizerCompravendita->Add(btnConcessionario, 0, wxEXPAND | wxALL, 5);
+	sizerCompravendita->Add(btnVendi, 0, wxEXPAND | wxALL, 5);
+	pnlCompravendita->SetSizer(sizerCompravendita);
 	// TODO: SOSTITUISCI STRETCH SPACER CON PANNELLO IMMAGINE
 	leftCol->AddStretchSpacer();
-	leftCol->Add(pnlConcessionario, 0, wxEXPAND | wxALL, 5);
+	leftCol->Add(pnlCompravendita, 0, wxEXPAND | wxALL, 5);
 
 	// 2. MODIFICHE
 	wxPanel* pnlModifiche = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
@@ -164,6 +168,17 @@ void DlgScooter::OnConcessionario(wxCommandEvent& event)
 	this->AggiornaInterfaccia();
 }
 
+void DlgScooter::OnVendi(wxCommandEvent& event)
+{
+	if (m_game.TriggerNegozio(CategoriaOggetto::GENERICO))
+	{
+		m_game.AzioneVendiScooter();
+	}
+
+	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
+}
+
 void DlgScooter::OnTrucca(wxCommandEvent& event)
 {
 	if (m_game.TriggerMeccanico())
@@ -233,6 +248,16 @@ void DlgScooter::AggiornaInterfaccia()
 		m_lblCilindrata->SetLabel(s.GetCilindrata().GetNome());
 		m_lblFiltro->SetLabel(s.GetFiltro().GetNome());
 	}
+	else    // Bisogna azzerare i label in modo da cancellare le informazioni dopo aver venduto lo scooter
+	{
+		m_lblVelocita->SetLabel("");
+		m_lblBenza->SetLabel("");
+		m_lblStato->SetLabel("");
+		m_lblMarmitta->SetLabel("");
+		m_lblCarburatore->SetLabel("");
+		m_lblCilindrata->SetLabel("");
+		m_lblFiltro->SetLabel("");
+	}
 
 	if (m_game.GetTabbyGuy().GetScooter().GetAttivita() != Attivita::PARCHEGGIATO)
 		m_btnUsa->SetLabel("Parcheggia scooter");
@@ -243,7 +268,7 @@ void DlgScooter::AggiornaInterfaccia()
 	this->Layout();
 }
 
-// SCUOLA
+// DIALOG SCUOLA
 DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Scuola", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }, m_materiaIndex{0}
@@ -378,6 +403,7 @@ void DlgScuola::AggiornaInterfaccia()
 	this->Layout();
 }
 
+// DIALOG COMPAGNIA
 DlgCompagnia::DlgCompagnia(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Compagnia", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }
@@ -455,6 +481,7 @@ void DlgCompagnia::AggiornaInterfaccia()
 	this->Layout();
 }
 
+// DIALOG EVENTI/MESSAGGI
 DlgEvento::DlgEvento(wxWindow* parent, Messaggio& eventoDati)
 	: wxDialog{ parent, wxID_ANY, eventoDati.m_titolo, wxDefaultPosition, wxDefaultSize, wxCAPTION | wxSTAY_ON_TOP }	// Stile: CAPTION (barra titolo) ma niente tasto X (CLOSE_BOX) così l'utente è obbligato a premere i bottoni
 {
@@ -520,6 +547,7 @@ DlgEvento::DlgEvento(wxWindow* parent, Messaggio& eventoDati)
 	this->SetSizerAndFit(mainSizer);
 }
 
+// DIALOG FAMIGLIA
 DlgFamiglia::DlgFamiglia(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Famiglia", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }
@@ -602,6 +630,7 @@ void DlgFamiglia::AggiornaInterfaccia()
 	this->Layout();
 }
 
+// DIALOG LAVORO
 DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Lavoro", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }
@@ -751,6 +780,7 @@ void DlgLavoro::AggiornaInterfaccia()
 	this->Layout();
 }
 
+// DIALOG OFFERTA LAVORATIVA
 DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Annunci - Offerta di lavoro", wxDefaultPosition, wxDefaultSize,  wxCAPTION },
 	m_game{game}
@@ -815,6 +845,7 @@ void DlgOffertaLavoro::OnRifiuta(wxCommandEvent& event)
 	this->EndModal(wxID_ANY);
 }
 
+// DIALOG QUESTIONARIO DI LAVORO
 DlgQuiz::DlgQuiz(wxWindow* parent, TabbyGame& game, const QuizScheda& quiz, std::string ditta)
 	: wxDialog{ parent, wxID_ANY, quiz.m_titolo, wxDefaultPosition, wxDefaultSize,  wxCAPTION },
 	m_game{ game }, m_ditta{ ditta }
@@ -899,6 +930,7 @@ void DlgQuiz::OnFinito(wxCommandEvent& event)
 	this->EndModal(wxID_ANY);
 }
 
+// DIALOG ELENCO DITTE
 DlgElencoDitte::DlgElencoDitte(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Elenco Aziende e multinazionali", wxDefaultPosition, wxDefaultSize }, // Nota: wxDefaultSize, la calcoliamo dopo
 	m_game{ game }
@@ -1012,6 +1044,7 @@ void DlgElencoDitte::OnDittaSelezionata(wxListEvent& event)
 	}
 }
 
+// DIALOG INFORMAZIONI DITTA
 DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta)
 	: wxDialog{ parent, wxID_ANY, "Informazioni Azienda", wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX }
 {
@@ -1089,6 +1122,7 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 	this->Centre();
 }
 
+// DIALOG DISCOTECA
 DlgDisco::DlgDisco(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Disco", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }, m_selectedIndex{ -1 }
@@ -1216,7 +1250,7 @@ void DlgDisco::OnOk(wxCommandEvent& event)
 	EndModal(wxID_OK);
 }
 
-// TODO: SISTEMA
+// DIALOG TIPA
 DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Tipa"},
 		m_game{ game }
@@ -1360,6 +1394,7 @@ void DlgTipa::AggiornaInterfaccia()
 	this->Layout();
 }
 
+// DIALOG INCONTRO TIPA
 DlgIncontroTipa::DlgIncontroTipa(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Esci allo scoperto...", wxDefaultPosition, wxDefaultSize, wxCAPTION },
 	m_game{ game }, m_tipa{}
@@ -1412,6 +1447,7 @@ void DlgIncontroTipa::OnLasciaStare(wxCommandEvent& event)
 	this->EndModal(wxID_ANY);
 }
 
+// DIALOG ELENCO NEGOZI
 DlgElencoNegozi::DlgElencoNegozi(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Negozi", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }
@@ -1571,7 +1607,7 @@ void PnlProdotto::OnCompra(wxCommandEvent& event)
 	m_parentDlg->EndModal(wxID_ANY);	// Chiudiamo la finestra del negozio
 }
 
-
+// DIALOG NEGOZIO
 DlgNegozio::DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio)
 	: wxDialog{ parent, wxID_ANY, negozio.m_nome, wxDefaultPosition, wxDefaultSize},
 	m_game{ game }, m_negozio{ negozio }
@@ -1642,6 +1678,7 @@ void DlgNegozio::AggiornaInterfaccia()
 	this->Layout();
 }
 
+// DIALOG PALESTRA
 DlgPalestra::DlgPalestra(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Palestra", wxDefaultPosition, wxDefaultSize},
 	m_game{ game }
@@ -1778,7 +1815,7 @@ void DlgPalestra::OnLampada(wxCommandEvent& event)
 	ManifestaEventi(this, m_game);
 }
 
-
+// DIALOG TELEFONO
 DlgTelefono::DlgTelefono(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Telefonino" },
 	m_game{ game }
@@ -1900,6 +1937,7 @@ void DlgTelefono::OnRicarica(wxCommandEvent& event)
 	
 }
 
+// DIALOG RICARICHE
 DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Negozio Telefonia", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE }, // Tolto wxRESIZE_BORDER
 	m_game{ game }
@@ -2067,6 +2105,7 @@ void DlgRicariche::AggiornaInterfaccia()
 	this->Layout();
 }
 
+// DIALOG CONCESSIONARIO
 DlgConcessionario::DlgConcessionario(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Concessionario", wxDefaultPosition, wxDefaultSize },
 	m_game{ game }
@@ -2244,6 +2283,7 @@ wxStaticText* DlgConcessionario::AddStat(wxWindow* parent, wxSizer* sizer, wxStr
 	return valueBox;
 }
 
+// DIALOG DOCUMENTO D'IDENTITA'
 DlgPersonalInfo::DlgPersonalInfo(wxWindow* parent, TabbyGame& game)
 	: wxDialog(parent, wxID_ANY, "Documento d'identità", wxDefaultPosition, wxSize(500, -1)),
 	m_game(game)
@@ -2336,10 +2376,7 @@ void DlgPersonalInfo::AddEditRow(wxGridBagSizer* sizer, int& row, wxString label
 	row++;
 }
 
-// Funzione speciale per gestire "Milano (MI)"
-void DlgPersonalInfo::AddCityProvRow(wxGridBagSizer* sizer, int& row, wxString label,
-	wxTextCtrl*& ctrlCitta, wxString valCitta,
-	wxTextCtrl*& ctrlProv, wxString valProv)
+void DlgPersonalInfo::AddCityProvRow(wxGridBagSizer* sizer, int& row, wxString label, wxTextCtrl*& ctrlCitta, wxString valCitta, wxTextCtrl*& ctrlProv, wxString valProv)
 {
 	wxFont fontLabel = this->GetFont();
 	fontLabel.SetWeight(wxFONTWEIGHT_BOLD);
@@ -2405,6 +2442,7 @@ void DlgPersonalInfo::OnOk(wxCommandEvent& event) {
 	EndModal(wxID_OK);
 }
 
+// DIALOG CONFIGURAZIONE
 DlgConfig::DlgConfig(wxWindow* parent, TabbyGame& game)
 	: wxDialog(parent, wxID_ANY, "Configuration", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE & ~wxRESIZE_BORDER),
 	m_game(game)
@@ -2537,6 +2575,7 @@ void DlgConfig::OnOk(wxCommandEvent& event)
 	EndModal(wxID_OK);
 }
 
+// DIALOG USCITA
 DlgUscita::DlgUscita(wxWindow* parent)
 	: wxDialog(parent, wxID_ANY, "Fine della sessione del Tabboz Simulator", wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX),
 	m_sceltaUscita(false)
@@ -2611,6 +2650,7 @@ void DlgUscita::OnHelp(wxCommandEvent& event)
 	wxMessageBox("Non c'è aiuto per te, Tabbozzo.", "Help", wxOK | wxICON_INFORMATION);
 }
 
+// DIALOG ABOUT
 DlgAbout::DlgAbout(wxWindow* parent)
 	: wxDialog(parent, wxID_ANY, "About Tabboz Simulator", wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX)
 {

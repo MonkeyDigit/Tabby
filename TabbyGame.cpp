@@ -770,6 +770,14 @@ void TabbyGame::ApplicaScelta(Scelta msgAzione, bool sceltaYes)
             }
         }
         break;
+    case Scelta::VENDI_SCOOTER:
+        if (sceltaYes)
+        {
+            m_tabbyGuy.SetScooter(Scooter{});
+            m_tabbyGuy.GuadagnaSoldi(m_offertaScooter);
+            WriteLog("ApplicaScelta: Vendi lo scooter per " + GetSoldiStr(m_offertaScooter));
+        }
+        break;
     }
     
 }
@@ -2076,6 +2084,29 @@ void TabbyGame::AzioneRicarica(long long taglio, std::string nomeOp)
     if(ha telefono)
         suono
     */
+}
+
+void TabbyGame::AzioneVendiScooter()
+{
+    if (!m_tabbyGuy.HaScooter())
+    {
+        Messaggio msg{ TipoMsg::ERRORE, "Ma che ???", "Scusa, ma quale scooter avresti intenzione di vendere visto che non ne hai neanche uno ???" };
+        PushMessaggio(msg);
+        return;
+    }
+
+    const Scooter& s = m_tabbyGuy.GetScooter();
+
+    if (s.GetAttivita() == Attivita::INGRIPPATO || s.GetAttivita() == Attivita::INVASATO)    // Se lo scooter è sputtanato vale meno...
+        m_offertaScooter = s.GetPrezzo() * 0.01f * (s.GetStato() - 50 - GenRandomInt(0, 9)) * 0.6f;
+    else
+        m_offertaScooter = s.GetPrezzo() * 0.01f * (s.GetStato() - 10 - GenRandomInt(0, 9)) * 0.6f;
+
+    if (m_offertaScooter < 30)  // Se vale meno di 30 euro nessuno lo vuole
+        m_offertaScooter = 30;
+
+    Messaggio msg{ TipoMsg::SCELTA, "Vendi lo scooter", "Il tuo scooterino viene valutato per " + GetSoldiStr(m_offertaScooter)+". \nLo vendi ?", "", Scelta::VENDI_SCOOTER };
+    PushMessaggio(msg);
 }
 
 void TabbyGame::AzioneRiparaScooter()

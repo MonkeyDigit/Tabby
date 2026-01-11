@@ -1,9 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS // Senza questa mi fotte la funzione localtime
 #include <fstream>              // Gestione file
 #include <ctime>                // Per l'orario nel log
-#include <iomanip>              // Per formattare l'orario
-#include <iostream>             // Per cerr (errori)
-#include <sstream>
 #include "TabbyGame.h"
 
 Messaggio::Messaggio() {}
@@ -17,7 +14,8 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     m_valutaCorrente{Valuta::LIRE}, 
     m_coolDownPestaggio{ 5 }, 
     m_tipoGiorno{ TipoGiorno::NORMALE },
-    m_attesa{ATTESA_MAX}
+    m_attesa{ATTESA_MAX},
+    m_soundActive{ true }
 {
     CaricaStringhe();
     CaricaAbbonamenti();
@@ -33,49 +31,6 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
      std::random_device rd;
     // Inizializzo il motore (m_rng) con quel seme
     m_rng.seed(rd());
-}
-
-// Funzione helper per la formattazione dei soldi
-static std::string formattaConPunti(long long numero)
-{
-    // Convertiamo in stringa grezza (es. "1000000")
-    std::string s = std::to_string(numero);
-
-    // Calcoliamo dove inserire i punti
-    // Partiamo dalla fine, saltiamo 3 cifre, e mettiamo un punto.
-    // Dobbiamo stare attenti a non mettere il punto se siamo all'inizio (es. non ".100")
-    // e a gestire il segno meno se tabby va in rosso
-
-    int len = s.length();
-    int count = 0;
-
-    // Partiamo dal fondo verso l'inizio
-    for (int i = len - 1; i > 0; i--)
-    {
-        // Se il carattere è un numero (evitiamo il segno '-')
-        if (isdigit(s[i])) {
-            count++;
-
-            // Ogni 3 cifre, se non siamo all'inizio e il carattere prima non è un '-', inseriamo il punto
-            if (count == 3 && i > 0 && s[i - 1] != '-')
-            {
-                s.insert(i, "."); // Inserisce il punto nella posizione i
-                count = 0;    // Resetta il count
-            }
-        }
-    }
-
-    return s;
-}
-
-// Funzione Helper: Cerca 'tag' dentro 'testo' e lo sostituisce con 'valore'
-static std::string Sostituisci(std::string testo, const std::string& tag, const std::string& valore)
-{
-    size_t pos = testo.find(tag);
-    if (pos != std::string::npos) {
-        testo.replace(pos, tag.length(), valore);
-    }
-    return testo; // Ritorna la stringa modificata
 }
 
 int TabbyGame::GenRandomInt(int min, int max)
@@ -201,6 +156,7 @@ void TabbyGame::AvanzaCalendario()
             {
                 // TODO: DIALOG pagella
                 // TODO: Qua va fatta una roba speciale
+                // TODO: SUONO 401
             }
 
             m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
@@ -352,7 +308,7 @@ void TabbyGame::GestioneRelazioni()
             if (rnd < 11)
             {
                 // Da 1 a 10, la donna ti molla...
-                // TODO: SUONO
+                PlaySound(603);
 
                 m_tabbyGuy.LasciaTipa();
                 m_tabbyGuy.DecRep(11 - rnd);    // Quelle con numero più basso, sono peggiori...
@@ -385,7 +341,7 @@ void TabbyGame::GestioneLavoro()
             // Perdi il lavoro
             m_tabbyGuy.Licenziati();
 
-            // TODO: SUONO
+            PlaySound(504);
             Messaggio msg{ TipoMsg::ERRORE, "Perdi il lavoro...", "Un bel giorno ti svegli e scopri di essere stato licenziato." };
             PushMessaggio(msg);
 
@@ -411,8 +367,6 @@ void TabbyGame::GestioneEconomia()
                 // DEBUG LOG
                 WriteLog("GestioneEconomia: Paghetta doppia !!!");
 
-
-                // TODO: SUONO
                 Messaggio msg{ TipoMsg::SUCCESSO, "Paghetta settimanale", "Visto che vai bene a scuola, ti diamo il doppio della paghetta..." };
                 PushMessaggio(msg);
             }
@@ -423,7 +377,7 @@ void TabbyGame::GestioneEconomia()
             // DEBUG LOG
             WriteLog("GestioneEconomia: Metà paghetta (" + GetSoldiStr(m_tabbyGuy.GetPaghetta()*0.5f) + ")");
 
-
+            PlaySound(1200);
             Messaggio msg{ TipoMsg::INFO, "Paghetta settimanale", "Finché non andrai bene a scuola, ti daremo solo metà della paghetta..." };
             PushMessaggio(msg);
         }
@@ -447,7 +401,8 @@ void TabbyGame::GestioneEventiCasuali()
             int rndFrase = GenRandomInt(0, m_frasiMetallari.size() - 1);
             int rndVia = GenRandomInt(0, m_vieStr.size() - 1);
 
-            Messaggio msg{ TipoMsg::INFO, "Vieni pestato", Sostituisci(m_frasiMetallari[rndFrase],"{LUOGO}", m_vieStr[rndVia])};
+            PlaySound(1300);
+            Messaggio msg{ TipoMsg::INFO, "Vieni pestato", sostituisci(m_frasiMetallari[rndFrase],"{LUOGO}", m_vieStr[rndVia])};
             PushMessaggio(msg);
             // DEBUG LOG
             WriteLog("GestioneEventiCasuali: Metallaro n. " + std::to_string(rndFrase));
@@ -470,7 +425,7 @@ void TabbyGame::GestioneEventiCasuali()
                     int rndFrase = GenRandomInt(0, m_frasiCamionista.size() - 1);
                     int rndVia = GenRandomInt(0, m_vieStr.size() - 1);
 
-                    Messaggio msg{ TipoMsg::ERRORE, "Camionista bastardo", Sostituisci(m_frasiCamionista[rndFrase],"{LUOGO}", m_vieStr[rndVia]) };
+                    Messaggio msg{ TipoMsg::ERRORE, "Camionista bastardo", sostituisci(m_frasiCamionista[rndFrase],"{LUOGO}", m_vieStr[rndVia]) };
                     PushMessaggio(msg);
                     // DEBUG LOG
                     WriteLog("GestioneEventiCasuali: Scooter - Camionista...");
@@ -525,7 +480,7 @@ void TabbyGame::GestioneEventiCasuali()
                 int rndMat = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size() - 1);
                 int rndFrase = GenRandomInt(0, m_frasiScuola.size() - 1);
                 Materia& mat = m_tabbyGuy.GetScuola().m_materie[rndMat];
-                Messaggio msg{ TipoMsg::INFO, "Scuola", Sostituisci(m_frasiScuola[rndFrase],"{MATERIA}",mat.GetNome())};
+                Messaggio msg{ TipoMsg::INFO, "Scuola", sostituisci(m_frasiScuola[rndFrase],"{MATERIA}",mat.GetNome())};
                 PushMessaggio(msg);
 
                 mat.DecVoto(2);
@@ -539,6 +494,7 @@ void TabbyGame::GestioneEventiCasuali()
             if (m_tabbyGuy.GetFama() > 35)   // Fama < 35 = nessuna speranza...
             {
                 m_tipaRnd = GeneraTipa();
+                PlaySound(1);
                 Messaggio msg{ TipoMsg::SCELTA, "Qualcuno ti caga...", "Una tipa, di nome " + m_tipaRnd.GetNome() + " (Figosità " + std::to_string(m_tipaRnd.GetFama()) + "/100), ci prova con te...\nCi stai ???", "", Scelta::TIPA_CI_PROVA };
                 PushMessaggio(msg);
 
@@ -632,14 +588,12 @@ void TabbyGame::ApplicaScelta(Scelta msgAzione, bool sceltaYes)
                     m_tabbyGuy.DecRep(3);
                 if (m_tabbyGuy.GetRep() > 10)
                     m_tabbyGuy.DecRep(2);
-                // TODO: ICONA FALLIMENTO
                 Messaggio msg{ TipoMsg::ERRORE, "Hai perso, imbranato...", "Dopo pochi metri si vede l'inferiorità del tuo scooter..." };
                 PushMessaggio(msg);
             }
             else
             {   // Vinci
                 m_tabbyGuy.IncRep(10);
-                // TODO: ICONA SUCCESSO
                 Messaggio msg{ TipoMsg::SUCCESSO, "Hai vinto", "Con il tuo scooter, bruci l'avversario in partenza..." };
                 PushMessaggio(msg);
             }
@@ -668,7 +622,7 @@ void TabbyGame::ApplicaScelta(Scelta msgAzione, bool sceltaYes)
     case Scelta::LASCIA_TIPA:
         if (sceltaYes)
         {
-            // TODO: SUONO
+            PlaySound(603);
             if (m_tabbyGuy.GetTipa().GetFama() >= 79)
             {
                 Messaggio msg{ TipoMsg::ERRORE, "Coglione...", "Appena vengono a sapere quello che hai fatto, i tuoi amici ti prendono a scarpate.\nQualcuno più furbo di te, va a consolarla..." };
@@ -759,7 +713,7 @@ void TabbyGame::ApplicaScelta(Scelta msgAzione, bool sceltaYes)
         {
             if (m_tabbyGuy.SpendiSoldi(m_costoRiparazione))
             {
-                // TODO: SUONO
+                PlaySound(102);
                 m_tabbyGuy.GetScooter().Ripara();
                 WriteLog("AzioneRiparaScooter: Paga riparazione " + GetSoldiStr(m_costoRiparazione));
             }
@@ -839,7 +793,7 @@ void TabbyGame::AzioneMinaccia(int materiaIndex)
         m_tabbyGuy.DecRep(2);
         mat.DecVoto(1);
 
-        // TODO: SUONO
+        PlaySound(402);
         Messaggio msg{ TipoMsg::ERRORE, "Bella figura", "Cosa ??? Credi di farmi paura piccolo pezzettino di letame vestito da zarro...\nDeve ancora nascere chi può minacciarmi..." };
         PushMessaggio(msg);
     }
@@ -875,8 +829,8 @@ void TabbyGame::AzioneGara()
     }
     else
     {
-        // TODO: SUONO
         m_scooterRnd = GeneraScooter();
+        PlaySound(701);
         Messaggio msg{ TipoMsg::SCELTA, "Gareggia con lo scooter", "Accetti la sfida con un tabbozzo che ha un " + m_scooterRnd.GetNome() + " ?", "", Scelta::GARA };
         PushMessaggio(msg);
         if (m_tabbyGuy.GetScooter().GetStato() > 30)
@@ -989,6 +943,7 @@ void TabbyGame::AzioneSoldiExtra()
 
 void TabbyGame::AzioneChiediSoldi()
 {
+    PlaySound(801);
     Messaggio msg{ TipoMsg::ERRORE, "Errore irrecuperabile", "Non pensarci neanche lontanamente..." };
     PushMessaggio(msg);
     NuovoGiorno();
@@ -1041,7 +996,6 @@ void TabbyGame::AzioneProvaci(const Tipa& tipa)
     else
     {
         // Fai cagare...
-        // TODO: SUONO
         // TODO: LOG 2 di picche
         m_tabbyGuy.DecRep(2);
         m_tabbyGuy.DecFama(2);
@@ -1133,13 +1087,6 @@ long long TabbyGame::ConvertiValuta(long long valoreBase) const
 	return (long long)(valoreBase * CAMBIO_EURO_LIRA);
 }
 
-// Funzione helper locale per rimuovere spazi o caratteri di a capo residui (es. \r su Windows)
-static void trimString(std::string& s) {
-    while (!s.empty() && (s.back() == '\r' || s.back() == '\n' || s.back() == ' ')) {
-        s.pop_back();
-    }
-}
-
 void TabbyGame::CaricaStringhe()
 {
     std::ifstream file("dati/strings.txt");
@@ -1195,28 +1142,6 @@ void TabbyGame::CaricaStringhe()
     WriteLog("Caricamento frasi completato da file unico.");
 }
 
-
-static std::vector<std::string> SplitString(const std::string& s, char delimiter) {
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(s);
-    while (std::getline(tokenStream, token, delimiter)) {
-        // Rimuovi eventuali spazi bianchi iniziali/finali
-        tokens.push_back(token);
-    }
-    return tokens;
-}
-
-// Helper per convertire stringa in enum/int senza impazzire con le eccezioni
-static int ParseInt(const std::string& s) {
-    try { return std::stoi(s); }
-    catch (...) { return 0; }
-}
-static long long ParseLong(const std::string& s) {
-    try { return std::stoll(s); }
-    catch (...) { return 0; }
-}
-
 void TabbyGame::CaricaAbbonamenti()
 {
     m_abbonamenti.clear();
@@ -1229,15 +1154,15 @@ void TabbyGame::CaricaAbbonamenti()
         trimString(riga);
         if (riga.empty() || riga[0] == '#') continue;
 
-        auto tokens = SplitString(riga, '|');
+        auto tokens = splitString(riga, '|');
         // FORMATO: Nome | Img | CostoFisso | CostoVariabile1 | CostoVariabile2
         if (tokens.size() >= 5)
         {
             std::string nome = tokens[0];
             std::string img = tokens[1];
-            long long fisso = ParseLong(tokens[2]);
-            long long var1 = ParseLong(tokens[3]);
-            long long var2 = ParseLong(tokens[4]);
+            long long fisso = parseLong(tokens[2]);
+            long long var1 = parseLong(tokens[3]);
+            long long var2 = parseLong(tokens[4]);
 
             // Costruttore: Nome, Img, CostoAttivazione, VectorRicariche
             Abbonamento abb(nome, img, fisso, { var1, var2 });
@@ -1256,17 +1181,17 @@ void TabbyGame::CaricaDiscoteche() {
         trimString(riga);
         if (riga.empty() || riga[0] == '#') continue; // Salta commenti e vuote
 
-        auto tokens = SplitString(riga, '|');
+        auto tokens = splitString(riga, '|');
         if (tokens.size() >= 8) {
             Disco d;
             d.m_nome = tokens[0];
             d.m_descrizione = tokens[1];
-            d.m_giornoChiuso = (Chrono::WeekDay)ParseInt(tokens[2]);
-            d.m_fuoriPorta = (bool)ParseInt(tokens[3]);
-            d.m_prezzoIngresso = ParseLong(tokens[4]);
-            d.m_reqFama = ParseInt(tokens[5]);
-            d.m_incFama = ParseInt(tokens[6]);
-            d.m_incRep = ParseInt(tokens[7]);
+            d.m_giornoChiuso = (Chrono::WeekDay)parseInt(tokens[2]);
+            d.m_fuoriPorta = (bool)parseInt(tokens[3]);
+            d.m_prezzoIngresso = parseLong(tokens[4]);
+            d.m_reqFama = parseInt(tokens[5]);
+            d.m_incFama = parseInt(tokens[6]);
+            d.m_incRep = parseInt(tokens[7]);
 
             m_discoteche.push_back(d);
         }
@@ -1285,16 +1210,16 @@ void TabbyGame::CaricaDitte() {
 
             // Riga 1: Dati Base
             if (!std::getline(file, riga)) break;
-            auto tokens = SplitString(riga, '|');
+            auto tokens = splitString(riga, '|');
             if (tokens.size() < 3) continue;
 
             d.m_nome = tokens[0];
             d.m_sede = tokens[1];
-            d.m_fatturato = ParseLong(tokens[2]);
+            d.m_fatturato = parseLong(tokens[2]);
 
             // Riga 2: Offerta
             if (!std::getline(file, riga)) break;
-            auto offTokens = SplitString(riga, '|');
+            auto offTokens = splitString(riga, '|');
             if (offTokens.size() >= 3) {
                 d.m_offerta.m_descrizione = offTokens[0];
                 d.m_offerta.m_accettaStr = offTokens[1];
@@ -1326,13 +1251,13 @@ void TabbyGame::CaricaFeste()
         trimString(riga);
         if (riga.empty() || riga[0] == '#') continue;
 
-        auto tokens = SplitString(riga, '|');
+        auto tokens = splitString(riga, '|');
         // FORMATO: Giorno | Mese | Nome | Messaggio
         if (tokens.size() >= 4)
         {
             FestaFissa f;
-            f.m_giorno = ParseInt(tokens[0]);
-            f.m_mese = ParseInt(tokens[1]);
+            f.m_giorno = parseInt(tokens[0]);
+            f.m_mese = parseInt(tokens[1]);
             f.m_nome = tokens[2];
             f.m_messaggio = tokens[3];
             m_feste.push_back(f);
@@ -1355,7 +1280,7 @@ void TabbyGame::CaricaNegozi() {
         trimString(riga);
         if (riga.empty() || riga[0] == '#') continue;
 
-        auto tokens = SplitString(riga, '|');
+        auto tokens = splitString(riga, '|');
         if (tokens.empty()) continue;
 
         // --- NUOVO NEGOZIO ---
@@ -1363,7 +1288,7 @@ void TabbyGame::CaricaNegozi() {
             Negozio n;
             n.m_nome = tokens[1];
             // Cast int -> Enum Categoria
-            n.m_merce = (CategoriaOggetto)ParseInt(tokens[2]);
+            n.m_merce = (CategoriaOggetto)parseInt(tokens[2]);
 
             m_negozi.push_back(n);
             currentNegozio = &m_negozi.back(); // Puntiamo all'ultimo inserito
@@ -1372,19 +1297,19 @@ void TabbyGame::CaricaNegozi() {
         {
             m_telefonia.m_nome = tokens[1];
             // Cast int -> Enum Categoria
-            m_telefonia.m_merce = (CategoriaOggetto)ParseInt(tokens[2]);
+            m_telefonia.m_merce = (CategoriaOggetto)parseInt(tokens[2]);
             currentNegozio = &m_telefonia;
         }
         else if (tokens[0] == "[CONCESSIONARIO]")
         {
             m_concessionario.m_nome = tokens[1];
-            m_concessionario.m_merce = (CategoriaOggetto)ParseInt(tokens[2]);
+            m_concessionario.m_merce = (CategoriaOggetto)parseInt(tokens[2]);
             currentNegozio = &m_concessionario;
         }
         else if (tokens[0] == "[MECCANICO]")
         {
             m_meccanico.m_nome = tokens[1];
-            m_meccanico.m_merce = (CategoriaOggetto)ParseInt(tokens[2]);
+            m_meccanico.m_merce = (CategoriaOggetto)parseInt(tokens[2]);
             currentNegozio = &m_meccanico;
         }
         // --- ITEM (OGGETTO) ---
@@ -1394,15 +1319,15 @@ void TabbyGame::CaricaNegozi() {
 
             if (tipo == "VESTITO" && tokens.size() >= 8) {
                 // ITEM|VESTITO|TipoVest|Nome|Desc|Img|Prezzo|Fama
-                TipoVestito tv = (TipoVestito)ParseInt(tokens[2]);
-                nuovoItem = new Vestito(tv, tokens[3], tokens[4], tokens[5], ParseLong(tokens[6]), ParseInt(tokens[7]));
+                TipoVestito tv = (TipoVestito)parseInt(tokens[2]);
+                nuovoItem = new Vestito(tv, tokens[3], tokens[4], tokens[5], parseLong(tokens[6]), parseInt(tokens[7]));
             }
             else if (tipo == "SIZZE" && tokens.size() >= 7) {
                 // ITEM|SIZZE|Nome|Desc|Img|Prezzo|Fama
-                nuovoItem = new Sizze(tokens[2], tokens[3], tokens[4], ParseLong(tokens[5]), ParseInt(tokens[6]));
+                nuovoItem = new Sizze(tokens[2], tokens[3], tokens[4], parseLong(tokens[5]), parseInt(tokens[6]));
             }
             else if (tipo == "TEL" && tokens.size() >= 8) {
-                nuovoItem = new Telefono{ tokens[2], tokens[3], tokens[4], ParseLong(tokens[5]), ParseInt(tokens[6]), ParseInt(tokens[7]), 0, Abbonamento() };
+                nuovoItem = new Telefono{ tokens[2], tokens[3], tokens[4], parseLong(tokens[5]), parseInt(tokens[6]), parseInt(tokens[7]), 0, Abbonamento() };
             }
             else if (tipo == "SCOOTER")
             {
@@ -1418,15 +1343,15 @@ void TabbyGame::CaricaNegozi() {
                     // 1. Dati Base Scooter
                     std::string nome = tokens[2];
                     std::string img = tokens[3];
-                    long long prezzo = ParseLong(tokens[4]);
-                    int fama = ParseInt(tokens[5]);
-                    int benza = ParseInt(tokens[6]); // Capacità serbatoio o benza iniziale
+                    long long prezzo = parseLong(tokens[4]);
+                    int fama = parseInt(tokens[5]);
+                    int benza = parseInt(tokens[6]); // Capacità serbatoio o benza iniziale
 
                     // 2. Costruzione Componenti
-                    Pezzo marmitta(TipoPezzo::MARMITTA, tokens[7], tokens[8], ParseLong(tokens[9]), ParseInt(tokens[10]));
-                    Pezzo carburatore(TipoPezzo::CARBURATORE, tokens[11], tokens[12], ParseLong(tokens[13]), ParseInt(tokens[14]));
-                    Pezzo pistone(TipoPezzo::PISTONE, tokens[15], tokens[16], ParseLong(tokens[17]), ParseInt(tokens[18]));
-                    Pezzo filtro(TipoPezzo::FILTRO, tokens[19], tokens[20], ParseLong(tokens[21]), ParseInt(tokens[22]));
+                    Pezzo marmitta(TipoPezzo::MARMITTA, tokens[7], tokens[8], parseLong(tokens[9]), parseInt(tokens[10]));
+                    Pezzo carburatore(TipoPezzo::CARBURATORE, tokens[11], tokens[12], parseLong(tokens[13]), parseInt(tokens[14]));
+                    Pezzo pistone(TipoPezzo::PISTONE, tokens[15], tokens[16], parseLong(tokens[17]), parseInt(tokens[18]));
+                    Pezzo filtro(TipoPezzo::FILTRO, tokens[19], tokens[20], parseLong(tokens[21]), parseInt(tokens[22]));
 
                     // 3. Creazione Scooter con i pezzi
                     nuovoItem = new Scooter(nome, img, prezzo, fama, benza, marmitta, carburatore, pistone, filtro);
@@ -1434,8 +1359,8 @@ void TabbyGame::CaricaNegozi() {
             }
             else if (tipo == "PEZZO" && tokens.size() >= 7)
             {
-                TipoPezzo tp = (TipoPezzo)ParseInt(tokens[2]);
-                nuovoItem = new Pezzo{ tp, tokens[3], tokens[4], ParseLong(tokens[5]), ParseInt(tokens[6]) };
+                TipoPezzo tp = (TipoPezzo)parseInt(tokens[2]);
+                nuovoItem = new Pezzo{ tp, tokens[3], tokens[4], parseLong(tokens[5]), parseInt(tokens[6]) };
             }
 
             if (nuovoItem) {
@@ -1496,7 +1421,7 @@ void TabbyGame::CaricaQuiz()
                 if (std::getline(file, rigaRisposte))
                 {
                     trimString(rigaRisposte);
-                    auto risposte = SplitString(rigaRisposte, '|');
+                    auto risposte = splitString(rigaRisposte, '|');
 
                     if (risposte.size() >= 3)
                     {
@@ -1508,6 +1433,18 @@ void TabbyGame::CaricaQuiz()
             }
         }
     }
+}
+
+void TabbyGame::PlaySound(int id)
+{
+    if (!m_soundActive)
+        return;
+
+    Messaggio msg;
+    msg.m_tipo = TipoMsg::SUONO;
+    msg.m_soundId = id;
+    msg.m_testo = ""; // Identifica che è solo un trigger sonoro
+    PushMessaggio(msg);
 }
 
 std::string TabbyGame::GetSoldiStr(long long valoreBase) const
@@ -1557,7 +1494,7 @@ void TabbyGame::AzioneLavora()
         if (m_tabbyGuy.GetCarriera().GetImpegno() < 85)
             m_tabbyGuy.GetCarriera().IncImpegno(1);
 
-        // TODO: SUONO
+        PlaySound(501);
         NuovoGiorno();
     }
 }
@@ -1573,7 +1510,9 @@ void TabbyGame::AzioneLeccaculo()
     {
         if (!TriggerLavoro())
             return;
-        // TODO: SUONO
+        
+        PlaySound(503);
+
         if (m_tabbyGuy.GetRep() > 20)    // Facendo il leccaculo perdi reputazione e fama...
             m_tabbyGuy.DecRep(1);
 
@@ -1635,7 +1574,7 @@ void TabbyGame::AzioneSciopera()
         if (!TriggerLavoro())
             return;
 
-        // TODO: SUONO
+        PlaySound(502);
 
         if (m_tabbyGuy.GetRep() < 85)
             m_tabbyGuy.IncRep(10);
@@ -1679,7 +1618,7 @@ void TabbyGame::AzionePagaDisco(int discoIndex)
     else
     {
         // FINALMENTE VAI IN DISCO
-        // TODO: SUONO
+        PlaySound(GenRandomInt(303, 305));
         WriteLog("AzionePagaDisco: Paga " + GetSoldiStr(disco.m_prezzoIngresso));
         m_tabbyGuy.IncFama(disco.m_incFama);
         m_tabbyGuy.IncRep(disco.m_incRep);
@@ -1764,7 +1703,7 @@ void TabbyGame::AzioneTelefonaTipa()
         return;
     }
 
-    // TODO: SUONO
+    PlaySound(602);
     if (m_tabbyGuy.HaTelefono() && m_tabbyGuy.GetTelefono().GetCredito() <= 2)
         m_tabbyGuy.GetTelefono().DecCredito(2);
     else
@@ -1902,6 +1841,7 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
     else if (prod.GetCategoria() == CategoriaOggetto::SCOOTER_PART)
     {
         const Pezzo& pezzo{ static_cast<const Pezzo&>(prod) };
+        PlaySound(101);
         m_tabbyGuy.GetScooter().InstallaPezzo(pezzo);
     }
 
@@ -1929,7 +1869,7 @@ void TabbyGame::AzioneVaiPalestra()
         return;
     }
 
-    // TODO: SUONO
+    PlaySound(201);
     if (m_tabbyGuy.GetFama() < 82)
         m_tabbyGuy.IncFama(1);
 
@@ -1978,7 +1918,7 @@ void TabbyGame::AzioneLampada()
                 PushMessaggio(msg);
             }
 
-            // TODO: SUONO
+            PlaySound(202);
             WriteLog("AzioneLampada: Paga " + GetSoldiStr(PREZZO_LAMPADA));
         }
         else
@@ -2054,11 +1994,9 @@ void TabbyGame::AzioneAttivaSim(int abbonIndex)
     }
 
     m_tabbyGuy.GetTelefono().SetAbbonamento(m_abbonamenti[abbonIndex]);
-    // TODO: SUONO
-    /*
-    if(ha telefono)
-        suono
-    */
+
+    if(m_tabbyGuy.HaTelefono())
+        PlaySound(602);
 }
 
 void TabbyGame::AzioneRicarica(long long taglio, std::string nomeOp)
@@ -2079,11 +2017,8 @@ void TabbyGame::AzioneRicarica(long long taglio, std::string nomeOp)
 
     m_tabbyGuy.GetTelefono().IncCredito(taglio);
 
-    // TODO: SUONO
-    /*
-    if(ha telefono)
-        suono
-    */
+    if(m_tabbyGuy.HaTelefono())
+        PlaySound(602);
 }
 
 void TabbyGame::AzioneVendiScooter()

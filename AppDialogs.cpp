@@ -16,7 +16,31 @@ void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 
 	while (game.PollMessaggi(msg))
 	{
-		DlgEvento dlgEvento{ parent, msg };
+		// GESTIONE DEI SUONI PERSONALI .WAV
+		if (msg.m_soundId != -1)
+		{
+			// Questa riga "costruisce" una stringa di testo. Il segnaposto %04d prende il numero e lo scrive come un intero di 4 cifre, aggiungendo degli zeri davanti se necessario
+			wxString path = wxString::Format("sounds/tabs%04d.wav", (int)msg.m_soundId);
+
+			if (wxFileExists(path)) {
+				wxSound s(path);
+				if (s.IsOk()) {
+					s.Play(wxSOUND_ASYNC);
+				}
+				else {
+					// Se entra qui, il file esiste ma il formato non è supportato
+					game.WriteLog("ERRORE AUDIO: Formato file non supportato: " + path.ToStdString());
+				}
+			}
+			else {
+				// Se entra qui, il file proprio non viene trovato
+				game.WriteLog("ERRORE AUDIO: File non trovato: " + path.ToStdString());
+			}
+		}
+
+		if (msg.m_tipo == TipoMsg::SUONO) continue;	// Solo un suono, nessun messaggio da mostrare
+
+		// GESTIONE SUONI DI SISTEMA
 #ifdef __WXMSW__
 		UINT soundType = MB_OK;
 		if (msg.m_tipo == TipoMsg::ERRORE) soundType = MB_ICONHAND;
@@ -27,6 +51,8 @@ void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 		// Riproduce il suono ORIGINALE di Windows
 		MessageBeep(soundType);
 #endif
+
+		DlgEvento dlgEvento{ parent, msg };
 		// Nel caso di un pop up evento con scelta (previa implementazione degli appositi bottoni con wxID_YES e wxID_NO), gli id vengono restituiti alla finestra padre
 		// Qua valutiamo l'espressione logica
 		bool scelta = (dlgEvento.ShowModal() == wxID_YES);
@@ -1474,6 +1500,14 @@ DlgElencoNegozi::DlgElencoNegozi(wxWindow* parent, TabbyGame& game)
 
 			if(m_game.TriggerNegozio(negozi[i].m_merce))
 			{
+				if(negozi[i].m_merce == CategoriaOggetto::CONSUMABILE)
+					m_game.PlaySound(203);
+				else if (m_game.GenRandomInt(0, 1) == 1)
+					m_game.PlaySound(204);
+				else
+					m_game.PlaySound(205);
+				ManifestaEventi(this, m_game);
+
 				DlgNegozio dlg{ this, m_game, negozi[i] };
 				dlg.ShowModal();
 				AggiornaInterfaccia();

@@ -1,6 +1,7 @@
 #pragma once
 #include <random>
 #include <vector>
+#include "Utility.h"
 #include "TabbyGuy.h"
 #include "Disco.h"
 #include "Chrono.h"
@@ -17,6 +18,7 @@ constexpr int PREZZO_LAMPADA = 7;
 enum class Valuta { LIRE, EURO };
 
 enum class TipoMsg {
+    SUONO,       // NON APPARE IL MESSAGGIO
     // Solo tasto OK
 	INFO,       // Icona blu (i)
     AVVISO,     // Icona triangolo giallo (!)
@@ -55,6 +57,7 @@ struct Messaggio {
 	std::string m_titolo;
 	std::string m_testo;
 	std::string m_immagine;	// Nome del file immagine
+    int m_soundId = -1;
 };
 
 enum class TipoGiorno {
@@ -151,6 +154,9 @@ public:
 	int GenRandomInt(int min, int max);
     // SCRITTURA LOG DI DEBUG
     void WriteLog(const std::string& messaggio);
+    // SOUND
+    void PlaySound(int id);
+    void SetSoundActive(bool active) { m_soundActive = active; }
 
     Negozio& GetTelefonia() { return m_telefonia; }
     Negozio& GetConcessionario() { return m_concessionario; }
@@ -231,6 +237,8 @@ private:
     void CaricaFeste();
     void CaricaNegozi();
     void CaricaQuiz();
+
+    bool m_soundActive;
 };
 
 // TODO: IMPOSTA LA FAMA DEI CELL

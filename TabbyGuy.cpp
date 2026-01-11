@@ -2,7 +2,7 @@
 
 // TODO: INIZIALIZZA TELEFONO E ALTRI DATI
 TabbyGuy::TabbyGuy()
-	: m_soldi{ 100000 }, m_paghetta{ 20 }, m_fama{ 0 }, m_rep{ 0 },
+	: m_soldi{ 10 }, m_paghetta{ 20 }, m_fama{ 0 }, m_rep{ 0 },
 	m_giubotto{ TipoVestito::GIUBBOTTO, "Giubbotto", "Giubbotto iniziale", "", 0, 0 }, 
 	m_pantaloni{ TipoVestito::PANTALONI,"Pantaloni", "Pantaloni iniziali", "", 0, 0 }, 
 	m_scarpe{ TipoVestito::SCARPE, "Scarpe", "Scarpe iniziali", "", 0, 0 },

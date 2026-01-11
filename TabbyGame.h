@@ -17,8 +17,13 @@ constexpr int PREZZO_LAMPADA = 7;
 enum class Valuta { LIRE, EURO };
 
 enum class TipoMsg {
-	INFO,		// Solo tasto OK
-	SCELTA,		// Tasti sì/no
+    // Solo tasto OK
+	INFO,       // Icona blu (i)
+    AVVISO,     // Icona triangolo giallo (!)
+    ERRORE,     // Icona Errore Rossa (X)
+    SUCCESSO,   // Icona info
+    // Tasti sì/no
+	SCELTA,
     PAGELLA     // Così sappiamo di dover mostrare la finestra con la pagella
 };
 
@@ -41,9 +46,9 @@ enum class Scelta {
     RIPARA_SCOOTER
 };
 
-struct Avviso {
-	Avviso();
-	Avviso(TipoMsg tipo, Scelta id, std::string titolo, std::string testo, std::string img);
+struct Messaggio {
+	Messaggio();
+	Messaggio(TipoMsg tipo, std::string titolo, std::string testo, std::string img = "", Scelta id = Scelta::NONE);
 	TipoMsg m_tipo = TipoMsg::INFO;
     Scelta m_msgAzione = Scelta::NONE;
 	std::string m_titolo;
@@ -83,7 +88,7 @@ public:
     TipoGiorno GetTipoGiorno() const { return m_tipoGiorno; };
 	// LOGICA EVENTI
 	// Restituisce true se c'era un evento (e lo mette in outMsg), false se la coda eventi è vuota
-	bool PollAvvisi(Avviso& outMsg);
+	bool PollMessaggi(Messaggio& outMsg);
 	void ApplicaScelta(Scelta mgsAzione, bool sceltaYes);
     // Scuola
     bool TriggerScuola();
@@ -163,7 +168,7 @@ private:
 	int m_coolDownPestaggio;
 	int m_coolDownPelle;
     int m_attesa;
-	std::vector<Avviso> m_codaMsg;
+	std::vector<Messaggio> m_codaMsg;
 	TipoGiorno m_tipoGiorno;
     long long m_costoCorruzione;
     long long m_costoRiparazione;
@@ -176,7 +181,7 @@ private:
 	std::mt19937 m_rng;
 
 	// Evento
-	void PushMessaggio(const Avviso& e) { m_codaMsg.push_back(e); };
+	void PushMessaggio(const Messaggio& e) { m_codaMsg.push_back(e); };
 
 	// Funzioni di gestione giornaliera
 	void NuovoGiorno();

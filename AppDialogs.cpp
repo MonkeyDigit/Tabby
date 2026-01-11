@@ -1,12 +1,32 @@
+#include <wx/artprov.h>
+#include <wx/sound.h>
+
+#ifdef __WXMSW__
+// Questa macro impedisce a windows.h di includere winsock.h e altra robaccia inutile
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h> 
+#endif
 #include "AppDialogs.h"
 
 void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 {
-	Avviso msg;
+	Messaggio msg;
 
-	while (game.PollAvvisi(msg))
+	while (game.PollMessaggi(msg))
 	{
 		DlgEvento dlgEvento{ parent, msg };
+#ifdef __WXMSW__
+		UINT soundType = MB_OK;
+		if (msg.m_tipo == TipoMsg::ERRORE) soundType = MB_ICONHAND;
+		else if (msg.m_tipo == TipoMsg::AVVISO) soundType = MB_ICONWARNING;
+		else if (msg.m_tipo == TipoMsg::INFO) soundType = MB_ICONASTERISK;
+		else if (msg.m_tipo == TipoMsg::SCELTA) soundType = MB_ICONQUESTION;
+
+		// Riproduce il suono ORIGINALE di Windows
+		MessageBeep(soundType);
+#endif
 		// Nel caso di un pop up evento con scelta (previa implementazione degli appositi bottoni con wxID_YES e wxID_NO), gli id vengono restituiti alla finestra padre
 		// Qua valutiamo l'espressione logica
 		bool scelta = (dlgEvento.ShowModal() == wxID_YES);
@@ -177,7 +197,6 @@ void DlgScooter::OnUsa(wxCommandEvent& event)
 	this->AggiornaInterfaccia();
 }
 
-// Modificato per restituire il puntatore al valore
 wxStaticText* DlgScooter::AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxString value)
 {
 	sizer->Add(new wxStaticText(parent, wxID_ANY, label, wxDefaultPosition, wxSize(-1, 25)));
@@ -436,38 +455,49 @@ void DlgCompagnia::AggiornaInterfaccia()
 	this->Layout();
 }
 
-
-// TODO: ICONA INFO
-DlgEvento::DlgEvento(wxWindow* parent, Avviso& eventoDati)
+DlgEvento::DlgEvento(wxWindow* parent, Messaggio& eventoDati)
 	: wxDialog{ parent, wxID_ANY, eventoDati.m_titolo, wxDefaultPosition, wxDefaultSize, wxCAPTION | wxSTAY_ON_TOP }	// Stile: CAPTION (barra titolo) ma niente tasto X (CLOSE_BOX) così l'utente è obbligato a premere i bottoni
 {
 	this->SetFont(parent->GetFont());
 	this->CentreOnParent();	// Appare al centro della finestra padre
-	Avviso& msgref = eventoDati;
+	Messaggio& msgref = eventoDati;
+	// Icona windows
+	wxArtID artId = wxART_INFORMATION;
+	if (msgref.m_tipo == TipoMsg::ERRORE) artId = wxART_ERROR;
+	if (msgref.m_tipo == TipoMsg::AVVISO) artId = wxART_WARNING;
+	if (msgref.m_tipo == TipoMsg::SCELTA) artId = wxART_QUESTION;
+	if (msgref.m_tipo == TipoMsg::SUCCESSO) artId = wxART_TICK_MARK;
 	// TODO: implementa immagine
 
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+
+	wxBoxSizer* sizerText = new wxBoxSizer{ wxHORIZONTAL };
+
+	wxStaticBitmap* icon = new wxStaticBitmap(this, wxID_ANY,
+		wxArtProvider::GetBitmap(artId, wxART_MESSAGE_BOX));
+	sizerText->Insert(0, icon, 0, wxALIGN_CENTER_VERTICAL | wxALL, 10);
 
 	wxStaticText* lblTesto = new wxStaticText{ this, wxID_ANY, msgref.m_testo, wxDefaultPosition, wxSize(-1, -1), wxALIGN_LEFT };
 
 	// Manda a capo il testo automaticamente
 	lblTesto->Wrap(600);
-	mainSizer->Add(lblTesto, 1, wxALIGN_CENTER | wxALL, 15);
+	sizerText->Add(lblTesto, 1, wxALIGN_CENTER | wxALL, 15);
 
+	mainSizer->Add(sizerText);
 	// Linea separatrice
 	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxLEFT | wxRIGHT, 10);
 
 	// BOTTONI
-	wxBoxSizer* btnSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* sizerBtn = new wxBoxSizer(wxHORIZONTAL);
 
-	if (msgref.m_tipo == TipoMsg::INFO)
+	if (msgref.m_tipo != TipoMsg::SCELTA)
 	{
 		// Caso semplice: Solo OK
 		// wxID_OK chiude automaticamente il dialogo ritornando wxID_OK
 		wxButton* btnOk = new wxButton(this, wxID_OK, "OK");
-		btnSizer->Add(btnOk, 0, wxALL, 10);
+		sizerBtn->Add(btnOk, 0, wxALL, 10);
 	}
-	else if (msgref.m_tipo == TipoMsg::SCELTA)
+	else
 	{
 		wxButton* btnSi = new wxButton(this, wxID_YES, "Sì");
 		wxButton* btnNo = new wxButton(this, wxID_NO, "No");
@@ -482,11 +512,11 @@ DlgEvento::DlgEvento(wxWindow* parent, Avviso& eventoDati)
 			});
 
 		// wxID_YES e wxID_NO chiudono automaticamente ritornando il rispettivo ID
-		btnSizer->Add(btnSi, 0, wxALL, 10);
-		btnSizer->Add(btnNo, 0, wxALL, 10);
+		sizerBtn->Add(btnSi, 0, wxALL, 10);
+		sizerBtn->Add(btnNo, 0, wxALL, 10);
 	}
 
-	mainSizer->Add(btnSizer, 0, wxALIGN_CENTER | wxBOTTOM, 5);
+	mainSizer->Add(sizerBtn, 0, wxALIGN_CENTER | wxBOTTOM, 5);
 	this->SetSizerAndFit(mainSizer);
 }
 
@@ -2507,9 +2537,6 @@ void DlgConfig::OnOk(wxCommandEvent& event)
 	EndModal(wxID_OK);
 }
 
-// --------------------------------------------------------------------------
-// DlgUscita (Fine della sessione)
-// --------------------------------------------------------------------------
 DlgUscita::DlgUscita(wxWindow* parent)
 	: wxDialog(parent, wxID_ANY, "Fine della sessione del Tabboz Simulator", wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX),
 	m_sceltaUscita(false)
@@ -2584,9 +2611,6 @@ void DlgUscita::OnHelp(wxCommandEvent& event)
 	wxMessageBox("Non c'è aiuto per te, Tabbozzo.", "Help", wxOK | wxICON_INFORMATION);
 }
 
-// --------------------------------------------------------------------------
-// DlgAbout (About Tabboz Simulator)
-// --------------------------------------------------------------------------
 DlgAbout::DlgAbout(wxWindow* parent)
 	: wxDialog(parent, wxID_ANY, "About Tabboz Simulator", wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX)
 {

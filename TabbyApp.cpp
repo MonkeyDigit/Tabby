@@ -1,7 +1,6 @@
 #include "TabbyApp.h"
 #include "AppDialogs.h"
 
-// TODO: CREARE PER SPECIFICARE I DATI DELLA FINESTRA DA FILE
 // TODO: fai reperire la merda dai file, anche per i salvataggi
 // TODO: AGGIUNGI MESS COMPLEANNO
 // TODO: SISTEMA COMMENTI
@@ -12,7 +11,6 @@
 // TODO: FAI FUNZIONI ISOLATE per la roba degli eventi
 // TODO: metti const per le pass by reference
 // TODO: msg sborsa spilla investi. e io pago!
-// TODO: METTI I PUNTI
 // TODO: Rizz sfx
 // TODO: RISOLVI IL DOPPIO SUNKEN: PANEL IN ECCESSO
 // TODO: IMPEDIRE DI COMPRARE VESTITI GIA' POSSEDUTI

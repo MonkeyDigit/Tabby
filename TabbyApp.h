@@ -1,8 +1,5 @@
 #pragma once
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
 #include <wx/wx.h>
-#endif
 #include <wx/statline.h>
 #include <wx/gbsizer.h>
 #include "TabbyGame.h"
@@ -58,10 +55,10 @@ private:
 	void OnCompagnia(wxCommandEvent& event);
 	void OnFamiglia(wxCommandEvent& event);
 	void OnTipa(wxCommandEvent& event);
-	void OnEsci(wxCommandEvent& event);
 	void OnPersonalInfo(wxCommandEvent& event);
 	void OnConfig(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
+	void OnClose(wxCloseEvent& event);
 };
 
 // In wxWidgets (e in Windows in generale), ogni singolo bottone, menu o casella di testo deve avere un'ID univoco (integer). wxWidgets ha già dei numeri prenotati per le sue cose interne (es. wxID_EXIT, wxID_OK, wxID_SAVE), solitamente sono numeri bassi o negativi, dunque per evitare conflitti si usano numeri alti per essere sicuri di stare fuori da quel range

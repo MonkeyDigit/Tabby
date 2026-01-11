@@ -6,7 +6,7 @@ TabbyGuy::TabbyGuy()
 	m_giubotto{ TipoVestito::GIUBBOTTO, "Giubbotto", "Giubbotto iniziale", "", 0, 0 }, 
 	m_pantaloni{ TipoVestito::PANTALONI,"Pantaloni", "Pantaloni iniziali", "", 0, 0 }, 
 	m_scarpe{ TipoVestito::SCARPE, "Scarpe", "Scarpe iniziali", "", 0, 0 },
-	m_identita{"Alfonso", "Signorini", Chrono::Date(1973, 8, 10), "Atto n. 6333 P. 1 S. A.", "Cusano Milanino", "MI", "Italiana", "Milano", "Via Bagarotti n. 123", "Celibe", "Sfruttato" }
+	m_identita{"Tizio", "Caio", Chrono::Date(1973, 8, 10), "Atto n. 6333 P. 1 S. A.", "Cusano Milanino", "MI", "Italiana", "Milano", "Via Bagarotti n. 123", "Celibe", "Sfruttato" }
 {}	// TODO: CITTA E VIA RANDOM - TABBY VA INIZIALIZZATO IN TABBYGAME
 
 void TabbyGuy::SetRapporti(int rapporti)

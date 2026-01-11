@@ -69,6 +69,8 @@
 // TODO: TRIGGERPALESTRA ANCHE PER LAMPADA E ABBONAMENTI
 // TODO: CLAMPING DI TUTTI GLI INC 100 e DEC 0
 // TODO: CAMBIA TUTTI GLI AZZERA IN TABBY GUY PERDI
+// TODO: COSA FA IL TIMER??
+// Funzione helper che gira per tutta la finestra e mette la manina a tutto ciò che è cliccabile
 
 bool TabbyApp::OnInit()
 {
@@ -160,6 +162,7 @@ TabbyFrame::TabbyFrame()
 	this->Bind(wxEVT_MENU, &TabbyFrame::OnPersonalInfo, this, ID_INFO);
 	this->Bind(wxEVT_MENU, &TabbyFrame::OnAbout, this, ID_ABOUT);
 	this->Bind(wxEVT_MENU, &TabbyFrame::OnConfig, this, ID_CONFIG);
+	this->Bind(wxEVT_CLOSE_WINDOW, &TabbyFrame::OnClose, this);
 
 	// PANNELLI --------------------------------------------------------------------------------------
 	// SIZER GLOBALE (permette di mettere roba e di ridimensionare gli elementi)
@@ -173,14 +176,15 @@ TabbyFrame::TabbyFrame()
 	wxButton* btnLavoro = new wxButton{ this, ID_LAVORO, "Lavoro", wxDefaultPosition, wxSize(140, -1) };
 
 	// Associazione funzioni ai bottoni
-	Bind(wxEVT_BUTTON, &TabbyFrame::OnScooter, this, ID_SCOOTER);
-	Bind(wxEVT_BUTTON, &TabbyFrame::OnNegozi, this, ID_NEGOZI);
-	Bind(wxEVT_BUTTON, &TabbyFrame::OnDisco, this, ID_DISCO);
-	Bind(wxEVT_BUTTON, &TabbyFrame::OnScuola, this, ID_SCUOLA);
-	Bind(wxEVT_BUTTON, &TabbyFrame::OnLavoro, this, ID_LAVORO);
-	Bind(wxEVT_BUTTON, &TabbyFrame::OnTipa, this, ID_TIPA);
-	Bind(wxEVT_BUTTON, &TabbyFrame::OnCompagnia, this, ID_COMPAGNIA);
-	Bind(wxEVT_BUTTON, &TabbyFrame::OnFamiglia, this, ID_FAMIGLIA);
+	this->Bind(wxEVT_BUTTON, &TabbyFrame::OnScooter, this, ID_SCOOTER);
+	this->Bind(wxEVT_BUTTON, &TabbyFrame::OnNegozi, this, ID_NEGOZI);
+	this->Bind(wxEVT_BUTTON, &TabbyFrame::OnDisco, this, ID_DISCO);
+	this->Bind(wxEVT_BUTTON, &TabbyFrame::OnScuola, this, ID_SCUOLA);
+	this->Bind(wxEVT_BUTTON, &TabbyFrame::OnLavoro, this, ID_LAVORO);
+	this->Bind(wxEVT_BUTTON, &TabbyFrame::OnTipa, this, ID_TIPA);
+	this->Bind(wxEVT_BUTTON, &TabbyFrame::OnCompagnia, this, ID_COMPAGNIA);
+	this->Bind(wxEVT_BUTTON, &TabbyFrame::OnFamiglia, this, ID_FAMIGLIA);
+	this->Bind(wxEVT_BUTTON, &TabbyFrame::OnAbout, this, ID_ABOUT);
 
 	// HEADER
 	wxGridBagSizer* gridHeader = new wxGridBagSizer{ 5, 5 };	// gap verticale, gap orizzontale
@@ -487,22 +491,40 @@ void TabbyFrame::OnTipa(wxCommandEvent& event)
 	this->AggiornaInterfaccia();
 }
 
-void TabbyFrame::OnEsci(wxCommandEvent& event)
-{
-	Close(true);
-}
-
 void TabbyFrame::OnPersonalInfo(wxCommandEvent& event)
 {
-	// TODO: IMPLEMENTA
+	DlgPersonalInfo dlg(this, m_game);
+	dlg.ShowModal();
+	this->AggiornaInterfaccia();
 }
 
 void TabbyFrame::OnConfig(wxCommandEvent& event)
 {
-	// TODO: IMPLEMENTA
+	DlgConfig dlg(this, m_game);
+	dlg.ShowModal();
+	this->AggiornaInterfaccia();
 }
 
 void TabbyFrame::OnAbout(wxCommandEvent& event)
 {
-	// TODO: IMPLEMENTA
+	DlgAbout dlg(this);
+	dlg.ShowModal();
+}
+
+void TabbyFrame::OnClose(wxCloseEvent& event)
+{
+	// Se la chiusura non può essere bloccata (es. il PC si sta spegnendo), lascia perdere e chiudi
+	if (event.CanVeto())
+	{
+		DlgUscita dlg(this);
+		// Se l'utente NON preme OK (quindi preme Annulla o chiude la finestrella)
+		if (dlg.ShowModal() != wxID_OK)
+		{
+			event.Veto(); // BLOCCA la chiusura della finestra
+			return;
+		}
+	}
+
+	// Se l'utente ha premuto OK, lasciamo che wxWidgets distrugga la finestra
+	event.Skip();
 }

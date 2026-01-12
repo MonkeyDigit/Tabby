@@ -23,6 +23,7 @@ public:
 private:
 	// Classe di gestione gioco
 	TabbyGame m_game;
+	wxStaticBitmap* m_fotoTabbozzo;
 
 	// Label dei dati che variano
 	wxStaticText* m_lblNomeTabby;

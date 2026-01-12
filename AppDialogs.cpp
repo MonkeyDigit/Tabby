@@ -264,7 +264,7 @@ void DlgScooter::AggiornaInterfaccia()
 	const Scooter& s = m_game.GetTabbyGuy().GetScooter();
 
 	// Aggiorna Soldi
-	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()) + " >");
+	m_lblSoldi->SetLabel("Soldi " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
 
 	// Aggiorna Nome (con spazi padding per estetica)
 	m_lblNome->SetLabel("  " + s.GetNome() + "  ");
@@ -662,8 +662,8 @@ void DlgFamiglia::OnChiediSoldi(wxCommandEvent& event)
 
 void DlgFamiglia::AggiornaInterfaccia()
 {
-	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()) + " >");
-	m_lblPaghetta->SetLabel("< Paghetta " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetPaghetta()) + " >");
+	m_lblSoldi->SetLabel("Soldi " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
+	m_lblPaghetta->SetLabel("Paghetta " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetPaghetta()));
 	this->Fit();
 	this->Layout();
 }
@@ -811,7 +811,7 @@ void DlgLavoro::AggiornaInterfaccia()
 	TabbyGuy& guy = m_game.GetTabbyGuy();
 
 	m_lblDitta->SetLabel("Ditta: " + guy.GetCarriera().GetNomeDitta());
-	m_lblImpegno->SetLabel("< Impegno " + std::to_string(guy.GetCarriera().GetImpegno()) + "/100 >");
+	m_lblImpegno->SetLabel("Impegno " + std::to_string(guy.GetCarriera().GetImpegno()) + "/100");
 	m_lblStipendio->SetLabel("Stipendio: " + m_game.GetSoldiStr(guy.GetCarriera().GetStipendio()));
 	m_lblSoldi->SetLabel("Soldi: " + m_game.GetSoldiStr(guy.GetSoldi()));
 	this->Fit();
@@ -1426,7 +1426,7 @@ void DlgTipa::AggiornaInterfaccia()
 		m_lblRapportiTipa->SetLabel("");
 	}
 
-	m_lblFama->SetLabel("< Figosità " + std::to_string(m_game.GetTabbyGuy().GetFama()) + "/100 >");
+	m_lblFama->SetLabel("Figosità " + std::to_string(m_game.GetTabbyGuy().GetFama()) + "/100");
 
 	this->Fit();
 	this->Layout();
@@ -1719,7 +1719,7 @@ DlgNegozio::DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio
 
 void DlgNegozio::AggiornaInterfaccia()
 {
-	m_lblSoldi->SetLabel("< Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi())+" >");
+	m_lblSoldi->SetLabel("Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
 	this->Fit();
 	this->Layout();
 }
@@ -2123,7 +2123,7 @@ DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
 void DlgRicariche::AggiornaInterfaccia()
 {
 	// Aggiorna Soldi
-	m_lblSoldi->SetLabel("< Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()) + " >");
+	m_lblSoldi->SetLabel("Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
 
 	// Aggiorna Info Telefono
 	if (m_game.GetTabbyGuy().GetTelefono().HaSim())

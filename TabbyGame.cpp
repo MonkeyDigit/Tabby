@@ -41,9 +41,9 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     m_tabbyGuy.SetTelefono(Telefono{});
     m_tabbyGuy.SetTipa(Tipa{});
     m_tabbyGuy.SetScooter(Scooter{});
-    m_tabbyGuy.SetGiubbotto(Vestito(TipoVestito::GIUBBOTTO, "Giubbotto", "Giubbotto iniziale", "", 0, 0));
-    m_tabbyGuy.SetPantaloni(Vestito(TipoVestito::PANTALONI,"Pantaloni", "Pantaloni iniziali", "", 0, 0));
-    m_tabbyGuy.SetScarpe(Vestito(TipoVestito::SCARPE, "Scarpe", "Scarpe iniziali", "", 0, 0));
+    m_tabbyGuy.SetGiubbotto(Vestito(TipoVestito::GIUBBOTTO, "Giubbotto Fatiscenza Nero", "Giubbotto iniziale", "fatiscenza_black.png", 0, 0));
+    m_tabbyGuy.SetPantaloni(Vestito(TipoVestito::PANTALONI,"Pantaloni a scacchiera bianchi", "Pantaloni iniziali", "scacchiera_white.png", 0, 0));
+    m_tabbyGuy.SetScarpe(Vestito(TipoVestito::SCARPE, "Scarpe sneakers", "Scarpe iniziali", "sneakers.png", 0, 0));
     // TODO: SETTA ALTRE ROBE
 
     WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
@@ -206,14 +206,14 @@ void TabbyGame::AvanzaCalendario()
             /*
             if (m_date.GetDay() == 25)
             {   // TODO: VESTITI NATALIZI
-                if (m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubotto() == 19)
+                if (m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubbotto() == 19)
                 {
                     Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Natale...", "Con il tuo vestito da Babbo Natale riesci a stupire tutti..." };
                     PushMessaggio(msg);
                     m_tabbyGuy.IncFama(20);
                 }
             }
-            else if (m_date.GetDay() == 28 && m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubotto() == 19)
+            else if (m_date.GetDay() == 28 && m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubbotto() == 19)
             {
                 Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Natale...", "Natale è già passato... Togliti quel dannato vestito..." };
                 PushMessaggio(msg);

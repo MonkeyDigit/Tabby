@@ -79,7 +79,6 @@ public:
 	void Abbronza();
 	void Sbianca();
 
-	// TODO: RIORDINA TUTTA STA MERDA
 	long long GetSoldi() const { return m_soldi; }
 	long long GetSoldiDelta() const { return m_soldiDelta; }
 	int GetRep() const { return m_rep; }
@@ -90,6 +89,7 @@ public:
 	int GetPaghetta() const { return m_paghetta; }
 	int GetSizze() const { return m_sizze; }
 	Pelle GetPelle() const { return m_pelle; }
+	std::string GetTestaImage() { return "testa"+std::to_string((int)m_pelle)+".png"; }
 	std::string GetPelleStr();
 
 	// PASS-BY REFERENCE
@@ -99,7 +99,7 @@ public:
 	Telefono& GetTelefono() { return m_telefono; }
 	const CartaIdentita& GetID() { return m_identita; }
 	const Tipa& GetTipa() { return m_tipa; }
-	const Vestito& GetGiubotto() { return m_giubotto; }
+	const Vestito& GetGiubbotto() { return m_giubbotto; }
 	const Vestito& GetPantaloni() { return m_pantaloni; }
 	const Vestito& GetScarpe() { return m_scarpe; }
 
@@ -123,7 +123,7 @@ private:
 
 	// Qua potevo usare dei puntatori inizializzando lo scooter e la tipa a NULL, ma non voglio fare un puttanaio con destructor e magagne dei puntatori
 	CartaIdentita m_identita;
-	Vestito m_giubotto;
+	Vestito m_giubbotto;
 	Vestito m_pantaloni;
 	Vestito m_scarpe;
 	Carriera m_carriera;

@@ -1,3 +1,7 @@
+#include <wx/dcmemory.h> // Serve per disegnare in memoria
+#include <wx/bitmap.h>
+#include <wx/image.h>
+#include <wx/filename.h>
 #include "TabbyApp.h"
 #include "AppDialogs.h"
 
@@ -40,7 +44,8 @@
 
 bool TabbyApp::OnInit()
 {
-	// La finestra non è ridimensionabile
+	// importante per caricare le immagini
+	wxInitAllImageHandlers();
 	TabbyFrame* frame = new TabbyFrame();
 	frame->Show(true);
 	return true;
@@ -49,6 +54,71 @@ bool TabbyApp::OnInit()
 
 // Macro che crea il vero main() di Windows
 wxIMPLEMENT_APP(TabbyApp);
+
+wxBitmap CaricaAsset(const std::string& nomeFile) {
+	if (nomeFile.empty()) 
+		return wxNullBitmap;
+
+	wxString path = "img/" + wxString(nomeFile);
+
+	// Se il nome nel txt non ha l'estensione, proviamo ad aggiungerla
+	if (!path.Lower().EndsWith(".png")) {
+		if (wxFileExists(path + ".png")) path += ".png";
+	}
+
+	if (wxFileExists(path))
+		return wxBitmap(path, wxBITMAP_TYPE_ANY);
+
+	return wxNullBitmap;
+}
+
+wxBitmap GeneraAvatar(TabbyGuy& guy)
+{
+	// 1. CARICA LO SFONDO (Layer Base Assoluto)
+	wxBitmap avatar = CaricaAsset("sfondo.png");
+
+	// Se manca lo sfondo, usiamo un fallback bianco o il corpo come base
+	if (!avatar.IsOk()) {
+		avatar = wxBitmap(200, 300); // Dimensioni totali della scena
+		wxMemoryDC dc(avatar);
+		dc.SetBackground(*wxWHITE_BRUSH); // O wxLIGHT_GREY_BRUSH
+		dc.Clear();
+	}
+
+	wxMemoryDC dc(avatar);
+
+	// Funzione helper per disegnare un pezzo alle coordinate giuste
+	auto DisegnaPezzo = [&](const std::string& nomeFile, int x, int y) {
+		if (nomeFile.empty()) 
+			return;
+		wxBitmap img = CaricaAsset(nomeFile);
+		if (img.IsOk()) {
+			dc.DrawBitmap(img, x, y, true); // true = usa trasparenza
+		}
+	};
+
+	// 2. SOVRAPPOSIZIONE DEI VESTITI (Ordine Z-Order da tabimg.c)
+	// Ordine: Pantaloni -> Scarpe -> Giubbotto -> Testa
+
+	// LAYER 1: PANTALONI
+	// Coordinate originali tabimg.c: X=28, Y=93
+	DisegnaPezzo(guy.GetPantaloni().GetImageStr(), 28, 93);
+
+	// LAYER 2: SCARPE
+	// Coordinate originali tabimg.c: X=-6, Y=205
+	DisegnaPezzo(guy.GetScarpe().GetImageStr(), -6, 205);
+
+	// LAYER 3: GIUBBOTTO
+	// Coordinate originali tabimg.c: X=-20, Y=18
+	DisegnaPezzo(guy.GetGiubbotto().GetImageStr(), -20, 18);
+
+	// LAYER 4: TESTA
+	// Coordinate originali tabimg.c: X=42, Y=3
+	DisegnaPezzo(guy.GetTestaImage(), 42, 3);
+
+	return avatar;
+}
+
 // Costruttore finestra
 TabbyFrame::TabbyFrame()
 	: wxFrame{ NULL, wxID_ANY, "Tabby Window", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)}, // Blocca ridimensionamento (sono operatori bitwise su delle flag binarie)
@@ -188,14 +258,16 @@ TabbyFrame::TabbyFrame()
 	mainSizer->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxEXPAND);
 
 	// BODY ---------------------------------------------------------------------------------------------
-	// FOTO
-	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(300, 300), wxBORDER_SUNKEN };
-	wxBoxSizer* sizerFoto = new wxBoxSizer(wxVERTICAL);
-	pnlFoto->SetBackgroundColour(*wxWHITE);
-	sizerFoto->Add(new wxStaticText(pnlFoto, wxID_ANY, "IMG TIZIO"), 0, wxALIGN_CENTER | wxTOP, 80);
-	pnlFoto->SetSizer(sizerFoto);
 	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
-	sizerBody->Add(pnlFoto, 0, wxEXPAND | wxALL, 5);
+
+	// FOTO
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
+	wxBitmap bmpAvatar = GeneraAvatar(m_game.GetTabbyGuy());
+	m_fotoTabbozzo = new wxStaticBitmap(pnlFoto, wxID_ANY, bmpAvatar);
+	sizerFoto->Add(m_fotoTabbozzo, 0, wxALL, 5);
+	pnlFoto->SetSizer(sizerFoto);
+	sizerBody->Add(pnlFoto, 0, wxALL, 5);
 
 	// GRIGLIA STATISTICHE
 	wxPanel* pnlStats = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), wxBORDER_SUNKEN };
@@ -301,7 +373,7 @@ void TabbyFrame::AggiornaInterfaccia()
 	if (m_game.GetTabbyGuy().HaTipa())
 	{
 		m_lblNomeTipa->SetLabel(guy.GetTipa().GetNome() + " ");
-		m_lblRapportoTipa->SetLabel(wxString::Format("< Rapporto con la tipa %d/100 >", guy.GetRapporti()));
+		m_lblRapportoTipa->SetLabel(wxString::Format("Rapporto con la tipa %d/100", guy.GetRapporti()));
 		m_barTipa->Show(true);
 		m_barTipa->SetValue(guy.GetRapporti());
 	}
@@ -312,7 +384,7 @@ void TabbyFrame::AggiornaInterfaccia()
 		m_barTipa->Hide();
 	}
 	
-	m_lblSoldi->SetLabel("< Soldi " + m_game.GetSoldiStr(guy.GetSoldi()) + " >");
+	m_lblSoldi->SetLabel("Soldi " + m_game.GetSoldiStr(guy.GetSoldi()));
 	// Delta soldi
 	long long delta = m_game.GetTabbyGuy().GetSoldiDelta();
 	if (delta > 0)
@@ -331,16 +403,16 @@ void TabbyFrame::AggiornaInterfaccia()
 	else
 		m_lblSoldiDelta->SetLabel("");
 
-	m_lblReputazione->SetLabel(wxString::Format("< Reputazione %d/100 >", guy.GetRep()));
+	m_lblReputazione->SetLabel(wxString::Format("Reputazione %d/100", guy.GetRep()));
 	m_barRep->SetValue(guy.GetRep());
-	m_lblFigo->SetLabel(wxString::Format("< Figosità %d/100 >", guy.GetFama()));
+	m_lblFigo->SetLabel(wxString::Format("Figosità %d/100", guy.GetFama()));
 	m_barFigo->SetValue(guy.GetFama());
-	m_lblStudio->SetLabel(wxString::Format("< Profitto scolastico %d/100 >", guy.GetStudio()));
+	m_lblStudio->SetLabel(wxString::Format("Profitto scolastico %d/100", guy.GetStudio()));
 	m_barStudio->SetValue(guy.GetStudio());
 	// Lo scooter viene mostrato solo se posseduto
 	if (m_game.GetTabbyGuy().HaScooter())
 	{
-		m_lblScooter->SetLabel(wxString::Format("< %s >\n< Stato scooter %d/100 >", guy.GetScooter().GetNome(), guy.GetScooter().GetStato()));
+		m_lblScooter->SetLabel(wxString::Format("%s\nStato scooter %d/100", guy.GetScooter().GetNome(), guy.GetScooter().GetStato()));
 		m_barScooter->Show(true);
 		m_barScooter->SetValue(guy.GetScooter().GetStato());
 	}

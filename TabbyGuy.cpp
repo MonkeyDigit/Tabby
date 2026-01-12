@@ -132,7 +132,7 @@ bool TabbyGuy::SetGiubbotto(const Vestito& giubbotto)
 	if(giubbotto.GetTipoVestito() != TipoVestito::GIUBBOTTO)
 		return false;
 
-	m_giubotto = giubbotto;
+	m_giubbotto = giubbotto;
 
 	return true;
 }

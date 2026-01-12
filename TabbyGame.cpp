@@ -17,6 +17,7 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     m_attesa{ATTESA_MAX},
     m_soundActive{ true }
 {
+
     CaricaStringhe();
     CaricaAbbonamenti();
     CaricaDiscoteche();
@@ -25,12 +26,27 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     CaricaNegozi();
     CaricaQuiz();
 
-    WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
     // Inizializzo il generatore randomico UNA VOLTA SOLA qui nel costruttore
     // 'rd' è un dispositivo hardware che restituisce un numero casuale vero per il seme
      std::random_device rd;
     // Inizializzo il motore (m_rng) con quel seme
     m_rng.seed(rd());
+    std::string indirizzo = m_vieStr[GenRandomInt(0, m_vieStr.size() - 1)] + " n. " + std::to_string(GenRandomInt(1, 150));
+    CartaIdentita id{ "Tizio", "Caio", Chrono::Date(1973, 8, 10), "Atto n. 6333 P. 1 S. A.", "Cusano Milanino", "MI", "Italiana", "Milano", indirizzo, "Celibe", "Sfruttato"};
+    m_tabbyGuy.SetIdentita(id);
+    m_tabbyGuy.SetSoldi(10);
+    m_tabbyGuy.SetPaghetta(20);
+    m_tabbyGuy.SetFama(0);
+    m_tabbyGuy.SetRep(0);
+    m_tabbyGuy.SetTelefono(Telefono{});
+    m_tabbyGuy.SetTipa(Tipa{});
+    m_tabbyGuy.SetScooter(Scooter{});
+    m_tabbyGuy.SetGiubbotto(Vestito(TipoVestito::GIUBBOTTO, "Giubbotto", "Giubbotto iniziale", "", 0, 0));
+    m_tabbyGuy.SetPantaloni(Vestito(TipoVestito::PANTALONI,"Pantaloni", "Pantaloni iniziali", "", 0, 0));
+    m_tabbyGuy.SetScarpe(Vestito(TipoVestito::SCARPE, "Scarpe", "Scarpe iniziali", "", 0, 0));
+    // TODO: SETTA ALTRE ROBE
+
+    WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
 }
 
 int TabbyGame::GenRandomInt(int min, int max)
@@ -104,7 +120,7 @@ void TabbyGame::AvanzaCalendario()
 
         if (m_date.GetDay() == 27)
         {
-            long stipendietto{};  // Stipendio calcolato secondo i giorni effettivi di lavoro
+            long long stipendietto{};  // Stipendio calcolato secondo i giorni effettivi di lavoro
 
             if (m_tabbyGuy.GetCarriera().GetGiorniLavorati() > 29)
                 stipendietto = m_tabbyGuy.GetCarriera().GetStipendio();
@@ -128,6 +144,7 @@ void TabbyGame::AvanzaCalendario()
     // ---------------> P A L E S T R A <---------------
     if (m_date == m_scadenzaPal)
     {
+        PlaySound(4);
         Messaggio msg{ TipoMsg::INFO, "Pagah", "E' appena scaduto il tuo abbonamento della palestra..." };
         PushMessaggio(msg);
         WriteLog("Calendario: E' scaduto l'abbonamento alla palestra");
@@ -146,7 +163,6 @@ void TabbyGame::AvanzaCalendario()
     case Chrono::Month::jun:    // Giugno
         if (m_date.GetDay() == 15)
         {
-            // TODO: Sta roba va sistemata
             Messaggio msg{ TipoMsg::INFO, "Ultimo giorno di scuola", "Da domani iniziano le vacanze estive !" };
             PushMessaggio(msg);
         }
@@ -372,7 +388,7 @@ void TabbyGame::GestioneEconomia()
         {
             m_tabbyGuy.GuadagnaSoldi(m_tabbyGuy.GetPaghetta() * 0.5f);
             // DEBUG LOG
-            WriteLog("GestioneEconomia: Metà paghetta (" + GetSoldiStr(m_tabbyGuy.GetPaghetta()*0.5f) + ")");
+            WriteLog("GestioneEconomia: Metà paghetta (" + GetSoldiStr(m_tabbyGuy.GetPaghetta() * 0.5f) + ")");
 
             PlaySound(1200);
             Messaggio msg{ TipoMsg::INFO, "Paghetta settimanale", "Finché non andrai bene a scuola, ti daremo solo metà della paghetta..." };
@@ -1680,7 +1696,7 @@ void TabbyGame::AzioneEsciTipa()
     if (m_tabbyGuy.GetTipa().GetFama() > m_tabbyGuy.GetFama())
         m_tabbyGuy.IncFama(1);
 
-    m_tabbyGuy.GetScooter().DecBenza(0.3);
+    m_tabbyGuy.GetScooter().DecBenza(0.3f);
 }
 
 void TabbyGame::AzioneTelefonaTipa()
@@ -1713,6 +1729,7 @@ void TabbyGame::AzioneTelefonaTipa()
 
 void TabbyGame::AzioneVoglioEntrambe()
 {
+    PlaySound(3);
     Messaggio msg{ TipoMsg::ERRORE, "La vita è bella", "Mentre sei appartato con la " + m_tipaNuova.GetNome() + ", arriva la tua ragazza, " + m_tabbyGuy.GetTipa().GetNome() + ", ti tira uno schiaffo e ti lascia. \nCapendo finalmente di che pasta sei fatto, anche la " + m_tipaNuova.GetNome() + " si allontana..." };
     PushMessaggio(msg);
 
@@ -1773,6 +1790,7 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
             str = "Forse non ti sei accorto di non avere abbastanza soldi, stronzetto...";
             break;
         case CategoriaOggetto::SCOOTER:
+            PlaySound(3);
             str = "Ti piacerebbe comprare lo scooter, vero ?\nPurtroppo, non hai abbastanza soldi...";
             if (m_tabbyGuy.GetRep() > 3) m_tabbyGuy.DecRep(1);
             break;
@@ -1814,7 +1832,7 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
         const Sizze& sizze{ static_cast<const Sizze&>(prod) };
         m_tabbyGuy.IncSizze(20);
         m_tabbyGuy.IncFama(sizze.GetFama());
-        Messaggio msg{ TipoMsg::INFO, "ART. 46 L. 29/12/1990 n. 428", m_frasiSigarette[GenRandomInt(0, m_frasiSigarette.size()-1)] };
+        Messaggio msg{ TipoMsg::INFO, "ART. 46 L. 29/12/1990 n. 428", m_frasiSigarette[GenRandomInt(0, m_frasiSigarette.size() - 1)] };
         PushMessaggio(msg);
     }
     else if (prod.GetCategoria() == CategoriaOggetto::TELEFONO)
@@ -1993,7 +2011,7 @@ void TabbyGame::AzioneVendiTelefono()
         return;
     }
 
-    m_offertaTel = m_tabbyGuy.GetTelefono().GetPrezzo() * 0.5 + 8;
+    m_offertaTel = m_tabbyGuy.GetTelefono().GetPrezzo() * 0.5f + 8;
 
     Messaggio msg{ TipoMsg::SCELTA, "Un buon affare...", "Ti posso dare " + GetSoldiStr(m_offertaTel) + " per il tuo telefonino... Vuoi vendermelo ?", "", Scelta::VENDI_TEL };
     PushMessaggio(msg);
@@ -2074,7 +2092,7 @@ void TabbyGame::AzioneRiparaScooter()
         return;
     }
 
-    m_costoRiparazione = m_tabbyGuy.GetScooter().GetPrezzo() * 0.01 * (100 - m_tabbyGuy.GetScooter().GetStato()) + 10;
+    m_costoRiparazione = m_tabbyGuy.GetScooter().GetPrezzo() * 0.01f * (100 - m_tabbyGuy.GetScooter().GetStato()) + 10;
 
     Messaggio msg{ TipoMsg::SCELTA, "Ripara scooter", "Vuoi riparare lo scooter per " + GetSoldiStr(m_costoRiparazione) + " ?", "", Scelta::RIPARA_SCOOTER };
     PushMessaggio(msg);

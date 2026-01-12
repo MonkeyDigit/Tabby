@@ -8,6 +8,8 @@ struct OffertaLavoro {
 };
 
 struct Ditta {
+    Ditta() : m_nome{}, m_fatturato{ 0 }, m_sede{}, m_presentazione{}, m_produzioni{}, m_offerta{}, m_immagine{}
+    {}
     std::string m_nome;
     long long m_fatturato;
     std::string m_sede;
@@ -30,7 +32,7 @@ public:
 
     // Getters & Setters
     std::string GetNomeDitta() const { return m_nomeDitta; }
-    long GetStipendio() const { return m_stipendio; }
+    long long GetStipendio() const { return m_stipendio; }
     int GetImpegno() const { return m_impegno; }
     void IncImpegno(int punti) {
         if (punti > 0) m_impegno += punti;
@@ -71,7 +73,7 @@ public:
 
 private:
     std::string m_nomeDitta;    // "" = Nessuna
-    long m_stipendio;           // Stipendio attuale
+    long long m_stipendio;      // Stipendio attuale
     int m_impegno;              // Quanto ti sbatti
     int m_giorniLavorati;       // Contatore per la busta paga
 };

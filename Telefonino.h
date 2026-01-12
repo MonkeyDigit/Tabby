@@ -54,10 +54,10 @@ public:
 		}
 	}
 
-	void IncCredito(int punti) {
+	void IncCredito(long long punti) {
 		if (punti > 0) m_credito += punti;
 	}
-	void DecCredito(int punti) {
+	void DecCredito(long long punti) {
 		if (punti > 0)
 		{
 			m_credito -= punti;

@@ -69,6 +69,8 @@ enum class TipoGiorno {
 };
 
 struct FestaFissa {
+    FestaFissa() : m_giorno{ 1 }, m_mese{ 1 }, m_nome{}, m_messaggio{}
+    {}
 	int m_giorno;
 	int m_mese;
 	std::string m_nome;
@@ -76,6 +78,8 @@ struct FestaFissa {
 };
 
 struct Negozio {
+    Negozio() : m_nome{}, m_merce{ CategoriaOggetto::GENERICO }, m_catalogo{}
+    {}
     std::string m_nome;
     CategoriaOggetto m_merce;
     std::vector<Acquistabile*> m_catalogo;  // ATTENZIONE !!! Siccome Acquistabile è una classe base, è di vitale importanza utilizzare dei puntatori, perché se mettessi la variabile intera, nel momenti in cui inserisci acquistabili di diverso tipo, il vettore troncherebbe le informazioni aggiuntive della classe figlia

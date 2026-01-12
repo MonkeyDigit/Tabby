@@ -34,20 +34,28 @@ class TabbyGuy {
 public:
 	TabbyGuy();		// Constructor
 
-	// SETTER
-	void SetRapporti(int rapporti);
+	// SETTER PER IL CARICAMENTO DEI DATI
+	void SetFortuna(int punti);
+	void SetRapporti(int punti);
+	void SetFama(int punti);
+	void SetRep(int punti);
+
+	void SetSoldi(long long soldi) { if (soldi > 0) m_soldi = soldi; }
+	void SetPaghetta(int paga) { if (paga > 0) m_paghetta = paga; }
+	void SetTipa(const Tipa& tipa) { m_tipa = tipa; }
+	void SetScooter(const Scooter& scooter) { m_scooter = scooter; }
+	void SetTelefono(const Telefono& tel) { m_telefono = tel; }
+	void SetIdentita(const CartaIdentita& id) { m_identita = id; }
 
 	// MODIFICHE
 	// SOLDI
 	// Restituisce true se l'acquisto avviene con successo
 	bool SpendiSoldi(long long importo);
 	void GuadagnaSoldi(long long importo);
-	void IncPaghetta(long long importo);
+	void IncPaghetta(int importo);
 	void ResetSoldiDelta() { m_soldiDelta = 0; }	// è solo un dato informativo...
 	// SCUOLA
 	void CalcolaStudio();
-	// FORTUNA
-	void SetFortuna(int fortuna);
 	// SIGARETTE
 	void IncSizze(int sizze);
 	void DecSizze(int sizze);
@@ -60,7 +68,6 @@ public:
 	// RAPPORTO TIPA
 	void IncRapporti(int punti);
 	void DecRapporti(int punti);
-	void SetTipa(const Tipa& tipa) { m_tipa = tipa; }
 	void LasciaTipa();
 	// LAVORO
 	void Licenziati();
@@ -71,12 +78,6 @@ public:
 	// ABBRONZATURA
 	void Abbronza();
 	void Sbianca();
-	// SCOOTER
-	void SetScooter(const Scooter& scooter) { m_scooter = scooter; }
-	// TELEFONO
-	void SetTelefono(const Telefono& tel) { m_telefono = tel; }
-	// DOCUMENTO IDENTIFICATIVO
-	void SetIdentita(const CartaIdentita& id) { m_identita = id; }
 
 	// TODO: RIORDINA TUTTA STA MERDA
 	long long GetSoldi() const { return m_soldi; }

@@ -1,13 +1,8 @@
 #include "TabbyGuy.h"
 
-// TODO: INIZIALIZZA TELEFONO E ALTRI DATI
 TabbyGuy::TabbyGuy()
-	: m_soldi{ 10 }, m_paghetta{ 20 }, m_fama{ 0 }, m_rep{ 0 },
-	m_giubotto{ TipoVestito::GIUBBOTTO, "Giubbotto", "Giubbotto iniziale", "", 0, 0 }, 
-	m_pantaloni{ TipoVestito::PANTALONI,"Pantaloni", "Pantaloni iniziali", "", 0, 0 }, 
-	m_scarpe{ TipoVestito::SCARPE, "Scarpe", "Scarpe iniziali", "", 0, 0 },
-	m_identita{"Tizio", "Caio", Chrono::Date(1973, 8, 10), "Atto n. 6333 P. 1 S. A.", "Cusano Milanino", "MI", "Italiana", "Milano", "Via Bagarotti n. 123", "Celibe", "Sfruttato" }
-{}	// TODO: CITTA E VIA RANDOM - TABBY VA INIZIALIZZATO IN TABBYGAME
+	: m_fortuna{}, m_soldi{}, m_rapporti{}, m_fama{}, m_rep{}, m_studio{}, m_paghetta{}, m_pelle{ Pelle::ABBR_NO }, m_sizze{}, m_soldiDelta{}
+{}
 
 void TabbyGuy::SetRapporti(int rapporti)
 {
@@ -35,7 +30,7 @@ void TabbyGuy::GuadagnaSoldi(long long importo)
 	}
 }
 
-void TabbyGuy::IncPaghetta(long long importo)
+void TabbyGuy::IncPaghetta(int importo)
 {
 	m_paghetta += importo;
 }
@@ -188,5 +183,25 @@ std::string TabbyGuy::GetPelleStr()
 		return "Abbronzatura pesante";
 	case Pelle::ABBR_CARBONIZZATO:
 		return "Carbonizzato";
+	default:
+		return "Errore";
 	}
+}
+
+void TabbyGuy::SetFama(int punti)
+{
+	m_fama = punti;
+	if (m_fama > 100)
+		m_fama = 100;
+	else if (m_fama < 0)
+		m_fama = 0;
+}
+
+void TabbyGuy::SetRep(int punti)
+{
+	m_rep = punti;
+	if (m_rep > 100)
+		m_rep = 100;
+	else if (m_rep < 0)
+		m_rep = 0;
 }

@@ -150,15 +150,11 @@ void TabbyGame::AvanzaCalendario()
             Messaggio msg{ TipoMsg::INFO, "Ultimo giorno di scuola", "Da domani iniziano le vacanze estive !" };
             PushMessaggio(msg);
         }
-        
+        // GIORNO DELLA PAGELLA
         if (m_date.GetDay() > 15)
         {
             if (m_date.GetDay() == 22)
-            {
-                // TODO: DIALOG pagella
-                // TODO: Qua va fatta una roba speciale
-                // TODO: SUONO 401
-            }
+                PushMessaggio(Messaggio(TipoMsg::PAGELLA));
 
             m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
         }
@@ -646,9 +642,7 @@ void TabbyGame::ApplicaScelta(Scelta msgAzione, bool sceltaYes)
         {
             // Controlla che tu non abbia già una tipa...
             if (m_tabbyGuy.HaTipa())
-            {
-                // TODO: ATTENZIONE FINESTRA EVENTO 2 DONNE
-            }
+                PushMessaggio(Messaggio(TipoMsg::DUE_DONNE));
             else   // Bravo, non hai una tipa...
             {
                 m_tabbyGuy.SetTipa(m_tipaNuova);
@@ -893,7 +887,6 @@ void TabbyGame::AzioneAumentoPaghetta()
             Messaggio msg{ TipoMsg::SUCCESSO, "Aumento Paghetta !", "Va bene... ti daremo " + GetSoldiStr(5) + " di paghetta in più..." };
             PushMessaggio(msg);
             m_tabbyGuy.IncPaghetta(5);
-            // TODO: RICORDA DI RESETTARE
         }
         else
         {
@@ -985,10 +978,7 @@ void TabbyGame::AzioneProvaci(const Tipa& tipa)
         PushMessaggio(msg);
         // ...Ma comunque controlla che tu non abbia già una tipa
         if (m_tabbyGuy.HaTipa())
-        {
-            Messaggio msg{ TipoMsg::DUE_DONNE };
-            PushMessaggio(msg);
-        }
+            PushMessaggio(Messaggio(TipoMsg::DUE_DONNE));
         else
         {   // Bravo, non hai una tipa
             m_tabbyGuy.SetTipa(m_tipaNuova);

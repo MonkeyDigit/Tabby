@@ -404,5 +404,13 @@ private:
 	void OnPreferisco(wxCommandEvent& event);
 };
 
+class DlgPagella : public wxDialog {
+public:
+	DlgPagella(wxWindow* parent, TabbyGame& game);
+private:
+	TabbyGame& m_game;
+	void OnOk(wxCommandEvent& event);
+};
+
 // Funzione helper
 void ManifestaEventi(wxWindow* parent, TabbyGame& game);

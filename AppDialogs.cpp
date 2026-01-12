@@ -57,6 +57,10 @@ void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 			DlgDueDonne dlg{ parent, game };
 			dlg.ShowModal();
 		}
+		else if (msg.m_tipo == TipoMsg::PAGELLA) {
+			DlgPagella dlg{ parent, game };
+			dlg.ShowModal();
+		}
 		else    // Un evento comune
 		{
 			DlgEvento dlgEvento{ parent, msg };
@@ -2886,4 +2890,97 @@ void DlgDueDonne::OnPreferisco(wxCommandEvent& event)
 {
 	m_game.AzionePreferiscoNuova();
 	this->EndModal(wxID_ANY);
+}
+
+// --- DIALOGO PAGELLA SCOLASTICA ---
+DlgPagella::DlgPagella(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Pagella Scolastica", wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX },
+	m_game{ game }
+{
+	this->SetBackgroundColour(wxColor(240, 240, 220)); // Colore carta vecchia
+	this->SetFont(parent->GetFont());
+
+	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+
+	// 1. INTESTAZIONE
+	wxStaticText* lblIntestazione = new wxStaticText(this, wxID_ANY, "SCRUTINIO FINALE");
+	wxFont fTitle = lblIntestazione->GetFont();
+	fTitle.SetWeight(wxFONTWEIGHT_BOLD);
+	fTitle.SetPointSize(14);
+	lblIntestazione->SetFont(fTitle);
+	mainSizer->Add(lblIntestazione, 0, wxALL | wxALIGN_CENTER, 15);
+
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxLEFT | wxRIGHT, 10);
+
+	// 2. LISTA VOTI
+	// Usiamo una griglia a 2 colonne: [Materia] ...... [Voto]
+	wxFlexGridSizer* gridVoti = new wxFlexGridSizer(2, 5, 10);
+
+	const std::vector<Materia>& materie = m_game.GetTabbyGuy().GetScuola().m_materie;
+	int insufficienze = 0;
+
+	for (const auto& m : materie)
+	{
+		// Nome Materia
+		wxStaticText* lblMat = new wxStaticText(this, wxID_ANY, m.GetNome());
+		// Voto
+		wxStaticText* lblVoto = new wxStaticText(this, wxID_ANY, std::to_string(m.GetVoto()));
+		lblVoto->SetFont(fTitle); // Usiamo il font grassetto per il voto
+
+		// Se è insufficiente, coloriamo di rosso
+		if (m.GetVoto() < 6) {
+			insufficienze++;
+			if (m.GetVoto() < 4)
+				insufficienze++;	// Le insufficienze gravi contano
+			lblMat->SetForegroundColour(*wxRED);
+			lblVoto->SetForegroundColour(*wxRED);
+		}
+
+		gridVoti->Add(lblMat, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+		gridVoti->Add(lblVoto, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+	}
+
+	gridVoti->Add(new wxStaticText(this, wxID_ANY, "Condotta:"), 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	std::string condottaStr = (m_game.GetTabbyGuy().GetFama() > 75) ? "9" : "8";	// Più è un figo, più sembra un bravo ragazzo...
+	wxStaticText* lblCondotta = new wxStaticText(this, wxID_ANY, condottaStr);
+	lblCondotta->SetFont(fTitle);
+	gridVoti->Add(lblCondotta, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+	// Centriamo la griglia
+	wxBoxSizer* gridWrapper = new wxBoxSizer(wxVERTICAL);
+	gridWrapper->Add(gridVoti, 1, wxALIGN_CENTER | wxALL, 15);
+	mainSizer->Add(gridWrapper, 1, wxEXPAND);
+
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxLEFT | wxRIGHT, 10);
+
+	// 3. VERDETTO FINALE
+	bool promosso = (insufficienze < 5);
+
+	wxString esitoStr = promosso ? "PROMOSSO" : "BOCCIATO";
+	wxColor esitoCol = promosso ? wxColor(0, 150, 0) : *wxRED;
+
+	wxStaticText* lblEsito = new wxStaticText(this, wxID_ANY, esitoStr);
+	wxFont fEsito = lblEsito->GetFont();
+	fEsito.SetPointSize(18);
+	fEsito.SetWeight(wxFONTWEIGHT_BOLD);
+	lblEsito->SetFont(fEsito);
+	lblEsito->SetForegroundColour(esitoCol);
+
+	mainSizer->Add(lblEsito, 0, wxALL | wxALIGN_CENTER, 15);
+
+	wxString commento = promosso ? "Ammesso all'anno successivo" : "NON ammesso all'anno successivo";
+	mainSizer->Add(new wxStaticText(this, wxID_ANY, commento), 0, wxALL | wxALIGN_CENTER, 15);
+
+	// 4. BOTTONE OK
+	wxButton* btnOk = new wxButton(this, wxID_OK, "OK", wxDefaultPosition, wxSize(100, 40));
+	btnOk->Bind(wxEVT_BUTTON, &DlgPagella::OnOk, this);
+	mainSizer->Add(btnOk, 0, wxALL | wxALIGN_CENTER, 15);
+
+	this->SetSizerAndFit(mainSizer);
+	this->Centre();
+}
+
+void DlgPagella::OnOk(wxCommandEvent& event)
+{
+	EndModal(wxID_OK);
 }

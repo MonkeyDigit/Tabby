@@ -393,5 +393,16 @@ private:
 	void OnNorme(wxCommandEvent& event);
 };
 
+class DlgDueDonne : public wxDialog {
+public:
+	DlgDueDonne(wxWindow* parent, TabbyGame& game);
+
+private:
+	TabbyGame& m_game;
+	void OnEntrambe(wxCommandEvent& event);
+	void OnResto(wxCommandEvent& event);
+	void OnPreferisco(wxCommandEvent& event);
+};
+
 // Funzione helper
 void ManifestaEventi(wxWindow* parent, TabbyGame& game);

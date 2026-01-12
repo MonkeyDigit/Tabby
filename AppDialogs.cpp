@@ -52,14 +52,22 @@ void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 		MessageBeep(soundType);
 #endif
 
-		DlgEvento dlgEvento{ parent, msg };
-		// Nel caso di un pop up evento con scelta (previa implementazione degli appositi bottoni con wxID_YES e wxID_NO), gli id vengono restituiti alla finestra padre
-		// Qua valutiamo l'espressione logica
-		bool scelta = (dlgEvento.ShowModal() == wxID_YES);
+		if (msg.m_tipo == TipoMsg::DUE_DONNE)
+		{
+			DlgDueDonne dlg{ parent, game };
+			dlg.ShowModal();
+		}
+		else    // Un evento comune
+		{
+			DlgEvento dlgEvento{ parent, msg };
+			// Nel caso di un pop up evento con scelta (previa implementazione degli appositi bottoni con wxID_YES e wxID_NO), gli id vengono restituiti alla finestra padre
+			// Qua valutiamo l'espressione logica
+			bool scelta = (dlgEvento.ShowModal() == wxID_YES);
 
-		// Se qui ApplicaScelta aggiunge un NUOVO evento, questo finisce in fondo alla coda. Il ciclo while continuerà a girare e lo pescherà subito dopo
-		if (msg.m_tipo == TipoMsg::SCELTA)
-			game.ApplicaScelta(msg.m_msgAzione, scelta);
+			// Se qui ApplicaScelta aggiunge un NUOVO evento, questo finisce in fondo alla coda. Il ciclo while continuerà a girare e lo pescherà subito dopo
+			if (msg.m_tipo == TipoMsg::SCELTA)
+				game.ApplicaScelta(msg.m_msgAzione, scelta);
+		}
 	}
 	// Usciti dal while, la coda è sicuramente vuota
 }
@@ -2823,4 +2831,59 @@ void DlgAbout::OnOk(wxCommandEvent& event)
 void DlgAbout::OnNorme(wxCommandEvent& event)
 {
 	wxMessageBox("Non copiare, non rubare, sii un bravo tabbozzo.", "Norme", wxOK);
+}
+
+DlgDueDonne::DlgDueDonne(wxWindow* parent, TabbyGame& game)
+	: wxDialog{ parent, wxID_ANY, "Troppe donne", wxDefaultPosition, wxDefaultSize, wxCAPTION },
+	m_game{game}
+{
+	this->SetBackgroundColour(parent->GetBackgroundColour());
+	this->SetFont(parent->GetFont());
+
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+	
+	wxBoxSizer* sizerHeader = new wxBoxSizer{ wxHORIZONTAL };
+
+	// TODO: AGGIUNGI ICONA
+	wxStaticText* titolo = new wxStaticText{ this, wxID_ANY, "Ti ritrovi nell'imbarazzante (?) situazione di avere 2 ragazze... \nChe cosa fai ???" };
+	titolo->Wrap(400);
+	sizerHeader->Add(titolo, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+	mainSizer->Add(sizerHeader, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
+	mainSizer->Add(new wxStaticText(this, wxID_ANY, "Viva l'abbondanza !"), 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+
+	wxButton* btnEntrambe = new wxButton{ this, wxID_ANY, "Le voglio tutte e due !", wxDefaultPosition, wxSize(-1, 40) };
+	btnEntrambe->Bind(wxEVT_BUTTON, &DlgDueDonne::OnEntrambe, this);
+	mainSizer->Add(btnEntrambe, 0, wxEXPAND | wxALL, 5);
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
+
+	wxStaticText* scelta = new wxStaticText{ this, wxID_ANY, "Purtroppo avere due ragazze è troppo anche per uno stallone come il sottoscritto..." };
+	scelta->Wrap(400);
+	mainSizer->Add(scelta, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+
+	wxButton* btnResto = new wxButton{ this, wxID_ANY, "Resto con " + m_game.GetTabbyGuy().GetTipa().GetNome(), wxDefaultPosition, wxSize(-1, 40) };
+	btnResto->Bind(wxEVT_BUTTON, &DlgDueDonne::OnResto, this);
+	mainSizer->Add(btnResto, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
+	wxButton* btnPreferisco = new wxButton{ this, wxID_ANY, "Preferisco " + m_game.GetTipaNuova().GetNome(), wxDefaultPosition, wxSize(-1, 40) };
+	btnPreferisco->Bind(wxEVT_BUTTON, &DlgDueDonne::OnPreferisco, this);
+	mainSizer->Add(btnPreferisco, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
+
+	this->SetSizerAndFit(mainSizer);
+	this->Layout();
+}
+
+void DlgDueDonne::OnEntrambe(wxCommandEvent& event)
+{
+	m_game.AzioneVoglioEntrambe();
+	this->EndModal(wxID_ANY);
+}
+
+void DlgDueDonne::OnResto(wxCommandEvent& event) { this->EndModal(wxID_OK); }
+
+void DlgDueDonne::OnPreferisco(wxCommandEvent& event)
+{
+	m_game.AzionePreferiscoNuova();
+	this->EndModal(wxID_ANY);
 }

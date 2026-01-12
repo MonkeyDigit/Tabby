@@ -36,7 +36,7 @@
 // TODO: CONTROLLA TUTTE LE POSIZIONI DI EVENTO NEL CODICE ORIGINALE
 // TODO: TRIGGERPALESTRA ANCHE PER LAMPADA E ABBONAMENTI
 // TODO: COSA FA IL TIMER??
-// Funzione helper che gira per tutta la finestra e mette la manina a tutto ciò che è cliccabile
+// TODO: CONTROLLA TUTTE LE STATIC LINE
 
 bool TabbyApp::OnInit()
 {

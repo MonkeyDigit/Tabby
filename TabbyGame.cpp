@@ -80,6 +80,7 @@ void TabbyGame::AvanzaCalendario()
     {
         m_valutaCorrente = Valuta::EURO;
         // TODO: IMG SILVIO
+        PlaySound(2);
         Messaggio msg{ TipoMsg::SUCCESSO, "L'italia è il paese che amo <3", "Oggi entra in vigore l'Euro €.\n Grazie di cuore, Silvio !!!" };
         PushMessaggio(msg);
     }
@@ -493,9 +494,9 @@ void TabbyGame::GestioneEventiCasuali()
         {
             if (m_tabbyGuy.GetFama() > 35)   // Fama < 35 = nessuna speranza...
             {
-                m_tipaRnd = GeneraTipa();
+                m_tipaNuova = GeneraTipa();
                 PlaySound(1);
-                Messaggio msg{ TipoMsg::SCELTA, "Qualcuno ti caga...", "Una tipa, di nome " + m_tipaRnd.GetNome() + " (Figosità " + std::to_string(m_tipaRnd.GetFama()) + "/100), ci prova con te...\nCi stai ???", "", Scelta::TIPA_CI_PROVA };
+                Messaggio msg{ TipoMsg::SCELTA, "Qualcuno ti caga...", "Una tipa, di nome " + m_tipaNuova.GetNome() + " (Figosità " + std::to_string(m_tipaNuova.GetFama()) + "/100), ci prova con te...\nCi stai ???", "", Scelta::TIPA_CI_PROVA };
                 PushMessaggio(msg);
 
                 WriteLog("GestioneEventiCasuali: Una tipa ci prova...");
@@ -650,13 +651,13 @@ void TabbyGame::ApplicaScelta(Scelta msgAzione, bool sceltaYes)
             }
             else   // Bravo, non hai una tipa...
             {
-                m_tabbyGuy.SetTipa(m_tipaRnd);
+                m_tabbyGuy.SetTipa(m_tipaNuova);
                 m_tabbyGuy.SetRapporti(GenRandomInt(45, 60));
-                m_tabbyGuy.IncFama(m_tipaRnd.GetFama() * 0.1f);
-                m_tabbyGuy.IncRep(m_tipaRnd.GetFama() * 0.08f);
+                m_tabbyGuy.IncFama(m_tipaNuova.GetFama() * 0.1f);
+                m_tabbyGuy.IncRep(m_tipaNuova.GetFama() * 0.08f);
             }
         }
-        else if(m_tipaRnd.GetFama() >= 79 && !m_tabbyGuy.HaTipa())
+        else if(m_tipaNuova.GetFama() >= 79 && !m_tabbyGuy.HaTipa())
         {
             Messaggio msg{ TipoMsg::ERRORE, "Idiota...", "Appena vengono a sapere che non ti vuoi mettere insieme ad una figona come quella, i tuoi amici ti prendono a scarpate." };
             PushMessaggio(msg);
@@ -976,7 +977,8 @@ Tipa TabbyGame::GeneraTipa()
 
 void TabbyGame::AzioneProvaci(const Tipa& tipa)
 {
-    if ((tipa.GetFama() * 2 + GenRandomInt(0, 49)) <= (m_tabbyGuy.GetFama() + m_tabbyGuy.GetRep() + GenRandomInt(0, 29)))
+    m_tipaNuova = tipa;
+    if ((m_tipaNuova.GetFama() * 2 + GenRandomInt(0, 49)) <= (m_tabbyGuy.GetFama() + m_tabbyGuy.GetRep() + GenRandomInt(0, 29)))
     {
         // E' andata bene...
         Messaggio msg{ TipoMsg::SUCCESSO, "E' andata bene !", "Con il tuo fascino nascosto da tabbozzo, seduci la tipa e ti ci metti insieme." };
@@ -984,26 +986,32 @@ void TabbyGame::AzioneProvaci(const Tipa& tipa)
         // ...Ma comunque controlla che tu non abbia già una tipa
         if (m_tabbyGuy.HaTipa())
         {
-            // TODO: DUE DONNE
+            Messaggio msg{ TipoMsg::DUE_DONNE };
+            PushMessaggio(msg);
         }
         else
         {   // Bravo, non hai una tipa
-            m_tabbyGuy.SetTipa(tipa);
+            m_tabbyGuy.SetTipa(m_tipaNuova);
             m_tabbyGuy.SetRapporti(GenRandomInt(30, 45));
-            m_tabbyGuy.IncFama(tipa.GetFama() * 0.1f);
+            m_tabbyGuy.IncFama(m_tipaNuova.GetFama() * 0.1f);
         }
     }
     else
     {
         // Fai cagare...
-        // TODO: LOG 2 di picche
+        m_paloCounter++;
         m_tabbyGuy.DecRep(2);
         m_tabbyGuy.DecFama(2);
 
-        // TODO: CARICA MESSAGGIO SPECIALE TIPA
-        int rnd = GenRandomInt(0, m_frasiSfighe.size() - 1);
-        Messaggio msg{ TipoMsg::ERRORE, "Due di picche", m_frasiSfighe[rnd] };
+        int rnd = GenRandomInt(0, m_frasiPalo.size() - 1);
+        Messaggio msg{ TipoMsg::ERRORE, "Due di picche", m_frasiPalo[rnd] };
         PushMessaggio(msg);
+
+        if (m_paloCounter % 5 == 0)  // Ogni 5 pali, appare un messaggio di consolazione
+        {
+            Messaggio msgPalo{ TipoMsg::ERRORE, "La vita è bella...", "Fino ad ora hai preso " + std::to_string(m_paloCounter) + " pali ! \nNon ti preoccupare, capita a tutti di prendere qualche due di picche nella vita..." };
+            PushMessaggio(msgPalo);
+        }
     }
 
     NuovoGiorno();
@@ -1117,7 +1125,7 @@ void TabbyGame::CaricaStringhe()
             if (tag == "METALLARI")      vettoreCorrente = &m_frasiMetallari;
             else if (tag == "SCUOLA")    vettoreCorrente = &m_frasiScuola;
             else if (tag == "FORTUNA")   vettoreCorrente = &m_frasiFortuna;
-            else if (tag == "SFIGHE")    vettoreCorrente = &m_frasiSfighe;
+            else if (tag == "PALO")    vettoreCorrente = &m_frasiPalo;
             else if (tag == "SEPARAZIONE") vettoreCorrente = &m_frasiSeparazione;
             else if (tag == "PALESTRA")  vettoreCorrente = &m_frasiPalestra;
             else if (tag == "SIGARETTE") vettoreCorrente = &m_frasiSigarette;
@@ -1440,10 +1448,8 @@ void TabbyGame::PlaySound(int id)
     if (!m_soundActive)
         return;
 
-    Messaggio msg;
-    msg.m_tipo = TipoMsg::SUONO;
+    Messaggio msg{ TipoMsg::SUONO };
     msg.m_soundId = id;
-    msg.m_testo = ""; // Identifica che è solo un trigger sonoro
     PushMessaggio(msg);
 }
 
@@ -1713,6 +1719,25 @@ void TabbyGame::AzioneTelefonaTipa()
 
     if (m_tabbyGuy.GetRapporti() <= 60)
         m_tabbyGuy.IncRapporti(1);
+}
+
+void TabbyGame::AzioneVoglioEntrambe()
+{
+    Messaggio msg{ TipoMsg::ERRORE, "La vita è bella", "Mentre sei appartato con la " + m_tipaNuova.GetNome() + ", arriva la tua ragazza, " + m_tabbyGuy.GetTipa().GetNome() + ", ti tira uno schiaffo e ti lascia. \nCapendo finalmente di che pasta sei fatto, anche la " + m_tipaNuova.GetNome() + " si allontana..." };
+    PushMessaggio(msg);
+
+    m_tabbyGuy.LasciaTipa();
+
+    m_tabbyGuy.DecRep(8);
+    m_tabbyGuy.DecFama(4);
+}
+
+void TabbyGame::AzionePreferiscoNuova()
+{
+    m_tabbyGuy.SetTipa(m_tipaNuova);
+    m_tabbyGuy.SetRapporti(GenRandomInt(30, 45));
+    m_tabbyGuy.IncFama(m_tipaNuova.GetFama() * 0.1f);
+    m_tabbyGuy.IncRep(m_tipaNuova.GetFama() * 0.08f);
 }
 
 bool TabbyGame::TriggerNegozio(CategoriaOggetto merce)
@@ -2106,12 +2131,6 @@ void TabbyGame::AzioneFaiBenza()
         return;
     }
 
-    // TODO: IMPLEMENTA STA ROBA, GUARDA CODICE SORGENTE
-    // 85 litri, per la macchinina un po' figa...
-    /*
-    if(m_tabbyGuy.GetScooter().GetCilindrata() = 5)
-        setbenza 85 litri
-    */
     m_tabbyGuy.GetScooter().IncBenza(5);
 }
 

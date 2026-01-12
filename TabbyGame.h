@@ -26,7 +26,9 @@ enum class TipoMsg {
     SUCCESSO,   // Icona info
     // Tasti sì/no
 	SCELTA,
-    PAGELLA     // Così sappiamo di dover mostrare la finestra con la pagella
+    // FINESTRE SPECIALI
+    PAGELLA,     // Così sappiamo di dover mostrare la finestra con la pagella
+    DUE_DONNE
 };
 
 enum class Scelta {
@@ -51,7 +53,7 @@ enum class Scelta {
 
 struct Messaggio {
 	Messaggio();
-	Messaggio(TipoMsg tipo, std::string titolo, std::string testo, std::string img = "", Scelta id = Scelta::NONE);
+	Messaggio(TipoMsg tipo, std::string titolo = "", std::string testo = "", std::string img = "", Scelta id = Scelta::NONE);
 	TipoMsg m_tipo = TipoMsg::INFO;
     Scelta m_msgAzione = Scelta::NONE;
 	std::string m_titolo;
@@ -127,6 +129,8 @@ public:
     void AzioneLasciaTipa();
     void AzioneEsciTipa();
     void AzioneTelefonaTipa();
+    void AzioneVoglioEntrambe();
+    void AzionePreferiscoNuova();
     // Negozi
     bool TriggerNegozio(CategoriaOggetto merce);
     void AzioneCompra(const Acquistabile& prod);
@@ -158,9 +162,10 @@ public:
     void PlaySound(int id);
     void SetSoundActive(bool active) { m_soundActive = active; }
 
-    Negozio& GetTelefonia() { return m_telefonia; }
-    Negozio& GetConcessionario() { return m_concessionario; }
-    Negozio& GetMeccanico() { return m_meccanico; }
+    const Tipa& GetTipaNuova() { return m_tipaNuova; }
+    const Negozio& GetTelefonia() { return m_telefonia; }
+    const Negozio& GetConcessionario() { return m_concessionario; }
+    const Negozio& GetMeccanico() { return m_meccanico; }
     std::vector<Abbonamento>& GetAbbonamenti() { return m_abbonamenti; }
     std::vector<Negozio>& GetNegozi() { return m_negozi; }
     std::vector<Disco>& GetDiscoteche() { return m_discoteche; }
@@ -175,6 +180,7 @@ private:
 	Valuta m_valutaCorrente;
 	int m_coolDownPestaggio;
 	int m_coolDownPelle;
+    int m_paloCounter;
     int m_attesa;
 	std::vector<Messaggio> m_codaMsg;
 	TipoGiorno m_tipoGiorno;
@@ -182,7 +188,7 @@ private:
     long long m_costoRiparazione;
     long long m_offertaTel;
     long long m_offertaScooter;
-    Tipa m_tipaRnd;
+    Tipa m_tipaNuova;
     Scooter m_scooterRnd;
     int m_materiaIndex;
 	// IL MOTORE DI NUMERI CASUALI
@@ -220,7 +226,7 @@ private:
     std::vector<FestaFissa> m_feste;
     std::vector<std::string> m_nomiTipe;
     std::vector<std::string> m_frasiSeparazione;
-    std::vector<std::string> m_frasiSfighe;
+    std::vector<std::string> m_frasiPalo;
     std::vector<std::string> m_frasiPalestra;
     std::vector<std::string> m_frasiSigarette;
     std::vector<std::string> m_frasiMetallari;

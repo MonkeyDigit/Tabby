@@ -1,7 +1,3 @@
-#include <wx/dcmemory.h> // Serve per disegnare in memoria
-#include <wx/bitmap.h>
-#include <wx/image.h>
-#include <wx/filename.h>
 #include "TabbyApp.h"
 #include "AppDialogs.h"
 
@@ -54,70 +50,6 @@ bool TabbyApp::OnInit()
 
 // Macro che crea il vero main() di Windows
 wxIMPLEMENT_APP(TabbyApp);
-
-wxBitmap CaricaAsset(const std::string& nomeFile) {
-	if (nomeFile.empty()) 
-		return wxNullBitmap;
-
-	wxString path = "img/" + wxString(nomeFile);
-
-	// Se il nome nel txt non ha l'estensione, proviamo ad aggiungerla
-	if (!path.Lower().EndsWith(".png")) {
-		if (wxFileExists(path + ".png")) path += ".png";
-	}
-
-	if (wxFileExists(path))
-		return wxBitmap(path, wxBITMAP_TYPE_ANY);
-
-	return wxNullBitmap;
-}
-
-wxBitmap GeneraAvatar(TabbyGuy& guy)
-{
-	// 1. CARICA LO SFONDO (Layer Base Assoluto)
-	wxBitmap avatar = CaricaAsset("sfondo.png");
-
-	// Se manca lo sfondo, usiamo un fallback bianco o il corpo come base
-	if (!avatar.IsOk()) {
-		avatar = wxBitmap(200, 300); // Dimensioni totali della scena
-		wxMemoryDC dc(avatar);
-		dc.SetBackground(*wxWHITE_BRUSH); // O wxLIGHT_GREY_BRUSH
-		dc.Clear();
-	}
-
-	wxMemoryDC dc(avatar);
-
-	// Funzione helper per disegnare un pezzo alle coordinate giuste
-	auto DisegnaPezzo = [&](const std::string& nomeFile, int x, int y) {
-		if (nomeFile.empty()) 
-			return;
-		wxBitmap img = CaricaAsset(nomeFile);
-		if (img.IsOk()) {
-			dc.DrawBitmap(img, x, y, true); // true = usa trasparenza
-		}
-	};
-
-	// 2. SOVRAPPOSIZIONE DEI VESTITI (Ordine Z-Order da tabimg.c)
-	// Ordine: Pantaloni -> Scarpe -> Giubbotto -> Testa
-
-	// LAYER 1: PANTALONI
-	// Coordinate originali tabimg.c: X=28, Y=93
-	DisegnaPezzo(guy.GetPantaloni().GetImageStr(), 28, 93);
-
-	// LAYER 2: SCARPE
-	// Coordinate originali tabimg.c: X=-6, Y=205
-	DisegnaPezzo(guy.GetScarpe().GetImageStr(), -6, 205);
-
-	// LAYER 3: GIUBBOTTO
-	// Coordinate originali tabimg.c: X=-20, Y=18
-	DisegnaPezzo(guy.GetGiubbotto().GetImageStr(), -20, 18);
-
-	// LAYER 4: TESTA
-	// Coordinate originali tabimg.c: X=42, Y=3
-	DisegnaPezzo(guy.GetTestaImage(), 42, 3);
-
-	return avatar;
-}
 
 // Costruttore finestra
 TabbyFrame::TabbyFrame()
@@ -265,6 +197,9 @@ TabbyFrame::TabbyFrame()
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
 	wxBitmap bmpAvatar = GeneraAvatar(m_game.GetTabbyGuy());
 	m_fotoTabbozzo = new wxStaticBitmap(pnlFoto, wxID_ANY, bmpAvatar);
+	//m_fotoTabbozzo->SetWindowStyle(wxSS_NOTIFY | wxBORDER_SUNKEN);
+	m_fotoTabbozzo->SetCursor(wxCursor(wxCURSOR_HAND)); // Manina quando passi sopra
+	m_fotoTabbozzo->Bind(wxEVT_LEFT_DOWN, &TabbyFrame::OnAvatarClick, this);
 	sizerFoto->Add(m_fotoTabbozzo, 0, wxALL, 5);
 	pnlFoto->SetSizer(sizerFoto);
 	sizerBody->Add(pnlFoto, 0, wxALL, 5);
@@ -272,7 +207,7 @@ TabbyFrame::TabbyFrame()
 	// GRIGLIA STATISTICHE
 	wxPanel* pnlStats = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), wxBORDER_SUNKEN };
 	wxGridBagSizer* gridStats = new wxGridBagSizer{ 0,0 };
-	wxBoxSizer* sizerStats = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer* sizerStats = new wxBoxSizer{wxVERTICAL};
 	
 	// Bottoni laterali
 	wxButton* btnTipa = new wxButton{ pnlStats, ID_TIPA, "Tipa", wxDefaultPosition, wxSize(140, -1) };
@@ -296,7 +231,7 @@ TabbyFrame::TabbyFrame()
 	gridStats->Add(btnFamiglia, wxGBPosition(3, 2), wxDefaultSpan, wxALL | wxALIGN_RIGHT, 7);
 	
 	// Soldi
-	wxBoxSizer* sizerSoldiRow = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* sizerSoldiRow = new wxBoxSizer{wxHORIZONTAL};
 	m_lblSoldi = new wxStaticText{ pnlStats, wxID_ANY, "---" };
 	// Soldi Delta - Singoli guadagni e perdite
 	m_lblSoldiDelta = new wxStaticText{ pnlStats, wxID_ANY, "---" };
@@ -367,6 +302,10 @@ TabbyFrame::TabbyFrame()
 
 void TabbyFrame::AggiornaInterfaccia()
 { 
+	// Viene rinfrescato il tabbozzo...
+	m_fotoTabbozzo->SetBitmap(GeneraAvatar(m_game.GetTabbyGuy()));
+	m_fotoTabbozzo->Refresh();
+
 	TabbyGuy& guy = m_game.GetTabbyGuy();
 
 	m_lblNomeTabby->SetLabel(guy.GetID().m_nome + " " + guy.GetID().m_cognome + " ");
@@ -530,6 +469,13 @@ void TabbyFrame::OnTipa(wxCommandEvent& event)
 }
 
 void TabbyFrame::OnPersonalInfo(wxCommandEvent& event)
+{
+	DlgPersonalInfo dlg(this, m_game);
+	dlg.ShowModal();
+	this->AggiornaInterfaccia();
+}
+
+void TabbyFrame::OnAvatarClick(wxMouseEvent& event)
 {
 	DlgPersonalInfo dlg(this, m_game);
 	dlg.ShowModal();

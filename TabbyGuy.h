@@ -89,7 +89,7 @@ public:
 	int GetPaghetta() const { return m_paghetta; }
 	int GetSizze() const { return m_sizze; }
 	Pelle GetPelle() const { return m_pelle; }
-	std::string GetTestaImage() { return "testa"+std::to_string((int)m_pelle)+".png"; }
+	std::string GetTestaImage() const { return "testa"+std::to_string((int)m_pelle)+".png"; }
 	std::string GetPelleStr();
 
 	// PASS-BY REFERENCE
@@ -97,11 +97,11 @@ public:
 	Scuola& GetScuola() { return m_scuola; }
 	Scooter& GetScooter() { return m_scooter; }
 	Telefono& GetTelefono() { return m_telefono; }
-	const CartaIdentita& GetID() { return m_identita; }
-	const Tipa& GetTipa() { return m_tipa; }
-	const Vestito& GetGiubbotto() { return m_giubbotto; }
-	const Vestito& GetPantaloni() { return m_pantaloni; }
-	const Vestito& GetScarpe() { return m_scarpe; }
+	const CartaIdentita& GetID() const { return m_identita; }
+	const Tipa& GetTipa() const { return m_tipa; }
+	const Vestito& GetGiubbotto() const { return m_giubbotto; }
+	const Vestito& GetPantaloni() const { return m_pantaloni; }
+	const Vestito& GetScarpe() const { return m_scarpe; }
 
 	// Funzione helper
 	bool HaUnLavoro() const { return !m_carriera.IsDisoccupato(); }

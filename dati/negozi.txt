@@ -1,36 +1,36 @@
 # FORMATO: [NEGOZIO] | Nome | Categoria (0=Gen, 1=Vest, 2=Tel, 3=Cons, 4=Scooter 5=Scooter Part)
-# ITEM | VESTITO | Tipo (0=Giubbotto,1=Pantaloni,2=Scarpe) | Nome | Desc | Img | Prezzo | Fama
+# ITEM | VESTITO | Tipo (0=NONE,1=Giubbotto,2=Pantaloni,3=Scarpe) | Nome | Desc | Img | Prezzo | Fama
 # ITEM | SIZZE   | Nome | Desc | Img | Prezzo | Fama
 # ITEM |  TEL    | Nome | Desc | Img | Prezzo | Fama | Stato
 # ITEM | SCOOTER | Nome | Img  | Prezzo | Fama | Benza | Marmitta (Nome|Img|Prezzo|Power)| Carburatore (Nome|Img|Prezzo|Power)| Pistone (Nome|Img|Prezzo|Power)| Filtro (Nome|Img|Prezzo|Power)
 # ITEM |  PEZZO  | Tipo (0=Nessuno,1=Marmitta,2=Carburatore,3=Pistone,4=Filtro) | Nome | Img | Prezzo | Power
 
 [NEGOZIO]|Bau House|1
-ITEM|VESTITO|0|Giubbotto Fatiscenza OG|Giubbotto originale "Fatiscenza", elegante e raffinato, è adatto a tutte le occasioni, dalla serata con gli amici, alle feste più esclusive.|fatiscenza_og.png|175|30
-ITEM|VESTITO|0|Giubbotto Fatiscenza NEW|Giubbotto "Fatiscenza", nella sua nuova versione, per essere sempre in linea con i tempi che cambiano.|fatiscenza_new.png|190|65
-ITEM|VESTITO|0|Giubbotto Ricercato|Ecco qualcosa per i più ricercati! Come può mancare nell'armadio un vestito come questo ??? Compratelo subito, non ve ne pentirete.|ricercato.png|150|90
+ITEM|VESTITO|1|Giubbotto Fatiscenza OG|Giubbotto originale "Fatiscenza", elegante e raffinato, è adatto a tutte le occasioni, dalla serata con gli amici, alle feste più esclusive.|fatiscenza_og.png|175|30
+ITEM|VESTITO|1|Giubbotto Fatiscenza NEW|Giubbotto "Fatiscenza", nella sua nuova versione, per essere sempre in linea con i tempi che cambiano.|fatiscenza_new.png|190|65
+ITEM|VESTITO|1|Giubbotto Ricercato|Ecco qualcosa per i più ricercati! Come può mancare nell'armadio un vestito come questo ??? Compratelo subito, non ve ne pentirete.|ricercato.png|150|90
 
 [NEGOZIO]|Blue Riders|1
-ITEM|VESTITO|0|Giacca di pelle|Giacca di pelle... cos'altro dire ?|pelle.png|125|40
-ITEM|VESTITO|0|Fatiscenza Green|Giubbotto "Fatiscenza" Green Line*, per tutti quelli che possono permetterselo.|fatiscenza_green.png|190|60
-ITEM|VESTITO|0|Fatiscenza White|"Fatiscenza White" con una comoda imbottitura in piumino sintetico*, è adatto per tutte le stagioni. *Tutti i giubbotti della linea "Fatiscenza" sono fatti con materiali altamente infiammabili.|fatiscenza_white.png|210|75
+ITEM|VESTITO|1|Giacca di pelle|Giacca di pelle... cos'altro dire ?|pelle.png|125|40
+ITEM|VESTITO|1|Fatiscenza Green|Giubbotto "Fatiscenza" Green Line*, per tutti quelli che possono permetterselo.|fatiscenza_green.png|190|60
+ITEM|VESTITO|1|Fatiscenza White|"Fatiscenza White" con una comoda imbottitura in piumino sintetico*, è adatto per tutte le stagioni. *Tutti i giubbotti della linea "Fatiscenza" sono fatti con materiali altamente infiammabili.|fatiscenza_white.png|210|75
 
 [NEGOZIO]|Zoccolaro|1
-ITEM|VESTITO|1|Pantaloni Gessati|Pantaloni gessati stile anni '30, comunque sono tornati di moda ed ogni zarro che si rispetti doverebbe averne un paio.|gessati.png|45|45
-ITEM|VESTITO|1|Pantaloni Firmati|Pantaloni per il tempo libero firmati da una delle marche più prestigiose e costose di abbigliamento sportivo.|firmati.png|85|75
-ITEM|VESTITO|1|Pantaloni Reciclati|Pantaloni realizzati da uno dei più eccentrici e stravaganti stilisti del momento utilizzando fibra di bottiglie di plastica reciclate.|reciclati.png|125|60
-ITEM|VESTITO|1|Pantaloni Scacchiera|Hai sempre sognato di essere una scacchiera ??? Eccoti accontentato ! Realizzati in 100% acrilico.|scacchiera.png|95|50
+ITEM|VESTITO|2|Pantaloni Gessati|Pantaloni gessati stile anni '30, comunque sono tornati di moda ed ogni zarro che si rispetti doverebbe averne un paio.|gessati.png|45|45
+ITEM|VESTITO|2|Pantaloni Firmati|Pantaloni per il tempo libero firmati da una delle marche più prestigiose e costose di abbigliamento sportivo.|firmati.png|85|75
+ITEM|VESTITO|2|Pantaloni Reciclati|Pantaloni realizzati da uno dei più eccentrici e stravaganti stilisti del momento utilizzando fibra di bottiglie di plastica reciclate.|reciclati.png|125|60
+ITEM|VESTITO|2|Pantaloni Scacchiera|Hai sempre sognato di essere una scacchiera ??? Eccoti accontentato ! Realizzati in 100% acrilico.|scacchiera.png|95|50
 
 [NEGOZIO]|Footsmocker|1
-ITEM|VESTITO|2|Scarpe Old Style|Comode ed eleganti, dalla linea Old style, se avete un po' di soldi da buttare, dovete assolutemente comprarle.|oldstyle.png|60|50
-ITEM|VESTITO|2|Scarpe Scomode|Il massimo della tendenza per i giovani d'oggi ! Queste scarpe, scomode e brutte, fanno sicuramente per voi !|scomode.png|110|70
-ITEM|VESTITO|2|Scarpe Rialzate|Volete essere alla moda spendendo poco ??? Queste scarpe rialzate con mattoni forati sono quello che ci vuole per voi !|rialzate.png|45|20
+ITEM|VESTITO|3|Scarpe Old Style|Comode ed eleganti, dalla linea Old style, se avete un po' di soldi da buttare, dovete assolutemente comprarle.|oldstyle.png|60|50
+ITEM|VESTITO|3|Scarpe Scomode|Il massimo della tendenza per i giovani d'oggi ! Queste scarpe, scomode e brutte, fanno sicuramente per voi !|scomode.png|110|70
+ITEM|VESTITO|3|Scarpe Rialzate|Volete essere alla moda spendendo poco ??? Queste scarpe rialzate con mattoni forati sono quello che ci vuole per voi !|rialzate.png|45|20
 
 [NEGOZIO]|Footsmocker II|1
-ITEM|VESTITO|2|Scarpe Design White|Stile e semplicità in una scarpa dal design moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.|design_white.png|75|80
-ITEM|VESTITO|2|Scarpe Design Color|Stile e semplicità in una scarpa dal design moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.|design_color.png|75|80
-ITEM|VESTITO|2|Scarpe Prugna|Come poteva mancare il massimo della tendenza per i giovani d'oggi nella nuova colorazione Prugna?|prugna.png|120|90
-ITEM|VESTITO|2|Scarpe Tendenza|E per chi volesse osare ancora di più, ecco la nuova colorazione Tendenza, per non passare inosservati.|tendenza.png|90|100
+ITEM|VESTITO|3|Scarpe Design White|Stile e semplicità in una scarpa dal design moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.|design_white.png|75|80
+ITEM|VESTITO|3|Scarpe Design Color|Stile e semplicità in una scarpa dal design moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.|design_color.png|75|80
+ITEM|VESTITO|3|Scarpe Prugna|Come poteva mancare il massimo della tendenza per i giovani d'oggi nella nuova colorazione Prugna?|prugna.png|120|90
+ITEM|VESTITO|3|Scarpe Tendenza|E per chi volesse osare ancora di più, ecco la nuova colorazione Tendenza, per non passare inosservati.|tendenza.png|90|100
 
 [NEGOZIO]|Bar Tabacchi|3
 ITEM|SIZZE|Barclay|Condensato: 5 Nicotina: 0.5|barclay.png|6|2

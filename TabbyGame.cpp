@@ -1825,6 +1825,8 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
             m_tabbyGuy.SetScarpe(v);
             m_tabbyGuy.IncFama(v.GetFama());
             break;
+        default:
+            WriteLog("Errore AzioneCompra");
         }
     }
     else if (prod.GetCategoria() == CategoriaOggetto::CONSUMABILE)

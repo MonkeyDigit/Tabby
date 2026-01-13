@@ -45,6 +45,7 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     m_tabbyGuy.SetPantaloni(Vestito(TipoVestito::PANTALONI,"Pantaloni a scacchiera bianchi", "Pantaloni iniziali", "scacchiera_white.png", 0, 0));
     m_tabbyGuy.SetScarpe(Vestito(TipoVestito::SCARPE, "Scarpe sneakers", "Scarpe iniziali", "sneakers.png", 0, 0));
     // TODO: SETTA ALTRE ROBE
+    // TODO: TELEFONO INIZIALE
 
     WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
 }

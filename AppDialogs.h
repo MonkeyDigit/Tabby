@@ -16,6 +16,7 @@ public:
 	DlgScooter(wxWindow* parent, TabbyGame& game);
 private:
 	TabbyGame& m_game;	// Il riferimento al motore di gioco
+	wxStaticBitmap* m_imgScooter;
 	wxStaticText* m_lblSoldi;
 	wxStaticText* m_lblNome;
 	wxStaticText* m_lblVelocita;
@@ -306,7 +307,7 @@ private:
 	std::vector<Acquistabile*> m_catalogoPtr;
 
 	// GUI Destra
-	wxPanel* m_pnlImgBig;
+	wxStaticBitmap* m_imgScooter;
 	wxStaticText* m_lblVelocita;
 	wxStaticText* m_lblMarmitta;
 	wxStaticText* m_lblCarburatore;

@@ -95,25 +95,30 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	wxPanel* pnlCompravendita = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerCompravendita = new wxBoxSizer{ wxVERTICAL };
 
-	wxButton* btnConcessionario = new wxButton(pnlCompravendita, wxID_ANY, "Concessionario", wxDefaultPosition, wxSize(-1, 45));
+	wxButton* btnConcessionario = new wxButton{ pnlCompravendita, wxID_ANY, "Concessionario", wxDefaultPosition, wxSize(-1, 45) };
 	btnConcessionario->Bind(wxEVT_BUTTON, &DlgScooter::OnConcessionario, this);
 
-	wxButton* btnVendi = new wxButton(pnlCompravendita, wxID_ANY, "Vendi Scooter", wxDefaultPosition, wxSize(-1, 45));
+	wxButton* btnVendi = new wxButton{ pnlCompravendita, wxID_ANY, "Vendi Scooter", wxDefaultPosition, wxSize(-1, 45) };
 	btnVendi->Bind(wxEVT_BUTTON, &DlgScooter::OnVendi, this);
 
 	sizerCompravendita->Add(btnConcessionario, 0, wxEXPAND | wxALL, 5);
 	sizerCompravendita->Add(btnVendi, 0, wxEXPAND | wxALL, 5);
 	pnlCompravendita->SetSizer(sizerCompravendita);
-	// TODO: SOSTITUISCI STRETCH SPACER CON PANNELLO IMMAGINE
-	leftCol->AddStretchSpacer();
+
 	leftCol->Add(pnlCompravendita, 0, wxEXPAND | wxALL, 5);
 
 	// 2. MODIFICHE
 	wxPanel* pnlModifiche = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerModifiche = new wxBoxSizer{ wxVERTICAL };
 
-	wxButton* btnTrucca = new wxButton(pnlModifiche, wxID_ANY, "Trucca scooter", wxDefaultPosition, wxSize(-1, 45));
-	wxButton* btnRipara = new wxButton(pnlModifiche, wxID_ANY, "Ripara scooter", wxDefaultPosition, wxSize(-1, 45));
+	// --- FOTO SCOOTER ---
+	// Creiamo il controllo vuoto (o con una bitmap nulla), ci pensa AggiornaInterfaccia a riempirlo
+	m_imgScooter = new wxStaticBitmap{ pnlModifiche, wxID_ANY, wxNullBitmap };
+	sizerModifiche->Add(m_imgScooter, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+	sizerModifiche->AddStretchSpacer();
+
+	wxButton* btnTrucca = new wxButton{ pnlModifiche, wxID_ANY, "Trucca scooter", wxDefaultPosition, wxSize(-1, 45) };
+	wxButton* btnRipara = new wxButton{ pnlModifiche, wxID_ANY, "Ripara scooter", wxDefaultPosition, wxSize(-1, 45) };
 
 	btnTrucca->Bind(wxEVT_BUTTON, &DlgScooter::OnTrucca, this);
 	btnRipara->Bind(wxEVT_BUTTON, &DlgScooter::OnRipara, this);
@@ -121,7 +126,7 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	sizerModifiche->Add(btnTrucca, 0, wxEXPAND | wxALL, 5);
 	sizerModifiche->Add(btnRipara, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 	pnlModifiche->SetSizer(sizerModifiche);
-	leftCol->Add(pnlModifiche, 0, wxEXPAND | wxALL, 5);
+	leftCol->Add(pnlModifiche, 1, wxEXPAND | wxALL, 5);
 
 	// 3. INFO E OK
 	wxPanel* pnlBottom = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
@@ -133,10 +138,10 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	sizerBottom->Add(m_lblSoldi, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 	sizerBottom->AddStretchSpacer();
-	sizerBottom->Add(new wxButton(pnlBottom, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50)), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	sizerBottom->Add(new wxButton{ pnlBottom, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) }, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 	pnlBottom->SetSizer(sizerBottom);
-	leftCol->Add(pnlBottom, 0, wxEXPAND | wxALL, 5);
+	leftCol->Add(pnlBottom, 0, wxALL, 5);
 
 	// --- COLONNA DESTRA (Statistiche) ----------------------------------------------------------------------------
 	wxPanel* pnlStats = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
@@ -173,8 +178,8 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	// BOTTONI IN BASSO A DESTRA
 	sizerStats->AddStretchSpacer();
 
-	m_btnUsa = new wxButton(pnlStats, wxID_ANY, "---", wxDefaultPosition, wxSize(-1, 45));
-	wxButton* btnBenza = new wxButton(pnlStats, wxID_ANY, "Fai benza", wxDefaultPosition, wxSize(-1, 45));
+	m_btnUsa = new wxButton{ pnlStats, wxID_ANY, "---", wxDefaultPosition, wxSize(-1, 45) };
+	wxButton* btnBenza = new wxButton{ pnlStats, wxID_ANY, "Fai benza", wxDefaultPosition, wxSize(-1, 45) };
 
 	m_btnUsa->Bind(wxEVT_BUTTON, &DlgScooter::OnUsa, this);
 	btnBenza->Bind(wxEVT_BUTTON, &DlgScooter::OnFaiBenza, this);
@@ -263,6 +268,12 @@ void DlgScooter::AggiornaInterfaccia()
 {
 	const Scooter& s = m_game.GetTabbyGuy().GetScooter();
 
+	wxBitmap bmpScooter = CaricaAsset(s.GetImageStr());
+
+	// Applica la nuova immagine al controllo
+	m_imgScooter->SetBitmap(bmpScooter);
+	m_imgScooter->Refresh(); // Forza il ridisegno immediato
+
 	// Aggiorna Soldi
 	m_lblSoldi->SetLabel("Soldi " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
 
@@ -317,12 +328,12 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 	const Scuola& scuolaref = m_game.GetTabbyGuy().GetScuola();
 
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
-	wxBoxSizer* sizerTop = new wxBoxSizer{ wxHORIZONTAL };
+	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
 
 	// Pannello bottoni
 	wxPanel* pnlButtons = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
-	wxBoxSizer* sizerRepOk = new wxBoxSizer{ wxHORIZONTAL };
+	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
 
 	// Creiamo i bottoni, inizialmente vuoti, per poi aggiornarli come si deve in AggiornaInterfaccia...
 	// Siccome i bottoni sono già membri della classe DlgScuola, va bene wxID_ANY, perché possediamo già i loro puntatori
@@ -374,29 +385,36 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 	wrapperSizer->Add(m_lblStudio, 0, wxALL, 5);
 	// Settiamo il sizer
 	pnlVoti->SetSizer(wrapperSizer);
-	sizerTop->Add(pnlVoti, 0, wxEXPAND | wxALL, 5);
+	sizerBody->Add(pnlVoti, 0, wxEXPAND | wxALL, 5);
 
-	// TODO: FOTO
+	// PANNELLO DI DESTRA -------------------
+	// Immagine
+	wxBitmap bmpScuola = CaricaAsset(scuolaref.m_img);
+	// Ridimensionamento
+	bmpScuola = wxBitmap(bmpScuola.ConvertToImage().Rescale(400, bmpScuola.GetHeight() * 400 / bmpScuola.GetWidth(), wxIMAGE_QUALITY_HIGH));
+	wxStaticBitmap* imgScuola = new wxStaticBitmap(pnlButtons, wxID_ANY, bmpScuola);
+
+	sizerButtons->Add(imgScuola, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+	sizerButtons->AddStretchSpacer();
 
 	// Bottoni del pannello a destra
-	sizerButtons->AddStretchSpacer();
 	sizerButtons->Add(m_btnStudia, 0, wxALIGN_CENTER_HORIZONTAL | wxRIGHT | wxLEFT, 5);
 	sizerButtons->Add(m_btnMinaccia, 0, wxALIGN_CENTER_HORIZONTAL | wxRIGHT | wxLEFT, 5);
 	sizerButtons->Add(m_btnCorrompi, 0, wxALIGN_CENTER_HORIZONTAL | wxRIGHT | wxLEFT | wxBOTTOM, 5);
 	// Settiamo il sizer
 	pnlButtons->SetSizer(sizerButtons);
-	sizerTop->Add(pnlButtons, 0, wxEXPAND | wxALL, 5);
-	mainSizer->Add(sizerTop, 0);
+	sizerBody->Add(pnlButtons, 0, wxEXPAND | wxALL, 5);
+	mainSizer->Add(sizerBody, 0);
 
 	// Pannello reputazione e tasto ok
 	wxPanel* pnlRepOk = new wxPanel{ this,wxID_ANY, wxDefaultPosition, wxSize(-1, 50), wxBORDER_SUNKEN};
 
 	m_lblRep = new wxStaticText{ pnlRepOk, wxID_ANY, "---" };
-	sizerRepOk->Add(m_lblRep, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	sizerBottom->Add(m_lblRep, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 	wxButton* btnOk = new wxButton{ pnlRepOk, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) };
-	sizerRepOk->AddStretchSpacer();
-	sizerRepOk->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
-	pnlRepOk->SetSizer(sizerRepOk);
+	sizerBottom->AddStretchSpacer();
+	sizerBottom->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	pnlRepOk->SetSizer(sizerBottom);
 
 	mainSizer->Add(pnlRepOk, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 
@@ -538,8 +556,8 @@ DlgEvento::DlgEvento(wxWindow* parent, Messaggio& eventoDati)
 
 	wxBoxSizer* sizerText = new wxBoxSizer{ wxHORIZONTAL };
 
-	wxStaticBitmap* icon = new wxStaticBitmap(this, wxID_ANY,
-		wxArtProvider::GetBitmap(artId, wxART_MESSAGE_BOX));
+	wxStaticBitmap* icon = new wxStaticBitmap{ this, wxID_ANY,
+		wxArtProvider::GetBitmap(artId, wxART_MESSAGE_BOX) };
 	sizerText->Insert(0, icon, 0, wxALIGN_CENTER_VERTICAL | wxALL, 10);
 
 	wxStaticText* lblTesto = new wxStaticText{ this, wxID_ANY, msgref.m_testo, wxDefaultPosition, wxSize(-1, -1), wxALIGN_LEFT };
@@ -559,13 +577,13 @@ DlgEvento::DlgEvento(wxWindow* parent, Messaggio& eventoDati)
 	{
 		// Caso semplice: Solo OK
 		// wxID_OK chiude automaticamente il dialogo ritornando wxID_OK
-		wxButton* btnOk = new wxButton(this, wxID_OK, "OK");
+		wxButton* btnOk = new wxButton{ this, wxID_OK, "OK" };
 		sizerBtn->Add(btnOk, 0, wxALL, 10);
 	}
 	else
 	{
-		wxButton* btnSi = new wxButton(this, wxID_YES, "Sì");
-		wxButton* btnNo = new wxButton(this, wxID_NO, "No");
+		wxButton* btnSi = new wxButton{ this, wxID_YES, "Sì" };
+		wxButton* btnNo = new wxButton{ this, wxID_NO, "No" };
 
 		// Diciamo esplicitamente: "Quando clicchi, chiudi la finestra e ritorna questo ID"
 		btnSi->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
@@ -917,7 +935,7 @@ DlgQuiz::DlgQuiz(wxWindow* parent, TabbyGame& game, const QuizScheda& quiz, std:
 	}
 
 	// BOTTONE FINALE
-	wxButton* btnFinito = new wxButton(pnlMain, wxID_ANY, "Clicca qui quando hai finito di fare il test-a di cazzo!", wxDefaultPosition, wxSize(-1, 40));
+	wxButton* btnFinito = new wxButton{ pnlMain, wxID_ANY, "Clicca qui quando hai finito di fare il test-a di cazzo!", wxDefaultPosition, wxSize(-1, 40) };
 	btnFinito->Bind(wxEVT_BUTTON, &DlgQuiz::OnFinito, this);
 	pnlSizer->Add(btnFinito, 0, wxALL | wxALIGN_CENTER, 15);
 
@@ -1061,7 +1079,7 @@ DlgElencoDitte::DlgElencoDitte(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(m_lista, 1, wxEXPAND | wxALL, 10);
 
 	// Bottone Chiudi
-	wxButton* btnChiudi = new wxButton(this, wxID_CANCEL, "Chiudi", wxDefaultPosition, wxSize(100, 35));
+	wxButton* btnChiudi = new wxButton{ this, wxID_CANCEL, "Chiudi", wxDefaultPosition, wxSize(100, 35) };
 	mainSizer->Add(btnChiudi, 0, wxALIGN_RIGHT | wxALL, 10);
 
 	this->SetSizer(mainSizer);
@@ -1153,7 +1171,7 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxALL, 10);
 
 	// BOTTONE CHIUDI
-	wxButton* btnOk = new wxButton(this, wxID_OK, "Chiudi", wxDefaultPosition, wxSize(150, 35));
+	wxButton* btnOk = new wxButton{ this, wxID_OK, "Chiudi", wxDefaultPosition, wxSize(150, 35) };
 	mainSizer->Add(btnOk, 0, wxALIGN_CENTER | wxALL, 15);
 
 	this->SetSizerAndFit(mainSizer);
@@ -1236,8 +1254,8 @@ DlgDisco::DlgDisco(wxWindow* parent, TabbyGame& game)
 	sizerBottom->AddStretchSpacer();
 
 	// Bottoni
-	wxButton* btnOk = new wxButton(pnlBottom, wxID_OK, "OK", wxDefaultPosition, wxSize(-1, -1));
-	wxButton* btnCancel = new wxButton(pnlBottom, wxID_CANCEL, "Cancel", wxDefaultPosition, wxSize(-1, -1));
+	wxButton* btnOk = new wxButton{ pnlBottom, wxID_OK, "OK", wxDefaultPosition, wxSize(-1, -1) };
+	wxButton* btnCancel = new wxButton{ pnlBottom, wxID_CANCEL, "Cancel", wxDefaultPosition, wxSize(-1, -1) };
 
 	// Bind OK manuale per fare i controlli prima di chiudere
 	btnOk->Bind(wxEVT_BUTTON, &DlgDisco::OnOk, this);
@@ -1311,10 +1329,10 @@ DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
 	wxPanel* pnlButtons = new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerBtn = new wxBoxSizer{ wxVERTICAL };
 
-	wxButton* btnCerca = new wxButton(pnlButtons, wxID_ANY, "Cerca tipa", wxDefaultPosition, wxSize(300, 40));
-	wxButton* btnLascia = new wxButton(pnlButtons, wxID_ANY, "Lascia Tipa", wxDefaultPosition, wxSize(300, 40));
-	wxButton* btnTelefona = new wxButton(pnlButtons, wxID_ANY, "Telefona alla tipa", wxDefaultPosition, wxSize(300, 40));
-	wxButton* btnEsci = new wxButton(pnlButtons, wxID_ANY, "Esci con la tipa", wxDefaultPosition, wxSize(300, 40));
+	wxButton* btnCerca = new wxButton{ pnlButtons, wxID_ANY, "Cerca tipa", wxDefaultPosition, wxSize(300, 40) };
+	wxButton* btnLascia = new wxButton{ pnlButtons, wxID_ANY, "Lascia Tipa", wxDefaultPosition, wxSize(300, 40) };
+	wxButton* btnTelefona = new wxButton{ pnlButtons, wxID_ANY, "Telefona alla tipa", wxDefaultPosition, wxSize(300, 40) };
+	wxButton* btnEsci = new wxButton{ pnlButtons, wxID_ANY, "Esci con la tipa", wxDefaultPosition, wxSize(300, 40) };
 
 	// Bind eventi
 	btnCerca->Bind(wxEVT_BUTTON, &DlgTipa::OnCercaTipa, this);
@@ -1366,7 +1384,7 @@ DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
 
 	footerSizer->AddStretchSpacer();
 
-	wxButton* btnOk = new wxButton(this, wxID_OK, "OK", wxDefaultPosition, wxSize(80, 30));
+	wxButton* btnOk = new wxButton{ this, wxID_OK, "OK", wxDefaultPosition, wxSize(80, 30) };
 	footerSizer->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 10);
 
 	mainSizer->Add(footerSizer, 0, wxEXPAND | wxBOTTOM, 10);
@@ -1458,8 +1476,8 @@ DlgIncontroTipa::DlgIncontroTipa(wxWindow* parent, TabbyGame& game)
 	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, m_tipa.GetDesc(), wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
 	sizerInfo->AddStretchSpacer();
 
-	wxButton* btnProvaci = new wxButton(pnlInfo, wxID_ANY, "Ci provo !", wxDefaultPosition, wxSize(250, -1));
-	wxButton* btnLasciaStare = new wxButton(pnlInfo, wxID_ANY, "Ritorno a casa...", wxDefaultPosition, wxSize(250, -1));
+	wxButton* btnProvaci = new wxButton{ pnlInfo, wxID_ANY, "Ci provo !", wxDefaultPosition, wxSize(250, -1) };
+	wxButton* btnLasciaStare = new wxButton{ pnlInfo, wxID_ANY, "Ritorno a casa...", wxDefaultPosition, wxSize(250, -1) };
 	btnProvaci->Bind(wxEVT_BUTTON, &DlgIncontroTipa::OnProvaci, this);
 	btnLasciaStare->Bind(wxEVT_BUTTON, &DlgIncontroTipa::OnLasciaStare, this);
 	sizerInfo->Add(btnProvaci, 0, wxALL & ~wxBOTTOM, 5);
@@ -1583,6 +1601,7 @@ void DlgElencoNegozi::OnTelefonino(wxCommandEvent& event)
 	this->AggiornaInterfaccia();
 }
 
+// PANNELLO PRODOTTO
 PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game, const Acquistabile& prod)
 	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED),
 	m_game(game), m_prodotto(prod), m_parentDlg(mainDlg)
@@ -1617,31 +1636,11 @@ PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game,
 		dc.Clear();
 		dc.DrawText("NO IMG", 15, 30);
 	}
-	else {
-		// RIDIMENSIONAMENTO (Thumbnail)
-		// Se l'immagine è più alta di 100px, la scaliamo mantenendo le proporzioni
-		wxImage img = bmp.ConvertToImage();
-		/*
-		if (img.GetHeight() > 100) {
-			float ratio = 100.0f / img.GetHeight();
-			img.Rescale(img.GetWidth() * ratio, 100, wxIMAGE_QUALITY_HIGH);
-			bmp = wxBitmap(img);
-		}
-		*/
-	}
 
-	wxStaticBitmap* imgCtrl = new wxStaticBitmap(this, wxID_ANY, bmp);
-	imgCtrl->SetWindowStyle(wxBORDER_SUNKEN); // Cornice incassata
+	wxStaticBitmap* imgCtrl = new wxStaticBitmap{ this, wxID_ANY, bmp };
 
-	// Aggiungi immagine al sizer (margine 10)
+	// Aggiungi immagine al sizer
 	sizerBody->Add(imgCtrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, 10);
-	/*
-	wxPanel* pnlIcon = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(128, 128), wxBORDER_SIMPLE);
-	pnlIcon->SetBackgroundColour(wxColor(220, 220, 220));
-	// Qui andrà l'icona vera
-	bodySizer->Add(pnlIcon, 0, wxALL, 10);
-	*/
-
 	// Descrizione
 	wxStaticText* lblDesc = new wxStaticText(this, wxID_ANY, m_prodotto.GetDescrizione());
 	wxFont fDesc = lblDesc->GetFont();
@@ -1664,7 +1663,7 @@ PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game,
 	footerSizer->AddStretchSpacer();
 
 	// BOTTONE COMPRA VERDE
-	wxButton* btnCompra = new wxButton(this, wxID_ANY, "COMPRA", wxDefaultPosition, wxSize(90, 40));
+	wxButton* btnCompra = new wxButton{ this, wxID_ANY, "COMPRA", wxDefaultPosition, wxSize(90, 40) };
 	btnCompra->SetBackgroundColour(wxColor(0, 180, 0)); // Verde scuro
 	btnCompra->SetForegroundColour(*wxWHITE);           // Testo bianco
 	wxFont fBtn = btnCompra->GetFont(); fBtn.SetWeight(wxFONTWEIGHT_BOLD); btnCompra->SetFont(fBtn);
@@ -1737,7 +1736,7 @@ DlgNegozio::DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio
 	bottomSizer->Add(m_lblSoldi, 0, wxALL | wxALIGN_CENTER_VERTICAL, 20);
 	bottomSizer->AddStretchSpacer();
 
-	wxButton* btnEsci = new wxButton(pnlBottom, wxID_CANCEL, "Esci", wxDefaultPosition, wxSize(150, 50));
+	wxButton* btnEsci = new wxButton{ pnlBottom, wxID_CANCEL, "Esci", wxDefaultPosition, wxSize(150, 50) };
 	bottomSizer->Add(btnEsci, 0, wxALL | wxALIGN_CENTER_VERTICAL, 10);
 
 	pnlBottom->SetSizer(bottomSizer);
@@ -1844,7 +1843,7 @@ DlgPalestra::DlgPalestra(wxWindow* parent, TabbyGame& game)
 	sizerBottom->Add(m_lblFama, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 	sizerBottom->AddStretchSpacer();
-	wxButton* btnEsci = new wxButton(pnlBottom, wxID_CANCEL, "Esci", wxDefaultPosition, wxSize(100, 40));
+	wxButton* btnEsci = new wxButton{ pnlBottom, wxID_CANCEL, "Esci", wxDefaultPosition, wxSize(100, 40) };
 	sizerBottom->Add(btnEsci, 0, wxALL, 5);
 
 	pnlBottom->SetSizer(sizerBottom);
@@ -2079,7 +2078,7 @@ DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
 
 		// Tasto Attivazione
 		wxString labelAttiva = "Nuova Scheda (" + m_game.GetSoldiStr(abb.GetCostoAttivazione()) + ")";
-		wxButton* btnAttiva = new wxButton(scrollWin, wxID_ANY, labelAttiva, wxDefaultPosition, wxSize(-1, 30));
+		wxButton* btnAttiva = new wxButton{ scrollWin, wxID_ANY, labelAttiva, wxDefaultPosition, wxSize(-1, 30) };
 		btnAttiva->SetForegroundColour(wxColor(0, 0, 150));
 
 		btnAttiva->Bind(wxEVT_BUTTON, [this, i](wxCommandEvent&) {
@@ -2100,7 +2099,7 @@ DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
 		{
 			// Abbreviamo la label per farla stare nei bottoni piccoli
 			wxString labelRic = m_game.GetSoldiStr(taglio);
-			wxButton* btnRic = new wxButton(scrollWin, wxID_ANY, labelRic);
+			wxButton* btnRic = new wxButton{ scrollWin, wxID_ANY, labelRic };
 
 			std::string nomeOp = abb.GetNome();
 			btnRic->Bind(wxEVT_BUTTON, [this, taglio, nomeOp](wxCommandEvent&) {
@@ -2136,7 +2135,7 @@ DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
 	fSoldi.SetWeight(wxFONTWEIGHT_BOLD);
 	m_lblSoldi->SetFont(fSoldi);
 
-	wxButton* btnChiudi = new wxButton(pnlBottom, wxID_CANCEL, "Chiudi", wxDefaultPosition, wxSize(-1, 40));
+	wxButton* btnChiudi = new wxButton{ pnlBottom, wxID_CANCEL, "Chiudi", wxDefaultPosition, wxSize(-1, 40) };
 
 	bottomSizer->Add(m_lblSoldi, 0, wxALIGN_CENTER_VERTICAL | wxALL, 15);
 	bottomSizer->AddStretchSpacer();
@@ -2208,8 +2207,9 @@ DlgConcessionario::DlgConcessionario(wxWindow* parent, TabbyGame& game)
 		wxBoxSizer* sizerItem = new wxBoxSizer{wxHORIZONTAL};
 
 		// Immagine piccola sinistra
-		wxPanel* imgPlaceholder = new wxPanel(pnlItem, wxID_ANY, wxDefaultPosition, wxSize(60, 40), wxBORDER_SIMPLE);
-		imgPlaceholder->SetBackgroundColour(*wxWHITE);
+		wxBitmap bmpScooter = CaricaAsset(s->GetImageStr());
+		bmpScooter = wxBitmap(bmpScooter.ConvertToImage().Rescale(60, bmpScooter.GetHeight() * 60 / bmpScooter.GetWidth(), wxIMAGE_QUALITY_HIGH));
+		wxStaticBitmap* icon = new wxStaticBitmap(pnlItem, wxID_ANY, bmpScooter);
 
 		// Radio Button (Senza stile wxRB_GROUP perché sono su parent diversi)
 		wxRadioButton* radio = new wxRadioButton(pnlItem, 1000 + i, s->GetNome());
@@ -2217,7 +2217,7 @@ DlgConcessionario::DlgConcessionario(wxWindow* parent, TabbyGame& game)
 		// Evento click
 		radio->Bind(wxEVT_RADIOBUTTON, &DlgConcessionario::OnSelezionaScooter, this);
 
-		sizerItem->Add(imgPlaceholder, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+		sizerItem->Add(icon, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 		sizerItem->Add(radio, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
 		pnlItem->SetSizer(sizerItem);
@@ -2231,11 +2231,11 @@ DlgConcessionario::DlgConcessionario(wxWindow* parent, TabbyGame& game)
 	wxPanel* pnlStats = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
 	wxBoxSizer* sizerStats = new wxBoxSizer{wxVERTICAL};
 
-	// 1. IMMAGINE GRANDE (SOPRA)
-	m_pnlImgBig = new wxPanel(pnlStats, wxID_ANY, wxDefaultPosition, wxSize(200, 120), wxBORDER_DOUBLE);
-	m_pnlImgBig->SetBackgroundColour(*wxWHITE);
+	// 1. IMMAGINE
+	m_imgScooter = new wxStaticBitmap{ pnlStats, wxID_ANY, wxNullBitmap };
+
 	// Centriamo l'immagine nel pannello di destra
-	sizerStats->Add(m_pnlImgBig, 0, wxALL, 10);
+	sizerStats->Add(m_imgScooter, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
 	// 2. GRIGLIA STATISTICHE
 	// 2 Colonne, gap verticale 5, orizzontale 10
@@ -2270,8 +2270,8 @@ DlgConcessionario::DlgConcessionario(wxWindow* parent, TabbyGame& game)
 	m_lblSoldi = new wxStaticText(bottomPnl, wxID_ANY, "Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
 	wxFont fBold = m_lblSoldi->GetFont(); fBold.SetWeight(wxFONTWEIGHT_BOLD); m_lblSoldi->SetFont(fBold);
 
-	wxButton* btnCompra = new wxButton(bottomPnl, wxID_ANY, "Compra", wxDefaultPosition, wxSize(-1, 40));
-	wxButton* btnCancel = new wxButton(bottomPnl, wxID_CANCEL, "Esci", wxDefaultPosition, wxSize(-1, 40));
+	wxButton* btnCompra = new wxButton{bottomPnl, wxID_ANY, "Compra", wxDefaultPosition, wxSize(-1, 40)};
+	wxButton* btnCancel = new wxButton{ bottomPnl, wxID_CANCEL, "Esci", wxDefaultPosition, wxSize(-1, 40) };
 
 	btnCompra->Bind(wxEVT_BUTTON, &DlgConcessionario::OnCompra, this);
 
@@ -2302,7 +2302,6 @@ void DlgConcessionario::OnSelezionaScooter(wxCommandEvent& event)
 	int selectedId = event.GetId();
 	m_selectedIndex = selectedId - 1000;
 
-	// --- FIX RADIO BUTTONS ---
 	// Poiché i radio button sono su pannelli diversi, wxWidgets non gestisce l'esclusività.
 	// Dobbiamo spegnere manualmente tutti quelli che NON sono quello cliccato.
 	for (size_t i = 0; i < m_catalogoPtr.size(); ++i)
@@ -2331,6 +2330,10 @@ void DlgConcessionario::AggiornaStatistiche()
 
 	const Scooter* s = static_cast<const Scooter*>(m_catalogoPtr[m_selectedIndex]);
 
+	wxBitmap bmp = CaricaAsset(s->GetImageStr());
+	m_imgScooter->SetBitmap(bmp);
+	m_imgScooter->Refresh();
+
 	m_lblVelocita->SetLabel(std::to_string(s->GetVelocita()) + " km/h");
 	m_lblMarmitta->SetLabel(s->GetMarmitta().GetNome());
 	m_lblCarburatore->SetLabel(s->GetCarburatore().GetNome());
@@ -2340,6 +2343,7 @@ void DlgConcessionario::AggiornaStatistiche()
 	m_lblCosto->SetLabel(m_game.GetSoldiStr(s->GetPrezzo()));
 
 	// Aggiorna layout se i testi cambiano dimensione
+	this->Fit();
 	this->Layout();
 }
 
@@ -2362,7 +2366,7 @@ wxStaticText* DlgConcessionario::AddStat(wxWindow* parent, wxSizer* sizer, wxStr
 
 // DIALOG DOCUMENTO D'IDENTITA'
 DlgPersonalInfo::DlgPersonalInfo(wxWindow* parent, TabbyGame& game)
-	: wxDialog(parent, wxID_ANY, "Personal Informations", wxDefaultPosition, wxSize(650, -1)),
+	: wxDialog(parent, wxID_ANY, "Documento d'identità", wxDefaultPosition, wxSize(650, -1)),
 	m_game(game)
 {
 	this->SetFont(parent->GetFont());
@@ -2430,7 +2434,7 @@ DlgPersonalInfo::DlgPersonalInfo(wxWindow* parent, TabbyGame& game)
 
 	// Se l'avatar è troppo grande, potremmo ridimensionarlo, ma assumiamo 200x300 va bene.
 	// Creiamo il controllo immagine
-	wxStaticBitmap* imgFoto = new wxStaticBitmap(this, wxID_ANY, avatarBmp);
+	wxStaticBitmap* imgFoto = new wxStaticBitmap{ this, wxID_ANY, avatarBmp };
 	imgFoto->SetWindowStyle(wxBORDER_SIMPLE);
 
 	rightSizer->Add(new wxStaticText(this, wxID_ANY, "FOTOGRAFIA"), 0, wxALIGN_CENTER | wxBOTTOM, 5);
@@ -2446,8 +2450,8 @@ DlgPersonalInfo::DlgPersonalInfo(wxWindow* parent, TabbyGame& game)
 
 	// --- BOTTONI ---
 	wxBoxSizer* btnSizer = new wxBoxSizer{wxHORIZONTAL};
-	wxButton* btnOk = new wxButton(this, wxID_OK, "Salva modifiche");
-	wxButton* btnCancel = new wxButton(this, wxID_CANCEL, "Annulla");
+	wxButton* btnOk = new wxButton{ this, wxID_OK, "Salva modifiche" };
+	wxButton* btnCancel = new wxButton{ this, wxID_CANCEL, "Annulla" };
 
 	btnSizer->Add(btnOk, 0, wxRIGHT, 10);
 	btnSizer->Add(btnCancel, 0, wxLEFT, 10);
@@ -2627,7 +2631,7 @@ DlgConfig::DlgConfig(wxWindow* parent, TabbyGame& game)
 	gbSizer->Add(iconSizer, wxGBPosition(1, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
 
 	// Bottone OK Grande con icona check
-	wxButton* btnOk = new wxButton(grpMisc->GetStaticBox(), wxID_OK, "OK", wxDefaultPosition, wxSize(80, 40));
+	wxButton* btnOk = new wxButton{ grpMisc->GetStaticBox(), wxID_OK, "OK", wxDefaultPosition, wxSize(80, 40) };
 	// TODO: Usiamo wxART_TICK_MARK se vogliamo l'icona spunta, ma richiede wxBitmapButton. Per ora testo.
 
 	// Il bottone OK nello screen occupa le ultime righe a destra
@@ -2714,9 +2718,9 @@ DlgUscita::DlgUscita(wxWindow* parent)
 	wxBoxSizer* btnSizer = new wxBoxSizer{wxHORIZONTAL};
 
 	// Nello screenshot i bottoni sono centrati/espansi. Usiamo dimensioni fisse simili a Windows standard.
-	wxButton* btnOk = new wxButton(this, wxID_OK, "OK", wxDefaultPosition, wxSize(75, 25));
-	wxButton* btnCancel = new wxButton(this, wxID_CANCEL, "Cancel", wxDefaultPosition, wxSize(75, 25));
-	wxButton* btnHelp = new wxButton(this, wxID_HELP, "Help", wxDefaultPosition, wxSize(75, 25));
+	wxButton* btnOk = new wxButton{ this, wxID_OK, "OK", wxDefaultPosition, wxSize(75, 25) };
+	wxButton* btnCancel = new wxButton{ this, wxID_CANCEL, "Cancel", wxDefaultPosition, wxSize(75, 25) };
+	wxButton* btnHelp = new wxButton{ this, wxID_HELP, "Help", wxDefaultPosition, wxSize(75, 25) };
 
 	btnOk->Bind(wxEVT_BUTTON, &DlgUscita::OnOk, this);
 	btnCancel->Bind(wxEVT_BUTTON, &DlgUscita::OnCancel, this);
@@ -2790,7 +2794,7 @@ DlgAbout::DlgAbout(wxWindow* parent)
 
 	// Colonna Bottone OK (Destra) con icona check
 	// Nota: Nello screen il bottone è grande e ha un'icona verde.
-	wxButton* btnOk = new wxButton(pnlMainFrame, wxID_OK, "OK", wxDefaultPosition, wxSize(80, 40));
+	wxButton* btnOk = new wxButton{ pnlMainFrame, wxID_OK, "OK", wxDefaultPosition, wxSize(80, 40) };
 	// btnOk->SetBitmap(...); // Se avessi l'icona
 	btnOk->Bind(wxEVT_BUTTON, &DlgAbout::OnOk, this);
 
@@ -2871,7 +2875,7 @@ DlgAbout::DlgAbout(wxWindow* parent)
 
 	footerSizer->Add(urlSizer, 1, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
 
-	wxButton* btnNorme = new wxButton(this, wxID_ANY, "Norme di utilizzo", wxDefaultPosition, wxSize(120, -1));
+	wxButton* btnNorme = new wxButton{ this, wxID_ANY, "Norme di utilizzo", wxDefaultPosition, wxSize(120, -1) };
 	btnNorme->Bind(wxEVT_BUTTON, &DlgAbout::OnNorme, this);
 
 	footerSizer->Add(btnNorme, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 10);
@@ -3027,7 +3031,7 @@ DlgPagella::DlgPagella(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(new wxStaticText(this, wxID_ANY, commento), 0, wxALL | wxALIGN_CENTER, 15);
 
 	// 4. BOTTONE OK
-	wxButton* btnOk = new wxButton(this, wxID_OK, "OK", wxDefaultPosition, wxSize(100, 40));
+	wxButton* btnOk = new wxButton{ this, wxID_OK, "OK", wxDefaultPosition, wxSize(100, 40) };
 	btnOk->Bind(wxEVT_BUTTON, &DlgPagella::OnOk, this);
 	mainSizer->Add(btnOk, 0, wxALL | wxALIGN_CENTER, 15);
 

@@ -196,7 +196,7 @@ TabbyFrame::TabbyFrame()
 	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
 	wxBitmap bmpAvatar = GeneraAvatar(m_game.GetTabbyGuy());
-	m_fotoTabbozzo = new wxStaticBitmap(pnlFoto, wxID_ANY, bmpAvatar);
+	m_fotoTabbozzo = new wxStaticBitmap{ pnlFoto, wxID_ANY, bmpAvatar };
 	//m_fotoTabbozzo->SetWindowStyle(wxSS_NOTIFY | wxBORDER_SUNKEN);
 	m_fotoTabbozzo->SetCursor(wxCursor(wxCURSOR_HAND)); // Manina quando passi sopra
 	m_fotoTabbozzo->Bind(wxEVT_LEFT_DOWN, &TabbyFrame::OnAvatarClick, this);
@@ -303,7 +303,10 @@ TabbyFrame::TabbyFrame()
 void TabbyFrame::AggiornaInterfaccia()
 { 
 	// Viene rinfrescato il tabbozzo...
-	m_fotoTabbozzo->SetBitmap(GeneraAvatar(m_game.GetTabbyGuy()));
+	wxBitmap av = GeneraAvatar(m_game.GetTabbyGuy());
+	if (av.IsOk()) av = wxBitmap(av.ConvertToImage().Rescale(av.GetWidth() * 1.6, av.GetHeight() * 1.6, wxIMAGE_QUALITY_BILINEAR));
+
+	m_fotoTabbozzo->SetBitmap(av);
 	m_fotoTabbozzo->Refresh();
 
 	TabbyGuy& guy = m_game.GetTabbyGuy();

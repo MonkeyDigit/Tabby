@@ -51,7 +51,8 @@ struct Scuola {
 		Materia("Petrolchimica"),
 		Materia("Filosofia aziendale"),
 		Materia("Metallurgia")
-		}
+		},
+		m_img{"scuola.png"}
 	{}
 
 	void Reset(){
@@ -60,4 +61,5 @@ struct Scuola {
 	}
 
 	std::vector<Materia> m_materie;
+	std::string m_img;
 };

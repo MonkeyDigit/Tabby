@@ -5,8 +5,8 @@
 
 Messaggio::Messaggio() {}
 
-Messaggio::Messaggio(TipoMsg tipo, std::string titolo, std::string testo, std::string img, Scelta id)
-    : m_tipo{ tipo }, m_msgAzione{ id }, m_titolo{ titolo }, m_testo{ testo }, m_immagine{ img }
+Messaggio::Messaggio(TipoMsg tipo, std::string titolo, std::string testo, Scelta id)
+    : m_tipo{ tipo }, m_msgAzione{ id }, m_titolo{ titolo }, m_testo{ testo }
 {}
 
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
@@ -34,7 +34,7 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     std::string indirizzo = m_vieStr[GenRandomInt(0, m_vieStr.size() - 1)] + " n. " + std::to_string(GenRandomInt(1, 150));
     CartaIdentita id{ "Tizio", "Caio", Chrono::Date(1973, 8, 10), "Atto n. 6333 P. 1 S. A.", "Cusano Milanino", "MI", "Italiana", "Milano", indirizzo, "Celibe", "Sfruttato"};
     m_tabbyGuy.SetIdentita(id);
-    m_tabbyGuy.SetSoldi(10);
+    m_tabbyGuy.SetSoldi(100000);
     m_tabbyGuy.SetPaghetta(20);
     m_tabbyGuy.SetFama(0);
     m_tabbyGuy.SetRep(0);
@@ -411,15 +411,27 @@ void TabbyGame::GestioneEventiCasuali()
         if (caso <= 10)
         {
             m_tabbyGuy.DecRep(caso);
-            int rndFrase = GenRandomInt(0, m_frasiMetallari.size() - 1);
+            Messaggio msg{};
+            int totFrasi = m_frasiMetallari.size() + m_frasiManovali.size();    // Ogni frase, che sia del metallaro o del manovale, ha la stessa probabilità di uscire
+            int rndFrase = GenRandomInt(0, totFrasi - 1);
             int rndVia = GenRandomInt(0, m_vieStr.size() - 1);
 
             PlaySound(1300);
-            Messaggio msg{ TipoMsg::INFO, "Vieni pestato", sostituisci(m_frasiMetallari[rndFrase],"{LUOGO}", m_vieStr[rndVia])};
-            PushMessaggio(msg);
-            // DEBUG LOG
-            WriteLog("GestioneEventiCasuali: Metallaro n. " + std::to_string(rndFrase));
+            if (rndFrase >= m_frasiMetallari.size())
+            {
+                rndFrase %= m_frasiMetallari.size();
+                msg = Messaggio{ TipoMsg::MANOVALE, "Fai incazzare un manovale", sostituisci(m_frasiManovali[rndFrase],"{LUOGO}", m_vieStr[rndVia]) };
+                // DEBUG LOG
+                WriteLog("GestioneEventiCasuali: Manovale n. " + std::to_string(rndFrase));
+            }
+            else
+            {
+                msg = Messaggio{ TipoMsg::METALLARO, "Vieni pestato", sostituisci(m_frasiMetallari[rndFrase],"{LUOGO}", m_vieStr[rndVia]) };
+                // DEBUG LOG
+                WriteLog("GestioneEventiCasuali: Metallaro n. " + std::to_string(rndFrase));
+            }
 
+            PushMessaggio(msg);
             m_coolDownPestaggio = 5;
         }
         else if (11 <= caso && caso <= 20)   // SCOOTER
@@ -427,10 +439,7 @@ void TabbyGame::GestioneEventiCasuali()
             if (m_tabbyGuy.HaScooter() && m_tabbyGuy.GetScooter().GetAttivita() == Attivita::IN_GIRO)
             {
                 if (m_tabbyGuy.HaTelefono())
-                {
-                    // A furia di prendere botte, il cellulare si spacca...
-                    m_tabbyGuy.GetTelefono().DecStato(GenRandomInt(1, 8));
-                }
+                    m_tabbyGuy.GetTelefono().DecStato(GenRandomInt(1, 8));  // A furia di prendere botte, il cellulare si spacca...
 
                 if (caso < 17)
                 {
@@ -438,17 +447,16 @@ void TabbyGame::GestioneEventiCasuali()
                     int rndFrase = GenRandomInt(0, m_frasiCamionista.size() - 1);
                     int rndVia = GenRandomInt(0, m_vieStr.size() - 1);
 
-                    Messaggio msg{ TipoMsg::ERRORE, "Camionista bastardo", sostituisci(m_frasiCamionista[rndFrase],"{LUOGO}", m_vieStr[rndVia]) };
+                    Messaggio msg{ TipoMsg::INCIDENTE_CAMION, "Camionista bastardo", sostituisci(m_frasiCamionista[rndFrase],"{LUOGO}", m_vieStr[rndVia]) };
                     PushMessaggio(msg);
                     // DEBUG LOG
                     WriteLog("GestioneEventiCasuali: Scooter - Camionista...");
-
                 }
                 else
                 {
                     m_tabbyGuy.GetScooter().DecStato(20);
                     int rnd = GenRandomInt(0, m_frasiMuro.size() - 1);
-                    Messaggio msg{ TipoMsg::ERRORE, "Muro bastardo", m_frasiMuro[rnd]};
+                    Messaggio msg{ TipoMsg::INCIDENTE_MURO, "Muro bastardo", m_frasiMuro[rnd]};
                     PushMessaggio(msg);
                     // DEBUG LOG
                     WriteLog("GestioneEventiCasuali: Scooter - Muro...");
@@ -493,7 +501,7 @@ void TabbyGame::GestioneEventiCasuali()
                 int rndMat = GenRandomInt(0, m_tabbyGuy.GetScuola().m_materie.size() - 1);
                 int rndFrase = GenRandomInt(0, m_frasiScuola.size() - 1);
                 Materia& mat = m_tabbyGuy.GetScuola().m_materie[rndMat];
-                Messaggio msg{ TipoMsg::INFO, "Scuola", sostituisci(m_frasiScuola[rndFrase],"{MATERIA}",mat.GetNome())};
+                Messaggio msg{ TipoMsg::INFO, "Scuola", sostituisci(m_frasiScuola[rndFrase],"{MATERIA}",mat.GetNome()) };
                 PushMessaggio(msg);
 
                 mat.DecVoto(2);
@@ -508,7 +516,7 @@ void TabbyGame::GestioneEventiCasuali()
             {
                 m_tipaNuova = GeneraTipa();
                 PlaySound(1);
-                Messaggio msg{ TipoMsg::SCELTA, "Qualcuno ti caga...", "Una tipa, di nome " + m_tipaNuova.GetNome() + " (Figosità " + std::to_string(m_tipaNuova.GetFama()) + "/100), ci prova con te...\nCi stai ???", "", Scelta::TIPA_CI_PROVA };
+                Messaggio msg{ TipoMsg::SCELTA, "Qualcuno ti caga...", "Una tipa, di nome " + m_tipaNuova.GetNome() + " (Figosità " + std::to_string(m_tipaNuova.GetFama()) + "/100), ci prova con te...\nCi stai ???", Scelta::TIPA_CI_PROVA };
                 PushMessaggio(msg);
 
                 WriteLog("GestioneEventiCasuali: Una tipa ci prova...");
@@ -518,7 +526,7 @@ void TabbyGame::GestioneEventiCasuali()
         {
             if (m_tabbyGuy.HaTipa())
             {
-                Messaggio msg{ TipoMsg::SCELTA, "Domande inutili della tipa...", "Mi ami ???", "", Scelta::TIPA_MI_AMI };
+                Messaggio msg{ TipoMsg::SCELTA, "Domande inutili della tipa...", "Mi ami ???", Scelta::TIPA_MI_AMI };
                 PushMessaggio(msg);
 
             }
@@ -529,7 +537,7 @@ void TabbyGame::GestioneEventiCasuali()
         {
             if (m_tabbyGuy.HaTipa())
             {
-                Messaggio msg{ TipoMsg::SCELTA, "Domande inutili della tipa...", "Ma sono ingrassata ???", "", Scelta::TIPA_INGRASSATA };
+                Messaggio msg{ TipoMsg::SCELTA, "Domande inutili della tipa...", "Ma sono ingrassata ???", Scelta::TIPA_INGRASSATA };
                 PushMessaggio(msg);
             }
             WriteLog("GestioneEventiCasuali: Domande inutili della tipa...");
@@ -822,7 +830,7 @@ void TabbyGame::AzioneCorrompi(int materiaIndex)
     m_materiaIndex = materiaIndex;
     // Per corrompere un professore va da 75€ a 150€
     m_costoCorruzione = GenRandomInt(75,150);
-    Messaggio msg{ TipoMsg::SCELTA, "Corrompi i professori", "Ma... forse per " + GetSoldiStr(m_costoCorruzione) + " potrei dimenticare i tuoi ultimi compiti in classe...", "", Scelta::CORROMPI };
+    Messaggio msg{ TipoMsg::SCELTA, "Corrompi i professori", "Ma... forse per " + GetSoldiStr(m_costoCorruzione) + " potrei dimenticare i tuoi ultimi compiti in classe...", Scelta::CORROMPI };
     PushMessaggio(msg);
 }
 
@@ -842,7 +850,7 @@ void TabbyGame::AzioneGara()
     {
         m_scooterRnd = GeneraScooter();
         PlaySound(701);
-        Messaggio msg{ TipoMsg::SCELTA, "Gareggia con lo scooter", "Accetti la sfida con un tabbozzo che ha un " + m_scooterRnd.GetNome() + " ?", "", Scelta::GARA };
+        Messaggio msg{ TipoMsg::SCELTA, "Gareggia con lo scooter", "Accetti la sfida con un tabbozzo che ha un " + m_scooterRnd.GetNome() + " ?", Scelta::GARA };
         PushMessaggio(msg);
         if (m_tabbyGuy.GetScooter().GetStato() > 30)
             m_tabbyGuy.GetScooter().DecStato(GenRandomInt(0, 1));
@@ -1088,7 +1096,7 @@ void TabbyGame::AzioneLicenziati()
         if (!TriggerLavoro())
             return;
         
-        Messaggio msg{ TipoMsg::SCELTA, "Licenziati", "Sei proprio sicuro di voler dare le dimissioni dalla " + m_tabbyGuy.GetCarriera().GetNomeDitta() + " ?", "", Scelta::LICENZIATI };
+        Messaggio msg{ TipoMsg::SCELTA, "Licenziati", "Sei proprio sicuro di voler dare le dimissioni dalla " + m_tabbyGuy.GetCarriera().GetNomeDitta() + " ?", Scelta::LICENZIATI };
         PushMessaggio(msg);
     }
 }
@@ -1129,6 +1137,7 @@ void TabbyGame::CaricaStringhe()
 
             // Selettore del vettore attivo
             if (tag == "METALLARI")      vettoreCorrente = &m_frasiMetallari;
+            else if (tag == "MANOVALI")    vettoreCorrente = &m_frasiManovali;
             else if (tag == "SCUOLA")    vettoreCorrente = &m_frasiScuola;
             else if (tag == "FORTUNA")   vettoreCorrente = &m_frasiFortuna;
             else if (tag == "PALO")    vettoreCorrente = &m_frasiPalo;
@@ -1648,7 +1657,7 @@ void TabbyGame::AzioneLasciaTipa()
         return;
     }
 
-    Messaggio msg{ TipoMsg::SCELTA, "Lascia tipa", "Sei proprio sicuro di voler lasciare "+m_tabbyGuy.GetTipa().GetNome()+" ?", "", Scelta::LASCIA_TIPA };
+    Messaggio msg{ TipoMsg::SCELTA, "Lascia tipa", "Sei proprio sicuro di voler lasciare "+m_tabbyGuy.GetTipa().GetNome()+" ?", Scelta::LASCIA_TIPA };
     PushMessaggio(msg);
 }
 
@@ -1803,7 +1812,8 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
 
         Messaggio msg{ TipoMsg::ERRORE, "Non hai abbastanza soldi...", str };
         PushMessaggio(msg);
-        // TODO: C'E' EVENTO !!!!
+        // TODO: da spostare?
+        NuovoGiorno();
         return;
     }
 
@@ -1870,7 +1880,6 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
         PushMessaggio(msg);
 
         m_tabbyGuy.IncRep(4);
-        NuovoGiorno();
         
     }
     else if (prod.GetCategoria() == CategoriaOggetto::SCOOTER_PART)
@@ -2015,7 +2024,7 @@ void TabbyGame::AzioneVendiTelefono()
 
     m_offertaTel = m_tabbyGuy.GetTelefono().GetPrezzo() * 0.5f + 8;
 
-    Messaggio msg{ TipoMsg::SCELTA, "Un buon affare...", "Ti posso dare " + GetSoldiStr(m_offertaTel) + " per il tuo telefonino... Vuoi vendermelo ?", "", Scelta::VENDI_TEL };
+    Messaggio msg{ TipoMsg::SCELTA, "Un buon affare...", "Ti posso dare " + GetSoldiStr(m_offertaTel) + " per il tuo telefonino... Vuoi vendermelo ?", Scelta::VENDI_TEL };
     PushMessaggio(msg);
 }
 
@@ -2075,7 +2084,7 @@ void TabbyGame::AzioneVendiScooter()
     if (m_offertaScooter < 30)  // Se vale meno di 30 euro nessuno lo vuole
         m_offertaScooter = 30;
 
-    Messaggio msg{ TipoMsg::SCELTA, "Vendi lo scooter", "Il tuo scooterino viene valutato per " + GetSoldiStr(m_offertaScooter)+". \nLo vendi ?", "", Scelta::VENDI_SCOOTER };
+    Messaggio msg{ TipoMsg::SCELTA, "Vendi lo scooter", "Il tuo scooterino viene valutato per " + GetSoldiStr(m_offertaScooter)+". \nLo vendi ?", Scelta::VENDI_SCOOTER };
     PushMessaggio(msg);
 }
 
@@ -2096,7 +2105,7 @@ void TabbyGame::AzioneRiparaScooter()
 
     m_costoRiparazione = m_tabbyGuy.GetScooter().GetPrezzo() * 0.01f * (100 - m_tabbyGuy.GetScooter().GetStato()) + 10;
 
-    Messaggio msg{ TipoMsg::SCELTA, "Ripara scooter", "Vuoi riparare lo scooter per " + GetSoldiStr(m_costoRiparazione) + " ?", "", Scelta::RIPARA_SCOOTER };
+    Messaggio msg{ TipoMsg::SCELTA, "Ripara scooter", "Vuoi riparare lo scooter per " + GetSoldiStr(m_costoRiparazione) + " ?", Scelta::RIPARA_SCOOTER };
     PushMessaggio(msg);
 }
 

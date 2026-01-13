@@ -27,6 +27,10 @@ enum class TipoMsg {
     // Tasti sì/no
 	SCELTA,
     // FINESTRE SPECIALI
+    METALLARO,
+    MANOVALE,
+    INCIDENTE_MURO,
+    INCIDENTE_CAMION,
     PAGELLA,     // Così sappiamo di dover mostrare la finestra con la pagella
     DUE_DONNE
 };
@@ -53,12 +57,11 @@ enum class Scelta {
 
 struct Messaggio {
 	Messaggio();
-	Messaggio(TipoMsg tipo, std::string titolo = "", std::string testo = "", std::string img = "", Scelta id = Scelta::NONE);
+	Messaggio(TipoMsg tipo, std::string titolo = "", std::string testo = "", Scelta id = Scelta::NONE);
 	TipoMsg m_tipo = TipoMsg::INFO;
     Scelta m_msgAzione = Scelta::NONE;
 	std::string m_titolo;
 	std::string m_testo;
-	std::string m_immagine;	// Nome del file immagine
     int m_soundId = -1;
 };
 
@@ -166,10 +169,11 @@ public:
     void PlaySound(int id);
     void SetSoundActive(bool active) { m_soundActive = active; }
 
-    const Tipa& GetTipaNuova() { return m_tipaNuova; }
-    const Negozio& GetTelefonia() { return m_telefonia; }
-    const Negozio& GetConcessionario() { return m_concessionario; }
-    const Negozio& GetMeccanico() { return m_meccanico; }
+    const Tipa& GetTipaNuova() const { return m_tipaNuova; }
+    const Negozio& GetTelefonia() const { return m_telefonia; }
+    const Negozio& GetConcessionario() const { return m_concessionario; }
+    const Negozio& GetMeccanico() const { return m_meccanico; }
+    std::string GetMetallaroImageStr() { return ("metallaro" + std::to_string(GenRandomInt(1, 5)) + ".png"); }
     std::vector<Abbonamento>& GetAbbonamenti() { return m_abbonamenti; }
     std::vector<Negozio>& GetNegozi() { return m_negozi; }
     std::vector<Disco>& GetDiscoteche() { return m_discoteche; }
@@ -195,25 +199,11 @@ private:
     Tipa m_tipaNuova;
     Scooter m_scooterRnd;
     int m_materiaIndex;
+    bool m_soundActive;
 	// IL MOTORE DI NUMERI CASUALI
 	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile
 	std::mt19937 m_rng;
 
-	// Evento
-	void PushMessaggio(const Messaggio& e) { m_codaMsg.push_back(e); };
-
-	// Funzioni di gestione giornaliera
-	void NuovoGiorno();
-	void AvanzaCalendario();
-	void GestioneConsumi();     // Sigarette, telefono, abbonamento
-	void GestioneRelazioni();   // Tipa, amici, famiglia
-	void GestioneLavoro();      // Licenziamento, impegno
-	void GestioneEconomia();    // Paghetta, stipendio
-	void GestioneEventiCasuali(); // Il generatore di caos
-
-	// LOGICA MONETARIA
-	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
-	long long ConvertiValuta(long long valoreBase) const;
 
     // CONTENUTI DI GIOCO
     std::vector<Abbonamento> m_abbonamenti;
@@ -234,6 +224,7 @@ private:
     std::vector<std::string> m_frasiPalestra;
     std::vector<std::string> m_frasiSigarette;
     std::vector<std::string> m_frasiMetallari;
+    std::vector<std::string> m_frasiManovali;
     std::vector<std::string> m_frasiCamionista;
     std::vector<std::string> m_frasiMuro;
     std::vector<std::string> m_frasiFortuna;
@@ -248,7 +239,21 @@ private:
     void CaricaNegozi();
     void CaricaQuiz();
 
-    bool m_soundActive;
+	// Evento
+	void PushMessaggio(const Messaggio& e) { m_codaMsg.push_back(e); };
+
+	// Funzioni di gestione giornaliera
+	void NuovoGiorno();
+	void AvanzaCalendario();
+	void GestioneConsumi();     // Sigarette, telefono, abbonamento
+	void GestioneRelazioni();   // Tipa, amici, famiglia
+	void GestioneLavoro();      // Licenziamento, impegno
+	void GestioneEconomia();    // Paghetta, stipendio
+	void GestioneEventiCasuali(); // Il generatore di caos
+
+	// LOGICA MONETARIA
+	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
+	long long ConvertiValuta(long long valoreBase) const;
 };
 
 // TODO: IMPOSTA LA FAMA DEI CELL

@@ -4,6 +4,8 @@ Incontri un metallaro in {LUOGO}, lo minacci e lui ti spacca tutte le ossa.
 Insulti un gruppo di metallari che passano in {LUOGO} e uno di questi ti spacca le ossa.
 Mentre cammini per {LUOGO} cerchi la rissa con un metallaro e lui ti spacca tutte le ossa.
 Cerchi la rissa con un metallaro e lui ti spacca tutte le ossa.
+
+[MANOVALI]
 Senza un preciso motivo, prendi per il culo un manovale che, essendo privo di senso dell'umorismo, ti fa a pezzi.
 
 [SCUOLA]

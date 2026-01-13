@@ -417,68 +417,21 @@ private:
 	void OnOk(wxCommandEvent& event);
 };
 
-// Funzione helper
+struct DlgMetallaro : public wxDialog {
+	DlgMetallaro(wxWindow* parent, TabbyGame& game, const Messaggio& msg);
+};
+
+struct DlgManovale : public wxDialog {
+public:
+	DlgManovale(wxWindow* parent, TabbyGame& game, const Messaggio& msg);
+};
+
+struct DlgIncidente : public wxDialog {
+public:
+	DlgIncidente(wxWindow* parent, TabbyGame& game, const Messaggio& msg);
+};
+
+// Funzioni helper
 void ManifestaEventi(wxWindow* parent, TabbyGame& game);
-
-static wxBitmap CaricaAsset(const std::string& nomeFile) {
-	if (nomeFile.empty())
-		return wxNullBitmap;
-
-	wxString path = "img/" + wxString(nomeFile);
-
-	// Se il nome nel txt non ha l'estensione, proviamo ad aggiungerla
-	if (!path.Lower().EndsWith(".png"))
-		path += ".png";
-
-	if (wxFileExists(path))
-		return wxBitmap(path, wxBITMAP_TYPE_ANY);
-
-	return wxNullBitmap;
-}
-
-static wxBitmap GeneraAvatar(const TabbyGuy& guy)
-{
-	// 1. CARICA LO SFONDO (Layer Base Assoluto)
-	wxBitmap avatar = CaricaAsset("sfondo.png");
-
-	// Se manca lo sfondo, usiamo un fallback bianco o il corpo come base
-	if (!avatar.IsOk()) {
-		avatar = wxBitmap(200, 300); // Dimensioni totali della scena
-		wxMemoryDC dc(avatar);
-		dc.SetBackground(*wxWHITE_BRUSH); // O wxLIGHT_GREY_BRUSH
-		dc.Clear();
-	}
-
-	wxMemoryDC dc(avatar);
-
-	// Funzione helper per disegnare un pezzo alle coordinate giuste
-	auto DisegnaPezzo = [&](const std::string& nomeFile, int x, int y) {
-		if (nomeFile.empty())
-			return;
-		wxBitmap img = CaricaAsset(nomeFile);
-		if (img.IsOk()) {
-			dc.DrawBitmap(img, x, y, true); // true = usa trasparenza
-		}
-		};
-
-	// 2. SOVRAPPOSIZIONE DEI VESTITI (Ordine Z-Order da tabimg.c)
-	// Ordine: Pantaloni -> Scarpe -> Giubbotto -> Testa
-
-	// LAYER 1: PANTALONI
-	// Coordinate originali tabimg.c: X=28, Y=93
-	DisegnaPezzo(guy.GetPantaloni().GetImageStr(), 28, 93);
-
-	// LAYER 2: SCARPE
-	// Coordinate originali tabimg.c: X=-6, Y=205
-	DisegnaPezzo(guy.GetScarpe().GetImageStr(), -6, 205);
-
-	// LAYER 3: GIUBBOTTO
-	// Coordinate originali tabimg.c: X=-20, Y=18
-	DisegnaPezzo(guy.GetGiubbotto().GetImageStr(), -20, 18);
-
-	// LAYER 4: TESTA
-	// Coordinate originali tabimg.c: X=42, Y=3
-	DisegnaPezzo(guy.GetTestaImage(), 42, 3);
-
-	return avatar;
-}
+wxBitmap CaricaAsset(const std::string& nomeFile);
+wxBitmap GeneraAvatar(const TabbyGuy& guy);

@@ -138,6 +138,7 @@ public:
     void AzioneTelefonaTipa();
     void AzioneVoglioEntrambe();
     void AzionePreferiscoNuova();
+    void AzionePalpatina();
     // Negozi
     bool TriggerNegozio(CategoriaOggetto merce);
     void AzioneCompra(const Acquistabile& prod);

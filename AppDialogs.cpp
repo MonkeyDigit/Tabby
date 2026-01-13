@@ -1426,8 +1426,40 @@ DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
 	// FOTO (Sinistra)
 	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
+	double scaleFactor = 1.0;
 	wxBitmap bmpTipa = CaricaAsset("tipa.png");
 	wxStaticBitmap* imgTipa = new wxStaticBitmap(pnlFoto, wxID_ANY, bmpTipa);
+	imgTipa->SetCursor(wxCursor(wxCURSOR_HAND)); // Manina quando passi sopra
+	imgTipa->Bind(wxEVT_LEFT_DOWN, [this, scaleFactor](wxMouseEvent& ev) {
+		// Prendi posizione mouse
+		wxPoint p = ev.GetPosition();
+
+		// Riporta le coordinate alla dimensione originale del Tabboz (1999)
+		int x = (int)(p.x / scaleFactor);
+		int y = (int)(p.y / scaleFactor);
+
+		// --- LOGICA ORIGINALE TABIMG.C ---
+		// Tette: X[138-170], Y[50-65]
+		bool toccaTette = ((x >= 138) && (x <= 170)) && ((y >= 50) && (y <= 65));
+
+		// Culo: X[104-136], Y[78-166]
+		bool toccaCulo = ((x >= 104) && (x <= 136)) && ((y >= 78) && (y <= 166));
+
+		if (toccaTette || toccaCulo)
+		{
+			// Chiama la logica di gioco
+			m_game.AzionePalpatina();
+
+			// Mostra il messaggio (pop-up)
+			ManifestaEventi(this, m_game);
+
+			// Aggiorna la barra rapporti che potrebbe essere cambiata
+			AggiornaInterfaccia();
+		}
+		else
+			ev.Skip(); // Click normale
+	});
+
 	sizerFoto->Add(imgTipa, 0, wxALIGN_CENTER | wxALL, 5);
 	pnlFoto->SetSizer(sizerFoto);
 	sizerBody->Add(pnlFoto, 0, wxEXPAND);
@@ -3047,10 +3079,17 @@ DlgDueDonne::DlgDueDonne(wxWindow* parent, TabbyGame& game)
 	scelta->Wrap(400);
 	mainSizer->Add(scelta, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
+	// Se le tipe si hanno entrambe lo stesso nome...
+	std::string prefer;
+	if (m_game.GetTabbyGuy().GetTipa().GetNome() == m_game.GetTipaNuova().GetNome())
+		prefer = "Preferisco quella nuova";
+	else
+		prefer = "Preferisco " + m_game.GetTipaNuova().GetNome();
+
 	wxButton* btnResto = new wxButton{ this, wxID_ANY, "Resto con " + m_game.GetTabbyGuy().GetTipa().GetNome(), wxDefaultPosition, wxSize(-1, 40) };
 	btnResto->Bind(wxEVT_BUTTON, &DlgDueDonne::OnResto, this);
 	mainSizer->Add(btnResto, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
-	wxButton* btnPreferisco = new wxButton{ this, wxID_ANY, "Preferisco " + m_game.GetTipaNuova().GetNome(), wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnPreferisco = new wxButton{ this, wxID_ANY, prefer, wxDefaultPosition, wxSize(-1, 40) };
 	btnPreferisco->Bind(wxEVT_BUTTON, &DlgDueDonne::OnPreferisco, this);
 	mainSizer->Add(btnPreferisco, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 

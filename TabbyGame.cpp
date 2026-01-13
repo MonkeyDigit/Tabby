@@ -34,7 +34,7 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     std::string indirizzo = m_vieStr[GenRandomInt(0, m_vieStr.size() - 1)] + " n. " + std::to_string(GenRandomInt(1, 150));
     CartaIdentita id{ "Tizio", "Caio", Chrono::Date(1973, 8, 10), "Atto n. 6333 P. 1 S. A.", "Cusano Milanino", "MI", "Italiana", "Milano", indirizzo, "Celibe", "Sfruttato"};
     m_tabbyGuy.SetIdentita(id);
-    m_tabbyGuy.SetSoldi(100000);
+    m_tabbyGuy.SetSoldi(10);
     m_tabbyGuy.SetPaghetta(20);
     m_tabbyGuy.SetFama(0);
     m_tabbyGuy.SetRep(0);
@@ -620,6 +620,7 @@ void TabbyGame::ApplicaScelta(Scelta msgAzione, bool sceltaYes)
     case Scelta::GARA:
         if (sceltaYes)
         {
+            PlaySound(701);
             if ((m_scooterRnd.GetVelocita() + GenRandomInt(80, 119)) > (m_tabbyGuy.GetScooter().GetVelocita() + m_tabbyGuy.GetScooter().GetStato() + m_tabbyGuy.GetFortuna()))
             {   // Perdi
                 if (m_tabbyGuy.GetRep() > 80)
@@ -714,7 +715,7 @@ void TabbyGame::ApplicaScelta(Scelta msgAzione, bool sceltaYes)
         break;
 
     case Scelta::TIPA_INGRASSATA:
-        if (sceltaYes == false) // Rispondo no
+        if (sceltaYes)
         {
             Messaggio msg{ TipoMsg::ERRORE, "Risposta sbagliata...", "Sei un bastardo, non capisci mai i miei problemi..." };
             PushMessaggio(msg);
@@ -866,7 +867,6 @@ void TabbyGame::AzioneGara()
     else
     {
         m_scooterRnd = GeneraScooter();
-        PlaySound(701);
         Messaggio msg{ TipoMsg::SCELTA, "Gareggia con lo scooter", "Accetti la sfida con un tabbozzo che ha un " + m_scooterRnd.GetNome() + " ?", Scelta::GARA };
         PushMessaggio(msg);
         if (m_tabbyGuy.GetScooter().GetStato() > 30)
@@ -1025,6 +1025,7 @@ void TabbyGame::AzioneProvaci(const Tipa& tipa)
             m_tabbyGuy.SetTipa(m_tipaNuova);
             m_tabbyGuy.SetRapporti(GenRandomInt(30, 45));
             m_tabbyGuy.IncFama(m_tipaNuova.GetFama() * 0.1f);
+            NuovoGiorno();
         }
     }
     else
@@ -1043,9 +1044,9 @@ void TabbyGame::AzioneProvaci(const Tipa& tipa)
             Messaggio msgPalo{ TipoMsg::ERRORE, "La vita è bella...", "Fino ad ora hai preso " + std::to_string(m_paloCounter) + " pali ! \nNon ti preoccupare, capita a tutti di prendere qualche due di picche nella vita..." };
             PushMessaggio(msgPalo);
         }
+        NuovoGiorno();
     }
 
-    NuovoGiorno();
 }
 
 void TabbyGame::AzioneTerminaQuiz(const std::vector<int>& countRisposte, std::string nomeDitta)
@@ -1775,6 +1776,7 @@ void TabbyGame::AzioneVoglioEntrambe()
 
     m_tabbyGuy.DecRep(8);
     m_tabbyGuy.DecFama(4);
+    NuovoGiorno();
 }
 
 void TabbyGame::AzionePreferiscoNuova()
@@ -1783,6 +1785,38 @@ void TabbyGame::AzionePreferiscoNuova()
     m_tabbyGuy.SetRapporti(GenRandomInt(30, 45));
     m_tabbyGuy.IncFama(m_tipaNuova.GetFama() * 0.1f);
     m_tabbyGuy.IncRep(m_tipaNuova.GetFama() * 0.08f);
+    NuovoGiorno();
+}
+
+void TabbyGame::AzionePalpatina()
+{   // TODO: AggiornaTipa?
+    if (!m_tabbyGuy.HaTipa())
+        return;
+
+    const Tipa& tipa = m_tabbyGuy.GetTipa();
+    int rapporti = m_tabbyGuy.GetRapporti();
+
+    // Soglie originali del codice sorgente
+    int sogliaRifiuto = 20 + (tipa.GetFama()*0.5f);
+    int sogliaNeutro = 30 + (tipa.GetFama()*0.5f);
+
+    if (rapporti < sogliaRifiuto)
+    {
+        // "+ è figa, - te la da' (perla di saggezza)" - Cit. Codice Originale
+        PlaySound(604);
+        PushMessaggio(Messaggio{ TipoMsg::AVVISO, "Palpatina...", "Brutto porco, che cazzo tocchi ?" });
+
+        // Se i rapporti non erano già a terra, calano
+        if (rapporti > 5) {
+            m_tabbyGuy.DecRapporti(3);
+        }
+    }
+    else if (rapporti < sogliaNeutro)
+        PushMessaggio(Messaggio{ TipoMsg::INFO, "Palpatina...", "Dai, smettila... Voi uomini pensate solo a quello..." });
+    else
+        PushMessaggio(Messaggio{ TipoMsg::INFO, "Palpatina...", "Mmhhhhhhhh........." });
+
+    NuovoGiorno();
 }
 
 bool TabbyGame::TriggerNegozio(CategoriaOggetto merce)

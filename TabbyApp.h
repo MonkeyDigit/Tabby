@@ -57,7 +57,6 @@ private:
 	void OnFamiglia(wxCommandEvent& event);
 	void OnTipa(wxCommandEvent& event);
 	void OnPersonalInfo(wxCommandEvent& event);
-	void OnAvatarClick(wxMouseEvent& event);
 	void OnConfig(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
 	void OnClose(wxCloseEvent& event);

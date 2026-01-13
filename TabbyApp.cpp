@@ -206,7 +206,12 @@ TabbyFrame::TabbyFrame()
 	m_fotoTabbozzo = new wxStaticBitmap{ pnlFoto, wxID_ANY, bmpAvatar };
 	//m_fotoTabbozzo->SetWindowStyle(wxSS_NOTIFY | wxBORDER_SUNKEN);
 	m_fotoTabbozzo->SetCursor(wxCursor(wxCURSOR_HAND)); // Manina quando passi sopra
-	m_fotoTabbozzo->Bind(wxEVT_LEFT_DOWN, &TabbyFrame::OnAvatarClick, this);
+	m_fotoTabbozzo->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent& event) {
+		DlgPersonalInfo dlg(this, m_game);
+		dlg.ShowModal();
+		this->AggiornaInterfaccia();
+	});
+
 	sizerFoto->Add(m_fotoTabbozzo, 0, wxALL, 5);
 	pnlFoto->SetSizer(sizerFoto);
 	sizerBody->Add(pnlFoto, 0, wxALL, 5);
@@ -479,13 +484,6 @@ void TabbyFrame::OnTipa(wxCommandEvent& event)
 }
 
 void TabbyFrame::OnPersonalInfo(wxCommandEvent& event)
-{
-	DlgPersonalInfo dlg(this, m_game);
-	dlg.ShowModal();
-	this->AggiornaInterfaccia();
-}
-
-void TabbyFrame::OnAvatarClick(wxMouseEvent& event)
 {
 	DlgPersonalInfo dlg(this, m_game);
 	dlg.ShowModal();

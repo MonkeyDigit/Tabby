@@ -38,6 +38,8 @@
 // TODO: COSA FA IL TIMER??
 // TODO: CONTROLLA TUTTE LE STATIC LINE
 // TODO: SISTEMA I COSTRUTTORI DI WXDIALOG
+// TODO: CONTROLLA LA SIZE DI TUTTI I PNLFOTO
+// TODO: CONTROLLA TUTTI I COMMENTI // e /**/
 
 bool TabbyApp::OnInit()
 {
@@ -57,6 +59,10 @@ TabbyFrame::TabbyFrame()
 	: wxFrame{ NULL, wxID_ANY, "Tabby Window", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)}, // Blocca ridimensionamento (sono operatori bitwise su delle flag binarie)
 	m_game{}
 {
+	wxIcon icona;
+	// Carica il file .ico dalla cartella img
+	if (icona.LoadFile("img/tabby.ico", wxBITMAP_TYPE_ICO))
+		this->SetIcon(icona);
 	// Imposta colore di sfondo e il font
 	this->SetBackgroundColour(WIN_BKG);
 	this->SetFont(wxFont(12, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));

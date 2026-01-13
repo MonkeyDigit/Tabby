@@ -220,9 +220,9 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	wxPanel* pnlBottom = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
 
-	sizerBottom->Add(new wxStaticText(pnlBottom, wxID_ANY, "[IMG]"), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	sizerBottom->Add(new wxStaticText{ pnlBottom, wxID_ANY, "[IMG]" }, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	m_lblSoldi = new wxStaticText(pnlBottom, wxID_ANY, ""); // Inizializzato vuoto, ci pensa AggiornaInterfaccia
+	m_lblSoldi = new wxStaticText{ pnlBottom, wxID_ANY, "" }; // Inizializzato vuoto, ci pensa AggiornaInterfaccia
 	sizerBottom->Add(m_lblSoldi, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 	sizerBottom->AddStretchSpacer();
@@ -235,10 +235,10 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	wxPanel* pnlStats = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerStats = new wxBoxSizer{ wxVERTICAL };
 
-	sizerStats->Add(new wxStaticText(pnlStats, wxID_ANY, "Statistiche scooter"), 0, wxALIGN_CENTER_HORIZONTAL);
+	sizerStats->Add(new wxStaticText{pnlStats, wxID_ANY, "Statistiche scooter"}, 0, wxALIGN_CENTER_HORIZONTAL);
 
 	// Nome Scooter
-	m_lblNome = new wxStaticText(pnlStats, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER | wxBORDER_SUNKEN);
+	m_lblNome = new wxStaticText{pnlStats, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER | wxBORDER_SUNKEN };
 	sizerStats->Add(m_lblNome, 0, wxEXPAND | wxALL & ~wxTOP, 10);
 
 	// GRIGLIA DATI
@@ -249,14 +249,14 @@ DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
 	m_lblBenza = AddStat(pnlStats, gridStats, "Benzina:", "");
 	m_lblStato = AddStat(pnlStats, gridStats, "Stato:", "");
 
-	m_lblMarmitta = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN};
-	m_lblCarburatore = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN};
-	m_lblCilindrata = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN};
-	m_lblFiltro = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN};
+	m_lblMarmitta = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
+	m_lblCarburatore = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
+	m_lblCilindrata = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
+	m_lblFiltro = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
 	sizerStats->Add(gridStats, 0, wxALL & ~wxTOP, 5);
 
 	sizerStats->AddSpacer(15);
-	sizerStats->Add(new wxStaticText(pnlStats, wxID_ANY, "Componenti"), 0, wxALIGN_CENTER);
+	sizerStats->Add(new wxStaticText{pnlStats, wxID_ANY, "Componenti" }, 0, wxALIGN_CENTER);
 	sizerStats->Add(m_lblMarmitta, 0, wxEXPAND | wxALL, 5);
 	sizerStats->Add(m_lblCarburatore, 0, wxEXPAND | wxALL, 5);
 	sizerStats->Add(m_lblCilindrata, 0, wxEXPAND | wxALL, 5);
@@ -345,7 +345,7 @@ void DlgScooter::OnUsa(wxCommandEvent& event)
 
 wxStaticText* DlgScooter::AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxString value)
 {
-	sizer->Add(new wxStaticText(parent, wxID_ANY, label, wxDefaultPosition, wxSize(-1, 25)));
+	sizer->Add(new wxStaticText{parent, wxID_ANY, label, wxDefaultPosition, wxSize(-1, 25) });
 	wxStaticText* valueBox = new wxStaticText{ parent, wxID_ANY, value, wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
 	valueBox->SetMinSize(wxSize(300, -1));
 	sizer->Add(valueBox, 0, wxEXPAND);
@@ -448,7 +448,7 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 		if (i == 0) radio->SetValue(true);
 
 		// Il label del voto viene inizializzato vuoto
-		m_lblVoti.push_back(new wxStaticText(pnlVoti, wxID_ANY, "---", wxDefaultPosition, wxSize(45, 25), wxBORDER_SUNKEN | wxALIGN_CENTER_HORIZONTAL));
+		m_lblVoti.push_back(new wxStaticText{ pnlVoti, wxID_ANY, "---", wxDefaultPosition, wxSize(45, 25), wxBORDER_SUNKEN | wxALIGN_CENTER_HORIZONTAL });
 
 		// Aggiungiamo alla griglia
 		gridVoti->Add(radio, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
@@ -495,16 +495,20 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(sizerBody, 0);
 
 	// Pannello reputazione e tasto ok
-	wxPanel* pnlRepOk = new wxPanel{ this,wxID_ANY, wxDefaultPosition, wxSize(-1, 50), wxBORDER_SUNKEN};
+	wxPanel* pnlBottom = new wxPanel{ this,wxID_ANY, wxDefaultPosition, wxSize(-1, 50), wxBORDER_SUNKEN };
 
-	m_lblRep = new wxStaticText{ pnlRepOk, wxID_ANY, "---" };
+	wxBitmap bmpDoc = CaricaAsset("ZSCUOLA.png");
+	wxStaticBitmap* imgDoc = new wxStaticBitmap(pnlBottom, wxID_ANY, bmpDoc);
+	sizerBottom->Add(imgDoc, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_lblRep = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
 	sizerBottom->Add(m_lblRep, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
-	wxButton* btnOk = new wxButton{ pnlRepOk, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) };
+	wxButton* btnOk = new wxButton{ pnlBottom, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) };
 	sizerBottom->AddStretchSpacer();
 	sizerBottom->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
-	pnlRepOk->SetSizer(sizerBottom);
+	pnlBottom->SetSizer(sizerBottom);
 
-	mainSizer->Add(pnlRepOk, 0, wxEXPAND | wxALL & ~wxTOP, 5);
+	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 
 	this->SetSizerAndFit(mainSizer);
 	this->AggiornaInterfaccia();
@@ -589,7 +593,7 @@ DlgCompagnia::DlgCompagnia(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(pnlButtons, 0, wxEXPAND | wxALL, 5);
 
 	// Info e ok
-	m_lblRep = new wxStaticText(pnlInfoOk, wxID_ANY, "---");
+	m_lblRep = new wxStaticText{ pnlInfoOk, wxID_ANY, "---" };
 	wxButton* btnOk = new wxButton{ pnlInfoOk, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) };;
 	sizerInfoOk->Add(m_lblRep, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 	sizerInfoOk->AddStretchSpacer();
@@ -706,8 +710,8 @@ DlgFamiglia::DlgFamiglia(wxWindow* parent, TabbyGame& game)
 
 	wxPanel* pnlButtons = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
-	wxPanel* pnlInfoOk = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
-	wxBoxSizer* sizerInfoOk = new wxBoxSizer{ wxHORIZONTAL };
+	wxPanel* pnlBottom = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
 
 	// Bottoni
 	wxButton* btnAumento = new wxButton{ pnlButtons, wxID_ANY, "Chiedi aumento paghetta", wxDefaultPosition, wxSize(-1,40) };
@@ -726,9 +730,13 @@ DlgFamiglia::DlgFamiglia(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(pnlButtons, 0, wxEXPAND | wxALL, 5);
 
 	// Info e ok
-	m_lblSoldi = new wxStaticText(pnlInfoOk, wxID_ANY, "---");
-	m_lblPaghetta = new wxStaticText(pnlInfoOk, wxID_ANY, "---");
-	wxButton* btnOk = new wxButton{ pnlInfoOk, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) };
+	wxBitmap bmpFam = CaricaAsset("ZFAMIGLIA.png");
+	wxStaticBitmap* imgFam = new wxStaticBitmap(pnlBottom, wxID_ANY, bmpFam);
+	sizerBottom->Add(imgFam, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_lblSoldi = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
+	m_lblPaghetta = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
+	wxButton* btnOk = new wxButton{ pnlBottom, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) };
 
 	// Creiamo un sizer VERTICALE solo per le scritte
 	wxBoxSizer* sizerTesti = new wxBoxSizer{ wxVERTICAL };
@@ -737,13 +745,14 @@ DlgFamiglia::DlgFamiglia(wxWindow* parent, TabbyGame& game)
 
 	// Ora aggiungiamo al sizer orizzontale principale del pannello
 	// 1. I testi (con proportion=1 così spingono l'OK a destra se serve)
-	sizerInfoOk->Add(sizerTesti, 1, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
+	sizerBottom->Add(sizerTesti, 1, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
+	sizerBottom->AddSpacer(50);
 
 	// 2. Il bottone OK (fisso a destra)
-	sizerInfoOk->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	sizerBottom->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	pnlInfoOk->SetSizer(sizerInfoOk);
-	mainSizer->Add(pnlInfoOk, 0, wxEXPAND | wxALL, 5);
+	pnlBottom->SetSizer(sizerBottom);
+	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL, 5);
 
 	this->SetSizerAndFit(mainSizer);
 	this->AggiornaInterfaccia();
@@ -785,10 +794,9 @@ DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
 {
 	this->SetFont(parent->GetFont());
 	this->SetBackgroundColour(parent->GetBackgroundColour());
-	// TODO: Immagine e icona sotto
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
-	wxPanel* pnlFoto	= new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(300,200), wxBORDER_SUNKEN };
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
 	wxPanel* pnlButtons = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerButtons = new wxBoxSizer{ wxVERTICAL };
@@ -799,21 +807,20 @@ DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
 	// Immagine
 	wxBitmap bmpLavoro = CaricaAsset("lavoro.png");
 	// Ridimensionamento
-	bmpLavoro = wxBitmap(bmpLavoro.ConvertToImage().Rescale(400, bmpLavoro.GetHeight() * 400 / bmpLavoro.GetWidth(), wxIMAGE_QUALITY_BILINEAR));
+	//bmpLavoro = wxBitmap(bmpLavoro.ConvertToImage().Rescale(400, bmpLavoro.GetHeight() * 400 / bmpLavoro.GetWidth(), wxIMAGE_QUALITY_BILINEAR));
 	wxStaticBitmap* imgLavoro = new wxStaticBitmap(pnlFoto, wxID_ANY, bmpLavoro);
-
 	sizerFoto->Add(imgLavoro, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
 	pnlFoto->SetSizer(sizerFoto);
 	sizerBody->Add(pnlFoto, 0, wxALL, 5);
 
 	// Bottoni
-	wxButton* btnCercaLavoro = new wxButton{ pnlButtons, wxID_ANY, "Cerca lavoro", wxDefaultPosition, wxSize(300, 40) };
-	wxButton* btnLicenziati = new wxButton{ pnlButtons, wxID_ANY, "Licenziati", wxDefaultPosition, wxSize(300, 40) };
-	wxButton* btnInformazioni = new wxButton{ pnlButtons, wxID_ANY, "Elenco Ditte", wxDefaultPosition, wxSize(300, 40) };
-	wxButton* btnLavora = new wxButton{ pnlButtons, wxID_ANY, "Lavora", wxDefaultPosition, wxSize(300, 40) };
-	wxButton* btnLeccaculo = new wxButton{ pnlButtons, wxID_ANY, "Fai il Leccaculo", wxDefaultPosition, wxSize(300,40) };
-	wxButton* btnAumento = new wxButton{ pnlButtons, wxID_ANY, "Chiedi aumento salario", wxDefaultPosition, wxSize(300,40) };
-	wxButton* btnSciopera = new wxButton{ pnlButtons, wxID_ANY, "Sciopera", wxDefaultPosition, wxSize(300,40) };
+	wxButton* btnCercaLavoro = new wxButton{ pnlButtons, wxID_ANY, "Cerca lavoro", wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnLicenziati = new wxButton{ pnlButtons, wxID_ANY, "Licenziati", wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnInformazioni = new wxButton{ pnlButtons, wxID_ANY, "Elenco Ditte", wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnLavora = new wxButton{ pnlButtons, wxID_ANY, "Lavora", wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnLeccaculo = new wxButton{ pnlButtons, wxID_ANY, "Fai il Leccaculo", wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnAumento = new wxButton{ pnlButtons, wxID_ANY, "Chiedi aumento salario", wxDefaultPosition, wxSize(-1,40) };
+	wxButton* btnSciopera = new wxButton{ pnlButtons, wxID_ANY, "Sciopera", wxDefaultPosition, wxSize(-1, 40) };
 
 	btnCercaLavoro->Bind(wxEVT_BUTTON, &DlgLavoro::OnCercaLavoro, this);
 	btnLicenziati->Bind(wxEVT_BUTTON, &DlgLavoro::OnLicenziati, this);
@@ -823,31 +830,37 @@ DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
 	btnAumento->Bind(wxEVT_BUTTON, &DlgLavoro::OnAumento, this);
 	btnSciopera->Bind(wxEVT_BUTTON, &DlgLavoro::OnSciopera, this);
 
-	sizerButtons->Add(btnCercaLavoro, 0, wxTOP | wxRIGHT | wxLEFT, 10);
-	sizerButtons->Add(btnLicenziati, 0, wxALL & ~wxTOP, 10);
-	sizerButtons->Add(btnInformazioni, 0, wxALL, 10);
-	sizerButtons->Add(btnLavora, 0, wxALL & ~wxBOTTOM, 10);
-	sizerButtons->Add(btnLeccaculo, 0, wxALL & ~(wxBOTTOM | wxTOP), 10);
-	sizerButtons->Add(btnAumento, 0, wxALL & ~(wxBOTTOM | wxTOP), 10);
-	sizerButtons->Add(btnSciopera, 0, wxALL & ~wxTOP, 10);
+	sizerButtons->Add(btnCercaLavoro, 0, wxEXPAND | wxTOP | wxRIGHT | wxLEFT, 5);
+	sizerButtons->Add(btnLicenziati, 0, wxEXPAND | wxALL & ~wxTOP, 5);
+	sizerButtons->Add(btnInformazioni, 0, wxEXPAND | wxALL, 5);
+	sizerButtons->Add(btnLavora, 0, wxEXPAND | wxALL & ~wxBOTTOM, 5);
+	sizerButtons->Add(btnLeccaculo, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
+	sizerButtons->Add(btnAumento, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
+	sizerButtons->Add(btnSciopera, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 
 	pnlButtons->SetSizer(sizerButtons);
 	sizerBody->Add(pnlButtons, 0, wxALL, 5);
 
+	// Icona
+	wxBitmap bmpIcon = CaricaAsset("ZLAVORO.png");
+	wxStaticBitmap* imgIcon = new wxStaticBitmap(pnlBottom, wxID_ANY, bmpIcon);
+	sizerBottom->Add(imgIcon, 0, wxALIGN_CENTER | wxALL, 5);
+
 	// Info e ok
-	m_lblDitta = new wxStaticText(pnlBottom, wxID_ANY, "---");
-	m_lblImpegno = new wxStaticText(pnlBottom, wxID_ANY, "---");
-	m_lblSoldi = new wxStaticText(pnlBottom, wxID_ANY, "---");
-	m_lblStipendio = new wxStaticText(pnlBottom, wxID_ANY, "---");
+	m_lblDitta = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
+	m_lblImpegno = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
+	m_lblSoldi = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
+	m_lblStipendio = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
 
 	sizerInfo->Add(m_lblDitta, 0, wxEXPAND | wxALL, 10);
 	sizerInfo->Add(m_lblImpegno, 0, wxEXPAND | wxALL, 10);
 	sizerInfo->Add(m_lblSoldi, 0, wxEXPAND | wxALL, 10);
 	sizerInfo->Add(m_lblStipendio, 0, wxEXPAND | wxALL, 10);
 
-	sizerBottom->Add(sizerInfo, 1, wxEXPAND | wxALL, 5);
+	sizerBottom->Add(sizerInfo);
 
 	wxButton* btnOk = new wxButton{ pnlBottom, wxID_OK, "OK", wxDefaultPosition, wxSize(60, 50) };
+	sizerBottom->AddStretchSpacer();
 	sizerBottom->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxALL, 10);
 	pnlBottom->SetSizer(sizerBottom);
 
@@ -940,11 +953,13 @@ DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, TabbyGame& game)
 	const Ditta& ditta = m_game.ProponiDitta();
 	m_ditta = ditta.m_nome;
 	
-	// TODO: Immagine e icona sotto
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
-	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(500,300), wxBORDER_SUNKEN };
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
-	// Foto
+	// Immagine
+	wxBitmap bmpDitta = CaricaAsset(ditta.m_img);
+	wxStaticBitmap* imgDitta = new wxStaticBitmap(pnlFoto, wxID_ANY, bmpDitta);
+	sizerFoto->Add(imgDitta, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
 	pnlFoto->SetSizer(sizerFoto);
 	mainSizer->Add(pnlFoto, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
@@ -952,9 +967,9 @@ DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
 
 	// Descrizione
-	wxStaticText* lblNomeDitta = new wxStaticText(this, wxID_ANY, "Ditta: " + ditta.m_nome);
-	wxStaticText* lblSedeDitta = new wxStaticText(this, wxID_ANY, "Sede: " + ditta.m_sede);
-	wxStaticText* lblDesc = new wxStaticText(this, wxID_ANY, ditta.m_offerta.m_descrizione);
+	wxStaticText* lblNomeDitta = new wxStaticText{ this, wxID_ANY, "Ditta: " + ditta.m_nome };
+	wxStaticText* lblSedeDitta = new wxStaticText{ this, wxID_ANY, "Sede: " + ditta.m_sede };
+	wxStaticText* lblDesc = new wxStaticText{ this, wxID_ANY, ditta.m_offerta.m_descrizione };
 	lblDesc->Wrap(600); // Manda a capo il testo se troppo lungo
 	mainSizer->Add(lblNomeDitta, 0, wxALL, 10);
 	mainSizer->Add(lblSedeDitta, 0, wxALL, 10);
@@ -978,10 +993,8 @@ DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, TabbyGame& game)
 
 void DlgOffertaLavoro::OnAccetta(wxCommandEvent& event)
 {
-	const QuizScheda& quiz = m_game.AssegnaQuiz();
 	this->EndModal(wxID_ANY);
-	// TODO: IL QUIZ LO POSSO GENERARE DENTRO
-	DlgQuiz dlg{ this, m_game, quiz, m_ditta };
+	DlgQuiz dlg{ this, m_game, m_ditta };
 	dlg.Centre();
 	dlg.ShowModal();
 }
@@ -993,10 +1006,12 @@ void DlgOffertaLavoro::OnRifiuta(wxCommandEvent& event)
 }
 
 // DIALOG QUESTIONARIO DI LAVORO
-DlgQuiz::DlgQuiz(wxWindow* parent, TabbyGame& game, const QuizScheda& quiz, std::string ditta)
-	: wxDialog{ parent, wxID_ANY, quiz.m_titolo, wxDefaultPosition, wxDefaultSize,  wxCAPTION },
+DlgQuiz::DlgQuiz(wxWindow* parent, TabbyGame& game, std::string ditta)
+	: wxDialog{ parent, wxID_ANY, "", wxDefaultPosition, wxDefaultSize,  wxCAPTION},
 	m_game{ game }, m_ditta{ ditta }
 {
+	const QuizScheda& quiz = m_game.AssegnaQuiz();
+	this->SetTitle(quiz.m_titolo);
 	this->SetFont(parent->GetFont());
 	this->SetBackgroundColour(WIN_BKG);
 
@@ -1008,7 +1023,7 @@ DlgQuiz::DlgQuiz(wxWindow* parent, TabbyGame& game, const QuizScheda& quiz, std:
 	wxBoxSizer* pnlSizer = new wxBoxSizer{ wxVERTICAL };
 
 	// INTRODUZIONE
-	wxStaticText* lblIntro = new wxStaticText(pnlMain, wxID_ANY, quiz.m_intro, wxDefaultPosition, wxSize(-1, -1), wxALIGN_CENTER);
+	wxStaticText* lblIntro = new wxStaticText{ pnlMain, wxID_ANY, quiz.m_intro, wxDefaultPosition, wxSize(-1, -1), wxALIGN_CENTER };
 	lblIntro->Wrap(700);
 	// Un po' di grassetto per l'intro
 	wxFont fontIntro = lblIntro->GetFont();
@@ -1040,7 +1055,7 @@ DlgQuiz::DlgQuiz(wxWindow* parent, TabbyGame& game, const QuizScheda& quiz, std:
 
 void DlgQuiz::AggiungiDomanda(wxWindow* parent, wxSizer* sizer, const QuizDomanda& domanda, int indiceDomanda)
 {
-	wxStaticText* txtDomanda = new wxStaticText(parent, wxID_ANY, domanda.m_testo);
+	wxStaticText* txtDomanda = new wxStaticText{ parent, wxID_ANY, domanda.m_testo };
 	txtDomanda->Wrap(700);
 	// Colore per distinguere la domanda
 	txtDomanda->SetForegroundColour(*wxBLUE);
@@ -1088,14 +1103,14 @@ DlgElencoDitte::DlgElencoDitte(wxWindow* parent, TabbyGame& game)
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 
 	// TITOLO
-	wxStaticText* lblTitolo = new wxStaticText(this, wxID_ANY, "DATABASE AZIENDE E MULTINAZIONALI");
+	wxStaticText* lblTitolo = new wxStaticText{ this, wxID_ANY, "DATABASE AZIENDE E MULTINAZIONALI" };
 	wxFont fontTitolo = lblTitolo->GetFont();
 	fontTitolo.SetWeight(wxFONTWEIGHT_BOLD);
 	fontTitolo.SetPointSize(12);
 	lblTitolo->SetFont(fontTitolo);
 
 	mainSizer->Add(lblTitolo, 0, wxALL | wxALIGN_CENTER, 10);
-	mainSizer->Add(new wxStaticText(this, wxID_ANY, "Seleziona una ditta per visualizzare ulteriori informazioni"), wxALIGN_CENTER | wxALL, 5);
+	mainSizer->Add(new wxStaticText{ this, wxID_ANY, "Seleziona una ditta per visualizzare ulteriori informazioni" }, wxALIGN_CENTER | wxALL, 5);
 
 	// ======================================================================================
 	// PUNTO 1: BORDI (Grid Lines)
@@ -1200,9 +1215,14 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 
-	// TODO: IMMAGINE
-	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(500, 300), wxBORDER_SUNKEN };
-	mainSizer->Add(pnlFoto, 0, wxALIGN_CENTER | wxALL, 10);
+	// Immagine
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
+	wxBitmap bmpDitta = CaricaAsset(ditta.m_img);
+	wxStaticBitmap* imgDitta = new wxStaticBitmap(pnlFoto, wxID_ANY, bmpDitta);
+	sizerFoto->Add(imgDitta, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+	pnlFoto->SetSizer(sizerFoto);
+	mainSizer->Add(pnlFoto, 0, wxEXPAND | wxALL, 5);
 
 	// Separatore
 	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxALL, 10);
@@ -1211,7 +1231,7 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 	wxBoxSizer* headerSizer = new wxBoxSizer{ wxVERTICAL };
 
 	// Nome Ditta (Grande e Grassetto)
-	wxStaticText* lblNome = new wxStaticText(this, wxID_ANY, ditta.m_nome);
+	wxStaticText* lblNome = new wxStaticText{ this, wxID_ANY, ditta.m_nome };
 	wxFont fontGrande = lblNome->GetFont();
 	fontGrande.SetPointSize(14);
 	fontGrande.SetWeight(wxFONTWEIGHT_BOLD);
@@ -1220,7 +1240,7 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 	headerSizer->Add(lblNome, 0, wxALL, 10);
 
 	// Sede
-	headerSizer->Add(new wxStaticText(this, wxID_ANY, "Sede: " + ditta.m_sede), 0, wxALL, 5);
+	headerSizer->Add(new wxStaticText{ this, wxID_ANY, "Sede: " + ditta.m_sede }, 0, wxALL, 5);
 
 	// Fatturato
 	wxString fatturatoStr;
@@ -1229,7 +1249,7 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 	else
 		fatturatoStr = game.GetSoldiStr(ditta.m_fatturato);
 
-	headerSizer->Add(new wxStaticText(this, wxID_ANY, "Fatturato annuo: " + fatturatoStr), 0, wxALL, 5);
+	headerSizer->Add(new wxStaticText{ this, wxID_ANY, "Fatturato annuo: " + fatturatoStr }, 0, wxALL, 5);
 
 	mainSizer->Add(headerSizer, 0, wxEXPAND | wxALL, 5);
 
@@ -1242,7 +1262,7 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 	// Presentazione
 	if (!ditta.m_presentazione.empty())
 	{
-		wxStaticText* lblPres = new wxStaticText(this, wxID_ANY, ditta.m_presentazione);
+		wxStaticText* lblPres = new wxStaticText{ this, wxID_ANY, ditta.m_presentazione };
 		lblPres->Wrap(550); // Manda a capo
 		descSizer->Add(lblPres, 0, wxALL, 5);
 	}
@@ -1250,7 +1270,7 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 	// Produzioni (Elenco prodotti)
 	if (!ditta.m_produzioni.empty())
 	{
-		wxStaticText* lblProd = new wxStaticText(this, wxID_ANY, ditta.m_produzioni);
+		wxStaticText* lblProd = new wxStaticText{ this, wxID_ANY, ditta.m_produzioni };
 		lblProd->Wrap(550);
 		lblProd->SetForegroundColour(*wxBLUE);
 		descSizer->Add(lblProd, 0, wxALL, 5);
@@ -1259,11 +1279,11 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 	mainSizer->Add(descSizer, 0, wxEXPAND | wxALL, 10);
 
 	// Separatore
-	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxALL, 10);
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxALL, 5);
 
 	// BOTTONE CHIUDI
 	wxButton* btnOk = new wxButton{ this, wxID_OK, "Chiudi", wxDefaultPosition, wxSize(150, 35) };
-	mainSizer->Add(btnOk, 0, wxALIGN_CENTER | wxALL, 15);
+	mainSizer->Add(btnOk, 0, wxALIGN_CENTER | wxALL, 10);
 
 	this->SetSizerAndFit(mainSizer);
 	this->Centre();
@@ -1272,21 +1292,19 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 // DIALOG DISCOTECA
 DlgDisco::DlgDisco(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Disco", wxDefaultPosition, wxDefaultSize },
-	m_game{ game }, m_selectedIndex{ -1 }
+	m_game{ game }, m_selectedIndex{ 0 }
 {
 	this->SetFont(parent->GetFont());
 	this->SetBackgroundColour(parent->GetBackgroundColour());
 
 	// Sizer Principale Verticale
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
-
-	wxPanel* pnlBody = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
-	wxPanel* pnlBottom = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxPanel* pnlBottom = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(-1, 70), wxBORDER_SUNKEN};
 	wxBoxSizer* sizerBottom = new wxBoxSizer{ wxHORIZONTAL };
 
 	// COLONNA SINISTRA (Radio Buttons)
-	wxPanel* pnlLocali = new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxPanel* pnlLocali = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerLocali = new wxBoxSizer{ wxVERTICAL };
 
 	// Creiamo i radio button dinamicamente
@@ -1296,9 +1314,8 @@ DlgDisco::DlgDisco(wxWindow* parent, TabbyGame& game)
 		// wxRB_GROUP solo al primo, ma vogliamo deselezionarli all'inizio
 		long style = (i == 0) ? wxRB_GROUP : 0;
 		wxRadioButton* rad = new wxRadioButton(pnlLocali, wxID_ANY, discoteche[i].m_nome, wxDefaultPosition, wxDefaultSize, style);
-
-		// Hack per deselezionare visivamente tutto all'inizio (wxWidgets tende a selezionare il primo del gruppo)
-		rad->SetValue(false);
+		// Viene selezionato il primo di default
+		if (i == 0) rad->SetValue(true);
 		// Bind dell'evento (usiamo una lambda per catturare l'indice 'i')
 		rad->Bind(wxEVT_RADIOBUTTON, [this, i](wxCommandEvent& ev) {
 			m_selectedIndex = i;
@@ -1313,33 +1330,36 @@ DlgDisco::DlgDisco(wxWindow* parent, TabbyGame& game)
 	sizerBody->Add(pnlLocali, 0, wxEXPAND | wxALL, 5);
 
 	// Un pannello incassato per il testo
-	wxPanel* pnlDesc = new wxPanel(pnlBody, wxID_ANY, wxDefaultPosition, wxSize(550, -1), wxBORDER_SUNKEN);
+	wxPanel* pnlDesc = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(550, -1), wxBORDER_SUNKEN);
 	wxBoxSizer* sizerDesc = new wxBoxSizer{ wxVERTICAL };
 
-	m_lblDescrizione = new wxStaticText(pnlDesc, wxID_ANY, "");
+	const Disco& d = m_game.GetDiscoteche()[m_selectedIndex];
+	m_lblDescrizione = new wxStaticText{ pnlDesc, wxID_ANY, d.m_descrizione };
+	m_lblDescrizione->Wrap(500);
 
-	m_lblPrezzo = new wxStaticText(pnlDesc, wxID_ANY, "");
+	m_lblPrezzo = new wxStaticText{ pnlDesc, wxID_ANY, "Ingresso: " + m_game.GetSoldiStr(d.m_prezzoIngresso) };
 	wxFont fBold = m_lblPrezzo->GetFont();
 	fBold.SetWeight(wxFONTWEIGHT_BOLD);
 	m_lblPrezzo->SetFont(fBold);
 
-	sizerDesc->Add(m_lblDescrizione, 1, wxEXPAND | wxALL, 10);
-	sizerDesc->Add(new wxStaticLine(pnlDesc), 0, wxEXPAND | wxALL, 2);
+	sizerDesc->Add(m_lblDescrizione, 0, wxEXPAND | wxALL, 5);
+	sizerDesc->AddStretchSpacer();
+	sizerDesc->Add(new wxStaticLine(pnlDesc), 0, wxEXPAND | wxALL, 5);
 	sizerDesc->Add(m_lblPrezzo, 0, wxALL, 5);
 
 	pnlDesc->SetSizer(sizerDesc);
-	sizerBody->Add(pnlDesc, 1, wxEXPAND | wxALL, 5);
-	pnlBody->SetSizer(sizerBody);
-	mainSizer->Add(pnlBody, 1, wxEXPAND | wxALL, 5);
+	sizerBody->Add(pnlDesc, 0, wxEXPAND | wxALL, 5);
+	mainSizer->Add(sizerBody);
 
 	// --- PARTE INFERIORE (Icona, Soldi, Bottoni) ---
-	// Icona (Placeholder per "ZDISCO")
-	wxStaticText* iconBox = new wxStaticText(pnlBottom, wxID_ANY, "[ICON]", wxDefaultPosition, wxSize(-1, -1), wxALIGN_CENTER | wxBORDER_SIMPLE);
-	sizerBottom->Add(iconBox, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
+	// Icona
+	wxBitmap bmpIcon = CaricaAsset("ZDISCO.png");
+	wxStaticBitmap* imgIcon = new wxStaticBitmap(pnlBottom, wxID_ANY, bmpIcon);
+	sizerBottom->Add(imgIcon, 0, wxALIGN_CENTER | wxALL, 10);
 
 	// Soldi
 	wxString soldiStr = "Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi());
-	m_lblSoldiAttuali = new wxStaticText(pnlBottom, wxID_ANY, soldiStr);
+	m_lblSoldiAttuali = new wxStaticText{ pnlBottom, wxID_ANY, soldiStr };
 	sizerBottom->Add(m_lblSoldiAttuali, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 15);
 
 	sizerBottom->AddStretchSpacer();
@@ -1355,7 +1375,7 @@ DlgDisco::DlgDisco(wxWindow* parent, TabbyGame& game)
 	sizerBottom->Add(btnCancel, 0, wxALIGN_CENTER_VERTICAL | wxALL, 10);
 	pnlBottom->SetSizer(sizerBottom);
 
-	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL, 10);
+	mainSizer->Add(pnlBottom, 0, wxEXPAND | wxALL, 5);
 
 	this->SetSizerAndFit(mainSizer);
 	this->Centre();
@@ -1375,21 +1395,14 @@ void DlgDisco::OnRadioSelect(wxCommandEvent& event)
 	m_lblPrezzo->SetLabel("Ingresso: " + m_game.GetSoldiStr(d.m_prezzoIngresso));
 
 	// Aggiorna layout del pannello descrizione
-	m_lblDescrizione->GetParent()->Layout();
+	//m_lblDescrizione->GetParent()->Layout();
 
 	this->Fit();
+	this->Layout();
 }
 
 void DlgDisco::OnOk(wxCommandEvent& event)
 {
-	// Controllo Selezione
-	if (m_selectedIndex < 0) {
-		wxMessageBox("Non hai selezionato nessun locale!", "Tabboz Simulator", wxOK | wxICON_EXCLAMATION);
-		return;
-	}
-
-	const Disco& d = m_game.GetDiscoteche()[m_selectedIndex];
-	// Chiama la funzione logica che hai già in TabbyGame
 	m_game.AzionePagaDisco(m_selectedIndex);
 	ManifestaEventi(this, m_game);
 
@@ -1408,22 +1421,25 @@ DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 
 	// --- CORPO CENTRALE (Foto + Bottoni) ---
-	wxPanel* pnlBody = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
 
 	// FOTO (Sinistra)
-	wxPanel* pnlFoto = new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxSize(200, 150), wxBORDER_SUNKEN };
-	// TODO: Caricare immagine tipa qui
-	sizerBody->Add(pnlFoto, 0, wxALL, 5);
+	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
+	wxBitmap bmpTipa = CaricaAsset("tipa.png");
+	wxStaticBitmap* imgTipa = new wxStaticBitmap(pnlFoto, wxID_ANY, bmpTipa);
+	sizerFoto->Add(imgTipa, 0, wxALIGN_CENTER | wxALL, 5);
+	pnlFoto->SetSizer(sizerFoto);
+	sizerBody->Add(pnlFoto, 0, wxEXPAND);
 
 	// BOTTONI (Destra)
-	wxPanel* pnlButtons = new wxPanel{ pnlBody, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
+	wxPanel* pnlButtons = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerBtn = new wxBoxSizer{ wxVERTICAL };
 
-	wxButton* btnCerca = new wxButton{ pnlButtons, wxID_ANY, "Cerca tipa", wxDefaultPosition, wxSize(300, 40) };
-	wxButton* btnLascia = new wxButton{ pnlButtons, wxID_ANY, "Lascia Tipa", wxDefaultPosition, wxSize(300, 40) };
-	wxButton* btnTelefona = new wxButton{ pnlButtons, wxID_ANY, "Telefona alla tipa", wxDefaultPosition, wxSize(300, 40) };
-	wxButton* btnEsci = new wxButton{ pnlButtons, wxID_ANY, "Esci con la tipa", wxDefaultPosition, wxSize(300, 40) };
+	wxButton* btnCerca = new wxButton{ pnlButtons, wxID_ANY, "Cerca tipa", wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnLascia = new wxButton{ pnlButtons, wxID_ANY, "Lascia Tipa", wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnTelefona = new wxButton{ pnlButtons, wxID_ANY, "Telefona alla tipa", wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnEsci = new wxButton{ pnlButtons, wxID_ANY, "Esci con la tipa", wxDefaultPosition, wxSize(-1, 40) };
 
 	// Bind eventi
 	btnCerca->Bind(wxEVT_BUTTON, &DlgTipa::OnCercaTipa, this);
@@ -1431,31 +1447,30 @@ DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
 	btnTelefona->Bind(wxEVT_BUTTON, &DlgTipa::OnTelefonaTipa, this);
 	btnEsci->Bind(wxEVT_BUTTON, &DlgTipa::OnEsciTipa, this);
 
-	sizerBtn->Add(btnCerca, 0, wxALL & ~wxBOTTOM, 5);
-	sizerBtn->Add(btnLascia, 0, wxALL & ~wxTOP, 5);
+	sizerBtn->Add(btnCerca, 0, wxEXPAND | wxALL & ~wxBOTTOM, 5);
+	sizerBtn->Add(btnLascia, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 	sizerBtn->Add(new wxStaticLine(pnlButtons), 0, wxEXPAND | wxALL, 5);
-	sizerBtn->Add(btnTelefona, 0, wxALL & ~wxBOTTOM, 5);
-	sizerBtn->Add(btnEsci, 0, wxALL & ~wxTOP, 5);
+	sizerBtn->Add(btnTelefona, 0, wxEXPAND | wxALL & ~wxBOTTOM, 5);
+	sizerBtn->Add(btnEsci, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 
 	pnlButtons->SetSizer(sizerBtn);
-	sizerBody->Add(pnlButtons, 1, wxEXPAND | wxALL, 5);
+	sizerBody->Add(pnlButtons);
 
-	pnlBody->SetSizer(sizerBody);
-	mainSizer->Add(pnlBody, 0, wxEXPAND | wxALL, 5);
+	mainSizer->Add(sizerBody, 0, wxEXPAND | wxALL, 5);
 
 	// --- PANNELLO INFO (Sotto) ---
 	wxPanel* pnlInfo = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerInfo = new wxBoxSizer{ wxVERTICAL };
 
 	// Label statiche e Valori dinamici
-	m_lblNome = new wxStaticText(pnlInfo, wxID_ANY, "");
+	m_lblNome = new wxStaticText{ pnlInfo, wxID_ANY, "" };
 	wxFont fBold = m_lblNome->GetFont(); fBold.SetWeight(wxFONTWEIGHT_BOLD); m_lblNome->SetFont(fBold);
 	sizerInfo->Add(m_lblNome, 0, wxALIGN_LEFT);
 
-	m_lblFamaTipa = new wxStaticText(pnlInfo, wxID_ANY, "");
+	m_lblFamaTipa = new wxStaticText{ pnlInfo, wxID_ANY, "" };
 	sizerInfo->Add(m_lblFamaTipa, 0, wxALIGN_LEFT);
 
-	m_lblRapportiTipa = new wxStaticText(pnlInfo, wxID_ANY, "");
+	m_lblRapportiTipa = new wxStaticText{ pnlInfo, wxID_ANY, "" };
 	sizerInfo->Add(m_lblRapportiTipa, 0, wxALIGN_LEFT);
 
 	// Centriamo la griglia nel pannello
@@ -1466,19 +1481,23 @@ DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(pnlInfo, 0, wxEXPAND | wxALL, 5);
 
 	// --- FOOTER (Soldi + OK) ---
-	wxBoxSizer* footerSizer = new wxBoxSizer{wxHORIZONTAL};
+	wxPanel* pnlFooter = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxSize(-1, 70), wxBORDER_SUNKEN};
+	wxBoxSizer* sizerFooter = new wxBoxSizer{wxHORIZONTAL};
 
 	// Icona e figosità
-	footerSizer->Add(new wxStaticText(this, wxID_ANY, "[ICON]"), 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
-	m_lblFama = new wxStaticText(this, wxID_ANY, "");
-	footerSizer->Add(m_lblFama, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
+	wxBitmap bmpIcon = CaricaAsset("ZTIPA.png");
+	wxStaticBitmap* imgIcon = new wxStaticBitmap(pnlFooter, wxID_ANY, bmpIcon);
+	sizerFooter->Add(imgIcon, 0, wxALIGN_CENTER | wxALL, 5);
+	m_lblFama = new wxStaticText{ pnlFooter, wxID_ANY, "" };
+	sizerFooter->Add(m_lblFama, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
 
-	footerSizer->AddStretchSpacer();
+	sizerFooter->AddStretchSpacer();
 
-	wxButton* btnOk = new wxButton{ this, wxID_OK, "OK", wxDefaultPosition, wxSize(80, 30) };
-	footerSizer->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 10);
+	wxButton* btnOk = new wxButton{ pnlFooter, wxID_OK, "OK", wxDefaultPosition, wxSize(70, 40) };
+	sizerFooter->Add(btnOk, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 10);
 
-	mainSizer->Add(footerSizer, 0, wxEXPAND | wxBOTTOM, 10);
+	pnlFooter->SetSizer(sizerFooter);
+	mainSizer->Add(pnlFooter, 0, wxEXPAND | wxALL, 5);
 
 	this->SetSizerAndFit(mainSizer);
 
@@ -1551,7 +1570,7 @@ DlgIncontroTipa::DlgIncontroTipa(wxWindow* parent, TabbyGame& game)
 	this->SetFont(parent->GetFont());
 	this->SetBackgroundColour(parent->GetBackgroundColour());
 
-	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
+	wxBoxSizer* mainSizer = new wxBoxSizer{ wxHORIZONTAL };
 
 	wxPanel* pnlInfo = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerInfo = new wxBoxSizer{ wxVERTICAL };
@@ -1559,24 +1578,35 @@ DlgIncontroTipa::DlgIncontroTipa(wxWindow* parent, TabbyGame& game)
 	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
 
-	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, "Nome:"), 0, wxALL & ~wxBOTTOM, 5);
-	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, m_tipa.GetNome(), wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
-	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, "Figosità:"), 0, wxALL & ~wxBOTTOM, 5);
-	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, std::to_string(m_tipa.GetFama())+"/100", wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
-	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, "Giudizio\ncomplessivo:"), 0, wxALL & ~wxBOTTOM, 5);
-	sizerInfo->Add(new wxStaticText(pnlInfo, wxID_ANY, m_tipa.GetDesc(), wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN), 0, wxALL, 5);
+	sizerInfo->Add(new wxStaticText{ pnlInfo, wxID_ANY, "Nome:" }, 0, wxALL & ~wxBOTTOM, 5);
+	sizerInfo->Add(new wxStaticText{ pnlInfo, wxID_ANY, m_tipa.GetNome(), wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN }, 0, wxALL, 5);
+	sizerInfo->Add(new wxStaticText{ pnlInfo, wxID_ANY, "Figosità:" }, 0, wxALL & ~wxBOTTOM, 5);
+	sizerInfo->Add(new wxStaticText{ pnlInfo, wxID_ANY, std::to_string(m_tipa.GetFama()) + "/100", wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN }, 0, wxALL, 5);
+	sizerInfo->Add(new wxStaticText{ pnlInfo, wxID_ANY, "Giudizio\ncomplessivo:" }, 0, wxALL & ~wxBOTTOM, 5);
+	sizerInfo->Add(new wxStaticText{ pnlInfo, wxID_ANY, m_tipa.GetDesc(), wxDefaultPosition, wxSize(250, -1), wxALIGN_CENTER | wxBORDER_SUNKEN }, 0, wxALL, 5);
 	sizerInfo->AddStretchSpacer();
 
-	wxButton* btnProvaci = new wxButton{ pnlInfo, wxID_ANY, "Ci provo !", wxDefaultPosition, wxSize(250, -1) };
-	wxButton* btnLasciaStare = new wxButton{ pnlInfo, wxID_ANY, "Ritorno a casa...", wxDefaultPosition, wxSize(250, -1) };
+	wxBitmap bmpIcon = CaricaAsset("ZTIPA.png");
+	wxStaticBitmap* imgIcon = new wxStaticBitmap(pnlInfo, wxID_ANY, bmpIcon);
+	sizerInfo->Add(imgIcon, 0, wxALL, 5);
+
+	wxButton* btnProvaci = new wxButton{ pnlInfo, wxID_ANY, "Ci provo !", wxDefaultPosition, wxSize(-1, 40) };
+	wxButton* btnLasciaStare = new wxButton{ pnlInfo, wxID_ANY, "Ritorno a casa...", wxDefaultPosition, wxSize(-1, 40) };
 	btnProvaci->Bind(wxEVT_BUTTON, &DlgIncontroTipa::OnProvaci, this);
 	btnLasciaStare->Bind(wxEVT_BUTTON, &DlgIncontroTipa::OnLasciaStare, this);
-	sizerInfo->Add(btnProvaci, 0, wxALL & ~wxBOTTOM, 5);
-	sizerInfo->Add(btnLasciaStare, 0, wxALL & ~wxTOP, 5);
+	sizerInfo->Add(btnProvaci, 0, wxEXPAND | wxALL & ~wxBOTTOM, 5);
+	sizerInfo->Add(btnLasciaStare, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 
 	pnlInfo->SetSizer(sizerInfo);
-	mainSizer->Add(pnlInfo, 0, wxALL, 5);
+	mainSizer->Add(pnlInfo, 0, wxEXPAND | wxALL, 5);
 
+	// Pannello foto
+	wxBitmap bmpIncontro = CaricaAsset("incontro.png");
+	// Ridimensionamento
+	bmpIncontro = wxBitmap(bmpIncontro.ConvertToImage().Rescale(bmpIncontro.GetWidth() * 1.5f, bmpIncontro.GetHeight()*1.5f, wxIMAGE_QUALITY_BILINEAR));
+	wxStaticBitmap* imgIncontro = new wxStaticBitmap(pnlFoto, wxID_ANY, bmpIncontro);
+	sizerFoto->Add(imgIncontro, 0, wxALIGN_CENTER | wxALL, 5);
+	pnlFoto->SetSizer(sizerFoto);
 	mainSizer->Add(pnlFoto, 0, wxALL, 5);
 
 	this->SetSizerAndFit(mainSizer);
@@ -1702,7 +1732,7 @@ PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game,
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 
 	// 1. TITOLO
-	wxStaticText* lblNome = new wxStaticText(this, wxID_ANY, m_prodotto.GetNome());
+	wxStaticText* lblNome = new wxStaticText{ this, wxID_ANY, m_prodotto.GetNome() };
 	wxFont fTitle = lblNome->GetFont();
 	fTitle.SetWeight(wxFONTWEIGHT_BOLD);
 	fTitle.SetPointSize(12);
@@ -1733,7 +1763,7 @@ PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game,
 	// Aggiungi immagine al sizer
 	sizerBody->Add(imgCtrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, 10);
 	// Descrizione
-	wxStaticText* lblDesc = new wxStaticText(this, wxID_ANY, m_prodotto.GetDescrizione());
+	wxStaticText* lblDesc = new wxStaticText{ this, wxID_ANY, m_prodotto.GetDescrizione() };
 	wxFont fDesc = lblDesc->GetFont();
 	fDesc.SetPointSize(10);
 	lblDesc->SetFont(fDesc);
@@ -1747,7 +1777,7 @@ PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game,
 	mainSizer->AddStretchSpacer();
 	wxBoxSizer* footerSizer = new wxBoxSizer{wxHORIZONTAL};
 
-	wxStaticText* lblPrezzo = new wxStaticText(this, wxID_ANY, m_game.GetSoldiStr(m_prodotto.GetPrezzo()));
+	wxStaticText* lblPrezzo = new wxStaticText{ this, wxID_ANY, m_game.GetSoldiStr(m_prodotto.GetPrezzo()) };
 	wxFont fPrice = lblPrezzo->GetFont(); fPrice.SetWeight(wxFONTWEIGHT_BOLD); lblPrezzo->SetFont(fPrice);
 	footerSizer->Add(lblPrezzo, 0, wxALIGN_CENTER_VERTICAL | wxALL, 15);
 
@@ -1785,7 +1815,7 @@ DlgNegozio::DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio
 	wxBoxSizer* mainSizer = new wxBoxSizer{wxVERTICAL};
 
 	// TITOLO
-	wxStaticText* title = new wxStaticText(this, wxID_ANY, "BENVENUTO DA " + m_negozio.m_nome);
+	wxStaticText* title = new wxStaticText{ this, wxID_ANY, "BENVENUTO DA " + m_negozio.m_nome };
 	wxFont fTitle = title->GetFont(); fTitle.SetWeight(wxFONTWEIGHT_BOLD); fTitle.SetPointSize(14);
 	title->SetFont(fTitle);
 	title->SetForegroundColour(wxColor(50, 50, 50));
@@ -1820,7 +1850,7 @@ DlgNegozio::DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio
 	wxPanel* pnlBottom = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED);
 	wxBoxSizer* bottomSizer = new wxBoxSizer{wxHORIZONTAL};
 
-	m_lblSoldi = new wxStaticText(pnlBottom, wxID_ANY, "---");
+	m_lblSoldi = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
 	wxFont fSoldi = m_lblSoldi->GetFont(); fSoldi.SetWeight(wxFONTWEIGHT_BOLD); fSoldi.SetPointSize(12);
 	m_lblSoldi->SetFont(fSoldi);
 
@@ -1874,14 +1904,14 @@ DlgPalestra::DlgPalestra(wxWindow* parent, TabbyGame& game)
 	sizerButtons->Add(btnVaiPalestra, 0, wxEXPAND | wxALL, 5);
 	btnVaiPalestra->Bind(wxEVT_BUTTON, &DlgPalestra::OnVaiPalestra, this);
 
-	sizerButtons->Add(new wxStaticText(pnlButtons, wxID_ANY, "Prezzi abbonamenti palestra"), 0, wxALIGN_CENTER | wxALL & ~wxBOTTOM, 5);
+	sizerButtons->Add(new wxStaticText{ pnlButtons, wxID_ANY, "Prezzi abbonamenti palestra" }, 0, wxALIGN_CENTER | wxALL & ~wxBOTTOM, 5);
 	// INFORMAZIONI ABBONAMENTI
 	wxPanel* pnlSub = new wxPanel{ pnlButtons, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };	// Faccio il panel solo per avere il rientro
 	wxGridSizer* gridSub = new wxGridSizer{ 2, 3, 10, 10 };	// Griglia da 2 righe e 3 colonne
 
-	gridSub->Add(new wxStaticText(pnlSub, wxID_ANY, m_game.GetSoldiStr(PALESTRA_ABB_1)), 0, wxALIGN_CENTER | wxALL & wxBOTTOM, 5);
-	gridSub->Add(new wxStaticText(pnlSub, wxID_ANY, m_game.GetSoldiStr(PALESTRA_ABB_6)), 0, wxALIGN_CENTER | wxALL & wxBOTTOM, 5);
-	gridSub->Add(new wxStaticText(pnlSub, wxID_ANY, m_game.GetSoldiStr(PALESTRA_ABB_12)), 0, wxALIGN_CENTER | wxALL & wxBOTTOM, 5);
+	gridSub->Add(new wxStaticText{ pnlSub, wxID_ANY, m_game.GetSoldiStr(PALESTRA_ABB_1) }, 0, wxALIGN_CENTER | wxALL & wxBOTTOM, 5);
+	gridSub->Add(new wxStaticText{ pnlSub, wxID_ANY, m_game.GetSoldiStr(PALESTRA_ABB_6) }, 0, wxALIGN_CENTER | wxALL & wxBOTTOM, 5);
+	gridSub->Add(new wxStaticText{ pnlSub, wxID_ANY, m_game.GetSoldiStr(PALESTRA_ABB_12) }, 0, wxALIGN_CENTER | wxALL & wxBOTTOM, 5);
 
 	wxButton* btnMesi1 = new wxButton{ pnlSub, wxID_ANY, "1 mese" };
 	wxButton* btnMesi6 = new wxButton{ pnlSub, wxID_ANY, "6 mesi" };
@@ -2118,8 +2148,8 @@ DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
 	wxPanel* pnlInfo = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
 	wxBoxSizer* infoSizer = new wxBoxSizer{wxVERTICAL};
 
-	m_lblOperatoreAttuale = new wxStaticText(pnlInfo, wxID_ANY, "---");
-	m_lblCreditoAttuale = new wxStaticText(pnlInfo, wxID_ANY, "---");
+	m_lblOperatoreAttuale = new wxStaticText{ pnlInfo, wxID_ANY, "---" };
+	m_lblCreditoAttuale = new wxStaticText{ pnlInfo, wxID_ANY, "---" };
 
 	// Grassetto per l'operatore
 	wxFont fBold = m_lblOperatoreAttuale->GetFont();
@@ -2158,7 +2188,7 @@ DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
 		// Centriamo la scritta LOGO nel placeholder
 		wxBoxSizer* imgSizer = new wxBoxSizer{wxVERTICAL};
 		imgSizer->AddStretchSpacer();
-		imgSizer->Add(new wxStaticText(imgPlaceholder, wxID_ANY, "LOGO"), 0, wxALIGN_CENTER);
+		imgSizer->Add(new wxStaticText{ imgPlaceholder, wxID_ANY, "LOGO" }, 0, wxALIGN_CENTER);
 		imgSizer->AddStretchSpacer();
 		imgPlaceholder->SetSizer(imgSizer);
 
@@ -2221,7 +2251,7 @@ DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
 	wxPanel* pnlBottom = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED);
 	wxBoxSizer* bottomSizer = new wxBoxSizer{wxHORIZONTAL};
 
-	m_lblSoldi = new wxStaticText(pnlBottom, wxID_ANY, "---");
+	m_lblSoldi = new wxStaticText{ pnlBottom, wxID_ANY, "---" };
 	wxFont fSoldi = m_lblSoldi->GetFont();
 	fSoldi.SetWeight(wxFONTWEIGHT_BOLD);
 	m_lblSoldi->SetFont(fSoldi);
@@ -2342,7 +2372,7 @@ DlgConcessionario::DlgConcessionario(wxWindow* parent, TabbyGame& game)
 	m_lblFiltro = new wxStaticText{ pnlStats, wxID_ANY, "", wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
 
 	sizerStats->AddSpacer(15);
-	sizerStats->Add(new wxStaticText(pnlStats, wxID_ANY, "Componenti"), 0, wxALIGN_CENTER);
+	sizerStats->Add(new wxStaticText{ pnlStats, wxID_ANY, "Componenti" }, 0, wxALIGN_CENTER);
 	sizerStats->Add(m_lblMarmitta, 0, wxEXPAND | wxALL, 5);
 	sizerStats->Add(m_lblCarburatore, 0, wxEXPAND | wxALL, 5);
 	sizerStats->Add(m_lblCilindrata, 0, wxEXPAND | wxALL, 5);
@@ -2358,7 +2388,7 @@ DlgConcessionario::DlgConcessionario(wxWindow* parent, TabbyGame& game)
 	wxPanel* bottomPnl = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED);
 	wxBoxSizer* bottomSizer = new wxBoxSizer{wxHORIZONTAL};
 
-	m_lblSoldi = new wxStaticText(bottomPnl, wxID_ANY, "Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()));
+	m_lblSoldi = new wxStaticText{ bottomPnl, wxID_ANY, "Soldi: " + m_game.GetSoldiStr(m_game.GetTabbyGuy().GetSoldi()) };
 	wxFont fBold = m_lblSoldi->GetFont(); fBold.SetWeight(wxFONTWEIGHT_BOLD); m_lblSoldi->SetFont(fBold);
 
 	wxButton* btnCompra = new wxButton{bottomPnl, wxID_ANY, "Compra", wxDefaultPosition, wxSize(-1, 40)};
@@ -2448,7 +2478,7 @@ void DlgConcessionario::OnCompra(wxCommandEvent& event)
 
 wxStaticText* DlgConcessionario::AddStat(wxWindow* parent, wxSizer* sizer, wxString label, wxString value)
 {
-	sizer->Add(new wxStaticText(parent, wxID_ANY, label, wxDefaultPosition, wxSize(-1, 25)));
+	sizer->Add(new wxStaticText{ parent, wxID_ANY, label, wxDefaultPosition, wxSize(-1, 25) });
 	wxStaticText* valueBox = new wxStaticText{ parent, wxID_ANY, value, wxDefaultPosition, wxSize(-1, 25), wxALIGN_CENTER | wxBORDER_SUNKEN };
 	valueBox->SetMinSize(wxSize(300, -1));
 	sizer->Add(valueBox, 0, wxEXPAND);
@@ -2469,14 +2499,14 @@ DlgPersonalInfo::DlgPersonalInfo(wxWindow* parent, TabbyGame& game)
 	wxBoxSizer* mainSizer = new wxBoxSizer{wxVERTICAL};
 
 	// --- INTESTAZIONE ---
-	wxStaticText* lblHeader = new wxStaticText(this, wxID_ANY, "REPUBBLICA ITALIANA");
+	wxStaticText* lblHeader = new wxStaticText{ this, wxID_ANY, "REPUBBLICA ITALIANA" };
 	wxFont fHeader = lblHeader->GetFont();
 	fHeader.SetWeight(wxFONTWEIGHT_BOLD);
 	fHeader.SetPointSize(14);
 	lblHeader->SetFont(fHeader);
 	mainSizer->Add(lblHeader, 0, wxALIGN_CENTER | wxTOP, 15);
 
-	wxStaticText* lblSubHeader = new wxStaticText(this, wxID_ANY, "CARTA D'IDENTITA'");
+	wxStaticText* lblSubHeader = new wxStaticText{ this, wxID_ANY, "CARTA D'IDENTITA'" };
 	mainSizer->Add(lblSubHeader, 0, wxALIGN_CENTER | wxBOTTOM, 10);
 
 	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxLEFT | wxRIGHT, 20);
@@ -2528,7 +2558,7 @@ DlgPersonalInfo::DlgPersonalInfo(wxWindow* parent, TabbyGame& game)
 	wxStaticBitmap* imgFoto = new wxStaticBitmap{ this, wxID_ANY, avatarBmp };
 	imgFoto->SetWindowStyle(wxBORDER_SIMPLE);
 
-	rightSizer->Add(new wxStaticText(this, wxID_ANY, "FOTOGRAFIA"), 0, wxALIGN_CENTER | wxBOTTOM, 5);
+	rightSizer->Add(new wxStaticText{ this, wxID_ANY, "FOTOGRAFIA" }, 0, wxALIGN_CENTER | wxBOTTOM, 5);
 	rightSizer->Add(imgFoto, 0, wxALIGN_CENTER | wxBOTTOM, 20);
 
 	// Aggiungi colonna destra
@@ -2560,7 +2590,7 @@ void DlgPersonalInfo::AddEditRow(wxGridBagSizer* sizer, int& row, wxString label
 	wxFont fontLabel = this->GetFont();
 	fontLabel.SetWeight(wxFONTWEIGHT_BOLD);
 
-	wxStaticText* txtLabel = new wxStaticText(this, wxID_ANY, label);
+	wxStaticText* txtLabel = new wxStaticText{ this, wxID_ANY, label };
 	txtLabel->SetFont(fontLabel);
 
 	// Non mettiamo dimensione fissa, lasciamo fare al sizer
@@ -2577,7 +2607,7 @@ void DlgPersonalInfo::AddCityProvRow(wxGridBagSizer* sizer, int& row, wxString l
 	wxFont fontLabel = this->GetFont();
 	fontLabel.SetWeight(wxFONTWEIGHT_BOLD);
 
-	wxStaticText* txtLabel = new wxStaticText(this, wxID_ANY, label);
+	wxStaticText* txtLabel = new wxStaticText{ this, wxID_ANY, label };
 	txtLabel->SetFont(fontLabel);
 
 	// Creiamo un contenitore orizzontale per: [Citta] ( [Prov] )
@@ -2586,12 +2616,12 @@ void DlgPersonalInfo::AddCityProvRow(wxGridBagSizer* sizer, int& row, wxString l
 	ctrlCitta = new wxTextCtrl(this, wxID_ANY, valCitta);
 	hSizer->Add(ctrlCitta, 1, wxEXPAND | wxRIGHT, 5); // La città prende lo spazio (1)
 
-	hSizer->Add(new wxStaticText(this, wxID_ANY, "("), 0, wxALIGN_CENTER_VERTICAL);
+	hSizer->Add(new wxStaticText{ this, wxID_ANY, "(" }, 0, wxALIGN_CENTER_VERTICAL);
 
 	ctrlProv = new wxTextCtrl(this, wxID_ANY, valProv, wxDefaultPosition, wxSize(40, -1)); // La provincia è piccola
 	hSizer->Add(ctrlProv, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 2);
 
-	hSizer->Add(new wxStaticText(this, wxID_ANY, ")"), 0, wxALIGN_CENTER_VERTICAL);
+	hSizer->Add(new wxStaticText{ this, wxID_ANY, ")" }, 0, wxALIGN_CENTER_VERTICAL);
 
 	sizer->Add(txtLabel, wxGBPosition(row, 0), wxDefaultSpan, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 	sizer->Add(hSizer, wxGBPosition(row, 1), wxDefaultSpan, wxEXPAND | wxALIGN_CENTER_VERTICAL);
@@ -2604,10 +2634,10 @@ void DlgPersonalInfo::AddStaticRow(wxGridBagSizer* sizer, int& row, wxString lab
 	wxFont fontValue = this->GetFont();
 	fontValue.SetStyle(wxFONTSTYLE_ITALIC);
 
-	wxStaticText* txtLabel = new wxStaticText(this, wxID_ANY, label);
+	wxStaticText* txtLabel = new wxStaticText{ this, wxID_ANY, label };
 	txtLabel->SetFont(fontLabel);
 
-	wxStaticText* txtValue = new wxStaticText(this, wxID_ANY, value);
+	wxStaticText* txtValue = new wxStaticText{ this, wxID_ANY, value };
 	txtValue->SetFont(fontValue);
 	txtValue->SetForegroundColour(wxColor(0, 0, 150));
 
@@ -2711,9 +2741,9 @@ DlgConfig::DlgConfig(wxWindow* parent, TabbyGame& game)
 	// Riga dell'Euro: Icone bandiera e moto
 	wxBoxSizer* iconSizer = new wxBoxSizer{wxHORIZONTAL};
 	// Placeholder per le icone (non avendo i png originali)
-	wxStaticText* iconEU = new wxStaticText(grpMisc->GetStaticBox(), wxID_ANY, "[EU]");
+	wxStaticText* iconEU = new wxStaticText{ grpMisc->GetStaticBox(), wxID_ANY, "[EU]" };
 	iconEU->SetForegroundColour(*wxBLUE);
-	wxStaticText* iconMoto = new wxStaticText(grpMisc->GetStaticBox(), wxID_ANY, "[MOTO]");
+	wxStaticText* iconMoto = new wxStaticText{ grpMisc->GetStaticBox(), wxID_ANY, "[MOTO]" };
 	iconMoto->SetForegroundColour(*wxRED);
 
 	iconSizer->Add(iconEU, 0, wxRIGHT, 5);
@@ -2733,11 +2763,11 @@ DlgConfig::DlgConfig(wxWindow* parent, TabbyGame& game)
 
 	// FOOTER
 	wxBoxSizer* footerSizer = new wxBoxSizer{wxHORIZONTAL};
-	footerSizer->Add(new wxStaticText(this, wxID_ANY, "Tabboz Simulator"), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	footerSizer->Add(new wxStaticText{ this, wxID_ANY, "Tabboz Simulator" }, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 	footerSizer->AddStretchSpacer();
 
 	// "reset ." scritta piccola rossa
-	wxStaticText* lblReset = new wxStaticText(this, wxID_ANY, "reset .");
+	wxStaticText* lblReset = new wxStaticText{ this, wxID_ANY, "reset ." };
 	lblReset->SetForegroundColour(*wxRED);
 	footerSizer->Add(lblReset, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
@@ -2784,14 +2814,14 @@ DlgUscita::DlgUscita(wxWindow* parent)
 
 	// 1. ICONA A SINISTRA (Il monitor col punto esclamativo rosso nello screen)
 	// Usiamo un pannello placeholder o uno static text per ora
-	wxStaticText* iconBox = new wxStaticText(this, wxID_ANY, "[ICON]", wxDefaultPosition, wxSize(48, 48), wxALIGN_CENTER | wxBORDER_NONE);
+	wxStaticText* iconBox = new wxStaticText{ this, wxID_ANY, "[ICON]", wxDefaultPosition, wxSize(48, 48), wxALIGN_CENTER | wxBORDER_NONE };
 	// In futuro qui caricherai l'icona del monitor
 	bodySizer->Add(iconBox, 0, wxALL | wxALIGN_TOP, 15);
 
 	// 2. PARTE DESTRA (Testo + Radio Buttons)
 	wxBoxSizer* rightSizer = new wxBoxSizer{wxVERTICAL};
 
-	wxStaticText* lblIntro = new wxStaticText(this, wxID_ANY, "Scegli una delle seguenti opzioni:");
+	wxStaticText* lblIntro = new wxStaticText{ this, wxID_ANY, "Scegli una delle seguenti opzioni:" };
 	rightSizer->Add(lblIntro, 0, wxBOTTOM, 10);
 
 	m_radioChiudi = new wxRadioButton(this, wxID_ANY, "Chiudi il Tabboz Simulator", wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
@@ -2868,18 +2898,18 @@ DlgAbout::DlgAbout(wxWindow* parent)
 	// Colonna Icone (Sinistra)
 	wxBoxSizer* iconsSizer = new wxBoxSizer{wxVERTICAL};
 	// Icona Moto
-	iconsSizer->Add(new wxStaticText(pnlMainFrame, wxID_ANY, "[MOTO]"), 0, wxBOTTOM, 2);
+	iconsSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "[MOTO]" }, 0, wxBOTTOM, 2);
 	// Icona UE
-	iconsSizer->Add(new wxStaticText(pnlMainFrame, wxID_ANY, "[EU]"), 0, wxTOP, 2);
+	iconsSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "[EU]" }, 0, wxTOP, 2);
 
 	headerSizer->Add(iconsSizer, 0, wxALL, 10);
 
 	// Colonna Testo (Centro)
 	wxBoxSizer* textSizer = new wxBoxSizer{wxVERTICAL};
-	textSizer->Add(new wxStaticText(pnlMainFrame, wxID_ANY, "Tabboz simulator"), 0, wxBOTTOM, 2);
-	textSizer->Add(new wxStaticText(pnlMainFrame, wxID_ANY, "Version 0.9beta, Mar 11 2000"), 0, wxBOTTOM, 2);
-	textSizer->Add(new wxStaticText(pnlMainFrame, wxID_ANY, "Copyright (C) 1997-2000 by"), 0, wxBOTTOM, 0);
-	textSizer->Add(new wxStaticText(pnlMainFrame, wxID_ANY, "Obscured Truckware"), 0, wxBOTTOM, 0);
+	textSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Tabboz simulator" }, 0, wxBOTTOM, 2);
+	textSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Version 0.9beta, Mar 11 2000" }, 0, wxBOTTOM, 2);
+	textSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Copyright (C) 1997-2000 by" }, 0, wxBOTTOM, 0);
+	textSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Obscured Truckware" }, 0, wxBOTTOM, 0);
 
 	headerSizer->Add(textSizer, 1, wxTOP | wxBOTTOM | wxLEFT, 10);
 
@@ -2901,19 +2931,19 @@ DlgAbout::DlgAbout(wxWindow* parent)
 	// Qui andrebbe caricata l'immagine "32bit Tabboz Simulator"
 	// pnlLogo->SetBackgroundBitmap(...); 
 	wxBoxSizer* logoSizer = new wxBoxSizer{wxVERTICAL};
-	logoSizer->Add(new wxStaticText(pnlLogo, wxID_ANY, "[LOGO TABBOZ 32bit]"), 1, wxALIGN_CENTER);
+	logoSizer->Add(new wxStaticText{ pnlLogo, wxID_ANY, "[LOGO TABBOZ 32bit]" }, 1, wxALIGN_CENTER);
 	pnlLogo->SetSizer(logoSizer);
 
 	frameSizer->Add(pnlLogo, 0, wxALIGN_CENTER | wxALL, 10);
 
 	// 3. CREDITS (Created by)
 	wxFlexGridSizer* creditGrid = new wxFlexGridSizer(2, 5, 20); // 2 cols, gap
-	creditGrid->Add(new wxStaticText(pnlMainFrame, wxID_ANY, "Created by:"), 0, wxALIGN_RIGHT);
+	creditGrid->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Created by:" }, 0, wxALIGN_RIGHT);
 
 	wxBoxSizer* authorsSizer = new wxBoxSizer{wxVERTICAL};
-	authorsSizer->Add(new wxStaticText(pnlMainFrame, wxID_ANY, "Andrea Bonomi"));
-	authorsSizer->Add(new wxStaticText(pnlMainFrame, wxID_ANY, "Emanuele Caccialanza"));
-	authorsSizer->Add(new wxStaticText(pnlMainFrame, wxID_ANY, "Daniele Gazzarri"));
+	authorsSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Andrea Bonomi" });
+	authorsSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Emanuele Caccialanza" });
+	authorsSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Daniele Gazzarri" });
 
 	creditGrid->Add(authorsSizer, 0, wxALIGN_LEFT);
 
@@ -2925,9 +2955,9 @@ DlgAbout::DlgAbout(wxWindow* parent)
 	// 4. BETA TESTERS (Barra grigia scura/incassata con testo)
 	wxPanel* pnlTesters = new wxPanel(pnlMainFrame, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE); // Nello screen sembra piatto ma separato
 	wxBoxSizer* testerSizer = new wxBoxSizer{wxHORIZONTAL};
-	testerSizer->Add(new wxStaticText(pnlTesters, wxID_ANY, "Beta testers:"), 0, wxRIGHT, 20);
-	testerSizer->Add(new wxStaticText(pnlTesters, wxID_ANY, "Dino Lucci"), 0, wxRIGHT, 40);
-	testerSizer->Add(new wxStaticText(pnlTesters, wxID_ANY, "Giulio Lucci"), 0, wxRIGHT, 5);
+	testerSizer->Add(new wxStaticText{ pnlTesters, wxID_ANY, "Beta testers:" }, 0, wxRIGHT, 20);
+	testerSizer->Add(new wxStaticText{ pnlTesters, wxID_ANY, "Dino Lucci" }, 0, wxRIGHT, 40);
+	testerSizer->Add(new wxStaticText{ pnlTesters, wxID_ANY, "Giulio Lucci" }, 0, wxRIGHT, 5);
 	pnlTesters->SetSizer(testerSizer);
 
 	frameSizer->Add(pnlTesters, 0, wxEXPAND | wxALL, 5);
@@ -2939,14 +2969,14 @@ DlgAbout::DlgAbout(wxWindow* parent)
 	wxBoxSizer* disclaimerSizer = new wxBoxSizer{wxHORIZONTAL};
 
 	// Icona rossa (Omino)
-	wxStaticText* iconOmino = new wxStaticText(pnlMainFrame, wxID_ANY, "[!!]", wxDefaultPosition, wxSize(32, 32), wxALIGN_CENTER | wxBORDER_SIMPLE);
+	wxStaticText* iconOmino = new wxStaticText{ pnlMainFrame, wxID_ANY, "[!!]", wxDefaultPosition, wxSize(32, 32), wxALIGN_CENTER | wxBORDER_SIMPLE };
 	iconOmino->SetBackgroundColour(*wxRED);
 	iconOmino->SetForegroundColour(*wxWHITE);
 
 	disclaimerSizer->Add(iconOmino, 0, wxALL | wxALIGN_CENTER_VERTICAL, 10);
 
-	wxStaticText* txtDisclaimer = new wxStaticText(pnlMainFrame, wxID_ANY,
-		"Questo programma contiene un linguaggio\ntalvolta offensivo; ogni riferimento a persone e\ncose e' puramente casuale.");
+	wxStaticText* txtDisclaimer = new wxStaticText{ pnlMainFrame, wxID_ANY,
+		"Questo programma contiene un linguaggio\ntalvolta offensivo; ogni riferimento a persone e\ncose e' puramente casuale." };
 	txtDisclaimer->SetWindowStyle(wxALIGN_CENTER);
 
 	disclaimerSizer->Add(txtDisclaimer, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
@@ -2961,8 +2991,8 @@ DlgAbout::DlgAbout(wxWindow* parent)
 	wxBoxSizer* footerSizer = new wxBoxSizer{wxHORIZONTAL};
 
 	wxBoxSizer* urlSizer = new wxBoxSizer{wxVERTICAL};
-	urlSizer->Add(new wxStaticText(this, wxID_ANY, "http://www.tabboz.com"), 0);
-	urlSizer->Add(new wxStaticText(this, wxID_ANY, "e-mail: andrea@tabboz.com"), 0);
+	urlSizer->Add(new wxStaticText{ this, wxID_ANY, "http://www.tabboz.com" }, 0);
+	urlSizer->Add(new wxStaticText{ this, wxID_ANY, "e-mail: andrea@tabboz.com" }, 0);
 
 	footerSizer->Add(urlSizer, 1, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
 
@@ -3006,7 +3036,7 @@ DlgDueDonne::DlgDueDonne(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(sizerHeader, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
 	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
-	mainSizer->Add(new wxStaticText(this, wxID_ANY, "Viva l'abbondanza !"), 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+	mainSizer->Add(new wxStaticText{ this, wxID_ANY, "Viva l'abbondanza !" }, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
 	wxButton* btnEntrambe = new wxButton{ this, wxID_ANY, "Le voglio tutte e due !", wxDefaultPosition, wxSize(-1, 40) };
 	btnEntrambe->Bind(wxEVT_BUTTON, &DlgDueDonne::OnEntrambe, this);
@@ -3053,7 +3083,7 @@ DlgPagella::DlgPagella(wxWindow* parent, TabbyGame& game)
 	wxBoxSizer* mainSizer = new wxBoxSizer{wxVERTICAL};
 
 	// 1. INTESTAZIONE
-	wxStaticText* lblIntestazione = new wxStaticText(this, wxID_ANY, "SCRUTINIO FINALE");
+	wxStaticText* lblIntestazione = new wxStaticText{ this, wxID_ANY, "SCRUTINIO FINALE" };
 	wxFont fTitle = lblIntestazione->GetFont();
 	fTitle.SetWeight(wxFONTWEIGHT_BOLD);
 	fTitle.SetPointSize(14);
@@ -3072,9 +3102,9 @@ DlgPagella::DlgPagella(wxWindow* parent, TabbyGame& game)
 	for (const auto& m : materie)
 	{
 		// Nome Materia
-		wxStaticText* lblMat = new wxStaticText(this, wxID_ANY, m.GetNome());
+		wxStaticText* lblMat = new wxStaticText{ this, wxID_ANY, m.GetNome() };
 		// Voto
-		wxStaticText* lblVoto = new wxStaticText(this, wxID_ANY, std::to_string(m.GetVoto()));
+		wxStaticText* lblVoto = new wxStaticText{ this, wxID_ANY, std::to_string(m.GetVoto()) };
 		lblVoto->SetFont(fTitle); // Usiamo il font grassetto per il voto
 
 		// Se è insufficiente, coloriamo di rosso
@@ -3090,9 +3120,9 @@ DlgPagella::DlgPagella(wxWindow* parent, TabbyGame& game)
 		gridVoti->Add(lblVoto, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 	}
 
-	gridVoti->Add(new wxStaticText(this, wxID_ANY, "Condotta:"), 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridVoti->Add(new wxStaticText{ this, wxID_ANY, "Condotta:" }, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 	std::string condottaStr = (m_game.GetTabbyGuy().GetFama() > 75) ? "9" : "8";	// Più è un figo, più sembra un bravo ragazzo...
-	wxStaticText* lblCondotta = new wxStaticText(this, wxID_ANY, condottaStr);
+	wxStaticText* lblCondotta = new wxStaticText{ this, wxID_ANY, condottaStr };
 	lblCondotta->SetFont(fTitle);
 	gridVoti->Add(lblCondotta, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 
@@ -3109,7 +3139,7 @@ DlgPagella::DlgPagella(wxWindow* parent, TabbyGame& game)
 	wxString esitoStr = promosso ? "PROMOSSO" : "BOCCIATO";
 	wxColor esitoCol = promosso ? wxColor(0, 150, 0) : *wxRED;
 
-	wxStaticText* lblEsito = new wxStaticText(this, wxID_ANY, esitoStr);
+	wxStaticText* lblEsito = new wxStaticText{ this, wxID_ANY, esitoStr };
 	wxFont fEsito = lblEsito->GetFont();
 	fEsito.SetPointSize(18);
 	fEsito.SetWeight(wxFONTWEIGHT_BOLD);
@@ -3119,7 +3149,7 @@ DlgPagella::DlgPagella(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(lblEsito, 0, wxALL | wxALIGN_CENTER, 15);
 
 	wxString commento = promosso ? "Ammesso all'anno successivo" : "NON ammesso all'anno successivo";
-	mainSizer->Add(new wxStaticText(this, wxID_ANY, commento), 0, wxALL | wxALIGN_CENTER, 15);
+	mainSizer->Add(new wxStaticText{ this, wxID_ANY, commento }, 0, wxALL | wxALIGN_CENTER, 15);
 
 	// 4. BOTTONE OK
 	wxButton* btnOk = new wxButton{ this, wxID_OK, "OK", wxDefaultPosition, wxSize(100, 40) };
@@ -3185,7 +3215,6 @@ DlgManovale::DlgManovale(wxWindow* parent, TabbyGame& game, const Messaggio& msg
 	wxStaticBitmap* imgManovale = new wxStaticBitmap(pnlImg, wxID_ANY, bmpManovale);
 	sizerImg->Add(imgManovale, 0, wxALIGN_CENTER | wxALL, 5);
 	pnlImg->SetSizer(sizerImg);
-
 	mainSizer->Add(pnlImg, 0, wxEXPAND | wxALL, 5);
 
 	wxStaticText* lblTesto = new wxStaticText{ this, wxID_ANY, msg.m_testo, wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT };
@@ -3222,11 +3251,9 @@ DlgIncidente::DlgIncidente(wxWindow* parent, TabbyGame& game, const Messaggio& m
 	wxBoxSizer* sizerImg = new wxBoxSizer{ wxVERTICAL };
 
 	wxBitmap bmpIncidente = (msg.m_tipo == TipoMsg::INCIDENTE_MURO) ? CaricaAsset("muro.png") : CaricaAsset("camionista.png");
-
 	wxStaticBitmap* imgIncidente = new wxStaticBitmap(pnlImg, wxID_ANY, bmpIncidente);
 	sizerImg->Add(imgIncidente, 0, wxALIGN_CENTER | wxALL, 5);
 	pnlImg->SetSizer(sizerImg);
-
 	mainSizer->Add(pnlImg, 0, wxEXPAND | wxALL, 5);
 
 	wxStaticText* lblTesto = new wxStaticText{ this, wxID_ANY, msg.m_testo, wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT };

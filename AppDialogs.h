@@ -130,7 +130,7 @@ private:
 
 class DlgQuiz : public wxDialog {
 public:
-	DlgQuiz(wxWindow* parent, TabbyGame& game, const QuizScheda& quiz, std::string ditta);
+	DlgQuiz(wxWindow* parent, TabbyGame& game, std::string ditta);
 private:
 	TabbyGame& m_game;
 	std::string m_ditta;

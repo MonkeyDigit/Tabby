@@ -1,45 +1,52 @@
+# FORMATO: 
+# [DITTA] 
+# Nome | Sede | Fatturato | Image Path
+# Offerta 
+# Presentazione 
+# Produzioni
+
 [DITTA]
-Magneti Budelli|Sesto San Giovanni|775800000
+Magneti Budelli|Sesto San Giovanni|775800000|magneti_budelli.png
 Si desidera incontrare giovani, età massima 30 anni, con una precedente esperienza nel settore, conoscenza della lingua inglese e dimestichezza nell'uso del PC.|Mi presento !|Lascio perdere...
 INDUSTRIA PESANTE - La Magneti Budelli produce su richiesta oggetti metallici, tra cui:
 Magneti, dadi, bulloni, ferodi, turbine, aerei, patatine, attrezzi da lavoro, parti meccaniche, missili, cannoni, dadi per il brodo, viti, chiavi, brugole, lime, carri armati, montacarichi, muletti, etc...
 
 [DITTA]
-Acciaierie Diamine|Sconosciuta|-1
+Acciaierie Diamine|Sconosciuta|-1|acciaierie_diamine.png
 Cercasi n.6 addetti alla manutenzione delle apparecchiature, n 4. ballerine di danza classica con esperienza decennale, n.20 operai non specializzati da sfruttare e retribuire male, n.1 figli di puttana per quadri dirigenziali.|Potrei provare...|Non ho molta voglia di lavorare...
 ACCIAIERIE E FERIERE - Produzioni su vasta scala di:
 Tubi saldati, tondini, lamiere, trafilati, laminati, banda stagnata.
 
 [DITTA]
-TESTMEC|Livorno, Italia|-1
+TESTMEC|Livorno, Italia|-1|testmec.png
 Azienda leader nella produzione di motoseghe, cerca giovani di età non superiore ad anni n. 22, fini, educati e di gradevole aspetto per la vendita porta a porta di motoseghe cingolate da cava e da cantiere.|Basta fare il disokkupato !|Lavoro??? Sto cercando di smettere...
 MACCHINE DA LAVORO - Tra i prodotti più conosciuti della TESTMEC ci sono:
 Motoseghe, motoseghe cingolate, muletti, schiaccia sassi, camion da cava, martelli pneumatici, lance termiche, armature, scavatrici, profilattici, hard disk.
 
 [DITTA]
-T.I.B.B.|Sconosciuta|14250000000
+T.I.B.B.|Sconosciuta|14250000000|tibb.png
 TIBB cerca: 10 Apprendisti, 1 Tecnico specializzato riparazione materiale rotabile disponibili trasferte settimanali; inglese o tedesco saranno requisiti preferenziali. 4 collaboratori/collaboaratrici età massima anni 30, esperti in vendita, automuniti.|Voglio trovare un posto !|Che palle lavorare...
 MATERIALE ROTABILE O MOBILE - Produzione materiali pesanti od ad alta tecnologia:
 Treni, locomotori, pezzi per mezzi pesanti, motori per navi, turbine, reattori nucleari, centrali idroelettriche, motori a curvatura per navi stellari, mezzi cingolati.
 
 [DITTA]
-October Heavy Industries|Mosca, Russia|830000000000000
+October Heavy Industries|Mosca, Russia|830000000000000|october.png
 L'October Heavy Industries cerca personale NON SPECIALIZZATO per la pulitura di noccioli dei reattori nucleari e per lo smaltimento dei rifiuti radioattivi. NON è RICHIESTO ALCUN TITOLO DI STUDIO.|Sembra interessante...|Troppo faticoso !
 ENERGIA NUCLEARE - L'October Heavy Industries fornisce i seguenti servizi per l'industria nucleare:
 Servizi di costruzione, equipaggiamento per il trattamento del combustibile, nocciolo dei reattori nucleari, fornitura di plutonio, inceneritori di rifiuti radioattivi, riprocessamento e trattamento delle acque.
 
 [DITTA]
-Arlond's Food Company|Vevey, Svizzera|18500000000
+Arlond's Food Company|Vevey, Svizzera|18500000000|arlonds.png
 Cerchiamo giovani dinamici e fantasiosi da inserire nella nostra catena di produzione dei pesticidi, un ramo emergente e gratificante che offre interessanti possibilità di guadagno.|Figata !|Torno a casa a dormire...
 ALIMENTARI - L'Arlond's Food Company distribuisce i seguenti prodotti:
 Smorties(Dolci), Galac(Dolci), Toffe(Dolci), Vismaro(Salumi), Ethoprop(Pesticida), Scasso(Olio), Mera(Acqua), Sant'Ansemo(Acqua), Mare Fresko(Surgelati), Surgelami(Surgelati, DBCP(Vermicida), Maggio(Dadi), Rodo(Freni a disco)
 
 [DITTA]
-Computer Discarica|Venegono Superiore|790180000
+Computer Discarica|Venegono Superiore|790180000|computer_discarica.png
 Ecco finalmente l'unica discarica abusiva dove potrete buttare tutti i vostri rottami informatici e riacquistarli al doppio del prezzo... Cercasi personale defic..ehm con una graaande passione per l'informatica, bella o brutta presenza, perfetta padronanza del sistema ZX Spectrum, CPM, MS-DOS ver 1.0 o inferiore, padronanza della lingua di mucca, cerchiamo giovani elastici, vitali, stronzi, scazzati basta che non siano tabbozzi....|Tabbozzo?? Cos'è???|Ma io sono un po' tabboz...
 Ecco finalmente l'unica discarica abusiva dove potrete buttare tutti i vostri rottami informatici e riacquistarli al doppio del prezzo...
 
 [DITTA]
-RICOPIO|Tokyo, Japan|-1
+RICOPIO|Tokyo, Japan|-1|ricopio.png
 La RICOPIO, è la prima azienda al mondo che vanta innumerevoli copie illegali di libri, CD, cassette, persone, oggetti, progetti, brevetti, ecc... Cercasi personale disinvolto, di piccola presenza, da assumersi come copertura.|Potrei provare...|Piccola presenza ??? No, grazie !
 La RICOPIO, è la prima azienda al mondo che vanta innumerevoli copie illegali di libri, CD, cassette, persone, oggetti, progetti, brevetti, ecc...

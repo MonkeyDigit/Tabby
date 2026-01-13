@@ -250,6 +250,8 @@ private:
 	void GestioneLavoro();      // Licenziamento, impegno
 	void GestioneEconomia();    // Paghetta, stipendio
 	void GestioneEventiCasuali(); // Il generatore di caos
+    // Stato dello scooter (a secco, invasato, ingrippato)
+    void CheckScooter();
 
 	// LOGICA MONETARIA
 	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)

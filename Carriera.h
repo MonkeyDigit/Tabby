@@ -8,7 +8,7 @@ struct OffertaLavoro {
 };
 
 struct Ditta {
-    Ditta() : m_nome{}, m_fatturato{ 0 }, m_sede{}, m_presentazione{}, m_produzioni{}, m_offerta{}, m_immagine{}
+    Ditta() : m_nome{}, m_fatturato{ 0 }, m_sede{}, m_presentazione{}, m_produzioni{}, m_offerta{}, m_img{}
     {}
     std::string m_nome;
     long long m_fatturato;
@@ -16,7 +16,7 @@ struct Ditta {
     std::string m_presentazione;
     std::string m_produzioni;
     OffertaLavoro m_offerta;
-    std::string m_immagine;
+    std::string m_img;
 };
 
 class Carriera {

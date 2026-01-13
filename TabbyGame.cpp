@@ -95,7 +95,6 @@ void TabbyGame::AvanzaCalendario()
     if (m_valutaCorrente == Valuta::LIRE && m_date.GetYear() >= 2002)
     {
         m_valutaCorrente = Valuta::EURO;
-        // TODO: IMG SILVIO
         PlaySound(2);
         Messaggio msg{ TipoMsg::SUCCESSO, "L'italia è il paese che amo <3", "Oggi entra in vigore l'Euro €.\n Grazie di cuore, Silvio !!!" };
         PushMessaggio(msg);
@@ -562,6 +561,24 @@ void TabbyGame::GestioneEventiCasuali()
     }
 }
 
+void TabbyGame::CheckScooter()
+{
+    if (!m_tabbyGuy.HaScooter())
+        return;
+
+    const Scooter& s = m_tabbyGuy.GetScooter();
+
+    switch (s.GetAttivita())
+    {
+    case Attivita::A_SECCO:
+    case Attivita::INVASATO:
+    case Attivita::INGRIPPATO:
+    case Attivita::SEQUESTRATO:
+        PushMessaggio(Messaggio{ TipoMsg::AVVISO, "Manutenzione Scooter", "Attenzione, il tuo scooter è " + s.GetAttivitaStr(true + " !") });
+        break;
+    }
+}
+
 bool TabbyGame::PollMessaggi(Messaggio& outEvento)
 {
     if (m_codaMsg.empty())
@@ -627,7 +644,7 @@ void TabbyGame::ApplicaScelta(Scelta msgAzione, bool sceltaYes)
                 m_tabbyGuy.DecRep(2);
         }
         m_tabbyGuy.GetScooter().DecBenza(0.5);
-
+        CheckScooter();
         NuovoGiorno();
         break;
 
@@ -1231,14 +1248,24 @@ void TabbyGame::CaricaDitte() {
         if (riga == "[DITTA]") {
             Ditta d;
 
-            // Riga 1: Dati Base
+            // Riga 1: Dati Base + IMMAGINE (Token finale)
             if (!std::getline(file, riga)) break;
             auto tokens = splitString(riga, '|');
-            if (tokens.size() < 3) continue;
+
+            if (tokens.size() < 3) continue; // Minimo sindacale
 
             d.m_nome = tokens[0];
             d.m_sede = tokens[1];
             d.m_fatturato = parseLong(tokens[2]);
+
+            // Se c'è un quarto token, è l'immagine. Altrimenti metti un default.
+            if (tokens.size() >= 4) {
+                d.m_img = tokens[3];
+            }
+            else {
+                d.m_img = "ditte.png"; // Immagine di default se manca nel file
+            }
+            // --------------------
 
             // Riga 2: Offerta
             if (!std::getline(file, riga)) break;
@@ -1705,7 +1732,9 @@ void TabbyGame::AzioneEsciTipa()
     if (m_tabbyGuy.GetTipa().GetFama() > m_tabbyGuy.GetFama())
         m_tabbyGuy.IncFama(1);
 
+    // TODO: NUOVO GIORNO?
     m_tabbyGuy.GetScooter().DecBenza(0.3f);
+    CheckScooter();
 }
 
 void TabbyGame::AzioneTelefonaTipa()
@@ -1887,6 +1916,7 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
         const Pezzo& pezzo{ static_cast<const Pezzo&>(prod) };
         PlaySound(101);
         m_tabbyGuy.GetScooter().InstallaPezzo(pezzo);
+        CheckScooter();
     }
 
     WriteLog("AzioneCompra: acquista " + prod.GetNome() + " per " + GetSoldiStr(prod.GetPrezzo()));

@@ -18,6 +18,38 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Acquistabile.h" />
+    <ClInclude Include="include\Carriera.h" />
+    <ClInclude Include="include\Chrono.h" />
+    <ClInclude Include="include\Disco.h" />
+    <ClInclude Include="include\DlgAttivita.h" />
+    <ClInclude Include="include\DlgBase.h" />
+    <ClInclude Include="include\DlgNegozi.h" />
+    <ClInclude Include="include\DlgSocial.h" />
+    <ClInclude Include="include\DlgSystem.h" />
+    <ClInclude Include="include\Scooter.h" />
+    <ClInclude Include="include\Scuola.h" />
+    <ClInclude Include="include\TabbyApp.h" />
+    <ClInclude Include="include\TabbyFrame.h" />
+    <ClInclude Include="include\TabbyGame.h" />
+    <ClInclude Include="include\TabbyGuy.h" />
+    <ClInclude Include="include\Telefonino.h" />
+    <ClInclude Include="include\Tipa.h" />
+    <ClInclude Include="include\Utility.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Chrono.cpp" />
+    <ClCompile Include="src\DlgAttivita.cpp" />
+    <ClCompile Include="src\DlgBase.cpp" />
+    <ClCompile Include="src\DlgNegozi.cpp" />
+    <ClCompile Include="src\DlgSocial.cpp" />
+    <ClCompile Include="src\DlgSystem.cpp" />
+    <ClCompile Include="src\TabbyApp.cpp" />
+    <ClCompile Include="src\TabbyFrame.cpp" />
+    <ClCompile Include="src\TabbyGame.cpp" />
+    <ClCompile Include="src\TabbyGuy.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -76,6 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -90,6 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -102,6 +136,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -116,34 +151,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="AppDialogs.cpp" />
-    <ClCompile Include="Chrono.cpp" />
-    <ClCompile Include="AppDialogs.h" />
-    <ClCompile Include="TabbyApp.cpp" />
-    <ClCompile Include="TabbyGame.cpp" />
-    <ClCompile Include="TabbyGuy.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Chrono.h" />
-    <ClInclude Include="Carriera.h" />
-    <ClInclude Include="Disco.h" />
-    <ClInclude Include="Scuola.h" />
-    <ClInclude Include="TabbyApp.h" />
-    <ClInclude Include="Scooter.h" />
-    <ClInclude Include="TabbyGame.h" />
-    <ClInclude Include="TabbyGuy.h" />
-    <ClInclude Include="Telefonino.h" />
-    <ClInclude Include="Tipa.h" />
-    <ClInclude Include="Acquistabile.h" />
-    <ClInclude Include="Utility.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

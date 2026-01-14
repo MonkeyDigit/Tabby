@@ -1840,7 +1840,7 @@ void TabbyGame::AzionePreferiscoNuova()
 }
 
 void TabbyGame::AzionePalpatina()
-{   // TODO: AggiornaTipa?
+{
     if (!m_tabbyGuy.HaTipa())
         return;
 

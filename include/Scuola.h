@@ -4,7 +4,7 @@
 
 class Materia {
 public:
-	Materia(std::string nome, int voto)
+	Materia(const std::string nome, const int voto)
 		: m_nome{ nome }, m_voto{ voto }
 	{}
 

@@ -7,13 +7,14 @@ TabbyGuy::TabbyGuy()
 	m_tipa{}, m_telefono{}
 {}
 
-void TabbyGuy::SetRapporti(int rapporti)
+void TabbyGuy::SetRapporti(const int rapporti)
 {
-	if (0 <= rapporti && rapporti <= 100)
-		m_rapporti = rapporti;
+	m_rapporti = rapporti;
+	if (m_rapporti < 0) m_rapporti = 0;
+	else if (m_rapporti > 100) m_rapporti = 100;
 }
 
-bool TabbyGuy::SpendiSoldi(long long importo)
+bool TabbyGuy::SpendiSoldi(const long long importo)
 {	
 	// Con quali soldi...
 	if (importo < 0 || importo > m_soldi)
@@ -24,7 +25,7 @@ bool TabbyGuy::SpendiSoldi(long long importo)
 	return true;
 }
 
-void TabbyGuy::GuadagnaSoldi(long long importo)
+void TabbyGuy::GuadagnaSoldi(const long long importo)
 {
 	if (importo > 0)
 	{
@@ -33,7 +34,7 @@ void TabbyGuy::GuadagnaSoldi(long long importo)
 	}
 }
 
-void TabbyGuy::IncPaghetta(int importo)
+void TabbyGuy::IncPaghetta(const int importo)
 {
 	m_paghetta += importo;
 }
@@ -52,20 +53,18 @@ void TabbyGuy::CalcolaStudio()
 	m_studio /= adjust;
 }
 
-void TabbyGuy::SetFortuna(int fortuna)
+void TabbyGuy::SetFortuna(const int fortuna)
 {
 	m_fortuna = fortuna;
-	if (m_fortuna > 100)
-		m_fortuna = 100;
-	else if (m_fortuna < 0)
-		m_fortuna = 0;
+	if (m_fortuna > 100) m_fortuna = 100;
+	else if (m_fortuna < 0) m_fortuna = 0;
 }
 
-void TabbyGuy::IncSizze(int sizze) {
+void TabbyGuy::IncSizze(const int sizze) {
 	if (sizze > 0) m_sizze += sizze;
 }
 
-void TabbyGuy::DecSizze(int sizze) {
+void TabbyGuy::DecSizze(const int sizze) {
 	if (sizze > 0)
 	{
 		m_sizze -= sizze;
@@ -73,7 +72,7 @@ void TabbyGuy::DecSizze(int sizze) {
 	}
 }
 
-void TabbyGuy::IncRep(int punti) {
+void TabbyGuy::IncRep(const int punti) {
 	if (punti > 0)
 	{
 		m_rep += punti;
@@ -82,7 +81,7 @@ void TabbyGuy::IncRep(int punti) {
 	}
 }
 
-void TabbyGuy::DecRep(int punti) {
+void TabbyGuy::DecRep(const int punti) {
 	if (punti > 0)
 	{
 		m_rep -= punti;
@@ -90,9 +89,12 @@ void TabbyGuy::DecRep(int punti) {
 	}
 }
 
-void TabbyGuy::IncFama(int punti) {
-	if (punti > 0) m_fama += punti;
-	if (m_fama > 100) m_fama = 100;
+void TabbyGuy::IncFama(const int punti) {
+	if (punti > 0)
+	{
+		m_fama += punti;
+		if (m_fama > 100) m_fama = 100;
+	}
 }
 
 void TabbyGuy::DecFama(int punti) {
@@ -191,37 +193,29 @@ std::string TabbyGuy::GetPelleStr()
 	}
 }
 
-void TabbyGuy::SetFama(int punti)
+void TabbyGuy::SetFama(const int punti)
 {
 	m_fama = punti;
-	if (m_fama > 100)
-		m_fama = 100;
-	else if (m_fama < 0)
-		m_fama = 0;
+	if (m_fama > 100) m_fama = 100;
+	else if (m_fama < 0) m_fama = 0;
 }
 
-void TabbyGuy::SetRep(int punti)
+void TabbyGuy::SetRep(const int punti)
 {
 	m_rep = punti;
-	if (m_rep > 100)
-		m_rep = 100;
-	else if (m_rep < 0)
-		m_rep = 0;
+	if (m_rep > 100) m_rep = 100;
+	else if (m_rep < 0) m_rep = 0;
 }
 
-void TabbyGuy::SetStudio(int punti)
+void TabbyGuy::SetStudio(const int punti)
 {
 	m_studio = punti;
-	if (m_studio > 100)
-		m_studio = 100;
-	else if (m_studio < 0)
-		m_studio = 0;
+	if (m_studio > 100) m_studio = 100;
+	else if (m_studio < 0) m_studio = 0;
 }
-void TabbyGuy::SetSizze(int sizze)
+void TabbyGuy::SetSizze(const int sizze)
 {
 	m_sizze = sizze;
-	if (m_sizze > 100)
-		m_sizze = 100;
-	else if (m_sizze < 0)
-		m_sizze = 0;
+	if (m_sizze > 100) m_sizze = 100;
+	else if (m_sizze < 0) m_sizze = 0;
 }

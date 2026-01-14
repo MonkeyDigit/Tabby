@@ -5,8 +5,8 @@
 
 Messaggio::Messaggio() {}
 
-Messaggio::Messaggio(TipoMsg tipo, std::string titolo, std::string testo, Scelta id)
-    : m_tipo{ tipo }, m_msgAzione{ id }, m_titolo{ titolo }, m_testo{ testo }
+Messaggio::Messaggio(const TipoMsg tipo, const std::string titolo, const std::string testo, const Scelta scelta)
+    : m_tipo{ tipo }, m_scelta{ scelta }, m_titolo{ titolo }, m_testo{ testo }
 {}
 
 // La checksum è un sistema anti-cheat. al salvataggio della partita, viene fatto un calcolo segreto con dei numeri magici, e il risultato viene messo in SysData_k7
@@ -19,38 +19,36 @@ long long TabbyGame::CalcolaChecksum(long long soldi, int rep, int fama, int stu
 
     calc += soldi * 3;
 
-    // Le statistiche sono int.
-    // Il C++ sommerà automaticamente il risultato (int) alla variabile calc (long long).
-    // Non servono cast.
     calc += (long long)rep * 17;
     calc += (long long)fama * 13;
     calc += (long long)studio * 7;
     calc += (long long)rapporti * 23;
 
-    // Aggiungiamo un numero fisso (Salt) per rendere il checksum meno ovvio
+    // Aggiungiamo un numero fisso per rendere il checksum meno ovvio
     calc += 1234567;
 
     return calc;
 }
 
-void TabbyGame::SetCoolDownPestaggio(int cooldown)
+void TabbyGame::SetCoolDownPestaggio(const int cooldown)
 {
     m_coolDownPestaggio = cooldown;
     if (m_coolDownPestaggio < 0) m_coolDownPestaggio = 0;
 }
-void TabbyGame::SetCoolDownPelle(int cooldown)
+
+void TabbyGame::SetCoolDownPelle(const int cooldown)
 {
     m_coolDownPelle = cooldown;
     if (m_coolDownPelle < 0) m_coolDownPelle = 0;
 }
 
-void TabbyGame::SetPaloCount(int count)
+void TabbyGame::SetPaloCount(const int count)
 {
     m_paloCount = count;
     if (m_paloCount < 0) m_paloCount = 0;
 }
 
-void TabbyGame::SetAttesa(int attesa)
+void TabbyGame::SetAttesa(const int attesa)
 {
     m_attesa = attesa;
     if (m_attesa < 0) m_attesa = 0;
@@ -100,7 +98,7 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
 }
 
-int TabbyGame::GenRandomInt(int min, int max)
+int TabbyGame::GenRandomInt(const int min, const int max)
 {
     // Creiamo una distribuzione uniforme tra min e max
     // Significa che ogni numero ha la stessa probabilità di uscire
@@ -643,7 +641,7 @@ bool TabbyGame::PollMessaggi(Messaggio& outEvento)
     return true;    // C'è un evento da processare
 }
 
-void TabbyGame::ApplicaScelta(Scelta msgAzione, bool sceltaYes)
+void TabbyGame::ApplicaScelta(const Scelta msgAzione, const bool sceltaYes)
 {
     switch (msgAzione)
     {
@@ -846,7 +844,7 @@ bool TabbyGame::TriggerLavoro()
     return false;
 }
 
-void TabbyGame::AzioneStudia(int materiaIndex)
+void TabbyGame::AzioneStudia(const int materiaIndex)
 {
     // Doppio controllo
     if (!TriggerScuola())
@@ -866,7 +864,7 @@ void TabbyGame::AzioneStudia(int materiaIndex)
     NuovoGiorno();
 }
 
-void TabbyGame::AzioneMinaccia(int materiaIndex)
+void TabbyGame::AzioneMinaccia(const int materiaIndex)
 {
     // Doppio controllo
     if (!TriggerScuola())
@@ -885,12 +883,12 @@ void TabbyGame::AzioneMinaccia(int materiaIndex)
         Messaggio msg{ TipoMsg::ERRORE, "Bella figura", "Cosa ??? Credi di farmi paura piccolo pezzettino di letame vestito da zarro...\nDeve ancora nascere chi può minacciarmi..." };
         PushMessaggio(msg);
     }
-    // IMPORTANTE: NEGLI EVENTI NULLI VA SEMPRE FATTO NUOVOGIORNO, MENTRE QUELLI A SCELTA CONVIENE IN APPLICASCELTA PER RISPETTARE L'ORDINE DI INVOCAZIONE EVENTI
+
     m_tabbyGuy.CalcolaStudio();
     NuovoGiorno();
 }
 
-void TabbyGame::AzioneCorrompi(int materiaIndex)
+void TabbyGame::AzioneCorrompi(const int materiaIndex)
 {
     // Doppio controllo
     if (!TriggerScuola())
@@ -1100,7 +1098,7 @@ void TabbyGame::AzioneProvaci(const Tipa& tipa)
 
 }
 
-void TabbyGame::AzioneTerminaQuiz(const std::vector<int>& countRisposte, std::string nomeDitta)
+void TabbyGame::AzioneTerminaQuiz(const std::vector<int>& countRisposte, const std::string nomeDitta)
 {
     bool errore = false;
     for (int count : countRisposte)
@@ -1170,7 +1168,7 @@ void TabbyGame::AzioneLicenziati()
     }
 }
 
-long long TabbyGame::ConvertiValuta(long long valoreBase) const
+long long TabbyGame::ConvertiValuta(const long long valoreBase) const
 {
 	if (m_valutaCorrente == Valuta::EURO)
 		return valoreBase;
@@ -1368,8 +1366,6 @@ void TabbyGame::CaricaFeste()
 }
 
 void TabbyGame::CaricaNegozi() {
-    // IMPORTANTE: Se usi puntatori grezzi nel vettore, devi prima pulirli!
-    // (Se hai il distruttore in Negozio come ti ho detto prima, basta clear())
     m_negozi.clear();
 
     std::ifstream file("dati/negozi.txt");
@@ -1537,7 +1533,7 @@ void TabbyGame::CaricaQuiz()
     }
 }
 
-void TabbyGame::PlaySound(int id)
+void TabbyGame::PlaySound(const int id)
 {
     if (!m_soundActive)
         return;
@@ -1547,7 +1543,7 @@ void TabbyGame::PlaySound(int id)
     PushMessaggio(msg);
 }
 
-std::string TabbyGame::GetSoldiStr(long long valoreBase) const
+std::string TabbyGame::GetSoldiStr(const long long valoreBase) const
 {
 	if (m_valutaCorrente == Valuta::EURO)
 		return (formattaConPunti(valoreBase) + " €");
@@ -1686,7 +1682,7 @@ void TabbyGame::AzioneSciopera()
     }
 }
 
-void TabbyGame::AzionePagaDisco(int discoIndex)
+void TabbyGame::AzionePagaDisco(const int discoIndex)
 {
     const Disco& disco = m_discoteche[discoIndex];
     if (m_date.GetWeekDay() == disco.m_giornoChiuso)
@@ -1870,7 +1866,7 @@ void TabbyGame::AzionePalpatina()
     NuovoGiorno();
 }
 
-bool TabbyGame::TriggerNegozio(CategoriaOggetto merce)
+bool TabbyGame::TriggerNegozio(const CategoriaOggetto merce)
 {
     if (m_tipoGiorno != TipoGiorno::FESTIVO)
         return true;
@@ -2092,7 +2088,7 @@ void TabbyGame::AzioneLampada()
         NuovoGiorno();
 }
 
-void TabbyGame::AzioneAbbonamento(int mesi)
+void TabbyGame::AzioneAbbonamento(const int mesi)
 {
     long long importo{};
     switch (mesi)
@@ -2143,7 +2139,7 @@ void TabbyGame::AzioneVendiTelefono()
     PushMessaggio(msg);
 }
 
-void TabbyGame::AzioneAttivaSim(int abbonIndex)
+void TabbyGame::AzioneAttivaSim(const int abbonIndex)
 {
     if (!m_tabbyGuy.SpendiSoldi(m_abbonamenti[abbonIndex].GetCostoAttivazione()))
     {
@@ -2158,7 +2154,7 @@ void TabbyGame::AzioneAttivaSim(int abbonIndex)
         PlaySound(602);
 }
 
-void TabbyGame::AzioneRicarica(long long taglio, std::string nomeOp)
+void TabbyGame::AzioneRicarica(const long long taglio, const std::string nomeOp)
 {
     if (m_tabbyGuy.GetTelefono().GetAbbonamento().GetNome() != nomeOp)
     {

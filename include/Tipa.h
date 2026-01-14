@@ -8,18 +8,18 @@ public:
 		: m_nome{ "" }, m_desc{ "" }, m_fama{ 0 }
 	{}
 
-	Tipa(std::string nome, int fama)
+	Tipa(const std::string nome, const int fama)
 		: m_nome{ nome }
 	{
 		SetFama(fama);
 	}
 
-	void SetNome(std::string nome) { m_nome = nome; }
+	void SetNome(const std::string nome) { m_nome = nome; }
 	std::string GetNome() const { return m_nome; }
 	std::string GetDesc() const { return m_desc; }
 	int GetFama() const { return m_fama; }
 
-	void SetFama(int punti) {
+	void SetFama(const int punti) {
 		m_fama = punti;
 		if (m_fama < 0) m_fama = 0;
 		if (m_fama > 100) m_fama = 100;

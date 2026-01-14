@@ -5,7 +5,6 @@
 // TODO: MECCANICHE FUTURE: con l'avanzamento tecnologico, escono nuove robe. + investimenti in borsa, crypto, per per arricchirsi...
 // TODO: La scuola la fa per 5 anni poi va a lavorare e investire in borsa???
 // TODO: SISTEMA BEST PRACTICE
-// TODO: Attento ai range dei vettori nei random
 // TODO: metti const per le pass by reference
 // TODO: IMPEDIRE DI COMPRARE VESTITI GIA' POSSEDUTI
 // TODO: ARMADIO VESTITI?
@@ -36,12 +35,12 @@
 // TODO: CAMBIA FIGOSITA' VESTITI E NEGOZI
 // TODO: METTI PREZZI LAMPADA E PALESTRA DENTRO TABBYGAME
 // TODO: ATTENTO A QUANDO IL GIOCO SI AVVIA IN UN GIORNO DI VACANZA
+// TODO: IMPORTANTE: NEGLI EVENTI NULLI VA SEMPRE FATTO NUOVOGIORNO, MENTRE QUELLI A SCELTA CONVIENE IN APPLICASCELTA PER RISPETTARE L'ORDINE DI INVOCAZIONE EVENTI
 
 bool TabbyApp::OnInit()
 {	// Carica i dati di salvataggio dai registri di sistema
-	if (!CaricaDatiRegistro()) {
-		// Se il caricamento fallisce o è la prima volta, m_game è già inizializzato dal suo costruttore
-	}
+	CaricaDatiRegistro();
+
 	// importante per caricare le immagini
 	wxInitAllImageHandlers();
 	TabbyFrame* frame = new TabbyFrame(m_game);

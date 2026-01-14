@@ -57,9 +57,9 @@ enum class Scelta {
 
 struct Messaggio {
 	Messaggio();
-	Messaggio(TipoMsg tipo, std::string titolo = "", std::string testo = "", Scelta id = Scelta::NONE);
+	Messaggio(const TipoMsg tipo, const std::string titolo = "", const std::string testo = "", const Scelta scelta = Scelta::NONE);
 	TipoMsg m_tipo = TipoMsg::INFO;
-    Scelta m_msgAzione = Scelta::NONE;
+    Scelta m_scelta = Scelta::NONE;
 	std::string m_titolo;
 	std::string m_testo;
     int m_soundId = -1;
@@ -92,22 +92,22 @@ class TabbyGame
 {
 public:
 	TabbyGame();
-
-	// GETTER FUNCTIONS
-	Valuta GetValutaCorrente() const { return m_valutaCorrente; };
-	TabbyGuy& GetTabbyGuy() { return m_tabbyGuy; };
-	Chrono::Date& GetDate() { return m_date; };
-	Chrono::Date& GetScadenzaPal() { return m_scadenzaPal; };
-    TipoGiorno GetTipoGiorno() const { return m_tipoGiorno; };
+    
+    void SetValutaCorrente(const Valuta valuta) { m_valutaCorrente = valuta; };
+    void SetTipoGiorno(const TipoGiorno tipo) { m_tipoGiorno = tipo; };
+    void SetCoolDownPestaggio(const int cooldown);
+    void SetCoolDownPelle(const int cooldown);
+    void SetPaloCount(const int count);
+    void SetAttesa(const int attesa);
 	// LOGICA EVENTI
 	// Restituisce true se c'era un evento (e lo mette in outMsg), false se la coda eventi è vuota
 	bool PollMessaggi(Messaggio& outMsg);
-	void ApplicaScelta(Scelta mgsAzione, bool sceltaYes);
+	void ApplicaScelta(const Scelta mgsAzione, const bool sceltaYes);
     // Scuola
     bool TriggerScuola();
-	void AzioneStudia(int materiaIndex);
-	void AzioneMinaccia(int materiaIndex);
-	void AzioneCorrompi(int materiaIndex);
+	void AzioneStudia(const int materiaIndex);
+	void AzioneMinaccia(const int materiaIndex);
+	void AzioneCorrompi(const int materiaIndex);
     // Compagnia
     void AzioneGara();
     void AzioneEsci();
@@ -121,7 +121,7 @@ public:
     const Ditta& ProponiDitta();
     void AzioneRifiutaProposta();
     const QuizScheda& AssegnaQuiz();
-    void AzioneTerminaQuiz(const std::vector<int>& countRisposte, std::string nomeDitta);  // Controlla se il quiz è stato compilato correttamente (1 risposta per domanda)
+    void AzioneTerminaQuiz(const std::vector<int>& countRisposte, const std::string nomeDitta);  // Controlla se il quiz è stato compilato correttamente (1 risposta per domanda)
     bool AzioneCercaLavoro();   	// Restituisce true se possiamo procedere con la ricerca, false altrimenti (es. festivo)
     void AzioneLicenziati();
     void AzioneLavora();
@@ -129,7 +129,7 @@ public:
     void AzioneAumentoSalario();
     void AzioneSciopera();
     // Discoteca
-    void AzionePagaDisco(int discoIndex);
+    void AzionePagaDisco(const int discoIndex);
     // Tipa
     Tipa GeneraTipa();
     void AzioneProvaci(const Tipa& tipa);
@@ -140,18 +140,18 @@ public:
     void AzionePreferiscoNuova();
     void AzionePalpatina();
     // Negozi
-    bool TriggerNegozio(CategoriaOggetto merce);
+    bool TriggerNegozio(const CategoriaOggetto merce);
     void AzioneCompra(const Acquistabile& prod);
     // Palestra
     bool TriggerPalestra();
     bool PalestraAttiva() const { return m_scadenzaPal > m_date; }; // E' ancora attivo l'abbonamento della palestra?
     void AzioneVaiPalestra();
     void AzioneLampada();
-    void AzioneAbbonamento(int mesi);
+    void AzioneAbbonamento(const int mesi);
     // Telefono
     void AzioneVendiTelefono();
-    void AzioneAttivaSim(int abbonIndex);
-    void AzioneRicarica(long long taglio, std::string nomeOp);
+    void AzioneAttivaSim(const int abbonIndex);
+    void AzioneRicarica(const long long taglio, const std::string nomeOp);
     // Scooter
     void AzioneVendiScooter();
     void AzioneRiparaScooter();
@@ -161,25 +161,31 @@ public:
     Scooter GeneraScooter();
 
     // Stringa formattata (es. "1.000 L." o "5 €")
-    std::string GetSoldiStr(long long valoreBase) const;
+    std::string GetSoldiStr(const long long valoreBase) const;
 	// GENERATORE RANDOM
-	int GenRandomInt(int min, int max);
+	int GenRandomInt(const int min, const int max);
     // SCRITTURA LOG DI DEBUG
     void WriteLog(const std::string& messaggio);
     // SOUND
-    void PlaySound(int id);
-    void SetSoundActive(bool active) { m_soundActive = active; }
+    void PlaySound(const int id);
+    void SetSoundActive(const bool active) { m_soundActive = active; }
 
+	// GETTER FUNCTIONS
     int GetCoolDownPestaggio() const { return m_coolDownPestaggio; }
     int GetCoolDownPelle() const { return m_coolDownPelle; }
     int GetPaloCount() const { return m_paloCount; }
     int GetAttesa() const { return m_attesa; }
     bool GetSoundActive() const { return m_soundActive; }
+	TabbyGuy& GetTabbyGuy() { return m_tabbyGuy; };
+	Chrono::Date& GetDate() { return m_date; };
+	Chrono::Date& GetScadenzaPal() { return m_scadenzaPal; };
     const Tipa& GetTipaNuova() const { return m_tipaNuova; }
     const Negozio& GetTelefonia() const { return m_telefonia; }
     const Negozio& GetConcessionario() const { return m_concessionario; }
     const Negozio& GetMeccanico() const { return m_meccanico; }
     std::string GetMetallaroImageStr() { return ("metallaro" + std::to_string(GenRandomInt(1, 5)) + ".png"); }
+	Valuta GetValutaCorrente() const { return m_valutaCorrente; };
+    TipoGiorno GetTipoGiorno() const { return m_tipoGiorno; };
     std::vector<Abbonamento>& GetAbbonamenti() { return m_abbonamenti; }
     std::vector<Negozio>& GetNegozi() { return m_negozi; }
     std::vector<Disco>& GetDiscoteche() { return m_discoteche; }
@@ -190,13 +196,6 @@ public:
     void ResetPartita() { *this = TabbyGame{}; }
     // Checksum del salvataggio caricato
     long long CalcolaChecksum(long long soldi, int rep, int fama, int studio, int rapporti) const;
-
-    void SetValutaCorrente(Valuta valuta) { m_valutaCorrente = valuta; };
-    void SetTipoGiorno(TipoGiorno tipo) { m_tipoGiorno = tipo; };
-    void SetCoolDownPestaggio(int cooldown);
-    void SetCoolDownPelle(int cooldown);
-    void SetPaloCount(int count);
-    void SetAttesa(int attesa);
 
 private:
 	TabbyGuy m_tabbyGuy;
@@ -271,5 +270,5 @@ private:
 
 	// LOGICA MONETARIA
 	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
-	long long ConvertiValuta(long long valoreBase) const;
+	long long ConvertiValuta(const long long valoreBase) const;
 };

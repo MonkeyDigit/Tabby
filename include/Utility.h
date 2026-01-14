@@ -6,7 +6,7 @@
 #include <sstream>
 
 // Funzione helper per la formattazione dei soldi
-static std::string formattaConPunti(long long numero)
+static std::string formattaConPunti(const long long numero)
 {
     // Convertiamo in stringa grezza (es. "1000000")
     std::string s = std::to_string(numero);
@@ -14,7 +14,6 @@ static std::string formattaConPunti(long long numero)
     // Calcoliamo dove inserire i punti
     // Partiamo dalla fine, saltiamo 3 cifre, e mettiamo un punto.
     // Dobbiamo stare attenti a non mettere il punto se siamo all'inizio (es. non ".100")
-    // e a gestire il segno meno se tabby va in rosso
 
     int len = s.length();
     int count = 0;

@@ -8,7 +8,7 @@ public:
 	Abbonamento() : m_nome{ "" }, m_img{ "" }, m_attivazione { 0 }
 	{}
 
-	Abbonamento(std::string nome, std::string img, long long attivazione, const std::vector<long long>& ricariche)
+	Abbonamento(const std::string nome, const std::string img, const long long attivazione, const std::vector<long long>& ricariche)
 		: m_nome{ nome }, m_img{ img }, m_attivazione { attivazione }, m_ricariche{ ricariche }
 	{}
 
@@ -18,9 +18,9 @@ public:
 	const std::vector<long long>& GetRicariche() const { return m_ricariche; }
 	std::vector<long long>& GetRicariche() { return m_ricariche; }
 
-	void SetNome(std::string nome) { m_nome = nome; }
-	void SetImageStr(std::string imageStr) { m_img = imageStr; }
-	void SetCostoAttivazione(int costo) {
+	void SetNome(const std::string nome) { m_nome = nome; }
+	void SetImageStr(const std::string imageStr) { m_img = imageStr; }
+	void SetCostoAttivazione(const int costo) {
 		if (costo >= 0)
 			m_attivazione = costo;
 	}
@@ -47,20 +47,22 @@ public:
 	const Abbonamento& GetAbbonamento() const { return m_abb; }
 	void SetAbbonamento(const Abbonamento& abb) { m_abb = abb; }
 
-	void SetFama(int fama) {
+	void SetFama(const int fama) {
 		m_fama = fama;
 		if (m_fama < 0) m_fama = 0;
 		else if (m_fama > 100) m_fama = 100;
 	}
 
-	void SetStato(int stato) {
-		if (stato >= 0)
-			m_stato = stato;
+	void SetStato(const int stato) {
+		m_stato = stato;
+		if (m_stato < 0) m_stato = 0;
+		else if (m_stato > 100) m_stato = 100;
 	}
 
 	void SetCredito(int credito) {
-		if (credito >= 0)
-			m_credito = credito;
+		m_credito = credito;
+		if (m_credito < 0) m_credito = 0;
+		else if (m_credito > 100) m_credito = 100;
 	}
 
 	void IncStato(int punti) {

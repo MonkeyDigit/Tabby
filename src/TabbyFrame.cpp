@@ -150,7 +150,7 @@ TabbyFrame::TabbyFrame(TabbyGame& game)
 	// Aggiungi Header al Main
 	mainSizer->Add(gridHeader, 0, wxEXPAND);
 	// LINEA SEPARATRICE ORIZZONTALE
-	mainSizer->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxEXPAND);
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND);
 
 	// BODY ---------------------------------------------------------------------------------------------
 	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
@@ -185,12 +185,12 @@ TabbyFrame::TabbyFrame(TabbyGame& game)
 	// Tipa
 	m_lblNomeTipa = new wxStaticText{ pnlStats, wxID_ANY, "---" };
 	gridStats->Add(m_lblNomeTipa, wxGBPosition(0, 0), wxDefaultSpan, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxALL, 5);
-	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(1, 0), wxGBSpan(1, 1), wxEXPAND);
+	gridStats->Add(new wxStaticLine(pnlStats), wxGBPosition(1, 0), wxGBSpan(1, 1), wxEXPAND);
 	m_lblRapportoTipa = new wxStaticText{ pnlStats, wxID_ANY, "---" };
 	gridStats->Add(m_lblRapportoTipa, wxGBPosition(2, 0), wxDefaultSpan, wxEXPAND | wxALL, 10);
 	m_barTipa = new wxGauge{ pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10) };
 	gridStats->Add(m_barTipa, wxGBPosition(3, 0), wxDefaultSpan, wxALL & ~wxTOP, 10);
-	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(4, 0), wxGBSpan(1, 3), wxEXPAND);
+	gridStats->Add(new wxStaticLine(pnlStats), wxGBPosition(4, 0), wxGBSpan(1, 3), wxEXPAND);
 	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL), wxGBPosition(0, 1), wxGBSpan(4, 1), wxEXPAND & ~wxLEFT, 5);
 
 	// Bottoni
@@ -208,35 +208,35 @@ TabbyFrame::TabbyFrame(TabbyGame& game)
 	sizerSoldiRow->AddSpacer(10); // Un po' di spazio tra il saldo e la variazione
 	sizerSoldiRow->Add(m_lblSoldiDelta, 0, wxALIGN_CENTER_VERTICAL);
 	gridStats->Add(sizerSoldiRow, wxGBPosition(5, 0), wxGBSpan(1, 3), wxALIGN_CENTER_HORIZONTAL | wxALL, 10);
-	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(6, 0), wxGBSpan(1, 3), wxEXPAND);
+	gridStats->Add(new wxStaticLine(pnlStats), wxGBPosition(6, 0), wxGBSpan(1, 3), wxEXPAND);
 
 	// Reputazione
 	m_lblReputazione = new wxStaticText{ pnlStats, wxID_ANY, "---" };
 	gridStats->Add(m_lblReputazione, wxGBPosition(7, 0), wxGBSpan(1, 3), wxEXPAND | wxALL, 10);
 	m_barRep = new wxGauge{ pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10) };
 	gridStats->Add(m_barRep, wxGBPosition(8, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
-	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(9, 0), wxGBSpan(1, 3), wxEXPAND);
+	gridStats->Add(new wxStaticLine(pnlStats), wxGBPosition(9, 0), wxGBSpan(1, 3), wxEXPAND);
 
 	// Figosità
-	m_lblFigo = new wxStaticText{ pnlStats, wxID_ANY, "---" };
-	gridStats->Add(m_lblFigo, wxGBPosition(10, 0), wxGBSpan(1, 3), wxEXPAND | wxALL, 10);
-	m_barFigo = new wxGauge{ pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10) };
-	gridStats->Add(m_barFigo, wxGBPosition(11, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
-	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(12, 0), wxGBSpan(1, 3), wxEXPAND);
+	m_lblFama = new wxStaticText{ pnlStats, wxID_ANY, "---" };
+	gridStats->Add(m_lblFama, wxGBPosition(10, 0), wxGBSpan(1, 3), wxEXPAND | wxALL, 10);
+	m_barFama = new wxGauge{ pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10) };
+	gridStats->Add(m_barFama, wxGBPosition(11, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
+	gridStats->Add(new wxStaticLine(pnlStats), wxGBPosition(12, 0), wxGBSpan(1, 3), wxEXPAND);
 
 	// Profitto scolastico
 	m_lblStudio = new wxStaticText{ pnlStats, wxID_ANY, "---" };
 	gridStats->Add(m_lblStudio, wxGBPosition(13, 0), wxGBSpan(1, 3), wxEXPAND | wxALL, 10);
 	m_barStudio = new wxGauge{ pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10) };
 	gridStats->Add(m_barStudio, wxGBPosition(14, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
-	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(15, 0), wxGBSpan(1, 3), wxEXPAND);
+	gridStats->Add(new wxStaticLine(pnlStats), wxGBPosition(15, 0), wxGBSpan(1, 3), wxEXPAND);
 
 	// Stato scooter
 	m_lblScooter = new wxStaticText{ pnlStats, wxID_ANY, "---" };
 	gridStats->Add(m_lblScooter, wxGBPosition(16, 0), wxGBSpan(1, 3), wxALL, 10);
 	m_barScooter = new wxGauge{ pnlStats, wxID_ANY, 100, wxDefaultPosition, wxSize(350, 10) };
 	gridStats->Add(m_barScooter, wxGBPosition(17, 0), wxGBSpan(1, 3), wxALL & ~wxTOP, 10);
-	gridStats->Add(new wxStaticLine(pnlStats, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), wxGBPosition(18, 0), wxGBSpan(1, 3), wxEXPAND);
+	gridStats->Add(new wxStaticLine(pnlStats), wxGBPosition(18, 0), wxGBSpan(1, 3), wxEXPAND);
 
 	// Data
 	wxPanel* pnlDate = new wxPanel{ pnlStats, wxID_ANY, wxDefaultPosition, wxSize(-1,40), wxBORDER_SUNKEN };
@@ -315,8 +315,8 @@ void TabbyFrame::AggiornaInterfaccia()
 
 	m_lblReputazione->SetLabel(wxString::Format("Reputazione %d/100", guy.GetRep()));
 	m_barRep->SetValue(guy.GetRep());
-	m_lblFigo->SetLabel(wxString::Format("Figosità %d/100", guy.GetFama()));
-	m_barFigo->SetValue(guy.GetFama());
+	m_lblFama->SetLabel(wxString::Format("Figosità %d/100", guy.GetFama()));
+	m_barFama->SetValue(guy.GetFama());
 	m_lblStudio->SetLabel(wxString::Format("Profitto scolastico %d/100", guy.GetStudio()));
 	m_barStudio->SetValue(guy.GetStudio());
 	// Lo scooter viene mostrato solo se posseduto

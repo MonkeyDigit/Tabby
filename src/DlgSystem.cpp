@@ -14,7 +14,6 @@ DlgConfig::DlgConfig(wxWindow* parent, TabbyGame& game)
 	// 1. CHOOSE SKILL LEVEL
 	wxStaticBoxSizer* grpSkill = new wxStaticBoxSizer(wxVERTICAL, this, "Choose Skill level:");
 
-	// Nomi presi dallo screenshot (Citazioni di Doom)
 	std::vector<wxString> livelli = {
 		"I'm too young be a tabbozzo.",
 		"Hey, not to rough.",
@@ -99,7 +98,6 @@ DlgConfig::DlgConfig(wxWindow* parent, TabbyGame& game)
 	footerSizer->Add(new wxStaticText{ this, wxID_ANY, "Tabboz Simulator" }, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 	footerSizer->AddStretchSpacer();
 
-	// "reset ." scritta piccola rossa
 	wxStaticText* lblReset = new wxStaticText{ this, wxID_ANY, "reset ." };
 	lblReset->SetForegroundColour(*wxRED);
 	footerSizer->Add(lblReset, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
@@ -144,8 +142,6 @@ DlgAbout::DlgAbout(wxWindow* parent)
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 
 	// --- SEZIONE SUPERIORE (Info Generali + Bottone OK) ---
-	// Useremo un pannello "Container" con bordo SUNKEN per raggruppare tutto come nello screen
-	// Nota: Nello screen originale sembra un unico grande riquadro che contiene tutto tranne l'URL in basso.
 
 	wxPanel* pnlMainFrame = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
 	wxBoxSizer* frameSizer = new wxBoxSizer{ wxVERTICAL };
@@ -172,21 +168,17 @@ DlgAbout::DlgAbout(wxWindow* parent)
 	headerSizer->Add(textSizer, 1, wxTOP | wxBOTTOM | wxLEFT, 10);
 
 	// Colonna Bottone OK (Destra) con icona check
-	// Nota: Nello screen il bottone è grande e ha un'icona verde.
 	wxButton* btnOk = new wxButton{ pnlMainFrame, wxID_OK, "OK", wxDefaultPosition, wxSize(80, 40) };
-	// btnOk->SetBitmap(...); // Se avessi l'icona
 	btnOk->Bind(wxEVT_BUTTON, &DlgAbout::OnOk, this);
 
 	headerSizer->Add(btnOk, 0, wxALL | wxALIGN_TOP, 10);
 
 	frameSizer->Add(headerSizer, 0, wxEXPAND);
 
-	// LINKE HORIZONTAL
 	frameSizer->Add(new wxStaticLine(pnlMainFrame), 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 
 	// 2. IMMAGINE LOGO (32bit Tabboz Simulator)
 	wxPanel* pnlLogo = new wxPanel(pnlMainFrame, wxID_ANY, wxDefaultPosition, wxSize(300, 100), wxBORDER_NONE);
-	// Qui andrebbe caricata l'immagine "32bit Tabboz Simulator"
 	// pnlLogo->SetBackgroundBitmap(...); 
 	wxBoxSizer* logoSizer = new wxBoxSizer{ wxVERTICAL };
 	logoSizer->Add(new wxStaticText{ pnlLogo, wxID_ANY, "[LOGO TABBOZ 32bit]" }, 1, wxALIGN_CENTER);
@@ -194,7 +186,7 @@ DlgAbout::DlgAbout(wxWindow* parent)
 
 	frameSizer->Add(pnlLogo, 0, wxALIGN_CENTER | wxALL, 10);
 
-	// 3. CREDITS (Created by)
+	// 3. CREDITS
 	wxFlexGridSizer* creditGrid = new wxFlexGridSizer(2, 5, 20); // 2 cols, gap
 	creditGrid->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Created by:" }, 0, wxALIGN_RIGHT);
 
@@ -210,8 +202,8 @@ DlgAbout::DlgAbout(wxWindow* parent)
 	// LINEA SEPARAZIONE
 	frameSizer->Add(new wxStaticLine(pnlMainFrame), 0, wxEXPAND | wxLEFT | wxRIGHT, 2);
 
-	// 4. BETA TESTERS (Barra grigia scura/incassata con testo)
-	wxPanel* pnlTesters = new wxPanel(pnlMainFrame, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE); // Nello screen sembra piatto ma separato
+	// 4. BETA TESTERS
+	wxPanel* pnlTesters = new wxPanel(pnlMainFrame, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE);
 	wxBoxSizer* testerSizer = new wxBoxSizer{ wxHORIZONTAL };
 	testerSizer->Add(new wxStaticText{ pnlTesters, wxID_ANY, "Beta testers:" }, 0, wxRIGHT, 20);
 	testerSizer->Add(new wxStaticText{ pnlTesters, wxID_ANY, "Dino Lucci" }, 0, wxRIGHT, 40);
@@ -226,7 +218,7 @@ DlgAbout::DlgAbout(wxWindow* parent)
 	// 5. DISCLAIMER (Icona rossa + Testo)
 	wxBoxSizer* disclaimerSizer = new wxBoxSizer{ wxHORIZONTAL };
 
-	// Icona rossa (Omino)
+	// Icona rossa
 	wxStaticText* iconOmino = new wxStaticText{ pnlMainFrame, wxID_ANY, "[!!]", wxDefaultPosition, wxSize(32, 32), wxALIGN_CENTER | wxBORDER_SIMPLE };
 	iconOmino->SetBackgroundColour(*wxRED);
 	iconOmino->SetForegroundColour(*wxWHITE);
@@ -322,7 +314,7 @@ DlgPersonalInfo::DlgPersonalInfo(wxWindow* parent, TabbyGame& game)
 	AddStaticRow(grid, r, "Nato il:", dataNascita);
 	AddStaticRow(grid, r, "Atto N.:", id.m_attoNascita);
 
-	// CITTÀ (Riga speciale con 2 campi)
+	// CITTA' (Riga speciale con 2 campi)
 	AddCityProvRow(grid, r, "a:", m_txtLuogoNascita, id.m_luogoNascita, m_txtProvincia, id.m_provinciaNascita);
 
 	AddStaticRow(grid, r, "Cittadinanza:", id.m_cittadinanza);
@@ -347,7 +339,6 @@ DlgPersonalInfo::DlgPersonalInfo(wxWindow* parent, TabbyGame& game)
 	// Genera l'avatar attuale
 	wxBitmap avatarBmp = GeneraAvatar(m_game.GetTabbyGuy());
 
-	// Se l'avatar è troppo grande, potremmo ridimensionarlo, ma assumiamo 200x300 va bene.
 	// Creiamo il controllo immagine
 	wxStaticBitmap* imgFoto = new wxStaticBitmap{ this, wxID_ANY, avatarBmp };
 	imgFoto->SetWindowStyle(wxBORDER_SIMPLE);
@@ -391,7 +382,6 @@ void DlgPersonalInfo::AddEditRow(wxGridBagSizer* sizer, int& row, wxString label
 	ctrlPtr = new wxTextCtrl(this, wxID_ANY, value);
 
 	sizer->Add(txtLabel, wxGBPosition(row, 0), wxDefaultSpan, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-	// wxEXPAND è fondamentale qui
 	sizer->Add(ctrlPtr, wxGBPosition(row, 1), wxDefaultSpan, wxEXPAND | wxALIGN_CENTER_VERTICAL);
 	row++;
 }
@@ -441,7 +431,7 @@ void DlgPersonalInfo::AddStaticRow(wxGridBagSizer* sizer, int& row, wxString lab
 }
 
 void DlgPersonalInfo::AddSeparator(wxGridBagSizer* sizer, int& row) {
-	wxStaticLine* line = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
+	wxStaticLine* line = new wxStaticLine(this);
 	sizer->Add(line, wxGBPosition(row++, 0), wxGBSpan(1, 2), wxEXPAND | wxTOP | wxBOTTOM, 5);
 }
 
@@ -473,7 +463,7 @@ DlgUscita::DlgUscita(wxWindow* parent)
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 	wxBoxSizer* bodySizer = new wxBoxSizer{ wxHORIZONTAL };
 
-	// 1. ICONA A SINISTRA (Il monitor col punto esclamativo rosso nello screen)
+	// 1. ICONA A SINISTRA
 	// Usiamo un pannello placeholder o uno static text per ora
 	wxStaticText* iconBox = new wxStaticText{ this, wxID_ANY, "[ICON]", wxDefaultPosition, wxSize(48, 48), wxALIGN_CENTER | wxBORDER_NONE };
 	// In futuro qui caricherai l'icona del monitor

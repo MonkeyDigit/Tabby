@@ -12,16 +12,19 @@ public:
     {}
 
     // Costruttore che inizializza i dati comuni
-    Acquistabile(std::string nome, std::string desc, std::string img, long long prezzo, CategoriaOggetto cat)
+    Acquistabile(const std::string nome, const std::string desc, const std::string img, const long long prezzo, const CategoriaOggetto cat)
         : m_nome{ nome }, m_desc{ desc }, m_img{ img }, m_prezzo{ prezzo }, m_categoria{ cat }
     {}
 
     virtual ~Acquistabile() = default;  // Il destructor può essere personalizzato dalla classe ereditante, oppure lasciato default
 
-    virtual void SetNome(std::string nome) { m_nome = nome; }
-    virtual void SetDesc(std::string desc) { m_desc = desc; }
-    virtual void SetImageStr(std::string imageStr) { m_img = imageStr; }
-    virtual void SetPrezzo(long long prezzo) { if(prezzo >= 0) m_prezzo = prezzo; }
+    virtual void SetNome(const std::string nome) { m_nome = nome; }
+    virtual void SetDesc(const std::string desc) { m_desc = desc; }
+    virtual void SetImageStr(const std::string imageStr) { m_img = imageStr; }
+    virtual void SetPrezzo(const long long prezzo) { 
+        m_prezzo = prezzo;
+        if (m_prezzo < 0) m_prezzo = 0;
+    }
 
     // Getter comuni (NON puri, hanno un'implementazione)
     // Li facciamo virtual così se vuoi cambiarli in una classe figlia puoi farlo
@@ -47,7 +50,7 @@ public:
     Vestito() : Acquistabile{}, m_fama{ 0 }, m_tipo{ TipoVestito::NONE }
     {}
     // Costruttore: Passa i dati comuni al padre, e si tiene i suoi
-    Vestito(TipoVestito tipo,std::string nome, std::string desc, std::string img, long long prezzo, int fama)
+    Vestito(const TipoVestito tipo, const std::string nome, const std::string desc, const std::string img, const long long prezzo, const int fama)
         : Acquistabile{ nome, desc, img, prezzo, CategoriaOggetto::VESTITO }, // Chiama costruttore base
         m_fama{ fama }, m_tipo{ tipo }
     {}
@@ -68,7 +71,7 @@ public:
     Sizze() : Acquistabile{}, m_fama{ 0 }
     {}
 
-    Sizze(std::string nome, std::string desc, std::string img, long long prezzo, int fama)
+    Sizze(const std::string nome, const std::string desc, const std::string img, const long long prezzo, const int fama)
         : Acquistabile{ nome, desc, img, prezzo, CategoriaOggetto::CONSUMABILE },
         m_fama{ fama }
     {}

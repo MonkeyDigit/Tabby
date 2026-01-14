@@ -128,7 +128,6 @@ DlgFamiglia::DlgFamiglia(wxWindow* parent, TabbyGame& game)
 	sizerTesti->Add(m_lblPaghetta, 0, wxTOP, 2);
 
 	// Ora aggiungiamo al sizer orizzontale principale del pannello
-	// 1. I testi (con proportion=1 così spingono l'OK a destra se serve)
 	sizerBottom->Add(sizerTesti, 1, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
 	sizerBottom->AddSpacer(50);
 

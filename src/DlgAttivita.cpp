@@ -60,11 +60,10 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 	// Creo un sizer "invisibile" che serve a dare MARGINE (altrimenti metallurgia sprofonda)
 	wxBoxSizer* wrapperSizer = new wxBoxSizer{ wxVERTICAL };
 	//Inserisco la griglia dentro questo wrapper con 5px di respiro ovunque(wxALL)
-	// Questo spingerà "Agraria" giù dal soffitto e "Metallurgia" su dal pavimento
 	wrapperSizer->Add(gridVoti, 1, wxEXPAND | wxALL, 5);
-	// Profittto scolastico
+	// Profitto scolastico
 	m_lblStudio = new wxStaticText{ pnlVoti, wxID_ANY, "---", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_VERTICAL };
-	wrapperSizer->Add(new wxStaticLine(pnlVoti, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxEXPAND | wxALL, 5);
+	wrapperSizer->Add(new wxStaticLine(pnlVoti), 0, wxEXPAND | wxALL, 5);
 	wrapperSizer->Add(m_lblStudio, 0, wxALL, 5);
 	// Settiamo il sizer
 	pnlVoti->SetSizer(wrapperSizer);
@@ -171,6 +170,7 @@ DlgLavoro::DlgLavoro(wxWindow* parent, TabbyGame& game)
 	sizerFoto->Add(imgLavoro, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
 	pnlFoto->SetSizer(sizerFoto);
 	sizerBody->Add(pnlFoto, 0, wxALL, 5);
+	sizerBody->AddStretchSpacer();
 
 	// Bottoni
 	wxButton* btnCercaLavoro = new wxButton{ pnlButtons, wxID_ANY, "Cerca lavoro", wxDefaultPosition, wxSize(-1, 40) };
@@ -323,7 +323,7 @@ DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(pnlFoto, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
 	// Linea di separazione
-	mainSizer->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
 
 	// Descrizione
 	wxStaticText* lblNomeDitta = new wxStaticText{ this, wxID_ANY, "Ditta: " + ditta.m_nome };
@@ -335,7 +335,7 @@ DlgOffertaLavoro::DlgOffertaLavoro(wxWindow* parent, TabbyGame& game)
 	mainSizer->Add(lblDesc, 0, wxALL, 10);
 
 	// Linea di separazione
-	mainSizer->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
+	mainSizer->Add(new wxStaticLine(this), 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
 
 	// Bottoni
 	wxButton* btnAccetta = new wxButton{ this, wxID_ANY, ditta.m_offerta.m_accettaStr, wxDefaultPosition, wxSize(-1, 40) };
@@ -384,7 +384,6 @@ DlgQuiz::DlgQuiz(wxWindow* parent, TabbyGame& game, std::string ditta)
 	// INTRODUZIONE
 	wxStaticText* lblIntro = new wxStaticText{ pnlMain, wxID_ANY, quiz.m_intro, wxDefaultPosition, wxSize(-1, -1), wxALIGN_CENTER };
 	lblIntro->Wrap(700);
-	// Un po' di grassetto per l'intro
 	wxFont fontIntro = lblIntro->GetFont();
 	fontIntro.SetWeight(wxFONTWEIGHT_BOLD);
 	lblIntro->SetFont(fontIntro);
@@ -559,7 +558,6 @@ void DlgElencoDitte::OnDittaSelezionata(wxListEvent& event)
 	std::vector<Ditta>& ditte = m_game.GetDitte();
 	if (dittaIndex >= 0 && dittaIndex < ditte.size())
 	{
-		// Creiamo e mostriamo la finestra INFO (senza offerta lavoro)
 		DlgInfoDitta dlg(this, m_game, ditte[dittaIndex]);
 		dlg.ShowModal();
 	}
@@ -574,7 +572,7 @@ DlgInfoDitta::DlgInfoDitta(wxWindow* parent, TabbyGame& game, const Ditta& ditta
 
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
 
-	// Immagine
+	// 1. Immagine
 	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
 	wxBitmap bmpDitta = CaricaAsset(ditta.m_img);

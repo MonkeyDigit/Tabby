@@ -33,44 +33,44 @@ struct CartaIdentita {
 class TabbyGuy {
 public:
 	TabbyGuy();		// Constructor
-
+	
 	// SETTER PER IL CARICAMENTO DEI DATI
-	void SetFortuna(int punti);
-	void SetRapporti(int punti);
-	void SetFama(int punti);
-	void SetRep(int punti);
-	void SetStudio(int punti);
-	void SetSizze(int sizze);
+	void SetFortuna(const int punti);
+	void SetRapporti(const int punti);
+	void SetFama(const int punti);
+	void SetRep(const int punti);
+	void SetStudio(const int punti);
+	void SetSizze(const int sizze);
 
-	void SetSoldi(long long soldi) { if (soldi > 0) m_soldi = soldi; }
-	void SetPaghetta(int paga) { if (paga > 0) m_paghetta = paga; }
+	void SetSoldi(const long long soldi) { if (soldi > 0) m_soldi = soldi; }
+	void SetPaghetta(const int paga) { if (paga > 0) m_paghetta = paga; }
 	void SetTipa(const Tipa& tipa) { m_tipa = tipa; }
 	void SetScooter(const Scooter& scooter) { m_scooter = scooter; }
 	void SetTelefono(const Telefono& tel) { m_telefono = tel; }
 	void SetIdentita(const CartaIdentita& id) { m_identita = id; }
-	void SetPelle(Pelle p) { m_pelle = p; }
+	void SetPelle(const Pelle p) { m_pelle = p; }
 
 	// MODIFICHE
 	// SOLDI
 	// Restituisce true se l'acquisto avviene con successo
-	bool SpendiSoldi(long long importo);
-	void GuadagnaSoldi(long long importo);
-	void IncPaghetta(int importo);
+	bool SpendiSoldi(const long long importo);
+	void GuadagnaSoldi(const long long importo);
+	void IncPaghetta(const int importo);
 	void ResetSoldiDelta() { m_soldiDelta = 0; }	// è solo un dato informativo...
 	// SCUOLA
 	void CalcolaStudio();
 	// SIGARETTE
-	void IncSizze(int sizze);
-	void DecSizze(int sizze);
+	void IncSizze(const int sizze);
+	void DecSizze(const int sizze);
 	// REPUTAZIONE
-	void IncRep(int punti);
-	void DecRep(int punti);
+	void IncRep(const int punti);
+	void DecRep(const int punti);
 	// FIGOSITA'
-	void IncFama(int punti);
-	void DecFama(int punti);
+	void IncFama(const int punti);
+	void DecFama(const int punti);
 	// RAPPORTO TIPA
-	void IncRapporti(int punti);
-	void DecRapporti(int punti);
+	void IncRapporti(const int punti);
+	void DecRapporti(const int punti);
 	void LasciaTipa();
 	// LAVORO
 	void Licenziati();

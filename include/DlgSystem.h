@@ -42,7 +42,7 @@ private:
 	wxTextCtrl* m_txtNome;
 	wxTextCtrl* m_txtCognome;
 	wxTextCtrl* m_txtLuogoNascita;
-	wxTextCtrl* m_txtProvincia; // <--- NUOVO: Provincia
+	wxTextCtrl* m_txtProvincia;
 	wxTextCtrl* m_txtResidenza;
 	wxTextCtrl* m_txtIndirizzo;
 
@@ -53,7 +53,7 @@ private:
 	void AddStaticRow(wxGridBagSizer* sizer, int& row, wxString label, wxString value);
 	void AddSeparator(wxGridBagSizer* sizer, int& row);
 
-	// NUOVO HELPER: Per mettere Città e Provincia sulla stessa riga
+	// Per mettere Città e Provincia sulla stessa riga
 	void AddCityProvRow(wxGridBagSizer* sizer, int& row, wxString label,
 		wxTextCtrl*& ctrlCitta, wxString valCitta,
 		wxTextCtrl*& ctrlProv, wxString valProv);

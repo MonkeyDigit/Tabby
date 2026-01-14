@@ -22,8 +22,8 @@ private:
 	wxStaticText* m_lblSoldiDelta;
 	wxStaticText* m_lblReputazione;
 	wxGauge* m_barRep;
-	wxStaticText* m_lblFigo;
-	wxGauge* m_barFigo;
+	wxStaticText* m_lblFama;
+	wxGauge* m_barFama;
 	wxStaticText* m_lblStudio;
 	wxGauge* m_barStudio;
 	wxStaticText* m_lblScooter;

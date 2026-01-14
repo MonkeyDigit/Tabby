@@ -45,25 +45,24 @@ public:
             if (m_impegno < 0) m_impegno = 0;
         }
     }
-    void SetImpegno(int impegno) {
+    void SetImpegno(const int impegno) {
         m_impegno = impegno;
         if (m_impegno < 0) m_impegno = 0;
         else if (m_impegno > 100) m_impegno = 100;
     }
-    void SetGiorniLavorati(int gg) {
+    void SetGiorniLavorati(const int gg) {
         m_giorniLavorati = gg;
         if (m_giorniLavorati < 0) m_giorniLavorati = 0;
     }
-    void IncStipendio(long long importo) {
+    void IncStipendio(const long long importo) {
         if (importo > 0) m_stipendio += importo;
     }
-    void SetStipendio(long long soldi) {
+    void SetStipendio(const long long soldi) {
         m_stipendio = soldi;
         if (m_stipendio < 0) m_stipendio = 0;
     }
 
-
-    void SetDitta(std::string nomeDitta) { m_nomeDitta = nomeDitta; };
+    void SetDitta(const std::string nomeDitta) { m_nomeDitta = nomeDitta; };
 
 
     // Gestione tempo

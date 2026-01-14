@@ -531,7 +531,6 @@ DlgNegozio::DlgNegozio(wxWindow* parent, TabbyGame& game, const Negozio& negozio
 	scrollWin->SetSizer(gridSizer);
 
 	// --- CALCOLO AUTOMATICO DIMENSIONI ---
-	// 1. Chiediamo al Sizer: "Quanto spazio ti serve MINIMO per far stare tutto?"
 	wxSize gridSize = gridSizer->GetMinSize();
 	// 2. Aggiungiamo un margine per la barra di scorrimento verticale (circa 20-30px)
 	int larghezzaTotale = gridSize.x + 40;
@@ -1020,7 +1019,6 @@ DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
 		// 1. Placeholder Immagine (Sinistra)
 		wxBitmap bmpAbb = CaricaAsset(abb.GetImageStr());
 		// Ridimensionamento
-		//bmpAbb = wxBitmap(bmpIncontro.ConvertToImage().Rescale(bmpIncontro.GetWidth() * 1.5f, bmpIncontro.GetHeight() * 1.5f, wxIMAGE_QUALITY_BILINEAR));
 		wxStaticBitmap* imgIncontro = new wxStaticBitmap(scrollWin, wxID_ANY, bmpAbb);
 		contentSizer->Add(imgIncontro, 0, wxALIGN_CENTER | wxALL, 5);
 

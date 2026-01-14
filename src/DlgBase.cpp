@@ -93,7 +93,7 @@ void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 
 			// Se qui ApplicaScelta aggiunge un NUOVO evento, questo finisce in fondo alla coda. Il ciclo while continuerà a girare e lo pescherà subito dopo
 			if (msg.m_tipo == TipoMsg::SCELTA)
-				game.ApplicaScelta(msg.m_msgAzione, scelta);
+				game.ApplicaScelta(msg.m_scelta, scelta);
 		}
 		}
 	}
@@ -210,7 +210,6 @@ DlgEvento::DlgEvento(wxWindow* parent, Messaggio& eventoDati)
 		wxButton* btnSi = new wxButton{ this, wxID_YES, "Sì" };
 		wxButton* btnNo = new wxButton{ this, wxID_NO, "No" };
 
-		// Diciamo esplicitamente: "Quando clicchi, chiudi la finestra e ritorna questo ID"
 		btnSi->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
 			EndModal(wxID_YES);
 			});
@@ -340,7 +339,7 @@ DlgIncidente::DlgIncidente(wxWindow* parent, TabbyGame& game, const Messaggio& m
 	this->Layout();
 }
 
-// --- DIALOGO PAGELLA SCOLASTICA ---
+// --- DIALOG PAGELLA ---
 DlgPagella::DlgPagella(wxWindow* parent, TabbyGame& game)
 	: wxDialog{ parent, wxID_ANY, "Pagella Scolastica", wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX },
 	m_game{ game }
@@ -475,7 +474,7 @@ DlgDueDonne::DlgDueDonne(wxWindow* parent, TabbyGame& game)
 	scelta->Wrap(400);
 	mainSizer->Add(scelta, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
-	// Se le tipe si hanno entrambe lo stesso nome...
+	// Se le tipe hanno entrambe lo stesso nome...
 	std::string prefer;
 	if (m_game.GetTabbyGuy().GetTipa().GetNome() == m_game.GetTipaNuova().GetNome())
 		prefer = "Preferisco quella nuova";

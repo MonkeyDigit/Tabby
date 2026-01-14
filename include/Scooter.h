@@ -12,8 +12,8 @@ public:
 	Pezzo()
 		: Acquistabile{}, m_tipo{ TipoPezzo::NESSUNO }, m_power{ 0 }
 	{}
-
-	Pezzo(TipoPezzo tipo, std::string nome, std::string img, long long prezzo, int power)
+	
+	Pezzo(const TipoPezzo tipo, const std::string nome, const std::string img, const long long prezzo, const int power)
 		: Acquistabile{ nome, "", img, prezzo, CategoriaOggetto::SCOOTER_PART}, m_tipo{tipo}, m_power{ power }
 	{}
 
@@ -31,7 +31,7 @@ public:
 		m_marmitta{}, m_carburatore{}, m_cilindrata{}, m_filtro{}
 	{}
 
-	Scooter(std::string nome, std::string img, long long prezzo, int fama, int capSerbatoio, Pezzo marmitta, Pezzo carburatore, Pezzo cilindrata, Pezzo filtro)
+	Scooter(const std::string nome, const std::string img, const long long prezzo, const int fama, const int capSerbatoio, const Pezzo& marmitta, const Pezzo& carburatore, const Pezzo& cilindrata, const Pezzo& filtro)
 		: Acquistabile{nome, "", img, prezzo, CategoriaOggetto::SCOOTER},
 		m_fama{ fama }, m_stato{ 100 }, m_velocita{ 0 }, m_capSerbatoio{ (float)capSerbatoio }, m_benza{ 0 },
 		m_marmitta{ marmitta }, m_carburatore{ carburatore }, m_cilindrata{ cilindrata }, m_filtro{ filtro }, 

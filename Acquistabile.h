@@ -18,10 +18,15 @@ public:
 
     virtual ~Acquistabile() = default;  // Il destructor può essere personalizzato dalla classe ereditante, oppure lasciato default
 
+    virtual void SetNome(std::string nome) { m_nome = nome; }
+    virtual void SetDesc(std::string desc) { m_desc = desc; }
+    virtual void SetImageStr(std::string imageStr) { m_img = imageStr; }
+    virtual void SetPrezzo(long long prezzo) { if(prezzo >= 0) m_prezzo = prezzo; }
+
     // Getter comuni (NON puri, hanno un'implementazione)
     // Li facciamo virtual così se vuoi cambiarli in una classe figlia puoi farlo
     virtual std::string GetNome() const { return m_nome; }
-    virtual std::string GetDescrizione() const { return m_desc; }
+    virtual std::string GetDesc() const { return m_desc; }
     virtual std::string GetImageStr() const { return m_img; }
     virtual long long GetPrezzo() const { return m_prezzo; }
     virtual CategoriaOggetto GetCategoria() const { return m_categoria; }   // Metodo di identificazione

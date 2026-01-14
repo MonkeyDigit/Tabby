@@ -28,8 +28,7 @@ class Scooter : public Acquistabile {
 public:
 	Scooter()
 		: Acquistabile{}, m_fama{ 0 }, m_stato{ 0 }, m_attivita{ Attivita::NESSUNA }, m_capSerbatoio{ 5.0f }, m_benza{ 0 }, m_velocita{ 0 },
-		m_marmitta{ TipoPezzo::MARMITTA, "Marmitta standard", "", 0, 0 }, m_carburatore{ TipoPezzo::CARBURATORE, "Carburatore 12/10", "", 0, 12 },
-		m_cilindrata{ TipoPezzo::PISTONE, "Pistone 50cc","", 0, 50 }, m_filtro{ TipoPezzo::FILTRO, "Filtro Standard", "", 0, 0 }
+		m_marmitta{}, m_carburatore{}, m_cilindrata{}, m_filtro{}
 	{}
 
 	Scooter(std::string nome, std::string img, long long prezzo, int fama, int capSerbatoio, Pezzo marmitta, Pezzo carburatore, Pezzo cilindrata, Pezzo filtro)
@@ -88,7 +87,7 @@ public:
 	int GetFama() const { return m_fama; }
 	int GetVelocita() const { return m_velocita; }
 	float GetBenza() const { return m_benza; }
-	float GetCapienzaSerbatoio() const { return m_capSerbatoio; }
+	float GetCapSerbatoio() const { return m_capSerbatoio; }
 	Attivita GetAttivita() const { return m_attivita; }
 
 	std::string GetAttivitaStr(bool tolower) const
@@ -179,6 +178,23 @@ public:
 
 		// 4. SOMMA BONUS
 		m_velocita = baseSpeed + m_marmitta.GetPower() + m_filtro.GetPower();
+	}
+
+	void SetFama(int fama) {
+		m_fama = fama;
+		if (m_fama < 0) m_fama = 0;
+		else if (m_fama > 100) m_fama = 100;
+	}
+
+	void SetBenza(int benza) {
+		m_benza = benza;
+		if (m_benza < 0) m_benza = 0;
+		else if (m_benza > m_capSerbatoio) m_benza = m_capSerbatoio;
+	}
+
+	void SetCapSerbatoio(int litri) {
+		m_capSerbatoio = litri;
+		if (m_capSerbatoio < 0) m_capSerbatoio = 0;
 	}
 
 	const Pezzo& GetMarmitta() const { return m_marmitta; }

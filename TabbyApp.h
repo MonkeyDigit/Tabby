@@ -12,17 +12,23 @@ public:
 	// override è semplicemente un meccanismo per controllare di aver ridefinito la funzione giusta, in caso contrario il compilatore si incazza
 	// questa funzione viene chiamata quando viene creata la finestra
 	virtual bool OnInit() override;
+	virtual int OnExit() override;
+
+private:
+	TabbyGame m_game;
+	void SalvaDatiRegistro();
+	bool CaricaDatiRegistro();
 };
 
 // ---------- FINESTRA PRINCIPALE (Frame) -----------
 class TabbyFrame : public wxFrame {
 public:
 	// Costruttore
-	TabbyFrame();
+	TabbyFrame(TabbyGame& game);
 
 private:
 	// Classe di gestione gioco
-	TabbyGame m_game;
+	TabbyGame& m_game;
 	wxStaticBitmap* m_fotoTabbozzo;
 
 	// Label dei dati che variano

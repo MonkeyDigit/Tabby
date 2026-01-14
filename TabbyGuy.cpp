@@ -1,7 +1,10 @@
 #include "TabbyGuy.h"
 
 TabbyGuy::TabbyGuy()
-	: m_fortuna{}, m_soldi{}, m_rapporti{}, m_fama{}, m_rep{}, m_studio{}, m_paghetta{}, m_pelle{ Pelle::ABBR_NO }, m_sizze{}, m_soldiDelta{}
+	: m_soldi{ 0 }, m_soldiDelta{ 0 }, m_fama{ 0 }, m_paghetta{ 0 }, m_rep{ 0 }, m_studio{ 0 },
+	m_rapporti{ 0 }, m_sizze{ 0 }, m_pelle{ Pelle::ABBR_NO }, m_fortuna{ 0 },
+	m_identita{}, m_giubbotto{}, m_pantaloni{}, m_scarpe{}, m_carriera{}, m_scuola{}, m_scooter{},
+	m_tipa{}, m_telefono{}
 {}
 
 void TabbyGuy::SetRapporti(int rapporti)
@@ -204,4 +207,21 @@ void TabbyGuy::SetRep(int punti)
 		m_rep = 100;
 	else if (m_rep < 0)
 		m_rep = 0;
+}
+
+void TabbyGuy::SetStudio(int punti)
+{
+	m_studio = punti;
+	if (m_studio > 100)
+		m_studio = 100;
+	else if (m_studio < 0)
+		m_studio = 0;
+}
+void TabbyGuy::SetSizze(int sizze)
+{
+	m_sizze = sizze;
+	if (m_sizze > 100)
+		m_sizze = 100;
+	else if (m_sizze < 0)
+		m_sizze = 0;
 }

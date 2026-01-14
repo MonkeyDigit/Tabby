@@ -39,6 +39,8 @@ public:
 	void SetRapporti(int punti);
 	void SetFama(int punti);
 	void SetRep(int punti);
+	void SetStudio(int punti);
+	void SetSizze(int sizze);
 
 	void SetSoldi(long long soldi) { if (soldi > 0) m_soldi = soldi; }
 	void SetPaghetta(int paga) { if (paga > 0) m_paghetta = paga; }
@@ -46,6 +48,7 @@ public:
 	void SetScooter(const Scooter& scooter) { m_scooter = scooter; }
 	void SetTelefono(const Telefono& tel) { m_telefono = tel; }
 	void SetIdentita(const CartaIdentita& id) { m_identita = id; }
+	void SetPelle(Pelle p) { m_pelle = p; }
 
 	// MODIFICHE
 	// SOLDI
@@ -112,11 +115,11 @@ public:
 private:
 	long long m_soldi;			// intero a 64 bit (max 9 miliardi DI miliardi): il tabbozzo è rikko...
 	long long m_soldiDelta;		// Guadagno o perdita
-	int m_paghetta;
-	int m_rapporti;
-	int m_rep;
 	int m_fama;
+	int m_paghetta;
+	int m_rep;
 	int m_studio;
+	int m_rapporti;
 	int m_sizze;				// sigarette
 	Pelle m_pelle;				// Abbronzatura
 	int m_fortuna;

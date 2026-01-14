@@ -1797,7 +1797,7 @@ PnlProdotto::PnlProdotto(wxWindow* parent, DlgNegozio* mainDlg, TabbyGame& game,
 	// Aggiungi immagine al sizer
 	sizerBody->Add(imgCtrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, 10);
 	// Descrizione
-	wxStaticText* lblDesc = new wxStaticText{ this, wxID_ANY, m_prodotto.GetDescrizione() };
+	wxStaticText* lblDesc = new wxStaticText{ this, wxID_ANY, m_prodotto.GetDesc() };
 	wxFont fDesc = lblDesc->GetFont();
 	fDesc.SetPointSize(10);
 	lblDesc->SetFont(fDesc);
@@ -2245,7 +2245,7 @@ DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
 		wxBoxSizer* contentSizer = new wxBoxSizer{ wxHORIZONTAL };
 
 		// 1. Placeholder Immagine (Sinistra)
-		wxBitmap bmpAbb = CaricaAsset(abb.GetImgStr());
+		wxBitmap bmpAbb = CaricaAsset(abb.GetImageStr());
 		// Ridimensionamento
 		//bmpAbb = wxBitmap(bmpIncontro.ConvertToImage().Rescale(bmpIncontro.GetWidth() * 1.5f, bmpIncontro.GetHeight() * 1.5f, wxIMAGE_QUALITY_BILINEAR));
 		wxStaticBitmap* imgIncontro = new wxStaticBitmap(scrollWin, wxID_ANY, bmpAbb);

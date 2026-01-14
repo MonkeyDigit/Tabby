@@ -4,8 +4,8 @@
 
 class Materia {
 public:
-	Materia(std::string nome)
-		: m_nome{ nome }, m_voto{ 0 }
+	Materia(std::string nome, int voto)
+		: m_nome{ nome }, m_voto{ voto }
 	{}
 
 	std::string GetNome() const { return m_nome; };
@@ -41,17 +41,7 @@ private:
 
 struct Scuola {
 	Scuola()
-		: m_materie{
-		Materia("Agraria"),
-		Materia("Fisica"),
-		Materia("Attività culturali"),
-		Materia("Attività matematiche"),
-		Materia("Scienze industriali"),
-		Materia("Elettrochimica"),
-		Materia("Petrolchimica"),
-		Materia("Filosofia aziendale"),
-		Materia("Metallurgia")
-		}
+		: m_materie{}
 	{}
 
 	void Reset(){

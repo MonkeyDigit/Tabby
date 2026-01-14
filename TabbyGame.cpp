@@ -9,6 +9,53 @@ Messaggio::Messaggio(TipoMsg tipo, std::string titolo, std::string testo, Scelta
     : m_tipo{ tipo }, m_msgAzione{ id }, m_titolo{ titolo }, m_testo{ testo }
 {}
 
+// La checksum è un sistema anti-cheat. al salvataggio della partita, viene fatto un calcolo segreto con dei numeri magici, e il risultato viene messo in SysData_k7
+// Se qualche coglioncello, pensando di essere furbo, modifica il registro dei soldi, verrà sgamato grazie al fatto che non è stata aggiornata la checksum, e se avesse
+// la brillante idea di cercare di indovinare il checksum... beh, buona fortuna :)
+long long TabbyGame::CalcolaChecksum(long long soldi, int rep, int fama, int studio, int rapporti) const
+{
+    // Usiamo una variabile di accumulo a 64 bit
+    long long calc = 0;
+
+    calc += soldi * 3;
+
+    // Le statistiche sono int.
+    // Il C++ sommerà automaticamente il risultato (int) alla variabile calc (long long).
+    // Non servono cast.
+    calc += (long long)rep * 17;
+    calc += (long long)fama * 13;
+    calc += (long long)studio * 7;
+    calc += (long long)rapporti * 23;
+
+    // Aggiungiamo un numero fisso (Salt) per rendere il checksum meno ovvio
+    calc += 1234567;
+
+    return calc;
+}
+
+void TabbyGame::SetCoolDownPestaggio(int cooldown)
+{
+    m_coolDownPestaggio = cooldown;
+    if (m_coolDownPestaggio < 0) m_coolDownPestaggio = 0;
+}
+void TabbyGame::SetCoolDownPelle(int cooldown)
+{
+    m_coolDownPelle = cooldown;
+    if (m_coolDownPelle < 0) m_coolDownPelle = 0;
+}
+
+void TabbyGame::SetPaloCount(int count)
+{
+    m_paloCount = count;
+    if (m_paloCount < 0) m_paloCount = 0;
+}
+
+void TabbyGame::SetAttesa(int attesa)
+{
+    m_attesa = attesa;
+    if (m_attesa < 0) m_attesa = 0;
+}
+
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
 	: m_tabbyGuy{}, m_date{1991, 9, 16}, 
     m_valutaCorrente{Valuta::LIRE}, 
@@ -17,7 +64,6 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     m_attesa{ATTESA_MAX},
     m_soundActive{ true }
 {
-
     CaricaStringhe();
     CaricaAbbonamenti();
     CaricaDiscoteche();
@@ -32,20 +78,24 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     // Inizializzo il motore (m_rng) con quel seme
     m_rng.seed(rd());
     std::string indirizzo = m_vieStr[GenRandomInt(0, m_vieStr.size() - 1)] + " n. " + std::to_string(GenRandomInt(1, 150));
-    CartaIdentita id{ "Tizio", "Caio", Chrono::Date(1973, 8, 10), "Atto n. 6333 P. 1 S. A.", "Cusano Milanino", "MI", "Italiana", "Milano", indirizzo, "Celibe", "Sfruttato"};
-    m_tabbyGuy.SetIdentita(id);
+    CartaIdentita id{ "Tizio", "Caio", Chrono::Date(1973, 8, 10), "Atto n. 6333 P. 1 S. A.", "Cusano Milanino", "MI", "Italiana", "Milano", indirizzo, "Celibe", "Sfruttato" };
     m_tabbyGuy.SetSoldi(10);
     m_tabbyGuy.SetPaghetta(20);
-    m_tabbyGuy.SetFama(0);
-    m_tabbyGuy.SetRep(0);
-    m_tabbyGuy.SetTelefono(Telefono{});
-    m_tabbyGuy.SetTipa(Tipa{});
-    m_tabbyGuy.SetScooter(Scooter{});
+    m_tabbyGuy.SetIdentita(id);
     m_tabbyGuy.SetGiubbotto(Vestito(TipoVestito::GIUBBOTTO, "Giubbotto Fatiscenza Nero", "Giubbotto iniziale", "fatiscenza_black.png", 0, 0));
-    m_tabbyGuy.SetPantaloni(Vestito(TipoVestito::PANTALONI,"Pantaloni a scacchiera bianchi", "Pantaloni iniziali", "scacchiera_white.png", 0, 0));
+    m_tabbyGuy.SetPantaloni(Vestito(TipoVestito::PANTALONI, "Pantaloni a scacchiera bianchi", "Pantaloni iniziali", "scacchiera_white.png", 0, 0));
     m_tabbyGuy.SetScarpe(Vestito(TipoVestito::SCARPE, "Scarpe sneakers", "Scarpe iniziali", "sneakers.png", 0, 0));
-    // TODO: SETTA ALTRE ROBE
-    // TODO: TELEFONO INIZIALE
+    std::vector<Materia>& materie = m_tabbyGuy.GetScuola().m_materie;
+    materie.push_back(Materia{"Agraria", 0 });
+    materie.push_back(Materia{"Fisica", 0});
+    materie.push_back(Materia{"Attività culturali", 0});
+    materie.push_back(Materia{"Attività matematiche", 0});
+    materie.push_back(Materia{"Scienze industriali", 0});
+    materie.push_back(Materia{"Elettrochimica", 0});
+    materie.push_back(Materia{"Petrolchimica", 0});
+    materie.push_back(Materia{"Filosofia aziendale", 0});
+    materie.push_back(Materia{"Metallurgia", 0});
+    // I restanti dati sono inizializzati di default dal costruttore di TabbyGuy
 
     WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
 }
@@ -125,7 +175,7 @@ void TabbyGame::AvanzaCalendario()
             if (m_tabbyGuy.GetCarriera().GetGiorniLavorati() > 29)
                 stipendietto = m_tabbyGuy.GetCarriera().GetStipendio();
             else
-                stipendietto = m_tabbyGuy.GetCarriera().GetStipendio() * (long)m_tabbyGuy.GetCarriera().GetGiorniLavorati() / 30;
+                stipendietto = m_tabbyGuy.GetCarriera().GetStipendio() * (long long)m_tabbyGuy.GetCarriera().GetGiorniLavorati() / 30;
 
             m_tabbyGuy.GetCarriera().ResetGiorni();
 
@@ -426,7 +476,7 @@ void TabbyGame::GestioneEventiCasuali()
             }
             else
             {
-                msg = Messaggio{ TipoMsg::METALLARO, "Vieni pestato", sostituisci(m_frasiMetallari[rndFrase],"{LUOGO}", m_vieStr[rndVia]) };
+                msg = Messaggio{ TipoMsg::METALLARO, "Rissa con un metallaro", sostituisci(m_frasiMetallari[rndFrase],"{LUOGO}", m_vieStr[rndVia]) };
                 // DEBUG LOG
                 WriteLog("GestioneEventiCasuali: Metallaro n. " + std::to_string(rndFrase));
             }
@@ -1032,7 +1082,7 @@ void TabbyGame::AzioneProvaci(const Tipa& tipa)
     else
     {
         // Fai cagare...
-        m_paloCounter++;
+        m_paloCount++;
         m_tabbyGuy.DecRep(2);
         m_tabbyGuy.DecFama(2);
 
@@ -1040,9 +1090,9 @@ void TabbyGame::AzioneProvaci(const Tipa& tipa)
         Messaggio msg{ TipoMsg::ERRORE, "Due di picche", m_frasiPalo[rnd] };
         PushMessaggio(msg);
 
-        if (m_paloCounter % 5 == 0)  // Ogni 5 pali, appare un messaggio di consolazione
+        if (m_paloCount % 5 == 0)  // Ogni 5 pali, appare un messaggio di consolazione
         {
-            Messaggio msgPalo{ TipoMsg::ERRORE, "La vita è bella...", "Fino ad ora hai preso " + std::to_string(m_paloCounter) + " pali ! \nNon ti preoccupare, capita a tutti di prendere qualche due di picche nella vita..." };
+            Messaggio msgPalo{ TipoMsg::ERRORE, "La vita è bella...", "Fino ad ora hai preso " + std::to_string(m_paloCount) + " pali ! \nNon ti preoccupare, capita a tutti di prendere qualche due di picche nella vita..." };
             PushMessaggio(msgPalo);
         }
         NuovoGiorno();
@@ -1397,7 +1447,7 @@ void TabbyGame::CaricaNegozi() {
                     std::string img = tokens[3];
                     long long prezzo = parseLong(tokens[4]);
                     int fama = parseInt(tokens[5]);
-                    int benza = parseInt(tokens[6]); // Capacità serbatoio o benza iniziale
+                    int serbatoio = parseInt(tokens[6]); // Capacità serbatoio o benza iniziale
 
                     // 2. Costruzione Componenti
                     Pezzo marmitta(TipoPezzo::MARMITTA, tokens[7], tokens[8], parseLong(tokens[9]), parseInt(tokens[10]));
@@ -1406,7 +1456,7 @@ void TabbyGame::CaricaNegozi() {
                     Pezzo filtro(TipoPezzo::FILTRO, tokens[19], tokens[20], parseLong(tokens[21]), parseInt(tokens[22]));
 
                     // 3. Creazione Scooter con i pezzi
-                    nuovoItem = new Scooter(nome, img, prezzo, fama, benza, marmitta, carburatore, pistone, filtro);
+                    nuovoItem = new Scooter(nome, img, prezzo, fama, serbatoio, marmitta, carburatore, pistone, filtro);
                 }
             }
             else if (tipo == "PEZZO" && tokens.size() >= 7)

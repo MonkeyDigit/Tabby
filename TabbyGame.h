@@ -170,6 +170,11 @@ public:
     void PlaySound(int id);
     void SetSoundActive(bool active) { m_soundActive = active; }
 
+    int GetCoolDownPestaggio() const { return m_coolDownPestaggio; }
+    int GetCoolDownPelle() const { return m_coolDownPelle; }
+    int GetPaloCount() const { return m_paloCount; }
+    int GetAttesa() const { return m_attesa; }
+    bool GetSoundActive() const { return m_soundActive; }
     const Tipa& GetTipaNuova() const { return m_tipaNuova; }
     const Negozio& GetTelefonia() const { return m_telefonia; }
     const Negozio& GetConcessionario() const { return m_concessionario; }
@@ -182,6 +187,17 @@ public:
     std::vector<QuizScheda>& GetSchedeQuiz() { return m_schede; }
     std::vector<FestaFissa>& GetFeste() { return m_feste; }
 
+    void ResetPartita() { *this = TabbyGame{}; }
+    // Checksum del salvataggio caricato
+    long long CalcolaChecksum(long long soldi, int rep, int fama, int studio, int rapporti) const;
+
+    void SetValutaCorrente(Valuta valuta) { m_valutaCorrente = valuta; };
+    void SetTipoGiorno(TipoGiorno tipo) { m_tipoGiorno = tipo; };
+    void SetCoolDownPestaggio(int cooldown);
+    void SetCoolDownPelle(int cooldown);
+    void SetPaloCount(int count);
+    void SetAttesa(int attesa);
+
 private:
 	TabbyGuy m_tabbyGuy;
 	Chrono::Date m_date;
@@ -189,7 +205,7 @@ private:
 	Valuta m_valutaCorrente;
 	int m_coolDownPestaggio;
 	int m_coolDownPelle;
-    int m_paloCounter;
+    int m_paloCount;
     int m_attesa;
 	std::vector<Messaggio> m_codaMsg;
 	TipoGiorno m_tipoGiorno;
@@ -211,7 +227,6 @@ private:
     Negozio m_telefonia;
     Negozio m_concessionario;
     Negozio m_meccanico;
-    // TODO: CAMBIA FIGOSITA'
     std::vector<Negozio> m_negozi;
     std::vector<Disco> m_discoteche;
     std::vector<Ditta> m_ditte;
@@ -258,8 +273,3 @@ private:
 	// Prende il valore "grezzo" (base Euro) e lo converte in quello che l'utente deve vedere (Lire o Euro)
 	long long ConvertiValuta(long long valoreBase) const;
 };
-
-// TODO: IMPOSTA LA FAMA DEI CELL
-
-// TODO: CAMBIA FIGOSITA' VESTITI
-// TODO: VARIAZIONI FOOTSMOCKER?

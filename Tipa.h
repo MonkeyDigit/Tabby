@@ -12,6 +12,17 @@ public:
 		: m_nome{ nome }
 	{
 		SetFama(fama);
+	}
+
+	void SetNome(std::string nome) { m_nome = nome; }
+	std::string GetNome() const { return m_nome; }
+	std::string GetDesc() const { return m_desc; }
+	int GetFama() const { return m_fama; }
+
+	void SetFama(int punti) {
+		m_fama = punti;
+		if (m_fama < 0) m_fama = 0;
+		if (m_fama > 100) m_fama = 100;
 
 		if (m_fama > 97)
 			m_desc = "Ultramegafiga";
@@ -31,16 +42,6 @@ public:
 			m_desc = "Può piacere..";
 		else
 			m_desc = "E' un tipo...";
-	}
-
-	std::string GetNome() const { return m_nome; }
-	std::string GetDesc() const { return m_desc; }
-	int GetFama() const { return m_fama; }
-
-	void SetFama(int punti) {
-		m_fama = punti;
-		if (m_fama < 0) m_fama = 0;
-		if (m_fama > 100) m_fama = 100;
 	}
 
 	void Azzera()

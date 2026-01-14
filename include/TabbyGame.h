@@ -93,6 +93,8 @@ class TabbyGame
 public:
 	TabbyGame();
     
+    void ResetPartita() { *this = TabbyGame{}; }
+    void SetDifficolta(const int livello);
     void SetValutaCorrente(const Valuta valuta) { m_valutaCorrente = valuta; };
     void SetTipoGiorno(const TipoGiorno tipo) { m_tipoGiorno = tipo; };
     void SetCoolDownPestaggio(const int cooldown);
@@ -165,17 +167,25 @@ public:
 	// GENERATORE RANDOM
 	int GenRandomInt(const int min, const int max);
     // SCRITTURA LOG DI DEBUG
-    void WriteLog(const std::string& messaggio);
+    void WriteLog(const std::string& messaggio) const;
     // SOUND
     void PlaySound(const int id);
     void SetSoundActive(const bool active) { m_soundActive = active; }
+    // LOG
+    void SetLogActive(const bool active) { m_logActive = active; }
+    void SetStartupActive(const bool active) { m_startupActive = active; }
+    void SetTimerActive(const bool active) { m_timerActive = active; }
 
 	// GETTER FUNCTIONS
+    int GetDifficolta() const { return m_difficolta; }
     int GetCoolDownPestaggio() const { return m_coolDownPestaggio; }
     int GetCoolDownPelle() const { return m_coolDownPelle; }
     int GetPaloCount() const { return m_paloCount; }
     int GetAttesa() const { return m_attesa; }
     bool GetSoundActive() const { return m_soundActive; }
+    bool GetLogActive() const { return m_logActive; }
+    bool GetStartupActive() const { return m_startupActive; }
+    bool GetTimerActive() const { return m_timerActive; }
 	TabbyGuy& GetTabbyGuy() { return m_tabbyGuy; };
 	Chrono::Date& GetDate() { return m_date; };
 	Chrono::Date& GetScadenzaPal() { return m_scadenzaPal; };
@@ -193,7 +203,6 @@ public:
     std::vector<QuizScheda>& GetSchedeQuiz() { return m_schede; }
     std::vector<FestaFissa>& GetFeste() { return m_feste; }
 
-    void ResetPartita() { *this = TabbyGame{}; }
     // Checksum del salvataggio caricato
     long long CalcolaChecksum(long long soldi, int rep, int fama, int studio, int rapporti) const;
 
@@ -216,6 +225,10 @@ private:
     Scooter m_scooterRnd;
     int m_materiaIndex;
     bool m_soundActive;
+    bool m_logActive;
+    bool m_startupActive;
+    bool m_timerActive;
+    int m_difficolta;
 	// IL MOTORE DI NUMERI CASUALI
 	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile
 	std::mt19937 m_rng;

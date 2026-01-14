@@ -64,10 +64,10 @@ public:
 	DlgUscita(wxWindow* parent);
 	// Ritorna true se l'utente ha scelto di spegnere il PC (uscire dal gioco)
 	// Ritorna false se ha annullato
-	bool VuoleUscire() const { return m_sceltaUscita; }
+	bool SpegnimentoRichiesto() const { return m_spegni; }
 
 private:
-	bool m_sceltaUscita; // true = esce, false = annulla
+	bool m_spegni;
 	wxRadioButton* m_radioChiudi;
 	wxRadioButton* m_radioSpegni;
 

@@ -28,8 +28,7 @@ DlgConfig::DlgConfig(wxWindow* parent, TabbyGame& game)
 		long style = (i == 0) ? wxRB_GROUP : 0;
 		wxRadioButton* rad = new wxRadioButton(grpSkill->GetStaticBox(), wxID_ANY, livelli[i], wxDefaultPosition, wxDefaultSize, style);
 
-		// TODO: Qui dovresti leggere dal gioco il livello attuale
-		if (i == 0) rad->SetValue(true);
+		if (i == m_game.GetDifficolta()) rad->SetValue(true);
 
 		m_radiosSkill.push_back(rad);
 		grpSkill->Add(rad, 0, wxLEFT | wxTOP, 5);
@@ -47,49 +46,47 @@ DlgConfig::DlgConfig(wxWindow* parent, TabbyGame& game)
 
 	// -- Colonna Sinistra (Checkbox) --
 	m_chkTimer = new wxCheckBox(grpMisc->GetStaticBox(), wxID_ANY, "Enable Timer");
-	m_chkTimer->SetValue(true);
+	m_chkTimer->SetValue(m_game.GetTimerActive());
 
 	m_chkEuro = new wxCheckBox(grpMisc->GetStaticBox(), wxID_ANY, "Enable Euro");
-	m_chkEuro->SetValue(true);
+	m_chkEuro->SetValue((m_game.GetValutaCorrente() == Valuta::EURO));
 
 	m_chkLogo = new wxCheckBox(grpMisc->GetStaticBox(), wxID_ANY, "Enable Startup Logo");
-	m_chkLogo->SetValue(true);
+	m_chkLogo->SetValue(m_game.GetStartupActive());
 
 	m_chkLog = new wxCheckBox(grpMisc->GetStaticBox(), wxID_ANY, "Enable Log File");
-	m_chkLog->SetValue(false);
+	m_chkLog->SetValue(m_game.GetLogActive());
 
 	m_chkSuoni = new wxCheckBox(grpMisc->GetStaticBox(), wxID_ANY, "Enable Sounds");
-	m_chkSuoni->SetValue(true);
+	m_chkSuoni->SetValue(m_game.GetSoundActive());
 
 	// Aggiunta alla griglia (Colonna 0)
 	gbSizer->Add(m_chkTimer, wxGBPosition(0, 0), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxALL, 2);
 	gbSizer->Add(m_chkEuro, wxGBPosition(1, 0), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxALL, 2);
-	gbSizer->Add(m_chkLogo, wxGBPosition(3, 0), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxALL, 2);
-	gbSizer->Add(m_chkLog, wxGBPosition(4, 0), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxALL, 2);
-	gbSizer->Add(m_chkSuoni, wxGBPosition(5, 0), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxALL, 2);
+	gbSizer->Add(m_chkLogo, wxGBPosition(2, 0), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxALL, 2);
+	gbSizer->Add(m_chkLog, wxGBPosition(3, 0), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxALL, 2);
+	gbSizer->Add(m_chkSuoni, wxGBPosition(4, 0), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxALL, 2);
 
 	// -- Colonna Destra (Icone e Bottone OK) --
 
 	// Riga dell'Euro: Icone bandiera e moto
 	wxBoxSizer* iconSizer = new wxBoxSizer{ wxHORIZONTAL };
-	// Placeholder per le icone (non avendo i png originali)
-	wxStaticText* iconEU = new wxStaticText{ grpMisc->GetStaticBox(), wxID_ANY, "[EU]" };
-	iconEU->SetForegroundColour(*wxBLUE);
-	wxStaticText* iconMoto = new wxStaticText{ grpMisc->GetStaticBox(), wxID_ANY, "[MOTO]" };
-	iconMoto->SetForegroundColour(*wxRED);
+	wxBitmap bmpEU = CaricaAsset("ZEURO.png");
+	wxBitmap bmpScooter = CaricaAsset("ZSCOOTER.png");
+	wxStaticBitmap* imgEU = new wxStaticBitmap(grpMisc->GetStaticBox(), wxID_ANY, bmpEU);
+	wxStaticBitmap* imgScooter = new wxStaticBitmap(grpMisc->GetStaticBox(), wxID_ANY, bmpScooter);
 
-	iconSizer->Add(iconEU, 0, wxRIGHT, 5);
-	iconSizer->Add(iconMoto, 0, wxLEFT, 5);
+	iconSizer->Add(imgEU, 0, wxRIGHT, 5);
+	iconSizer->Add(imgScooter, 0, wxLEFT, 5);
 
-	gbSizer->Add(iconSizer, wxGBPosition(1, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
+	gbSizer->Add(iconSizer, wxGBPosition(1, 1), wxDefaultSpan, wxALL, 10);
 
 	// Bottone OK Grande con icona check
 	wxButton* btnOk = new wxButton{ grpMisc->GetStaticBox(), wxID_OK, "OK", wxDefaultPosition, wxSize(80, 40) };
-	// TODO: Usiamo wxART_TICK_MARK se vogliamo l'icona spunta, ma richiede wxBitmapButton. Per ora testo.
 
-	// Il bottone OK nello screen occupa le ultime righe a destra
 	gbSizer->Add(btnOk, wxGBPosition(4, 1), wxGBSpan(2, 1), wxALIGN_BOTTOM | wxALIGN_RIGHT | wxALL, 5);
 
+	gbSizer->AddGrowableCol(1);
 	grpMisc->Add(gbSizer, 1, wxEXPAND | wxALL, 5);
 	mainSizer->Add(grpMisc, 0, wxEXPAND | wxALL, 5);
 
@@ -113,23 +110,24 @@ DlgConfig::DlgConfig(wxWindow* parent, TabbyGame& game)
 
 void DlgConfig::OnOk(wxCommandEvent& event)
 {
-	// LOGICA DI SALVATAGGIO
-	// Qui applichiamo le modifiche a TabbyGame.
-	// Esempio:
-	// m_game.SetEuroEnabled(m_chkEuro->GetValue());
-	// m_game.SetSoundEnabled(m_chkSuoni->GetValue());
+	if (m_chkEuro->GetValue())
+		m_game.SetValutaCorrente(Valuta::EURO);
+	else
+		m_game.SetValutaCorrente(Valuta::LIRE);
+
+	m_game.SetSoundActive(m_chkSuoni->GetValue());
+	m_game.SetLogActive(m_chkLog->GetValue());
+	m_game.SetStartupActive(m_chkLogo->GetValue());
+	m_game.SetTimerActive(m_chkTimer->GetValue());
 
 	// Trova il livello di difficoltà selezionato
 	int skillLevel = 0;
-	for (size_t i = 0; i < m_radiosSkill.size(); i++) {
-		if (m_radiosSkill[i]->GetValue()) {
-			skillLevel = i;
-			break;
-		}
-	}
-	// m_game.SetDifficulty(skillLevel);
+	for (int i = 0; i < m_radiosSkill.size() && !m_radiosSkill[i]->GetValue(); i++)
+		skillLevel++;
+	
+	m_game.SetDifficolta(skillLevel);
 
-	EndModal(wxID_OK);
+	this->EndModal(wxID_OK);
 }
 
 // DIALOG ABOUT
@@ -144,63 +142,63 @@ DlgAbout::DlgAbout(wxWindow* parent)
 	// --- SEZIONE SUPERIORE (Info Generali + Bottone OK) ---
 
 	wxPanel* pnlMainFrame = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
-	wxBoxSizer* frameSizer = new wxBoxSizer{ wxVERTICAL };
+	wxBoxSizer* sizerFrame = new wxBoxSizer{ wxVERTICAL };
 
 	// 1. HEADER (Icone, Testo, Bottone OK laterale)
-	wxBoxSizer* headerSizer = new wxBoxSizer{ wxHORIZONTAL };
+	wxBoxSizer* sizerHeader = new wxBoxSizer{ wxHORIZONTAL };
 
 	// Colonna Icone (Sinistra)
-	wxBoxSizer* iconsSizer = new wxBoxSizer{ wxVERTICAL };
-	// Icona Moto
-	iconsSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "[MOTO]" }, 0, wxBOTTOM, 2);
-	// Icona UE
-	iconsSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "[EU]" }, 0, wxTOP, 2);
+	wxBoxSizer* sizerIcons = new wxBoxSizer{ wxVERTICAL };
+	// Icona scooter
+	wxBitmap bmpScooter = CaricaAsset("ZSCOOTER.png");
+	wxStaticBitmap* imgScooter = new wxStaticBitmap(pnlMainFrame, wxID_ANY, bmpScooter);
+	sizerIcons->Add(imgScooter, 0, wxALIGN_CENTER | wxALL, 5);
+	// Icona EU
+	wxBitmap bmpEU = CaricaAsset("ZEURO.png");
+	wxStaticBitmap* imgEU = new wxStaticBitmap(pnlMainFrame, wxID_ANY, bmpEU);
+	sizerIcons->Add(imgEU, 0, wxALIGN_CENTER | wxALL, 5);
 
-	headerSizer->Add(iconsSizer, 0, wxALL, 10);
+	sizerHeader->Add(sizerIcons, 0, wxALL, 10);
 
 	// Colonna Testo (Centro)
-	wxBoxSizer* textSizer = new wxBoxSizer{ wxVERTICAL };
-	textSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Tabboz simulator" }, 0, wxBOTTOM, 2);
-	textSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Version 0.9beta, Mar 11 2000" }, 0, wxBOTTOM, 2);
-	textSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Copyright (C) 1997-2000 by" }, 0, wxBOTTOM, 0);
-	textSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Obscured Truckware" }, 0, wxBOTTOM, 0);
+	wxBoxSizer* sizerText = new wxBoxSizer{ wxVERTICAL };
+	sizerText->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Tabby simulator" }, 0, wxBOTTOM, 2);
+	sizerText->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Version 1.0 Gen 2026" }, 0, wxBOTTOM, 2);
+	sizerText->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Copyright (C) 2025-2026 by" }, 0, wxBOTTOM, 0);
+	sizerText->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "MonkeyDigit Software" }, 0, wxBOTTOM, 0);
 
-	headerSizer->Add(textSizer, 1, wxTOP | wxBOTTOM | wxLEFT, 10);
+	sizerHeader->Add(sizerText, 1, wxTOP | wxBOTTOM | wxLEFT, 10);
 
 	// Colonna Bottone OK (Destra) con icona check
-	wxButton* btnOk = new wxButton{ pnlMainFrame, wxID_OK, "OK", wxDefaultPosition, wxSize(80, 40) };
+	wxButton* btnOk = new wxButton{ pnlMainFrame, wxID_OK, "OK", wxDefaultPosition, wxSize(70, 50) };
 	btnOk->Bind(wxEVT_BUTTON, &DlgAbout::OnOk, this);
 
-	headerSizer->Add(btnOk, 0, wxALL | wxALIGN_TOP, 10);
+	sizerHeader->Add(btnOk, 0, wxALIGN_CENTER | wxALL, 10);
 
-	frameSizer->Add(headerSizer, 0, wxEXPAND);
+	sizerFrame->Add(sizerHeader, 0, wxEXPAND);
 
-	frameSizer->Add(new wxStaticLine(pnlMainFrame), 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
+	sizerFrame->Add(new wxStaticLine(pnlMainFrame), 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 
 	// 2. IMMAGINE LOGO (32bit Tabboz Simulator)
-	wxPanel* pnlLogo = new wxPanel(pnlMainFrame, wxID_ANY, wxDefaultPosition, wxSize(300, 100), wxBORDER_NONE);
-	// pnlLogo->SetBackgroundBitmap(...); 
-	wxBoxSizer* logoSizer = new wxBoxSizer{ wxVERTICAL };
-	logoSizer->Add(new wxStaticText{ pnlLogo, wxID_ANY, "[LOGO TABBOZ 32bit]" }, 1, wxALIGN_CENTER);
-	pnlLogo->SetSizer(logoSizer);
-
-	frameSizer->Add(pnlLogo, 0, wxALIGN_CENTER | wxALL, 10);
+	wxBoxSizer* sizerLogo = new wxBoxSizer{ wxVERTICAL };
+	wxBitmap bmpAb = CaricaAsset("about.png");
+	// Ridimensionamento
+	bmpAb = wxBitmap(bmpAb.ConvertToImage().Rescale(bmpAb.GetWidth() * 1.5f, bmpAb.GetHeight() * 1.5f, wxIMAGE_QUALITY_BILINEAR));
+	wxStaticBitmap* imgAb = new wxStaticBitmap(pnlMainFrame, wxID_ANY, bmpAb);
+	sizerLogo->Add(imgAb, 0, wxALIGN_CENTER | wxALL, 5);
+	sizerFrame->Add(sizerLogo, 0, wxALIGN_CENTER | wxALL, 10);
 
 	// 3. CREDITS
-	wxFlexGridSizer* creditGrid = new wxFlexGridSizer(2, 5, 20); // 2 cols, gap
-	creditGrid->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Created by:" }, 0, wxALIGN_RIGHT);
+	wxStaticText* lblCredit = new wxStaticText{ pnlMainFrame, wxID_ANY, "Original Tabboz Simulator (1997-2000) created by:" };
+	lblCredit->Wrap(300);
 
-	wxBoxSizer* authorsSizer = new wxBoxSizer{ wxVERTICAL };
-	authorsSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Andrea Bonomi" });
-	authorsSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Emanuele Caccialanza" });
-	authorsSizer->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Daniele Gazzarri" });
-
-	creditGrid->Add(authorsSizer, 0, wxALIGN_LEFT);
-
-	frameSizer->Add(creditGrid, 0, wxALIGN_CENTER | wxBOTTOM, 10);
+	sizerFrame->Add(lblCredit, 0, wxALIGN_CENTER | wxALL, 5);
+	sizerFrame->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Andrea Bonomi" }, 0, wxALIGN_CENTER);
+	sizerFrame->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Emanuele Caccialanza" }, 0, wxALIGN_CENTER);
+	sizerFrame->Add(new wxStaticText{ pnlMainFrame, wxID_ANY, "Daniele Gazzarri" }, 0, wxALIGN_CENTER);
 
 	// LINEA SEPARAZIONE
-	frameSizer->Add(new wxStaticLine(pnlMainFrame), 0, wxEXPAND | wxLEFT | wxRIGHT, 2);
+	sizerFrame->Add(new wxStaticLine(pnlMainFrame), 0, wxEXPAND | wxLEFT | wxRIGHT, 2);
 
 	// 4. BETA TESTERS
 	wxPanel* pnlTesters = new wxPanel(pnlMainFrame, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE);
@@ -210,46 +208,44 @@ DlgAbout::DlgAbout(wxWindow* parent)
 	testerSizer->Add(new wxStaticText{ pnlTesters, wxID_ANY, "Giulio Lucci" }, 0, wxRIGHT, 5);
 	pnlTesters->SetSizer(testerSizer);
 
-	frameSizer->Add(pnlTesters, 0, wxEXPAND | wxALL, 5);
+	sizerFrame->Add(pnlTesters, 0, wxEXPAND | wxALL, 5);
 
 	// LINEA SEPARAZIONE
-	frameSizer->Add(new wxStaticLine(pnlMainFrame), 0, wxEXPAND | wxLEFT | wxRIGHT, 2);
+	sizerFrame->Add(new wxStaticLine(pnlMainFrame), 0, wxEXPAND | wxLEFT | wxRIGHT, 2);
 
 	// 5. DISCLAIMER (Icona rossa + Testo)
-	wxBoxSizer* disclaimerSizer = new wxBoxSizer{ wxHORIZONTAL };
+	wxBoxSizer* sizerDisclaimer = new wxBoxSizer{ wxHORIZONTAL };
 
-	// Icona rossa
-	wxStaticText* iconOmino = new wxStaticText{ pnlMainFrame, wxID_ANY, "[!!]", wxDefaultPosition, wxSize(32, 32), wxALIGN_CENTER | wxBORDER_SIMPLE };
-	iconOmino->SetBackgroundColour(*wxRED);
-	iconOmino->SetForegroundColour(*wxWHITE);
-
-	disclaimerSizer->Add(iconOmino, 0, wxALL | wxALIGN_CENTER_VERTICAL, 10);
+	// Disclaimer
+	wxBitmap bmpDisc = CaricaAsset("ZTIPA.png");
+	wxStaticBitmap* imgDisc = new wxStaticBitmap(pnlMainFrame, wxID_ANY, bmpDisc);
+	sizerDisclaimer->Add(imgDisc, 0, wxALIGN_CENTER | wxALL, 5);
 
 	wxStaticText* txtDisclaimer = new wxStaticText{ pnlMainFrame, wxID_ANY,
-		"Questo programma contiene un linguaggio\ntalvolta offensivo; ogni riferimento a persone e\ncose e' puramente casuale." };
-	txtDisclaimer->SetWindowStyle(wxALIGN_CENTER);
+		"Questo programma contiene un linguaggio talvolta offensivo; ogni riferimento a persone e cose è puramente casuale.", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER };
+	txtDisclaimer->Wrap(500);
 
-	disclaimerSizer->Add(txtDisclaimer, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+	sizerDisclaimer->Add(txtDisclaimer, 0, wxALIGN_CENTER | wxALL , 5);
 
-	frameSizer->Add(disclaimerSizer, 0, wxEXPAND | wxBOTTOM, 5);
+	sizerFrame->Add(sizerDisclaimer, 0, wxEXPAND | wxBOTTOM, 5);
 
 	// CHIUSURA PANEL PRINCIPALE
-	pnlMainFrame->SetSizer(frameSizer);
+	pnlMainFrame->SetSizer(sizerFrame);
 	mainSizer->Add(pnlMainFrame, 1, wxEXPAND | wxALL, 5);
 
 	// --- SEZIONE INFERIORE (URL + Bottone Norme) ---
 	wxBoxSizer* footerSizer = new wxBoxSizer{ wxHORIZONTAL };
 
 	wxBoxSizer* urlSizer = new wxBoxSizer{ wxVERTICAL };
-	urlSizer->Add(new wxStaticText{ this, wxID_ANY, "http://www.tabboz.com" }, 0);
-	urlSizer->Add(new wxStaticText{ this, wxID_ANY, "e-mail: andrea@tabboz.com" }, 0);
+	urlSizer->Add(new wxStaticText{ this, wxID_ANY, "http://www.tabboz.com" }, 0, wxLEFT | wxRIGHT, 5);
+	urlSizer->Add(new wxStaticText{ this, wxID_ANY, "e-mail: andrea@tabboz.com" }, 0, wxLEFT | wxRIGHT, 5);
 
 	footerSizer->Add(urlSizer, 1, wxALIGN_CENTER_VERTICAL | wxLEFT, 10);
 
-	wxButton* btnNorme = new wxButton{ this, wxID_ANY, "Norme di utilizzo", wxDefaultPosition, wxSize(120, -1) };
+	wxButton* btnNorme = new wxButton{ this, wxID_ANY, "Norme di utilizzo", wxDefaultPosition, wxSize(-1, 40) };
 	btnNorme->Bind(wxEVT_BUTTON, &DlgAbout::OnNorme, this);
 
-	footerSizer->Add(btnNorme, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 10);
+	footerSizer->Add(btnNorme, 0, wxALIGN_BOTTOM | wxALL, 5);
 
 	mainSizer->Add(footerSizer, 0, wxEXPAND | wxBOTTOM, 10);
 
@@ -264,7 +260,7 @@ void DlgAbout::OnOk(wxCommandEvent& event)
 
 void DlgAbout::OnNorme(wxCommandEvent& event)
 {
-	wxMessageBox("Non copiare, non rubare, sii un bravo tabbozzo.", "Norme", wxOK);
+	wxMessageBox("Il biglietto è valido solo dopo la convalida. \nIl biglietto deve essere conservato per tutta la durata del viaggio. \nIl diritto a viaggiare cessa al termine della tratta corrispondente al valore del biglietto. \nIl passeggero che al controllo non fosse in grado di presentare il biglietto o lo presentasse irriconoscibile, o comunque non valido, verrà abbattuto. \nLa notifica del decesso verrà inviata ai parenti solo previo pagamento delle spese postali.", "Norme di utilizzo", wxOK);
 }
 
 // DIALOG DOCUMENTO D'IDENTITA'
@@ -454,55 +450,57 @@ void DlgPersonalInfo::OnOk(wxCommandEvent& event) {
 
 // DIALOG USCITA
 DlgUscita::DlgUscita(wxWindow* parent)
-	: wxDialog(parent, wxID_ANY, "Fine della sessione del Tabboz Simulator", wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX),
-	m_sceltaUscita(false)
+	: wxDialog(parent, wxID_ANY, "Fine della sessione del Tabboz Simulator"),
+	m_spegni(false)
 {
 	this->SetFont(parent->GetFont());
-	this->SetBackgroundColour(parent->GetBackgroundColour());
 
 	wxBoxSizer* mainSizer = new wxBoxSizer{ wxVERTICAL };
-	wxBoxSizer* bodySizer = new wxBoxSizer{ wxHORIZONTAL };
+	wxBoxSizer* sizerBody = new wxBoxSizer{ wxHORIZONTAL };
 
 	// 1. ICONA A SINISTRA
 	// Usiamo un pannello placeholder o uno static text per ora
-	wxStaticText* iconBox = new wxStaticText{ this, wxID_ANY, "[ICON]", wxDefaultPosition, wxSize(48, 48), wxALIGN_CENTER | wxBORDER_NONE };
-	// In futuro qui caricherai l'icona del monitor
-	bodySizer->Add(iconBox, 0, wxALL | wxALIGN_TOP, 15);
+	wxBitmap bmpIcon = CaricaAsset("ZSPEGNIMI.png");
+	wxStaticBitmap* imgIcon = new wxStaticBitmap(this, wxID_ANY, bmpIcon);
+	sizerBody->Add(imgIcon, 0, wxALL | wxALIGN_TOP, 5);
 
 	// 2. PARTE DESTRA (Testo + Radio Buttons)
 	wxBoxSizer* rightSizer = new wxBoxSizer{ wxVERTICAL };
 
 	wxStaticText* lblIntro = new wxStaticText{ this, wxID_ANY, "Scegli una delle seguenti opzioni:" };
-	rightSizer->Add(lblIntro, 0, wxBOTTOM, 10);
+	rightSizer->Add(lblIntro, 0, wxALL, 5);
+	rightSizer->AddSpacer(15);
 
-	m_radioChiudi = new wxRadioButton(this, wxID_ANY, "Chiudi il Tabboz Simulator", wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+	m_radioChiudi = new wxRadioButton(this, wxID_ANY, "Chiudi il Tabby Simulator", wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
 	m_radioChiudi->SetValue(true); // Selezionato di default
 
 	m_radioSpegni = new wxRadioButton(this, wxID_ANY, "Spegni il computer ed esci di casa");
+	m_radioSpegni->SetValue(false);
 
 	rightSizer->Add(m_radioChiudi, 0, wxBOTTOM, 5);
 	rightSizer->Add(m_radioSpegni, 0, wxBOTTOM, 5);
 
-	bodySizer->Add(rightSizer, 1, wxEXPAND | wxALL, 10);
-	mainSizer->Add(bodySizer, 1, wxEXPAND | wxALL, 5);
+	sizerBody->Add(rightSizer, 1, wxEXPAND | wxALL, 5);
+	mainSizer->Add(sizerBody);
+	mainSizer->AddSpacer(20);
 
 	// 3. BOTTONI IN BASSO
 	wxBoxSizer* btnSizer = new wxBoxSizer{ wxHORIZONTAL };
 
 	// Nello screenshot i bottoni sono centrati/espansi. Usiamo dimensioni fisse simili a Windows standard.
-	wxButton* btnOk = new wxButton{ this, wxID_OK, "OK", wxDefaultPosition, wxSize(75, 25) };
-	wxButton* btnCancel = new wxButton{ this, wxID_CANCEL, "Cancel", wxDefaultPosition, wxSize(75, 25) };
-	wxButton* btnHelp = new wxButton{ this, wxID_HELP, "Help", wxDefaultPosition, wxSize(75, 25) };
+	wxButton* btnOk = new wxButton{ this, wxID_OK, "OK", wxDefaultPosition, wxSize(100, 40) };
+	wxButton* btnCancel = new wxButton{ this, wxID_CANCEL, "Cancel", wxDefaultPosition, wxSize(100, 40) };
+	wxButton* btnHelp = new wxButton{ this, wxID_HELP, "Help", wxDefaultPosition, wxSize(100, 40) };
 
 	btnOk->Bind(wxEVT_BUTTON, &DlgUscita::OnOk, this);
 	btnCancel->Bind(wxEVT_BUTTON, &DlgUscita::OnCancel, this);
 	btnHelp->Bind(wxEVT_BUTTON, &DlgUscita::OnHelp, this);
 
-	btnSizer->Add(btnOk, 0, wxRIGHT, 5);
-	btnSizer->Add(btnCancel, 0, wxRIGHT, 5);
-	btnSizer->Add(btnHelp, 0, wxLEFT, 5);
+	btnSizer->Add(btnOk, 0, wxTOP | wxBOTTOM, 5);
+	btnSizer->Add(btnCancel, 0, wxTOP | wxBOTTOM, 5);
+	btnSizer->Add(btnHelp, 0, wxTOP | wxBOTTOM | wxRIGHT, 5);
 
-	mainSizer->Add(btnSizer, 0, wxALIGN_CENTER_HORIZONTAL | wxBOTTOM, 10);
+	mainSizer->Add(btnSizer, 0, wxALIGN_RIGHT);
 
 	this->SetSizerAndFit(mainSizer);
 	this->Centre();
@@ -510,19 +508,20 @@ DlgUscita::DlgUscita(wxWindow* parent)
 
 void DlgUscita::OnOk(wxCommandEvent& event)
 {
-	// Se è selezionato "Chiudi" o "Spegni", in entrambi i casi nel simulatore chiudiamo.
-	// Ma tecnicamente potresti voler fare cose diverse (es. salvare prima di chiudere).
-	m_sceltaUscita = true;
+	if (m_radioSpegni->GetValue())
+		m_spegni = true;
+	else
+		m_spegni = false;
+
 	EndModal(wxID_OK);
 }
 
 void DlgUscita::OnCancel(wxCommandEvent& event)
 {
-	m_sceltaUscita = false;
 	EndModal(wxID_CANCEL);
 }
 
 void DlgUscita::OnHelp(wxCommandEvent& event)
 {
-	wxMessageBox("Non c'è aiuto per te, Tabbozzo.", "Help", wxOK | wxICON_INFORMATION);
+	wxMessageBox("\"Spegni il computer ed esci di casa\"\n\nPubblicità Progresso per il recupero dei giovani disadattati a causa dei computer sponsorizzata da MonkeyDigit & Co.", "Guida del Tabby Simulator", wxOK | wxICON_INFORMATION);
 }

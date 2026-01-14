@@ -1,7 +1,6 @@
 #pragma once
 #include <wx/wx.h>
 #include "TabbyGame.h"
-#include "TabbyFrame.h"
 
 // ---------- APPLICAZIONE ------------
 // il public fa in modo che la classe che stiame creando erediti i membri e le funzioni pubbliche di wxApp
@@ -13,8 +12,13 @@ public:
 	virtual bool OnInit() override;
 	virtual int OnExit() override;
 
+	void SetSpegnimentoRichiesto(bool spegni) { m_spegni = spegni; }
 private:
 	TabbyGame m_game;
+	bool m_spegni = false;
 	void SalvaDatiRegistro();
 	bool CaricaDatiRegistro();
 };
+
+// Importante: questa macro permette di usare wxGetApp() (per lo spegnimento del pc)
+DECLARE_APP(TabbyApp)

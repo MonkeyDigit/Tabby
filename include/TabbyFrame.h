@@ -1,6 +1,7 @@
 #pragma once
 #include <wx/wx.h>
 #include "TabbyGame.h"
+#include "TabbyApp.h"	// SOLO PER DIRE DI SPEGNERE
 
 // ---------- FINESTRA PRINCIPALE (Frame) -----------
 class TabbyFrame : public wxFrame {

@@ -80,6 +80,7 @@ void DlgCompagnia::OnChiama(wxCommandEvent& event)
 void DlgCompagnia::AggiornaInterfaccia()
 {
 	m_lblRep->SetLabel(wxString::Format("Reputazione %d/100", m_game.GetTabbyGuy().GetRep()));
+	this->Fit();
 	this->Layout();
 }
 
@@ -214,7 +215,7 @@ DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
 			ManifestaEventi(this, m_game);
 
 			// Aggiorna la barra rapporti che potrebbe essere cambiata
-			AggiornaInterfaccia();
+			this->AggiornaInterfaccia();
 		}
 		else
 			ev.Skip(); // Click normale
@@ -294,7 +295,7 @@ DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
 	this->SetSizerAndFit(mainSizer);
 
 	// Aggiorniamo lo stato iniziale (bottoni abilitati/disabilitati)
-	AggiornaInterfaccia();
+	this->AggiornaInterfaccia();
 
 	this->Centre();
 }

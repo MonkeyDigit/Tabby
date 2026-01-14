@@ -436,7 +436,7 @@ DlgElencoNegozi::DlgElencoNegozi(wxWindow* parent, TabbyGame& game)
 
 				DlgNegozio dlg{ this, m_game, negozi[i] };
 				dlg.ShowModal();
-				AggiornaInterfaccia();
+				this->AggiornaInterfaccia();
 			}
 			ManifestaEventi(this, m_game);
 			});
@@ -1100,7 +1100,7 @@ DlgRicariche::DlgRicariche(wxWindow* parent, TabbyGame& game)
 	this->SetSizerAndFit(mainSizer);
 	this->Centre();
 
-	AggiornaInterfaccia();
+	this->AggiornaInterfaccia();
 }
 
 void DlgRicariche::AggiornaInterfaccia()

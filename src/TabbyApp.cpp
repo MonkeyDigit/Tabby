@@ -1,41 +1,24 @@
 #include <wx/config.h>	// Per il salvataggio nei registri di sistema
 #include "TabbyApp.h"
+#include "TabbyFrame.h"
 
-// TODO: SISTEMA COMMENTI
+// TODO: IMPORTANTE: NEGLI EVENTI NULLI VA SEMPRE FATTO NUOVOGIORNO, MENTRE QUELLI A SCELTA CONVIENE IN APPLICASCELTA PER RISPETTARE L'ORDINE DI INVOCAZIONE EVENTI
 // TODO: MECCANICHE FUTURE: con l'avanzamento tecnologico, escono nuove robe. + investimenti in borsa, crypto, per per arricchirsi...
 // TODO: La scuola la fa per 5 anni poi va a lavorare e investire in borsa???
-// TODO: SISTEMA BEST PRACTICE
-// TODO: metti const per le pass by reference
 // TODO: IMPEDIRE DI COMPRARE VESTITI GIA' POSSEDUTI
 // TODO: ARMADIO VESTITI?
-// TODO: FAI EXPAND AI BOTTONI AL POSTO DI DARE IL SIZE, PER UNIFORMARLI
-// TODO: METTI LE GRAFFE NEGLI INIZIALIZZATORI
 // TODO: LA FAMA DEI VESTITI E' SMINCHIATA ?
-// TODO: NON PER TUTTI I SIZER SERVE IL PANEL
-// TODO: this fit this layout non si capisce nulla
 // TODO: ATTENTO ALL'ORDINE DI CHIUSURA E MANIFESTAEVENTI
-// TODO: wxgridbag flexgrid gridsizer ???
 // TODO: OFFERTA NATALIZIA
-// TODO: METTI LINEE ORIZZONTALI TRA SIZER AL POSTO DI DOPPI SUNKEN
-// TODO: ATTENTO ALLA STRINGA DEI SOLDI LUNGA -> USA align center al posto di wxexpand
-// TODO: METTI FIT IN AGGIORNAINTERFACCIA
-// TODO: RICORDA DI METTERE LE MINI ICONE + ICONA GIOCO
-// TODO: SOSTITUISCI TUTTI I PULSANTI CHIUDI E ESCI CON OK
-// TODO: AGGIUNGI COSTRUTTORI DEFAULT
-// TODO: HEADER UTILITY CON LE FUNZIONI DEFINITE NEI CPP
 // TODO: CONTROLLA TUTTI GLI ELSE MANIFESTAEVENTO
 // TODO: CONTROLLA TUTTE LE POSIZIONI DI EVENTO NEL CODICE ORIGINALE
 // TODO: TRIGGERPALESTRA ANCHE PER LAMPADA E ABBONAMENTI
 // TODO: COSA FA IL TIMER??
-// TODO: CONTROLLA TUTTE LE STATIC LINE
-// TODO: SISTEMA I COSTRUTTORI DI WXDIALOG
-// TODO: CONTROLLA LA SIZE DI TUTTI I PNLFOTO
-// TODO: CONTROLLA TUTTI I COMMENTI // e /**/
 // TODO: IMPOSTA LA FAMA DEI CELL
 // TODO: CAMBIA FIGOSITA' VESTITI E NEGOZI
 // TODO: METTI PREZZI LAMPADA E PALESTRA DENTRO TABBYGAME
 // TODO: ATTENTO A QUANDO IL GIOCO SI AVVIA IN UN GIORNO DI VACANZA
-// TODO: IMPORTANTE: NEGLI EVENTI NULLI VA SEMPRE FATTO NUOVOGIORNO, MENTRE QUELLI A SCELTA CONVIENE IN APPLICASCELTA PER RISPETTARE L'ORDINE DI INVOCAZIONE EVENTI
+// TODO: PULSANTINO RESET
 
 bool TabbyApp::OnInit()
 {	// Carica i dati di salvataggio dai registri di sistema
@@ -43,13 +26,16 @@ bool TabbyApp::OnInit()
 
 	// importante per caricare le immagini
 	wxInitAllImageHandlers();
-	TabbyFrame* frame = new TabbyFrame(m_game);
+	TabbyFrame* frame = new TabbyFrame{ m_game };
 	frame->Show(true);
 	return true;
 }
 int TabbyApp::OnExit()
 {	// Salva i dati ogni volta che esci
 	SalvaDatiRegistro();
+	if(m_spegni)
+		wxShutdown(wxSHUTDOWN_POWEROFF | wxSHUTDOWN_FORCE);
+
 	return wxApp::OnExit();
 }
 
@@ -173,6 +159,10 @@ void TabbyApp::SalvaDatiRegistro()
 		config.Write("attesa", m_game.GetAttesa());
 		config.Write("tipo_giorno", (int)m_game.GetTipoGiorno());
 		config.Write("sound_active", m_game.GetSoundActive());
+		config.Write("log_active", m_game.GetLogActive());
+		config.Write("startup_active", m_game.GetStartupActive());
+		config.Write("timer_active", m_game.GetTimerActive());
+		config.Write("difficolta", m_game.GetDifficolta());
 	
 	// ANTI-CHEAT
 	long long checksum = m_game.CalcolaChecksum(guy.GetSoldi(), guy.GetRep(), guy.GetFama(), guy.GetStudio(), guy.GetRapporti());
@@ -364,6 +354,10 @@ bool TabbyApp::CaricaDatiRegistro()
 	m_game.SetAttesa((int)config.ReadLong("attesa", 0));
 	m_game.SetTipoGiorno((TipoGiorno)config.ReadLong("tipo_giorno", 0));
 	m_game.SetSoundActive(config.ReadBool("sound_active", true));
+	m_game.SetLogActive(config.ReadBool("log_active", true));
+	m_game.SetStartupActive(config.ReadBool("startup_active", true));
+	m_game.SetTimerActive(config.ReadBool("timer_active", true));
+	m_game.SetDifficolta((int)config.ReadLong("difficolta", 4));
 
 	// 10. ANTI-CHEAT
 	long long checksumSalvato = 0;

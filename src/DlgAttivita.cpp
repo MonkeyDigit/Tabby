@@ -53,7 +53,7 @@ DlgScuola::DlgScuola(wxWindow* parent, TabbyGame& game)
 		// Sfrutto una funzione lambda per associare la materia che viene selezionata ai bottoni del pannello a destra, perché sono troppo intelligente...
 		radio->Bind(wxEVT_RADIOBUTTON, [this, i](wxCommandEvent& ev) {
 			m_materiaIndex = i;
-			AggiornaInterfaccia();
+			this->AggiornaInterfaccia();
 			});
 	}
 
@@ -142,6 +142,7 @@ void DlgScuola::AggiornaInterfaccia()
 	m_lblStudio->SetLabel(wxString::Format("Profitto scolastico %d/100", m_game.GetTabbyGuy().GetStudio()));
 	m_lblRep->SetLabel(wxString::Format("Reputazione %d/100", m_game.GetTabbyGuy().GetRep()));
 
+	this->Fit();
 	this->Layout();
 }
 

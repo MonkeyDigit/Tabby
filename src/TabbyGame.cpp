@@ -60,7 +60,11 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     m_coolDownPestaggio{ 5 }, 
     m_tipoGiorno{ TipoGiorno::NORMALE },
     m_attesa{ATTESA_MAX},
-    m_soundActive{ true }
+    m_soundActive{ true },
+    m_logActive{ true },
+    m_startupActive{ true },
+    m_timerActive{ true },
+    m_difficolta{ 4 }
 {
     CaricaStringhe();
     CaricaAbbonamenti();
@@ -96,6 +100,28 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     // I restanti dati sono inizializzati di default dal costruttore di TabbyGuy
 
     WriteLog(" =======|| AVVIO TABBY - LOG SESSIONE ||======= ");
+}
+
+void TabbyGame::SetDifficolta(const int livello)
+{
+    m_difficolta = livello;
+    switch (m_difficolta)
+    {
+    case 0:
+        m_tabbyGuy.SetFortuna(20);
+        break;
+    case 1:
+        m_tabbyGuy.SetFortuna(15);
+        break;
+    case 2:
+        m_tabbyGuy.SetFortuna(10);
+        break;
+    case 3:
+        m_tabbyGuy.SetFortuna(5);
+        break;
+    default:
+        m_tabbyGuy.SetFortuna(0);
+    }
 }
 
 int TabbyGame::GenRandomInt(const int min, const int max)
@@ -1553,9 +1579,11 @@ std::string TabbyGame::GetSoldiStr(const long long valoreBase) const
 	return (formattaConPunti(valoreConvertito) + " L.");
 }
 
-void TabbyGame::WriteLog(const std::string& messaggio)
+void TabbyGame::WriteLog(const std::string& messaggio) const
 {
-#ifdef TABBY_DEBUG
+    if (!m_logActive)
+        return;
+
     // Apre il file "tabby.log" in modalità append, e se non esiste lo crea
     std::ofstream logFile("tabby.log", std::ios::app);
 
@@ -1572,7 +1600,6 @@ void TabbyGame::WriteLog(const std::string& messaggio)
         // Chiudiamo il file (importante per salvare subito)
         logFile.close();
     }
-#endif
 }
 
 void TabbyGame::AzioneLavora()

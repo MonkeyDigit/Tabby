@@ -1,4 +1,5 @@
 #include <wx/gbsizer.h>
+#include <wx/utils.h> // Serve per wxShutdown
 #include "TabbyFrame.h"
 #include "DlgBase.h"
 #include "DlgAttivita.h"
@@ -12,7 +13,7 @@
 // ----------------------------------------------------------------------------
 // Costruttore finestra
 TabbyFrame::TabbyFrame(TabbyGame& game)
-	: wxFrame{ NULL, wxID_ANY, "Tabby Window", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX) }, // Blocca ridimensionamento (sono operatori bitwise su delle flag binarie)
+	: wxFrame{ NULL, wxID_ANY, "Tabby Sim", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX) }, // Blocca ridimensionamento (sono operatori bitwise su delle flag binarie)
 	m_game{ game }
 {
 	wxIcon icona;
@@ -471,6 +472,8 @@ void TabbyFrame::OnClose(wxCloseEvent& event)
 			event.Veto(); // BLOCCA la chiusura della finestra
 			return;
 		}
+		if (dlg.SpegnimentoRichiesto())
+			wxGetApp().SetSpegnimentoRichiesto(true);
 	}
 	// Se l'utente ha premuto OK, lasciamo che wxWidgets distrugga la finestra
 	event.Skip();

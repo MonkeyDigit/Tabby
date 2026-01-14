@@ -206,7 +206,6 @@ bool TabbyApp::CaricaDatiRegistro()
 	guy.SetFortuna((int)config.ReadLong("fortuna", 0));
 
 	// 2. CARTA D'IDENTITA'
-	// Nota: Assumo tu abbia accesso in scrittura all'ID, altrimenti devi creare un oggetto CartaIdentita temp e fare SetID
 	CartaIdentita id{};
 	wxString s; // Variabile temporanea per leggere le stringhe
 
@@ -226,6 +225,7 @@ bool TabbyApp::CaricaDatiRegistro()
 	config.Read("indirizzo", &s); id.m_indirizzo = s.ToStdString();
 	config.Read("stato_civile", &s); id.m_statoCivile = s.ToStdString();
 	config.Read("professione", &s); id.m_professione = s.ToStdString();
+	guy.SetIdentita(id);
 
 	// 3. VESTITI
 	// Lambda helper per non ripetere codice 3 volte

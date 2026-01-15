@@ -135,6 +135,8 @@ void TabbyApp::SalvaDatiRegistro()
 		config.Write("fama_scooter", scoot.GetFama());
 		config.Write("serbatoio_scooter", scoot.GetCapSerbatoio());
 		config.Write("attivita_scooter", (int)scoot.GetAttivita());
+		config.Write("stato_scooter", (int)scoot.GetStato());
+		config.Write("benza_scooter", (int)scoot.GetBenza());
 		// Lambda helper per i pezzi dello scooter
 		auto SalvaPezzo = [&](const Pezzo& p, const wxString& suffix) {
 			config.Write("tipo_" + suffix, (int)p.GetTipo());
@@ -150,6 +152,7 @@ void TabbyApp::SalvaDatiRegistro()
 		SalvaPezzo(scoot.GetCarburatore(), "carburatore");
 		SalvaPezzo(scoot.GetCilindrata(), "cilindrata");
 	// FINE SCOOTER
+	
 	// DATI TIPA
 		const Tipa& tipa = guy.GetTipa();
 		config.Write("nome_tipa", (wxString)tipa.GetNome());
@@ -303,7 +306,8 @@ bool TabbyApp::CaricaDatiRegistro()
 	scoot.SetPrezzo(config.ReadLongLong("prezzo_scooter", 0));
 	scoot.SetFama((int)config.ReadLong("fama_scooter", 0));
 	scoot.SetCapSerbatoio((float)config.ReadDouble("serbatoio_scooter", 0.0));
-	scoot.SetAttivita((Attivita)config.ReadLong("attivita_scooter", 0));
+	scoot.SetStato((int)config.ReadLong("stato_scooter", 0));
+	scoot.SetBenza((int)config.ReadLong("benza_scooter", 0));
 
 	// Helper per i pezzi dello scooter
 	auto LeggiPezzo = [&](const wxString& suffix) -> Pezzo {
@@ -321,7 +325,8 @@ bool TabbyApp::CaricaDatiRegistro()
 	scoot.InstallaPezzo(LeggiPezzo("filtro"));
 	scoot.InstallaPezzo(LeggiPezzo("carburatore"));
 	scoot.InstallaPezzo(LeggiPezzo("cilindrata"));
-	scoot.CalcolaVelocita();
+	// L'attività viene recuperata dopo per evitare di perderla con InstallaPezzo
+	scoot.SetAttivita((Attivita)config.ReadLong("attivita_scooter", 0));
 
 	// Equipaggiamo lo scooter
 	guy.GetScooter() = scoot;

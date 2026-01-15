@@ -180,6 +180,12 @@ public:
 		m_velocita = baseSpeed + m_marmitta.GetPower() + m_filtro.GetPower();
 	}
 
+	void SetStato(int stato) {
+		m_stato = stato;
+		if (m_stato < 0) m_stato = 0;
+		else if (m_stato > 100) m_stato = 100;
+	}
+
 	void SetFama(int fama) {
 		m_fama = fama;
 		if (m_fama < 0) m_fama = 0;

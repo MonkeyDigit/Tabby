@@ -60,6 +60,8 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     : m_tabbyGuy{}, m_date{ 1991, 9, 16 },
     m_valutaCorrente{ Valuta::LIRE },
     m_coolDownPestaggio{ 5 },
+    m_coolDownPelle{ 7 },
+    m_paloCount{ 0 },
     m_tipoGiorno{ TipoGiorno::NORMALE },
     m_attesa{ ATTESA_MAX },
     m_soundActive{ true },
@@ -191,6 +193,8 @@ void TabbyGame::AvanzaCalendario()
             m_coolDownPelle = 7;
         }
     }
+    else
+        m_coolDownPelle = 7;
 
     // ---------------> S T I P E N D I O <---------------
 

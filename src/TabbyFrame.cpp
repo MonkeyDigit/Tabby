@@ -266,6 +266,43 @@ TabbyFrame::TabbyFrame(TabbyGame& game)
 	this->SetSizerAndFit(mainSizer); // Chiede al Sizer principale (mainSizer) quanto spazio gli serve al minimo per far stare dentro tutti i widget (bottoni, pannelli, immagini) senza schiacciarli. Poi ridimensiona la finestra (TabbyFrame) esattamente a quella misura
 	this->Centre();	// Posiziona la finestra al centro dello schermo. Senza, la finestra si aprirebbe nell'angolo in alto a sinistra (coordinate 0,0) o dove decide Windows a caso
 	this->AggiornaInterfaccia();	// AGGIORNA INTERFACCIA
+
+	// --- SETUP TIMER ---
+	// Collega l'evento
+	this->Bind(wxEVT_TIMER, &TabbyFrame::OnTimer, this, m_timer.GetId());
+
+	// Inizializza il contatore casuale (tra 12 e 32 minuti)
+	m_minutiAlRisveglio = m_game.GenRandomInt(12, 32);
+
+	// Avvia il timer
+	if (m_game.GetTimerActive())
+	{
+		m_timer.Start(60000); // 60000 ms = 1 minuto
+	}
+}
+
+void TabbyFrame::OnTimer(wxTimerEvent& event)
+{
+	// Corrisponde a: if (IsIconic(hWndMain) != 0)
+	if (this->IsIconized())
+	{
+		// Se il contatore è ancora alto, aspettiamo un altro minuto
+		if (m_minutiAlRisveglio > 0)
+		{
+			m_minutiAlRisveglio--;
+		}
+		else
+		{
+			// IL MOMENTO E' GIUNTO!
+			m_minutiAlRisveglio = m_game.GenRandomInt(12, 32);
+
+			// 2. Riapri la finestra (ShowWindow SW_SHOWNORMAL)
+			this->Iconize(false); // False = Ripristina (non iconizzare)
+			this->RequestUserAttention(); // Fa lampeggiare la barra se necessario
+			this->Show(true);
+			this->Raise(); // Porta in primo piano
+		}
+	}
 }
 
 void TabbyFrame::AggiornaInterfaccia()

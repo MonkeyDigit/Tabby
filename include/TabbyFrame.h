@@ -13,6 +13,12 @@ private:
 	// Classe di gestione gioco
 	TabbyGame& m_game;
 	wxStaticBitmap* m_fotoTabbozzo;
+	// Timer principale
+	wxTimer m_timer;
+	// Contatore per la logica originale (t_random)
+	int m_minutiAlRisveglio = 0;
+	// Gestore evento
+	void OnTimer(wxTimerEvent& event);
 
 	// Label dei dati che variano
 	wxStaticText* m_lblNomeTabby;

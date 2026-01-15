@@ -64,7 +64,8 @@ TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
     m_logActive{ true },
     m_startupActive{ true },
     m_timerActive{ true },
-    m_difficolta{ 4 }
+    m_difficolta{ 4 },
+    m_moodTipa{ MoodTipa::BASE }
 {
     CaricaStringhe();
     CaricaAbbonamenti();
@@ -156,6 +157,7 @@ void TabbyGame::AvanzaCalendario()
 {
     m_date.AddDay(1);
     m_tipoGiorno = TipoGiorno::NORMALE;
+    m_moodTipa = MoodTipa::BASE;
     
     // Messaggio anno bisestile
     if (Chrono::leapYear(m_date.GetYear()) &&
@@ -230,7 +232,7 @@ void TabbyGame::AvanzaCalendario()
         if (m_date.GetDay() < 7)
         {
             m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
-            // TODO: tipa vestita da babbo natale
+            m_moodTipa = MoodTipa::NATALIZIO;
         }
         break;
 
@@ -253,7 +255,7 @@ void TabbyGame::AvanzaCalendario()
     case Chrono::Month::jul:    // Luglio
     case Chrono::Month::aug:    // Agosto
         m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
-        // TODO: Tipa al mare
+        m_moodTipa = MoodTipa::ESTIVO;
         break;
 
     case Chrono::Month::sep:    // Settembre
@@ -274,20 +276,19 @@ void TabbyGame::AvanzaCalendario()
         if (m_date.GetDay() > 22)
         {
             m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
-            // TODO: Roba tipa
+            m_moodTipa = MoodTipa::NATALIZIO;
 
-            // TODO: SISTEMA STA ROBA
             /*
             if (m_date.GetDay() == 25)
             {   // TODO: VESTITI NATALIZI
-                if (m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubbotto() == 19)
+                if (m_tabbyGuy.GetPantaloni() == natalizi && m_tabbyGuy.GetGiubbotto() == natalizi)
                 {
                     Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Natale...", "Con il tuo vestito da Babbo Natale riesci a stupire tutti..." };
                     PushMessaggio(msg);
                     m_tabbyGuy.IncFama(20);
                 }
             }
-            else if (m_date.GetDay() == 28 && m_tabbyGuy.GetPantaloni() == 19 && m_tabbyGuy.GetGiubbotto() == 19)
+            else if (m_date.GetDay() == 28 && m_tabbyGuy.GetPantaloni() == natalizi && m_tabbyGuy.GetGiubbotto() == natalizi)
             {
                 Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Natale...", "Natale è già passato... Togliti quel dannato vestito..." };
                 PushMessaggio(msg);

@@ -88,6 +88,8 @@ struct Negozio {
     std::vector<Acquistabile*> m_catalogo;  // ATTENZIONE !!! Siccome Acquistabile è una classe base, è di vitale importanza utilizzare dei puntatori, perché se mettessi la variabile intera, nel momenti in cui inserisci acquistabili di diverso tipo, il vettore troncherebbe le informazioni aggiuntive della classe figlia
 };
 
+enum class MoodTipa { BASE, ESTIVO, NATALIZIO };
+
 class TabbyGame
 {
 public:
@@ -95,6 +97,7 @@ public:
     
     void ResetPartita() { *this = TabbyGame{}; }
     void SetDifficolta(const int livello);
+    void SetMoodTipa(const MoodTipa mood) { m_moodTipa = mood; }
     void SetValutaCorrente(const Valuta valuta) { m_valutaCorrente = valuta; };
     void SetTipoGiorno(const TipoGiorno tipo) { m_tipoGiorno = tipo; };
     void SetCoolDownPestaggio(const int cooldown);
@@ -178,6 +181,7 @@ public:
 
 	// GETTER FUNCTIONS
     int GetDifficolta() const { return m_difficolta; }
+    MoodTipa GetMoodTipa() const { return m_moodTipa; }
     int GetCoolDownPestaggio() const { return m_coolDownPestaggio; }
     int GetCoolDownPelle() const { return m_coolDownPelle; }
     int GetPaloCount() const { return m_paloCount; }
@@ -229,6 +233,7 @@ private:
     bool m_startupActive;
     bool m_timerActive;
     int m_difficolta;
+    MoodTipa m_moodTipa;
 	// IL MOTORE DI NUMERI CASUALI
 	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile
 	std::mt19937 m_rng;

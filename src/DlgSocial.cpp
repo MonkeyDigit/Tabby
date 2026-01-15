@@ -188,7 +188,22 @@ DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
 	wxPanel* pnlFoto = new wxPanel{ this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN };
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
 	double scaleFactor = 1.0;
-	wxBitmap bmpTipa = CaricaAsset("tipa.png");
+	wxBitmap bmpTipa;
+
+	// TODO: TRASFORMARE MOODTIPA IN MOOD ??
+	switch (m_game.GetMoodTipa())
+	{
+	case MoodTipa::ESTIVO:
+		bmpTipa = CaricaAsset("tipa_estiva.png");
+		break;
+
+	case MoodTipa::NATALIZIO:
+		bmpTipa = CaricaAsset("tipa_natalizia.png");
+		break;
+	default:
+		bmpTipa = CaricaAsset("tipa.png");
+	}
+	
 	wxStaticBitmap* imgTipa = new wxStaticBitmap(pnlFoto, wxID_ANY, bmpTipa);
 	imgTipa->SetCursor(wxCursor(wxCURSOR_HAND)); // Manina quando passi sopra
 	imgTipa->Bind(wxEVT_LEFT_DOWN, [this, scaleFactor](wxMouseEvent& ev) {

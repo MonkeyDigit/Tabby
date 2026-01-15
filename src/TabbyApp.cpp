@@ -196,6 +196,7 @@ void TabbyApp::SalvaDatiRegistro()
 		config.Write("startup_active", m_game.GetStartupActive());
 		config.Write("timer_active", m_game.GetTimerActive());
 		config.Write("difficolta", m_game.GetDifficolta());
+		config.Write("mood_tipa", (int)m_game.GetMoodTipa());
 	
 	// ANTI-CHEAT
 	long long checksum = m_game.CalcolaChecksum(guy.GetSoldi(), guy.GetRep(), guy.GetFama(), guy.GetStudio(), guy.GetRapporti());
@@ -391,6 +392,7 @@ bool TabbyApp::CaricaDatiRegistro()
 	m_game.SetStartupActive(config.ReadBool("startup_active", true));
 	m_game.SetTimerActive(config.ReadBool("timer_active", true));
 	m_game.SetDifficolta((int)config.ReadLong("difficolta", 4));
+	m_game.SetMoodTipa((MoodTipa)config.ReadLong("mood_tipa", 0));
 
 	// 10. ANTI-CHEAT
 	long long checksumSalvato = 0;

@@ -49,7 +49,7 @@
     <ClCompile Include="src\TabbyFrame.cpp" />
     <ClCompile Include="src\TabbyGame.cpp" />
     <ClCompile Include="src\TabbyGuy.cpp" />
-    <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="src\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Tabby.rc" />

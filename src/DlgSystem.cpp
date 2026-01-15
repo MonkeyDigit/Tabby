@@ -463,7 +463,7 @@ void DlgPersonalInfo::OnOk(wxCommandEvent& event) {
 
 // DIALOG USCITA
 DlgUscita::DlgUscita(wxWindow* parent)
-	: wxDialog(parent, wxID_ANY, "Fine della sessione del Tabboz Simulator"),
+	: wxDialog(parent, wxID_ANY, "Fine sessione"),
 	m_spegni(false)
 {
 	this->SetFont(parent->GetFont());

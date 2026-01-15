@@ -8,8 +8,6 @@
 // La scuola la fa per 5 anni poi va a lavorare e investire in borsa???
 // IMPEDIRE DI COMPRARE VESTITI GIA' POSSEDUTI
 // ARMADIO VESTITI?
-// TODO: COSA FA IL TIMER??
-// TODO: IMPEDIRE DI MODIFICARE I DATI
 
 bool TabbyApp::OnInit()
 {	// Carica i dati di salvataggio dai registri di sistema

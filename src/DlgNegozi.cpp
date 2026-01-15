@@ -1,5 +1,4 @@
 #include "DlgNegozi.h"
-#include "DlgBase.h"
 
 // DIALOG SCOOTER
 DlgScooter::DlgScooter(wxWindow* parent, TabbyGame& game)
@@ -427,11 +426,11 @@ DlgElencoNegozi::DlgElencoNegozi(wxWindow* parent, TabbyGame& game)
 			if (m_game.TriggerNegozio(negozi[i].m_merce))
 			{
 				if (negozi[i].m_merce == CategoriaOggetto::CONSUMABILE)
-					m_game.PlaySound(203);
+					m_game.PlayAudio(203);
 				else if (m_game.GenRandomInt(0, 1) == 1)
-					m_game.PlaySound(204);
+					m_game.PlayAudio(204);
 				else
-					m_game.PlaySound(205);
+					m_game.PlayAudio(205);
 				ManifestaEventi(this, m_game);
 
 				DlgNegozio dlg{ this, m_game, negozi[i] };

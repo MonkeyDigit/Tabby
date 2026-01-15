@@ -1,0 +1,17 @@
+// Tabby.rc - Resource Script
+
+#include <windows.h>
+
+// --- ICONA DELL'APP (Deve essere la prima per diventare l'icona dell'EXE) ---
+// IDI_ICON1 è il nome, ICON è il tipo, "img/tabby.ico" è il percorso
+IDI_ICON1               ICON                    "img/tabby.ico"
+
+// --- DATI DI GIOCO ---
+// NomeRisorsa    Tipo      Percorso
+STRINGS_TXT       RCDATA    "dati/strings.txt"
+ABBONAMENTI_TXT   RCDATA    "dati/abbonamenti.txt"
+DISCOTECHE_TXT    RCDATA    "dati/discoteche.txt"
+DITTE_TXT         RCDATA    "dati/ditte.txt"
+FESTE_TXT         RCDATA    "dati/feste.txt"
+NEGOZI_TXT        RCDATA    "dati/negozi.txt"
+QUIZ_TXT          RCDATA    "dati/quiz.txt"

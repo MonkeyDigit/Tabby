@@ -174,7 +174,7 @@ void TabbyGame::AvanzaCalendario()
     if (m_valutaCorrente == Valuta::LIRE && m_date.GetYear() >= 2002)
     {
         m_valutaCorrente = Valuta::EURO;
-        PlaySound(2);
+        PlayAudio(2);
         Messaggio msg{ TipoMsg::SUCCESSO, "L'italia è il paese che amo <3", "Oggi entra in vigore l'Euro €.\n Grazie di cuore, Silvio !!!" };
         PushMessaggio(msg);
     }
@@ -222,7 +222,7 @@ void TabbyGame::AvanzaCalendario()
     // ---------------> P A L E S T R A <---------------
     if (m_date == m_scadenzaPal)
     {
-        PlaySound(4);
+        PlayAudio(4);
         Messaggio msg{ TipoMsg::INFO, "Pagah", "E' appena scaduto il tuo abbonamento della palestra..." };
         PushMessaggio(msg);
         WriteLog("Calendario: E' scaduto l'abbonamento alla palestra");
@@ -396,7 +396,7 @@ void TabbyGame::GestioneRelazioni()
             if (rnd < 11)
             {
                 // Da 1 a 10, la donna ti molla...
-                PlaySound(603);
+                PlayAudio(603);
 
                 m_tabbyGuy.LasciaTipa();
                 m_tabbyGuy.DecRep(11 - rnd);    // Quelle con numero più basso, sono peggiori...
@@ -429,7 +429,7 @@ void TabbyGame::GestioneLavoro()
             // Perdi il lavoro
             m_tabbyGuy.Licenziati();
 
-            PlaySound(504);
+            PlayAudio(504);
             Messaggio msg{ TipoMsg::ERRORE, "Perdi il lavoro...", "Un bel giorno ti svegli e scopri di essere stato licenziato." };
             PushMessaggio(msg);
 
@@ -465,7 +465,7 @@ void TabbyGame::GestioneEconomia()
             // DEBUG LOG
             WriteLog("GestioneEconomia: Metà paghetta (" + GetSoldiStr(m_tabbyGuy.GetPaghetta() * 0.5f) + ")");
 
-            PlaySound(1200);
+            PlayAudio(1200);
             Messaggio msg{ TipoMsg::INFO, "Paghetta settimanale", "Finché non andrai bene a scuola, ti daremo solo metà della paghetta..." };
             PushMessaggio(msg);
         }
@@ -491,7 +491,7 @@ void TabbyGame::GestioneEventiCasuali()
             int rndFrase = GenRandomInt(0, totFrasi - 1);
             int rndVia = GenRandomInt(0, m_vieStr.size() - 1);
 
-            PlaySound(1300);
+            PlayAudio(1300);
             if (rndFrase >= m_frasiMetallari.size())
             {
                 rndFrase %= m_frasiMetallari.size();
@@ -590,7 +590,7 @@ void TabbyGame::GestioneEventiCasuali()
             if (m_tabbyGuy.GetFama() > 35)   // Fama < 35 = nessuna speranza...
             {
                 m_tipaNuova = GeneraTipa();
-                PlaySound(1);
+                PlayAudio(1);
                 Messaggio msg{ TipoMsg::SCELTA, "Qualcuno ti caga...", "Una tipa, di nome " + m_tipaNuova.GetNome() + " (Figosità " + std::to_string(m_tipaNuova.GetFama()) + "/100), ci prova con te...\nCi stai ???", Scelta::TIPA_CI_PROVA };
                 PushMessaggio(msg);
 
@@ -697,7 +697,7 @@ void TabbyGame::ApplicaScelta(const Scelta msgAzione, const bool sceltaYes)
     case Scelta::GARA:
         if (sceltaYes)
         {
-            PlaySound(701);
+            PlayAudio(701);
             if ((m_scooterRnd.GetVelocita() + GenRandomInt(80, 119)) > (m_tabbyGuy.GetScooter().GetVelocita() + m_tabbyGuy.GetScooter().GetStato() + m_tabbyGuy.GetFortuna()))
             {   // Perdi
                 if (m_tabbyGuy.GetRep() > 80)
@@ -741,7 +741,7 @@ void TabbyGame::ApplicaScelta(const Scelta msgAzione, const bool sceltaYes)
     case Scelta::LASCIA_TIPA:
         if (sceltaYes)
         {
-            PlaySound(603);
+            PlayAudio(603);
             if (m_tabbyGuy.GetTipa().GetFama() >= 79)
             {
                 Messaggio msg{ TipoMsg::ERRORE, "Coglione...", "Appena vengono a sapere quello che hai fatto, i tuoi amici ti prendono a scarpate.\nQualcuno più furbo di te, va a consolarla..." };
@@ -831,7 +831,7 @@ void TabbyGame::ApplicaScelta(const Scelta msgAzione, const bool sceltaYes)
         {
             if (m_tabbyGuy.SpendiSoldi(m_costoRiparazione))
             {
-                PlaySound(102);
+                PlayAudio(102);
                 m_tabbyGuy.GetScooter().Ripara();
                 WriteLog("AzioneRiparaScooter: Paga riparazione " + GetSoldiStr(m_costoRiparazione));
             }
@@ -927,7 +927,7 @@ void TabbyGame::AzioneMinaccia(const int materiaIndex)
         m_tabbyGuy.DecRep(2);
         mat.DecVoto(1);
 
-        PlaySound(402);
+        PlayAudio(402);
         Messaggio msg{ TipoMsg::ERRORE, "Bella figura", "Cosa ??? Credi di farmi paura piccolo pezzettino di letame vestito da zarro...\nDeve ancora nascere chi può minacciarmi..." };
         PushMessaggio(msg);
     }
@@ -1079,7 +1079,7 @@ void TabbyGame::AzioneSoldiExtra()
 
 void TabbyGame::AzioneChiediSoldi()
 {
-    PlaySound(801);
+    PlayAudio(801);
     Messaggio msg{ TipoMsg::ERRORE, "Errore irrecuperabile", "Non pensarci neanche lontanamente..." };
     PushMessaggio(msg);
 
@@ -1235,13 +1235,9 @@ long long TabbyGame::ConvertiValuta(const long long valoreBase) const
 
 void TabbyGame::CaricaStringhe()
 {
-    std::ifstream file("dati/strings.txt");
-
-    if (!file.is_open())
-    {
-        WriteLog("ERRORE CRITICO: Impossibile trovare dati/strings.txt");
-        return;
-    }
+    //std::ifstream file("dati/strings.txt");
+    std::stringstream file = CaricaRisorsa("STRINGS_TXT");
+    if (file.str().empty()) return;
 
     std::string riga;
     std::vector<std::string>* vettoreCorrente = nullptr; // Puntatore al vettore che stiamo riempiendo - ATTENZIONE: qua non posso usare la reference, perché in C++ non possono essere riassegnate
@@ -1285,15 +1281,15 @@ void TabbyGame::CaricaStringhe()
         }
     }
 
-    file.close();
     WriteLog("Caricamento frasi completato da file unico.");
 }
 
 void TabbyGame::CaricaAbbonamenti()
 {
     m_abbonamenti.clear();
-    std::ifstream file("dati/abbonamenti.txt");
-    if (!file.is_open()) return;
+    // std::ifstream file("dati/abbonamenti.txt");
+    std::stringstream file = CaricaRisorsa("ABBONAMENTI_TXT"); // Usa il nome definito nel .rc
+    if (file.str().empty()) return;
 
     std::string riga;
     while (std::getline(file, riga))
@@ -1320,8 +1316,9 @@ void TabbyGame::CaricaAbbonamenti()
 
 void TabbyGame::CaricaDiscoteche() {
     m_discoteche.clear();
-    std::ifstream file("dati/discoteche.txt");
-    if (!file.is_open()) { WriteLog("ERR: discoteche.txt missing"); return; }
+    //std::ifstream file("dati/discoteche.txt");
+    std::stringstream file = CaricaRisorsa("DISCOTECHE_TXT");
+    if (file.str().empty()) return;
 
     std::string riga;
     while (std::getline(file, riga)) {
@@ -1347,7 +1344,9 @@ void TabbyGame::CaricaDiscoteche() {
 
 void TabbyGame::CaricaDitte() {
     m_ditte.clear();
-    std::ifstream file("dati/ditte.txt");
+    //std::ifstream file("dati/ditte.txt");
+    std::stringstream file = CaricaRisorsa("DITTE_TXT");
+    if (file.str().empty()) return;
     std::string riga;
 
     while (std::getline(file, riga)) {
@@ -1399,8 +1398,9 @@ void TabbyGame::CaricaDitte() {
 void TabbyGame::CaricaFeste()
 {
     m_feste.clear();
-    std::ifstream file("dati/feste.txt");
-    if (!file.is_open()) return;
+    //std::ifstream file("dati/feste.txt");
+    std::stringstream file = CaricaRisorsa("FESTE_TXT");
+    if (file.str().empty()) return;
 
     std::string riga;
     while (std::getline(file, riga))
@@ -1425,12 +1425,12 @@ void TabbyGame::CaricaFeste()
 void TabbyGame::CaricaNegozi() {
     m_negozi.clear();
 
-    std::ifstream file("dati/negozi.txt");
-    if (!file.is_open()) return;
+    //std::ifstream file("dati/negozi.txt");
+    std::stringstream file = CaricaRisorsa("NEGOZI_TXT");
+    if (file.str().empty()) return;
 
     Negozio* currentNegozio = nullptr;
     std::string riga;
-
     while (std::getline(file, riga)) {
         trimString(riga);
         if (riga.empty() || riga[0] == '#') continue;
@@ -1528,8 +1528,9 @@ void TabbyGame::CaricaNegozi() {
 void TabbyGame::CaricaQuiz()
 {
     m_schede.clear();
-    std::ifstream file("dati/quiz.txt");
-    if (!file.is_open()) return;
+    //std::ifstream file("dati/quiz.txt");
+    std::stringstream file = CaricaRisorsa("QUIZ_TXT");
+    if (file.str().empty()) return;
 
     std::string riga;
     QuizScheda* currentQuiz = nullptr;
@@ -1590,7 +1591,7 @@ void TabbyGame::CaricaQuiz()
     }
 }
 
-void TabbyGame::PlaySound(const int id)
+void TabbyGame::PlayAudio(const int id)
 {
     if (!m_soundActive)
         return;
@@ -1645,7 +1646,7 @@ void TabbyGame::AzioneLavora()
     if (!TriggerLavoro())
         return;
 
-    PlaySound(501);
+    PlayAudio(501);
     if (m_tabbyGuy.GetCarriera().GetImpegno() < 85)
         m_tabbyGuy.GetCarriera().IncImpegno(1);
 
@@ -1664,7 +1665,7 @@ void TabbyGame::AzioneLeccaculo()
         if (!TriggerLavoro())
             return;
         
-        PlaySound(503);
+        PlayAudio(503);
 
         if (m_tabbyGuy.GetRep() > 20)    // Facendo il leccaculo perdi reputazione e fama...
             m_tabbyGuy.DecRep(1);
@@ -1727,7 +1728,7 @@ void TabbyGame::AzioneSciopera()
     if (!TriggerLavoro())
         return;
 
-    PlaySound(502);
+    PlayAudio(502);
 
     if (m_tabbyGuy.GetRep() < 85)
         m_tabbyGuy.IncRep(10);
@@ -1778,7 +1779,7 @@ void TabbyGame::AzionePagaDisco(const int discoIndex)
     }
 
     // FINALMENTE VAI IN DISCO
-    PlaySound(GenRandomInt(303, 305));
+    PlayAudio(GenRandomInt(303, 305));
     WriteLog("AzionePagaDisco: Paga " + GetSoldiStr(disco.m_prezzoIngresso));
     m_tabbyGuy.IncFama(disco.m_incFama);
     m_tabbyGuy.IncRep(disco.m_incRep);
@@ -1863,7 +1864,7 @@ void TabbyGame::AzioneTelefonaTipa()
         return;
     }
 
-    PlaySound(602);
+    PlayAudio(602);
     if (m_tabbyGuy.HaTelefono() && m_tabbyGuy.GetTelefono().GetCredito() <= 2)
         m_tabbyGuy.GetTelefono().DecCredito(2);
     else
@@ -1877,7 +1878,7 @@ void TabbyGame::AzioneTelefonaTipa()
 
 void TabbyGame::AzioneVoglioEntrambe()
 {
-    PlaySound(3);
+    PlayAudio(3);
     Messaggio msg{ TipoMsg::ERRORE, "La vita è bella", "Mentre sei appartato con la " + m_tipaNuova.GetNome() + ", arriva la tua ragazza, " + m_tabbyGuy.GetTipa().GetNome() + ", ti tira uno schiaffo e ti lascia. \nCapendo finalmente di che pasta sei fatto, anche la " + m_tipaNuova.GetNome() + " si allontana..." };
     PushMessaggio(msg);
 
@@ -1913,7 +1914,7 @@ void TabbyGame::AzionePalpatina()
     if (rapporti < sogliaRifiuto)
     {
         // "+ è figa, - te la da' (perla di saggezza)" - Cit. Codice Originale
-        PlaySound(604);
+        PlayAudio(604);
         PushMessaggio(Messaggio{ TipoMsg::AVVISO, "Palpatina...", "Brutto porco, che cazzo tocchi ?" });
 
         // Se i rapporti non erano già a terra, calano
@@ -1990,7 +1991,7 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
             break;
 
         case CategoriaOggetto::SCOOTER:
-            PlaySound(3);
+            PlayAudio(3);
             str = "Ti piacerebbe comprare lo scooter, vero ?\nPurtroppo, non hai abbastanza soldi...";
             if (m_tabbyGuy.GetRep() > 3) m_tabbyGuy.DecRep(1);
             break;
@@ -2077,7 +2078,7 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
     else if (prod.GetCategoria() == CategoriaOggetto::SCOOTER_PART)
     {
         const Pezzo& pezzo{ static_cast<const Pezzo&>(prod) };
-        PlaySound(101);
+        PlayAudio(101);
         m_tabbyGuy.GetScooter().InstallaPezzo(pezzo);
         CheckScooter();
     }
@@ -2107,7 +2108,7 @@ void TabbyGame::AzioneVaiPalestra()
         return;
     }
 
-    PlaySound(201);
+    PlayAudio(201);
     if (m_tabbyGuy.GetFama() < 82)
         m_tabbyGuy.IncFama(1);
 
@@ -2155,7 +2156,7 @@ void TabbyGame::AzioneLampada()
                 PushMessaggio(msg);
             }
 
-            PlaySound(202);
+            PlayAudio(202);
             WriteLog("AzioneLampada: Paga " + GetSoldiStr(PREZZO_LAMPADA));
         }
         else
@@ -2234,7 +2235,7 @@ void TabbyGame::AzioneAttivaSim(const int abbonIndex)
     m_tabbyGuy.GetTelefono().SetAbbonamento(m_abbonamenti[abbonIndex]);
 
     if(m_tabbyGuy.HaTelefono())
-        PlaySound(602);
+        PlayAudio(602);
 }
 
 void TabbyGame::AzioneRicarica(const long long taglio, const std::string nomeOp)
@@ -2256,7 +2257,7 @@ void TabbyGame::AzioneRicarica(const long long taglio, const std::string nomeOp)
     m_tabbyGuy.GetTelefono().IncCredito(taglio);
 
     if(m_tabbyGuy.HaTelefono())
-        PlaySound(602);
+        PlayAudio(602);
 }
 
 void TabbyGame::AzioneVendiScooter()

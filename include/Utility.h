@@ -4,6 +4,31 @@
 #include <iomanip>              // Per formattare l'orario
 #include <iostream>             // Per cerr (errori)
 #include <sstream>
+#include <Windows.h>
+
+// Funzione per caricare una risorsa incorporata (RCDATA) e trasformarla in uno stream
+static std::stringstream CaricaRisorsa(const char* nomeRisorsa)
+{
+    // 1. Cerca la risorsa nell'eseguibile (RT_RCDATA è il tipo standard per dati grezzi)
+    // Castiamo (LPCSTR) per dire al compilatore che è un ID numerico, non una stringa vera
+    HRSRC hRes = FindResourceA(NULL, nomeRisorsa, (LPCSTR)RT_RCDATA);
+    if (!hRes) {
+        // Se non la trova, ritorna uno stream vuoto (o potresti loggare l'errore)
+        return std::stringstream("");
+    }
+
+    // 2. Carica la risorsa in memoria
+    HGLOBAL hData = LoadResource(NULL, hRes);
+    if (!hData) return std::stringstream("");
+
+    // 3. Ottieni il puntatore ai dati e la dimensione
+    const char* data = (const char*)LockResource(hData);
+    DWORD size = SizeofResource(NULL, hRes);
+
+    // 4. Crea una stringa con i dati e poi uno stream
+    // Nota: costruiamo la stringa specificando la size, così gestisce anche eventuali caratteri nulli
+    return std::stringstream(std::string(data, size));
+}
 
 // Funzione helper per la formattazione dei soldi
 static std::string formattaConPunti(const long long numero)

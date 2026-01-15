@@ -283,7 +283,6 @@ TabbyFrame::TabbyFrame(TabbyGame& game)
 
 void TabbyFrame::OnTimer(wxTimerEvent& event)
 {
-	// Corrisponde a: if (IsIconic(hWndMain) != 0)
 	if (this->IsIconized())
 	{
 		// Se il contatore è ancora alto, aspettiamo un altro minuto

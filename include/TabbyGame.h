@@ -174,7 +174,7 @@ public:
     // SCRITTURA LOG DI DEBUG
     void WriteLog(const std::string& messaggio) const;
     // SOUND
-    void PlaySound(const int id);
+    void PlayAudio(const int id);   // PlaySound crea collisioni con windows
     void SetSoundActive(const bool active) { m_soundActive = active; }
     // LOG
     void SetLogActive(const bool active) { m_logActive = active; }

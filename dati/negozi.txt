@@ -6,31 +6,31 @@
 # ITEM |  PEZZO  | Tipo (0=Nessuno,1=Marmitta,2=Carburatore,3=Pistone,4=Filtro) | Nome | Img | Prezzo | Power
 
 [NEGOZIO]|Bau House|1
-ITEM|VESTITO|1|Giubbotto Fatiscenza OG|Giubbotto originale "Fatiscenza", elegante e raffinato, è adatto a tutte le occasioni, dalla serata con gli amici, alle feste più esclusive.|fatiscenza_og.png|175|30
-ITEM|VESTITO|1|Giubbotto Fatiscenza NEW|Giubbotto "Fatiscenza", nella sua nuova versione, per essere sempre in linea con i tempi che cambiano.|fatiscenza_new.png|190|65
-ITEM|VESTITO|1|Giubbotto Ricercato|Ecco qualcosa per i più ricercati! Come può mancare nell'armadio un vestito come questo ??? Compratelo subito, non ve ne pentirete.|ricercato.png|150|90
+ITEM|VESTITO|1|Giubbotto Fatiscenza OG|Giubbotto originale "Fatiscenza", elegante e raffinato, è adatto a tutte le occasioni, dalla serata con gli amici, alle feste più esclusive.|fatiscenza_og.png|175|8
+ITEM|VESTITO|1|Giubbotto Fatiscenza NEW|Giubbotto "Fatiscenza", nella sua nuova versione, per essere sempre in linea con i tempi che cambiano.|fatiscenza_new.png|190|9
+ITEM|VESTITO|1|Giubbotto Ricercato|Ecco qualcosa per i più ricercati! Come può mancare nell'armadio un vestito come questo ??? Compratelo subito, non ve ne pentirete.|ricercato.png|150|7
 
 [NEGOZIO]|Blue Riders|1
-ITEM|VESTITO|1|Giacca di pelle|Giacca di pelle... cos'altro dire ?|pelle.png|125|40
-ITEM|VESTITO|1|Fatiscenza Green|Giubbotto "Fatiscenza" Green Line*, per tutti quelli che possono permetterselo.|fatiscenza_green.png|190|60
-ITEM|VESTITO|1|Fatiscenza White|"Fatiscenza White" con una comoda imbottitura in piumino sintetico*, è adatto per tutte le stagioni. *Tutti i giubbotti della linea "Fatiscenza" sono fatti con materiali altamente infiammabili.|fatiscenza_white.png|210|75
+ITEM|VESTITO|1|Giacca di pelle|Giacca di pelle... cos'altro dire ?|pelle.png|125|8
+ITEM|VESTITO|1|Fatiscenza Green|Giubbotto "Fatiscenza" Green Line*, per tutti quelli che possono permetterselo.|fatiscenza_green.png|190|9
+ITEM|VESTITO|1|Fatiscenza White|"Fatiscenza White" con una comoda imbottitura in piumino sintetico*, è adatto per tutte le stagioni. *Tutti i giubbotti della linea "Fatiscenza" sono fatti con materiali altamente infiammabili.|fatiscenza_white.png|210|105
 
 [NEGOZIO]|Zoccolaro|1
-ITEM|VESTITO|2|Pantaloni Gessati|Pantaloni gessati stile anni '30, comunque sono tornati di moda ed ogni zarro che si rispetti doverebbe averne un paio.|gessati.png|45|45
-ITEM|VESTITO|2|Pantaloni Firmati|Pantaloni per il tempo libero firmati da una delle marche più prestigiose e costose di abbigliamento sportivo.|firmati.png|85|75
-ITEM|VESTITO|2|Pantaloni Reciclati|Pantaloni realizzati da uno dei più eccentrici e stravaganti stilisti del momento utilizzando fibra di bottiglie di plastica reciclate.|reciclati.png|125|60
-ITEM|VESTITO|2|Pantaloni Scacchiera|Hai sempre sognato di essere una scacchiera ??? Eccoti accontentato ! Realizzati in 100% acrilico.|scacchiera.png|95|50
+ITEM|VESTITO|2|Pantaloni Gessati|Pantaloni gessati stile anni '30, comunque sono tornati di moda ed ogni zarro che si rispetti doverebbe averne un paio.|gessati.png|45|3
+ITEM|VESTITO|2|Pantaloni Firmati|Pantaloni per il tempo libero firmati da una delle marche più prestigiose e costose di abbigliamento sportivo.|firmati.png|85|5
+ITEM|VESTITO|2|Pantaloni Reciclati|Pantaloni realizzati da uno dei più eccentrici e stravaganti stilisti del momento utilizzando fibra di bottiglie di plastica reciclate.|reciclati.png|125|6
+ITEM|VESTITO|2|Pantaloni Scacchiera|Hai sempre sognato di essere una scacchiera ??? Eccoti accontentato ! Realizzati in 100% acrilico.|scacchiera.png|95|5
 
 [NEGOZIO]|Footsmocker|1
-ITEM|VESTITO|3|Scarpe Old Style|Comode ed eleganti, dalla linea Old style, se avete un po' di soldi da buttare, dovete assolutemente comprarle.|oldstyle.png|60|50
-ITEM|VESTITO|3|Scarpe Scomode|Il massimo della tendenza per i giovani d'oggi ! Queste scarpe, scomode e brutte, fanno sicuramente per voi !|scomode.png|110|70
-ITEM|VESTITO|3|Scarpe Rialzate|Volete essere alla moda spendendo poco ??? Queste scarpe rialzate con mattoni forati sono quello che ci vuole per voi !|rialzate.png|45|20
+ITEM|VESTITO|3|Scarpe Old Style|Comode ed eleganti, dalla linea Old style, se avete un po' di soldi da buttare, dovete assolutemente comprarle.|oldstyle.png|60|4
+ITEM|VESTITO|3|Scarpe Scomode|Il massimo della tendenza per i giovani d'oggi ! Queste scarpe, scomode e brutte, fanno sicuramente per voi !|scomode.png|110|6
+ITEM|VESTITO|3|Scarpe Rialzate|Volete essere alla moda spendendo poco ??? Queste scarpe rialzate con mattoni forati sono quello che ci vuole per voi !|rialzate.png|45|2
 
 [NEGOZIO]|Footsmocker II|1
-ITEM|VESTITO|3|Scarpe Design White|Stile e semplicità in una scarpa dal design moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.|design_white.png|75|80
-ITEM|VESTITO|3|Scarpe Design Color|Stile e semplicità in una scarpa dal design moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.|design_color.png|75|80
-ITEM|VESTITO|3|Scarpe Prugna|Come poteva mancare il massimo della tendenza per i giovani d'oggi nella nuova colorazione Prugna?|prugna.png|120|90
-ITEM|VESTITO|3|Scarpe Tendenza|E per chi volesse osare ancora di più, ecco la nuova colorazione Tendenza, per non passare inosservati.|tendenza.png|90|100
+ITEM|VESTITO|3|Scarpe Design White|Stile e semplicità in una scarpa dal design moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.|design_white.png|75|4
+ITEM|VESTITO|3|Scarpe Design Color|Stile e semplicità in una scarpa dal design moderno, disponibile nei colori tenui e delicati o sgargianti e decisi.|design_color.png|75|4
+ITEM|VESTITO|3|Scarpe Prugna|Come poteva mancare il massimo della tendenza per i giovani d'oggi nella nuova colorazione Prugna?|prugna.png|120|5
+ITEM|VESTITO|3|Scarpe Tendenza|E per chi volesse osare ancora di più, ecco la nuova colorazione Tendenza, per non passare inosservati.|tendenza.png|90|6
 
 [NEGOZIO]|Bar Tabacchi|3
 ITEM|SIZZE|Barclay|Condensato: 5 Nicotina: 0.5|barclay.png|6|2
@@ -59,9 +59,9 @@ ITEM|SIZZE|Armadis|Armadis contains an original blend of selected Burley. Conden
 ITEM|SIZZE|Winston|Condensato: 11 Nicotina 0.9|winston.png|5|0
 
 [TELEFONIA]|Telefonia|2
-ITEM|TEL|Motorolo D170|Libertà, versatilità e sicurezza di comunicazione a prezzo giusto, queste le caratteristiche del telefono cellulare GSM Motorolo d170.|motorolo_d170.png|150|0|100
-ITEM|TEL|Motorolo Macro TAC 8900|DUAL BAND 900/1800 Motorolo Macro Tac 8900 è il primo telefono cellulare in commercio in grado di passare automaticamente dalla banda di frequenza GSM 900 alla banda GSM 1800.|motorolo_8900.png|500|0|100
-ITEM|TEL|Motorolo 8700|Lo stile è classico e inconfondibile ma le prestazioni sono interamente rinnovate e di altissimo livello. Motorolo 8700 consente un'autonomia di conversazione sorprendente (ben 9 mesi!) e un tempo di standby fino a 135 anni.|motorolo_8700.png|300|0|100
+ITEM|TEL|Motorolo D170|Libertà, versatilità e sicurezza di comunicazione a prezzo giusto, queste le caratteristiche del telefono cellulare GSM Motorolo d170.|motorolo_d170.png|150|2|100
+ITEM|TEL|Motorolo Macro TAC 8900|DUAL BAND 900/1800 Motorolo Macro Tac 8900 è il primo telefono cellulare in commercio in grado di passare automaticamente dalla banda di frequenza GSM 900 alla banda GSM 1800.|motorolo_8900.png|500|7|100
+ITEM|TEL|Motorolo 8700|Lo stile è classico e inconfondibile ma le prestazioni sono interamente rinnovate e di altissimo livello. Motorolo 8700 consente un'autonomia di conversazione sorprendente (ben 9 mesi!) e un tempo di standby fino a 135 anni.|motorolo_8700.png|300|10|100
 
 [CONCESSIONARIO]|Concessionario|4
 ITEM|SCOOTER|Magutty Firecow|magutty_firecow.png|1300|5|5|Marmitta standard|marmitta.png|0|0|Carburatore 12/10|carburatore.png|0|12|Pistoni 50cc|cilindro.png|0|50|Filtro standard|filtro.png|0|0

@@ -1,33 +1,66 @@
+#include <wx/splash.h> // Splash screen iniziale
 #include <wx/config.h>	// Per il salvataggio nei registri di sistema
+#include <wx/sound.h>
 #include "TabbyApp.h"
 #include "TabbyFrame.h"
 
-// TODO: IMPORTANTE: NEGLI EVENTI NULLI VA SEMPRE FATTO NUOVOGIORNO, MENTRE QUELLI A SCELTA CONVIENE IN APPLICASCELTA PER RISPETTARE L'ORDINE DI INVOCAZIONE EVENTI
-// TODO: MECCANICHE FUTURE: con l'avanzamento tecnologico, escono nuove robe. + investimenti in borsa, crypto, per per arricchirsi...
-// TODO: La scuola la fa per 5 anni poi va a lavorare e investire in borsa???
-// TODO: IMPEDIRE DI COMPRARE VESTITI GIA' POSSEDUTI
-// TODO: ARMADIO VESTITI?
-// TODO: LA FAMA DEI VESTITI E' SMINCHIATA ?
-// TODO: ATTENTO ALL'ORDINE DI CHIUSURA E MANIFESTAEVENTI
+// TODO: IDEE MECCANICHE FUTURE: con l'avanzamento tecnologico, escono nuove robe. + investimenti in borsa, crypto, per per arricchirsi...
+// La scuola la fa per 5 anni poi va a lavorare e investire in borsa???
+// IMPEDIRE DI COMPRARE VESTITI GIA' POSSEDUTI
+// ARMADIO VESTITI?
 // TODO: OFFERTA NATALIZIA
-// TODO: CONTROLLA TUTTI GLI ELSE MANIFESTAEVENTO
-// TODO: CONTROLLA TUTTE LE POSIZIONI DI EVENTO NEL CODICE ORIGINALE
-// TODO: TRIGGERPALESTRA ANCHE PER LAMPADA E ABBONAMENTI
 // TODO: COSA FA IL TIMER??
-// TODO: IMPOSTA LA FAMA DEI CELL
-// TODO: CAMBIA FIGOSITA' VESTITI E NEGOZI
-// TODO: METTI PREZZI LAMPADA E PALESTRA DENTRO TABBYGAME
-// TODO: ATTENTO A QUANDO IL GIOCO SI AVVIA IN UN GIORNO DI VACANZA
 // TODO: PULSANTINO RESET
+// TODO: IMPEDIRE DI MODIFICARE I DATI
 
 bool TabbyApp::OnInit()
 {	// Carica i dati di salvataggio dai registri di sistema
 	CaricaDatiRegistro();
 
-	// importante per caricare le immagini
+	// Importante per caricare le immagini
 	wxInitAllImageHandlers();
+
+	// 1. Creiamo la finestra di gioco, ma NON la mostriamo ancora
+	// La teniamo nascosta "dietro le quinte" mentre il logo gira.
 	TabbyFrame* frame = new TabbyFrame{ m_game };
-	frame->Show(true);
+
+	bool splashShown = false;
+
+	// 2. Gestione Logo (Splash Screen)
+	if (m_game.GetStartupActive())
+	{
+		wxBitmap bitmap;
+		if (bitmap.LoadFile("img/logo.png", wxBITMAP_TYPE_PNG))
+		{
+			// Crea lo Splash Screen
+			// wxSPLASH_TIMEOUT: Si chiude da solo dopo 4000ms
+			// Nota: wxWidgets gestisce in automatico la chiusura al click
+			wxSound s{ "sounds/tabs0000.wav" };
+			if (s.IsOk())
+				s.Play(wxSOUND_ASYNC);
+
+			wxSplashScreen* splash = new wxSplashScreen(bitmap,
+				wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT,
+				4000, NULL, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+				wxBORDER_SIMPLE | wxSTAY_ON_TOP);
+
+			// 3. "Bind" dell'evento di chiusura
+			// Catturiamo l'evento "Close" dello splash screen
+			// Questo codice verrà eseguito SOLO quando lo splash si sta chiudendo
+			splash->Bind(wxEVT_CLOSE_WINDOW, [frame](wxCloseEvent& evt) {
+				frame->Show(true);
+				// Lasciamo che lo splash continui a distruggersi
+				evt.Skip();
+				});
+
+			splashShown = true;
+		}
+	}
+
+	// 4. Se il logo non c'è o è disabilitato, mostriamo subito il gioco
+	if (!splashShown)
+		frame->Show(true);
+
 	return true;
 }
 int TabbyApp::OnExit()
@@ -370,7 +403,7 @@ bool TabbyApp::CaricaDatiRegistro()
 	if (checksumSalvato != checksumCalc)
 	{
 		wxMessageBox("Rilevata manomissione dei dati di salvataggio.\nCosa fai, birichino... Adesso, per punizione, la partità verrà resettata, brutto bastardo :)", "ERRORE DI SISTEMA", wxOK | wxICON_ERROR);
-		m_game.ResetPartita(); // Assicurati di avere questa funzione
+		m_game.ResetPartita();
 		return false;
 	}
 	return true;

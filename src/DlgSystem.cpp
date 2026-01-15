@@ -523,5 +523,5 @@ void DlgUscita::OnCancel(wxCommandEvent& event)
 
 void DlgUscita::OnHelp(wxCommandEvent& event)
 {
-	wxMessageBox("\"Spegni il computer ed esci di casa\"\n\nPubblicità Progresso per il recupero dei giovani disadattati a causa dei computer sponsorizzata da MonkeyDigit & Co.", "Guida del Tabby Simulator", wxOK | wxICON_INFORMATION);
+	wxMessageBox("\"Spegni il computer ed esci di casa\"\n\nPubblicità Progresso per il recupero dei giovani disadattati a causa dei computer sponsorizzata da MonkeyDigit Software", "Guida del Tabby Simulator", wxOK | wxICON_INFORMATION);
 }

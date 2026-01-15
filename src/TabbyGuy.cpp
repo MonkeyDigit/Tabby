@@ -134,9 +134,6 @@ void TabbyGuy::Licenziati()
 
 bool TabbyGuy::SetGiubbotto(const Vestito& giubbotto)
 {
-	if(giubbotto.GetTipoVestito() != TipoVestito::GIUBBOTTO)
-		return false;
-
 	m_giubbotto = giubbotto;
 
 	return true;
@@ -144,9 +141,6 @@ bool TabbyGuy::SetGiubbotto(const Vestito& giubbotto)
 
 bool TabbyGuy::SetPantaloni(const Vestito& pantaloni)
 {
-	if (pantaloni.GetTipoVestito() != TipoVestito::PANTALONI)
-		return false;
-
 	m_pantaloni = pantaloni;
 
 	return true;
@@ -154,9 +148,6 @@ bool TabbyGuy::SetPantaloni(const Vestito& pantaloni)
 
 bool TabbyGuy::SetScarpe(const Vestito& scarpe)
 {
-	if (scarpe.GetTipoVestito() != TipoVestito::SCARPE)
-		return false;
-
 	m_scarpe = scarpe;
 
 	return true;

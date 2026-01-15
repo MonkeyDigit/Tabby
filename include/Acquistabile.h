@@ -44,7 +44,7 @@ protected:
 };
 
 // VESTITI
-enum class TipoVestito { NONE, GIUBBOTTO, PANTALONI, SCARPE };
+enum class TipoVestito { NONE, GIUBBOTTO, PANTALONI, SCARPE, GIUBBOTTO_NATALE, PANTALONI_NATALE };
 class Vestito : public Acquistabile {
 public:
     Vestito() : Acquistabile{}, m_fama{ 0 }, m_tipo{ TipoVestito::NONE }

@@ -55,17 +55,19 @@ void TabbyGame::SetAttesa(const int attesa)
 }
 
 TabbyGame::TabbyGame()	// Lunedì 16 settembre 1991
-	: m_tabbyGuy{}, m_date{1991, 9, 16}, 
-    m_valutaCorrente{Valuta::LIRE}, 
-    m_coolDownPestaggio{ 5 }, 
+    : m_tabbyGuy{}, m_date{ 1991, 9, 16 },
+    m_valutaCorrente{ Valuta::LIRE },
+    m_coolDownPestaggio{ 5 },
     m_tipoGiorno{ TipoGiorno::NORMALE },
-    m_attesa{ATTESA_MAX},
+    m_attesa{ ATTESA_MAX },
     m_soundActive{ true },
     m_logActive{ true },
     m_startupActive{ true },
     m_timerActive{ true },
     m_difficolta{ 4 },
-    m_moodTipa{ MoodTipa::BASE }
+    m_moodTipa{ MoodTipa::BASE },
+    m_giubbottoNatale{ TipoVestito::GIUBBOTTO_NATALE, "Giubbotto Natalizio", "Che bello il natale...", "giubbotto_natale.png", 15, 0 },
+    m_pantaloniNatale{ TipoVestito::PANTALONI_NATALE, "Pantaloni Natalizi", "Che bello il natale...", "pantaloni_natale.png", 15, 0 }
 {
     CaricaStringhe();
     CaricaAbbonamenti();
@@ -278,23 +280,21 @@ void TabbyGame::AvanzaCalendario()
             m_tipoGiorno = TipoGiorno::VACANZA_SCUOLA;
             m_moodTipa = MoodTipa::NATALIZIO;
 
-            /*
             if (m_date.GetDay() == 25)
-            {   // TODO: VESTITI NATALIZI
-                if (m_tabbyGuy.GetPantaloni() == natalizi && m_tabbyGuy.GetGiubbotto() == natalizi)
+            {
+                if (m_tabbyGuy.GetPantaloni().GetTipoVestito() == TipoVestito::PANTALONI_NATALE && m_tabbyGuy.GetGiubbotto().GetTipoVestito() == TipoVestito::GIUBBOTTO_NATALE)
                 {
-                    Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Natale...", "Con il tuo vestito da Babbo Natale riesci a stupire tutti..." };
+                    Messaggio msg{ TipoMsg::SUCCESSO , "Natale...", "Con il tuo vestito da Babbo Natale riesci a stupire tutti..." };
                     PushMessaggio(msg);
                     m_tabbyGuy.IncFama(20);
                 }
             }
-            else if (m_date.GetDay() == 28 && m_tabbyGuy.GetPantaloni() == natalizi && m_tabbyGuy.GetGiubbotto() == natalizi)
+            else if (m_date.GetDay() == 28 && m_tabbyGuy.GetPantaloni().GetTipoVestito() == TipoVestito::PANTALONI_NATALE && m_tabbyGuy.GetGiubbotto().GetTipoVestito() == TipoVestito::GIUBBOTTO_NATALE)
             {
-                Messaggio msg{ TipoMsg::INFO, MsgAzione::NONE, "Natale...", "Natale è già passato... Togliti quel dannato vestito..." };
+                Messaggio msg{ TipoMsg::ERRORE , "Natale...", "Natale è già passato... Togliti quel dannato vestito..." };
                 PushMessaggio(msg);
                 m_tabbyGuy.DecFama(5);
             }
-            */
         }
     }
 
@@ -849,6 +849,20 @@ void TabbyGame::ApplicaScelta(const Scelta msgAzione, const bool sceltaYes)
             m_tabbyGuy.SetScooter(Scooter{});
             m_tabbyGuy.GuadagnaSoldi(m_offertaScooter);
             WriteLog("ApplicaScelta: Vendi lo scooter per " + GetSoldiStr(m_offertaScooter));
+        }
+        break;
+    case Scelta::OFFERTA_NATALE:
+        if (sceltaYes)
+        {
+            m_tabbyGuy.SpendiSoldi(m_giubbottoNatale.GetPrezzo());
+            m_tabbyGuy.SetGiubbotto(m_giubbottoNatale);
+            m_tabbyGuy.SpendiSoldi(m_pantaloniNatale.GetPrezzo());
+            m_tabbyGuy.SetPantaloni(m_pantaloniNatale);
+        }
+        else
+        {
+            Messaggio msg{ TipoMsg::ERRORE, "Offerte Natalizie...", "Che noioso che sei..." };
+            PushMessaggio(msg);
         }
         break;
     }
@@ -1917,28 +1931,43 @@ void TabbyGame::AzionePalpatina()
 
 bool TabbyGame::TriggerNegozio(const CategoriaOggetto merce)
 {
-    if (m_tipoGiorno != TipoGiorno::FESTIVO)
-        return true;
-
-    std::string str{};
-    switch (merce)
+    if (m_tipoGiorno == TipoGiorno::FESTIVO)
     {
-    case CategoriaOggetto::CONSUMABILE:
-        str = "Rimani fisso a guardare la saracinesca del tabaccaio irrimediabilmente chiusa...";
-        break;
-    case CategoriaOggetto::SCOOTER:
-        str = "Oh, tipo... oggi il concessionario è chiuso...";
-        break;
-    case CategoriaOggetto::SCOOTER_PART:
-        str = "Oh, tipo... oggi il meccanico è chiuso...";
-        break;
-    default:
-        str = "Oh, tipo... i negozi sono chiusi di festa...";
+        std::string str{};
+        switch (merce)
+        {
+        case CategoriaOggetto::CONSUMABILE:
+            str = "Rimani fisso a guardare la saracinesca del tabaccaio irrimediabilmente chiusa...";
+            break;
+        case CategoriaOggetto::SCOOTER:
+            str = "Oh, tipo... oggi il concessionario è chiuso...";
+            break;
+        case CategoriaOggetto::SCOOTER_PART:
+            str = "Oh, tipo... oggi il meccanico è chiuso...";
+            break;
+        default:
+            str = "Oh, tipo... i negozi sono chiusi di festa...";
+        }
+
+        Messaggio msg{ TipoMsg::ERRORE, "Torna a casa", str };
+        PushMessaggio(msg);
+        return false;
     }
 
-    Messaggio msg{ TipoMsg::ERRORE, "Torna a casa", str };
-    PushMessaggio(msg);
-    return false;
+    // OFFERTA NATALIZIA
+    if (m_tabbyGuy.GetGiubbotto().GetTipoVestito() != TipoVestito::GIUBBOTTO_NATALE && m_tabbyGuy.GetPantaloni().GetTipoVestito() != TipoVestito::PANTALONI_NATALE)
+    {
+        long long tot = m_giubbottoNatale.GetPrezzo() + m_pantaloniNatale.GetPrezzo();
+        // Se hai abbastanza soldi
+        if (m_tabbyGuy.GetSoldi() >= tot &&
+            m_date.GetMonth() == Chrono::Month::dec && m_date.GetDay() > 14 && m_date.GetDay() < 25)
+        {
+            Messaggio msg{ TipoMsg::SCELTA, "Offerte Natalizie...", "Vuoi comperare, per "+GetSoldiStr(tot)+", un meraviglioso vestito da Babbo Natale ?", Scelta::OFFERTA_NATALE};
+            PushMessaggio(msg);
+        }
+    }
+
+    return true;
 }
 
 void TabbyGame::AzioneCompra(const Acquistabile& prod)

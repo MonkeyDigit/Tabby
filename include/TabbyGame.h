@@ -52,7 +52,9 @@ enum class Scelta {
     VENDI_TEL,
     // Scooter
     RIPARA_SCOOTER,
-    VENDI_SCOOTER
+    VENDI_SCOOTER,
+    // Offerta natalizia
+    OFFERTA_NATALE
 };
 
 struct Messaggio {
@@ -234,6 +236,8 @@ private:
     bool m_timerActive;
     int m_difficolta;
     MoodTipa m_moodTipa;
+    Vestito m_giubbottoNatale;
+    Vestito m_pantaloniNatale;
 	// IL MOTORE DI NUMERI CASUALI
 	// Si chiama Mersenne Twister (mt19937), è veloce e affidabile
 	std::mt19937 m_rng;

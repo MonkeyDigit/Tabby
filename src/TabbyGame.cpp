@@ -689,7 +689,8 @@ void TabbyGame::ApplicaScelta(const Scelta msgAzione, const bool sceltaYes)
                 PushMessaggio(msg);
             }
         }
-        NuovoGiorno();
+        
+        NuovoGiorno();  // A prescindere, passa il tempo
         break;
 
     case Scelta::GARA:
@@ -721,7 +722,9 @@ void TabbyGame::ApplicaScelta(const Scelta msgAzione, const bool sceltaYes)
         }
         m_tabbyGuy.GetScooter().DecBenza(0.5);
         CheckScooter();
+        
         NuovoGiorno();
+        
         break;
 
     case Scelta::LICENZIATI:
@@ -729,6 +732,7 @@ void TabbyGame::ApplicaScelta(const Scelta msgAzione, const bool sceltaYes)
         if (sceltaYes)
         {
             m_tabbyGuy.Licenziati();
+            
             NuovoGiorno();
         }
         break;
@@ -750,6 +754,7 @@ void TabbyGame::ApplicaScelta(const Scelta msgAzione, const bool sceltaYes)
             }
 
             m_tabbyGuy.LasciaTipa();
+            
             NuovoGiorno();
         }
         break;
@@ -836,6 +841,7 @@ void TabbyGame::ApplicaScelta(const Scelta msgAzione, const bool sceltaYes)
             }
         }
         break;
+
     case Scelta::VENDI_SCOOTER:
         if (sceltaYes)
         {
@@ -887,6 +893,7 @@ void TabbyGame::AzioneStudia(const int materiaIndex)
 
     mat.IncVoto(1);
     m_tabbyGuy.CalcolaStudio();
+    
     NuovoGiorno();
 }
 
@@ -911,6 +918,7 @@ void TabbyGame::AzioneMinaccia(const int materiaIndex)
     }
 
     m_tabbyGuy.CalcolaStudio();
+    
     NuovoGiorno();
 }
 
@@ -958,6 +966,7 @@ void TabbyGame::AzioneEsci()
         m_tabbyGuy.IncRep(1);
     if (m_tabbyGuy.GetRep() < 12)
         m_tabbyGuy.IncRep(1);
+    
     NuovoGiorno();
 }
 
@@ -967,6 +976,7 @@ void TabbyGame::AzioneChiama()
     {
         Messaggio msg{ TipoMsg::ERRORE, "Sfigato", "Con la scarsa reputazione che hai, tutti trovano qualcosa di meglio da fare piuttosto che venire." };
         PushMessaggio(msg);
+
         NuovoGiorno();
     }
     else if (m_coolDownPestaggio > 0)
@@ -985,6 +995,7 @@ void TabbyGame::AzioneChiama()
             Messaggio msg{ TipoMsg::INFO, "Chiama la Compagnia", "Anche i tuoi amici, al gran completo, vengono sacagnati di botte da chi ti aveva picchiato, accorgendosi così che non sei solo tu ad essere una chiavica, ma lo sono anche loro..." };
             PushMessaggio(msg);
         }
+
         NuovoGiorno();
     }
     else
@@ -1056,6 +1067,7 @@ void TabbyGame::AzioneChiediSoldi()
     PlaySound(801);
     Messaggio msg{ TipoMsg::ERRORE, "Errore irrecuperabile", "Non pensarci neanche lontanamente..." };
     PushMessaggio(msg);
+
     NuovoGiorno();
 }
 
@@ -1100,6 +1112,7 @@ void TabbyGame::AzioneProvaci(const Tipa& tipa)
             m_tabbyGuy.SetTipa(m_tipaNuova);
             m_tabbyGuy.SetRapporti(GenRandomInt(30, 45));
             m_tabbyGuy.IncFama(m_tipaNuova.GetFama() * 0.1f);
+
             NuovoGiorno();
         }
     }
@@ -1119,6 +1132,7 @@ void TabbyGame::AzioneProvaci(const Tipa& tipa)
             Messaggio msgPalo{ TipoMsg::ERRORE, "La vita è bella...", "Fino ad ora hai preso " + std::to_string(m_paloCount) + " pali ! \nNon ti preoccupare, capita a tutti di prendere qualche due di picche nella vita..." };
             PushMessaggio(msgPalo);
         }
+        
         NuovoGiorno();
     }
 
@@ -1139,8 +1153,10 @@ void TabbyGame::AzioneTerminaQuiz(const std::vector<int>& countRisposte, const s
     {
         Messaggio msg{ TipoMsg::ERRORE, "Sei un po' stupido...", "Mi spieghi perché dovremmo assumere qualcuno che non è neanche in grado di mettere delle crocette su un foglio ???" };
         PushMessaggio(msg);
+        return;
     }
-    else if (m_tabbyGuy.GetRep() + m_tabbyGuy.GetFortuna() + GenRandomInt(1, 80) > GenRandomInt(1, 200))
+
+    if (m_tabbyGuy.GetRep() + m_tabbyGuy.GetFortuna() + GenRandomInt(1, 80) > GenRandomInt(1, 200))
     {
         m_tabbyGuy.GetCarriera().SetImpegno(10 + GenRandomInt(0, 20));
         m_tabbyGuy.GetCarriera().SetGiorniLavorati(1);
@@ -1157,9 +1173,9 @@ void TabbyGame::AzioneTerminaQuiz(const std::vector<int>& countRisposte, const s
 
         if (m_tabbyGuy.GetRep() > 10)
             m_tabbyGuy.DecRep(2);
-
-        NuovoGiorno();
     }
+
+    NuovoGiorno();  // Dopo aver compilato bene il questionario, che sia assunto o meno, il tempo scorre
 }
 
 bool TabbyGame::AzioneCercaLavoro()
@@ -1608,18 +1624,17 @@ void TabbyGame::AzioneLavora()
     {
         Messaggio msg{ TipoMsg::AVVISO, "Disabile", "Forse non ti ricordi che sei disokkupato..." };
         PushMessaggio(msg);
+        return;
     }
-    else
-    {
-        if (!TriggerLavoro())
-            return;
 
-        if (m_tabbyGuy.GetCarriera().GetImpegno() < 85)
-            m_tabbyGuy.GetCarriera().IncImpegno(1);
+    if (!TriggerLavoro())
+        return;
 
-        PlaySound(501);
-        NuovoGiorno();
-    }
+    PlaySound(501);
+    if (m_tabbyGuy.GetCarriera().GetImpegno() < 85)
+        m_tabbyGuy.GetCarriera().IncImpegno(1);
+
+    NuovoGiorno();
 }
 
 void TabbyGame::AzioneLeccaculo()
@@ -1691,22 +1706,25 @@ void TabbyGame::AzioneSciopera()
     {
         Messaggio msg{ TipoMsg::AVVISO, "Disabile", "Forse non ti ricordi che sei disokkupato..." };
         PushMessaggio(msg);
+        return;
     }
-    else
-    {
-        if (!TriggerLavoro())
-            return;
 
-        PlaySound(502);
+    if (!TriggerLavoro())
+        return;
 
-        if (m_tabbyGuy.GetRep() < 85)
-            m_tabbyGuy.IncRep(10);
+    PlaySound(502);
 
-        if (m_tabbyGuy.GetCarriera().GetImpegno() > 19)
-            m_tabbyGuy.GetCarriera().DecImpegno(15);
+    if (m_tabbyGuy.GetRep() < 85)
+        m_tabbyGuy.IncRep(10);
 
+    if (m_tabbyGuy.GetCarriera().GetImpegno() > 19)
+        m_tabbyGuy.GetCarriera().DecImpegno(15);
+
+    if (GenRandomInt(1, m_tabbyGuy.GetFortuna() + 3) == 1)
         NuovoGiorno();
-    }
+
+    // Perché nel codice originale c'è un doppio evento ???
+    NuovoGiorno();
 }
 
 void TabbyGame::AzionePagaDisco(const int discoIndex)
@@ -1723,6 +1741,8 @@ void TabbyGame::AzionePagaDisco(const int discoIndex)
     {
         Messaggio msg{ TipoMsg::AVVISO, "Discoteca fuori porta", "Senza lo scooter non puoi andare nelle discoteche fuori porta..." };
         PushMessaggio(msg);
+
+        NuovoGiorno();
         return;
     }
 
@@ -1737,16 +1757,17 @@ void TabbyGame::AzionePagaDisco(const int discoIndex)
     {
         Messaggio msg{ TipoMsg::ERRORE, "Bella figura di merda...", "Appena entraro ti accorgi di non avere abbastanza soldi per pagare il biglietto.\nUn energumeno buttafuori ti deposita gentilmente in un cassonetto della spazzatura poco distante dalla discoteca." };
         PushMessaggio(msg);
+
+        NuovoGiorno();
+        return;
     }
-    else
-    {
-        // FINALMENTE VAI IN DISCO
-        PlaySound(GenRandomInt(303, 305));
-        WriteLog("AzionePagaDisco: Paga " + GetSoldiStr(disco.m_prezzoIngresso));
-        m_tabbyGuy.IncFama(disco.m_incFama);
-        m_tabbyGuy.IncRep(disco.m_incRep);
-    }
-    
+
+    // FINALMENTE VAI IN DISCO
+    PlaySound(GenRandomInt(303, 305));
+    WriteLog("AzionePagaDisco: Paga " + GetSoldiStr(disco.m_prezzoIngresso));
+    m_tabbyGuy.IncFama(disco.m_incFama);
+    m_tabbyGuy.IncRep(disco.m_incRep);
+
     NuovoGiorno();
 }
 
@@ -1807,7 +1828,6 @@ void TabbyGame::AzioneEsciTipa()
     if (m_tabbyGuy.GetTipa().GetFama() > m_tabbyGuy.GetFama())
         m_tabbyGuy.IncFama(1);
 
-    // TODO: NUOVO GIORNO?
     m_tabbyGuy.GetScooter().DecBenza(0.3f);
     CheckScooter();
 }
@@ -1850,6 +1870,7 @@ void TabbyGame::AzioneVoglioEntrambe()
 
     m_tabbyGuy.DecRep(8);
     m_tabbyGuy.DecFama(4);
+    
     NuovoGiorno();
 }
 
@@ -1929,27 +1950,32 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
         case CategoriaOggetto::VESTITO:
             str = "Con cosa avresti intenzione di pagare, stronzetto ??? Caramelle ??? ";
             break;
+
         case CategoriaOggetto::CONSUMABILE:
             str = "\"Vai fuori dal mio locale, brutto pezzente !\", esclama il tabaccaio con un'AK-47 in mano...";
             break;
+
         case CategoriaOggetto::TELEFONO:
             str = "Forse non ti sei accorto di non avere abbastanza soldi, stronzetto...";
             break;
+
         case CategoriaOggetto::SCOOTER:
             PlaySound(3);
             str = "Ti piacerebbe comprare lo scooter, vero ?\nPurtroppo, non hai abbastanza soldi...";
             if (m_tabbyGuy.GetRep() > 3) m_tabbyGuy.DecRep(1);
             break;
+
         case CategoriaOggetto::SCOOTER_PART:
             str = "L'enorme meccanico ti afferra con una sola mano, ti riempie di pugni, e non esita a scaraventare te e il tuo motorino merdoso fuori dall'officina.";
             break;
+
         default:
             str = "Te sei bruciato tutti i soldi, coglione...";
         }
 
         Messaggio msg{ TipoMsg::ERRORE, "Non hai abbastanza soldi...", str };
         PushMessaggio(msg);
-        // TODO: da spostare?
+
         NuovoGiorno();
         return;
     }
@@ -2017,7 +2043,6 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
         PushMessaggio(msg);
 
         m_tabbyGuy.IncRep(4);
-        
     }
     else if (prod.GetCategoria() == CategoriaOggetto::SCOOTER_PART)
     {
@@ -2028,7 +2053,8 @@ void TabbyGame::AzioneCompra(const Acquistabile& prod)
     }
 
     WriteLog("AzioneCompra: acquista " + prod.GetNome() + " per " + GetSoldiStr(prod.GetPrezzo()));
-    NuovoGiorno();
+
+    NuovoGiorno();  // Quando compri qualcosa, passa il tempo
 }
 
 bool TabbyGame::TriggerPalestra()
@@ -2089,7 +2115,6 @@ void TabbyGame::AzioneLampada()
                     m_tabbyGuy.IncFama(1);
                 if (m_tabbyGuy.GetFama() < 96)
                     m_tabbyGuy.IncFama(1);
-
             }
             else
             {
@@ -2110,9 +2135,9 @@ void TabbyGame::AzioneLampada()
         }
     }
 
-    int rnd = GenRandomInt(0, 4 + m_tabbyGuy.GetFortuna());
-    if (rnd == 0)
+    if (GenRandomInt(1, m_tabbyGuy.GetFortuna() + 5) == 1)  // Che riesca a pagare o meno, potrebbe passare il tempo...
         NuovoGiorno();
+        
 }
 
 void TabbyGame::AzioneAbbonamento(const int mesi)
@@ -2148,6 +2173,7 @@ void TabbyGame::AzioneAbbonamento(const int mesi)
     // Abbonamento acquistato
     m_scadenzaPal = m_date;
     m_scadenzaPal.AddMonth(mesi);
+    
     NuovoGiorno();
 }
 
@@ -2232,11 +2258,14 @@ void TabbyGame::AzioneRiparaScooter()
     {
         Messaggio msg{ TipoMsg::ERRORE, "Hai le allucinazioni ???", "Mi spieghi come fai a farti riparare lo scooter se manco ce l'hai ???" };
         PushMessaggio(msg);
+
+        NuovoGiorno();  // Perché nel codice originale passa un giorno ???
         return;
     }
-    else if (m_tabbyGuy.GetScooter().GetStato() == 100)
+    
+    if (m_tabbyGuy.GetScooter().GetStato() == 100)
     {
-        Messaggio msg{ TipoMsg::ERRORE, "Ripara lo scooter", "Che motivi hai per voler riparare il tuo scooter visto ch è al 100% di efficienza ???" };
+        Messaggio msg{ TipoMsg::ERRORE, "Ripara lo scooter", "Che motivi hai per voler riparare il tuo scooter visto che è al 100% di efficienza ???" };
         PushMessaggio(msg);
         return;
     }
@@ -2276,19 +2305,34 @@ void TabbyGame::AzioneFaiBenza()
     {
         Messaggio msg{ TipoMsg::ERRORE, "Ma che ???", "Mi spieghi come fai a far benzina allo scooter se manco ce l'hai ???" };
         PushMessaggio(msg);
+
+        NuovoGiorno();
         return;
     }
 
+    Scooter& scooter = m_tabbyGuy.GetScooter();
+    if (scooter.GetAttivita() != Attivita::IN_GIRO && scooter.GetAttivita() != Attivita::A_SECCO)
+    {
+        Messaggio msg{ TipoMsg::ERRORE, "Ma che ???", "Mi spieghi come fai a far benza allo scooter visto che è " + scooter.GetAttivitaStr(true) + " ???" };
+        PushMessaggio(msg);
+
+        NuovoGiorno();
+        return;
+    }
     long long costoBenza = 10;
 
     if (!m_tabbyGuy.SpendiSoldi(costoBenza))
     {
-        Messaggio msg{ TipoMsg::INFO, "Fai benzina", "Al distributore automatico puoi fare un minimo di "+GetSoldiStr(costoBenza)+" di benzina..." };
+        Messaggio msg{ TipoMsg::INFO, "Fai benzina", "Al distributore automatico puoi fare un minimo di "+GetSoldiStr(costoBenza) + " di benzina..." };
         PushMessaggio(msg);
+
+        NuovoGiorno();
         return;
     }
 
-    m_tabbyGuy.GetScooter().IncBenza(5);
+    scooter.IncBenza(5);
+
+    NuovoGiorno();
 }
 
 bool TabbyGame::TriggerMeccanico()

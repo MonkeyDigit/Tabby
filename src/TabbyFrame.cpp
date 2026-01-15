@@ -246,7 +246,7 @@ TabbyFrame::TabbyFrame(TabbyGame& game)
 	sizerDate->Add(m_lblDate, wxEXPAND | wxALL & ~wxBOTTOM, 5);
 	sizerDate->AddStretchSpacer();
 	wxButton* btnAbout = new wxButton{ pnlDate, ID_ABOUT, "About", wxDefaultPosition, wxSize(140, -1) };
-	sizerDate->Add(btnAbout, 0, wxALL, 2);
+	sizerDate->Add(btnAbout, 0, wxALIGN_CENTER | wxALL, 2);
 	gridStats->Add(pnlDate, wxGBPosition(19, 0), wxGBSpan(1, 3), wxEXPAND | wxALL, 5);
 
 	// PILASTRO INVISIBILE

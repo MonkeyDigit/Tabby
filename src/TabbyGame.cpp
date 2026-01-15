@@ -1,6 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS // Senza questa mi fotte la funzione localtime
 #include <fstream>              // Gestione file
 #include <ctime>                // Per l'orario nel log
+#include <sstream>
+#include <iomanip>              // Per formattare l'orario
 #include "TabbyGame.h"
 
 Messaggio::Messaggio() {}
@@ -1242,8 +1244,7 @@ void TabbyGame::CaricaStringhe()
     std::string riga;
     std::vector<std::string>* vettoreCorrente = nullptr; // Puntatore al vettore che stiamo riempiendo - ATTENZIONE: qua non posso usare la reference, perché in C++ non possono essere riassegnate
 
-    while (std::getline(file, riga))
-    {
+    while (std::getline(file, riga)) {
         trimString(riga); // Pulisce spazi finali o \r
 
         // Salta righe vuote
@@ -1292,8 +1293,7 @@ void TabbyGame::CaricaAbbonamenti()
     if (file.str().empty()) return;
 
     std::string riga;
-    while (std::getline(file, riga))
-    {
+    while (std::getline(file, riga)){
         trimString(riga);
         if (riga.empty() || riga[0] == '#') continue;
 
@@ -1349,6 +1349,7 @@ void TabbyGame::CaricaDitte() {
     if (file.str().empty()) return;
     std::string riga;
 
+    // ATTENZIONE: RICORDARE DI TRIMMARE OGNI VOLTA CHE SI FA GETLINE
     while (std::getline(file, riga)) {
         trimString(riga);
         if (riga == "[DITTA]") {
@@ -1356,6 +1357,7 @@ void TabbyGame::CaricaDitte() {
 
             // Riga 1: Dati Base + IMMAGINE (Token finale)
             if (!std::getline(file, riga)) break;
+            trimString(riga);
             auto tokens = splitString(riga, '|');
 
             if (tokens.size() < 3) continue; // Minimo sindacale
@@ -1375,6 +1377,7 @@ void TabbyGame::CaricaDitte() {
 
             // Riga 2: Offerta
             if (!std::getline(file, riga)) break;
+            trimString(riga);
             auto offTokens = splitString(riga, '|');
             if (offTokens.size() >= 3) {
                 d.m_offerta.m_descrizione = offTokens[0];
@@ -1384,10 +1387,12 @@ void TabbyGame::CaricaDitte() {
 
             // Riga 3: Presentazione
             if (!std::getline(file, riga)) break;
+            trimString(riga);
             d.m_presentazione = riga;
 
             // Riga 4: Produzioni
             if (!std::getline(file, riga)) break;
+            trimString(riga);
             d.m_produzioni = riga;
 
             m_ditte.push_back(d);
@@ -1403,8 +1408,7 @@ void TabbyGame::CaricaFeste()
     if (file.str().empty()) return;
 
     std::string riga;
-    while (std::getline(file, riga))
-    {
+    while (std::getline(file, riga)) {
         trimString(riga);
         if (riga.empty() || riga[0] == '#') continue;
 
@@ -1539,8 +1543,7 @@ void TabbyGame::CaricaQuiz()
     enum State { FIND_QUIZ, READ_TITLE, READ_INTRO, READ_QUESTIONS };
     State state = FIND_QUIZ;
 
-    while (std::getline(file, riga))
-    {
+    while (std::getline(file, riga)){
         trimString(riga);
         if (riga.empty()) continue;
 
@@ -1574,8 +1577,7 @@ void TabbyGame::CaricaQuiz()
 
                 // Leggiamo subito la riga successiva per le risposte
                 std::string rigaRisposte;
-                if (std::getline(file, rigaRisposte))
-                {
+                if (std::getline(file, rigaRisposte)) {
                     trimString(rigaRisposte);
                     auto risposte = splitString(rigaRisposte, '|');
 

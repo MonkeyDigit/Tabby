@@ -161,7 +161,6 @@ TabbyFrame::TabbyFrame(TabbyGame& game)
 	wxBoxSizer* sizerFoto = new wxBoxSizer{ wxVERTICAL };
 	wxBitmap bmpAvatar = GeneraAvatar(m_game.GetTabbyGuy());
 	m_fotoTabbozzo = new wxStaticBitmap{ pnlFoto, wxID_ANY, bmpAvatar };
-	//m_fotoTabbozzo->SetWindowStyle(wxSS_NOTIFY | wxBORDER_SUNKEN);
 	m_fotoTabbozzo->SetCursor(wxCursor(wxCURSOR_HAND)); // Manina quando passi sopra
 	m_fotoTabbozzo->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent& event) {
 		DlgPersonalInfo dlg(this, m_game);

@@ -8,9 +8,7 @@
 // La scuola la fa per 5 anni poi va a lavorare e investire in borsa???
 // IMPEDIRE DI COMPRARE VESTITI GIA' POSSEDUTI
 // ARMADIO VESTITI?
-// TODO: OFFERTA NATALIZIA
 // TODO: COSA FA IL TIMER??
-// TODO: PULSANTINO RESET
 // TODO: IMPEDIRE DI MODIFICARE I DATI
 
 bool TabbyApp::OnInit()

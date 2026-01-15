@@ -95,9 +95,22 @@ DlgConfig::DlgConfig(wxWindow* parent, TabbyGame& game)
 	footerSizer->Add(new wxStaticText{ this, wxID_ANY, "Tabboz Simulator" }, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 	footerSizer->AddStretchSpacer();
 
-	wxStaticText* lblReset = new wxStaticText{ this, wxID_ANY, "reset ." };
+	// Pulsatino per il reset del gioco...
+	wxStaticText* lblReset = new wxStaticText{ this, wxID_ANY, "reset" };
 	lblReset->SetForegroundColour(*wxRED);
 	footerSizer->Add(lblReset, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	wxBitmap bmpReset = CaricaAsset("reset.png");
+	wxStaticBitmap* imgReset = new wxStaticBitmap(this, wxID_ANY, bmpReset);
+
+	imgReset->SetCursor(wxCursor(wxCURSOR_HAND)); // Manina quando passi sopra
+	imgReset->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent& event) {
+		m_game.ResetPartita();
+		wxMessageBox("Il gioco è stato resettato.", "Tabby Sim", wxOK | wxICON_INFORMATION);
+		this->EndModal(wxID_OK);
+		});
+
+	footerSizer->Add(imgReset, 0, wxALIGN_CENTER | wxALL, 5);
+
 
 	mainSizer->Add(footerSizer, 0, wxEXPAND | wxALL, 2);
 

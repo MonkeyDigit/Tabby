@@ -190,7 +190,6 @@ DlgTipa::DlgTipa(wxWindow* parent, TabbyGame& game)
 	double scaleFactor = 1.0;
 	wxBitmap bmpTipa;
 
-	// TODO: TRASFORMARE MOODTIPA IN MOOD ??
 	switch (m_game.GetMoodTipa())
 	{
 	case MoodTipa::ESTIVO:

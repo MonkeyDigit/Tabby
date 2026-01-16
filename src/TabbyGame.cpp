@@ -1961,16 +1961,19 @@ bool TabbyGame::TriggerNegozio(const CategoriaOggetto merce)
         return false;
     }
 
-    // OFFERTA NATALIZIA
-    if (m_tabbyGuy.GetGiubbotto().GetTipoVestito() != TipoVestito::GIUBBOTTO_NATALE && m_tabbyGuy.GetPantaloni().GetTipoVestito() != TipoVestito::PANTALONI_NATALE)
+    if (merce == CategoriaOggetto::VESTITO)
     {
-        long long tot = m_giubbottoNatale.GetPrezzo() + m_pantaloniNatale.GetPrezzo();
-        // Se hai abbastanza soldi
-        if (m_tabbyGuy.GetSoldi() >= tot &&
-            m_date.GetMonth() == Chrono::Month::dec && m_date.GetDay() > 14 && m_date.GetDay() < 25)
+        // OFFERTA NATALIZIA (solo nei negozi di abbigliamento)
+        if (m_tabbyGuy.GetGiubbotto().GetTipoVestito() != TipoVestito::GIUBBOTTO_NATALE && m_tabbyGuy.GetPantaloni().GetTipoVestito() != TipoVestito::PANTALONI_NATALE)
         {
-            Messaggio msg{ TipoMsg::SCELTA, "Offerte Natalizie...", "Vuoi comperare, per "+GetSoldiStr(tot)+", un meraviglioso vestito da Babbo Natale ?", Scelta::OFFERTA_NATALE};
-            PushMessaggio(msg);
+            long long tot = m_giubbottoNatale.GetPrezzo() + m_pantaloniNatale.GetPrezzo();
+            // Se hai abbastanza soldi
+            if (m_tabbyGuy.GetSoldi() >= tot &&
+                m_date.GetMonth() == Chrono::Month::dec && m_date.GetDay() > 14 && m_date.GetDay() < 25)
+            {
+                Messaggio msg{ TipoMsg::SCELTA, "Offerte Natalizie...", "Vuoi comperare, per " + GetSoldiStr(tot) + ", un meraviglioso vestito da Babbo Natale ?", Scelta::OFFERTA_NATALE };
+                PushMessaggio(msg);
+            }
         }
     }
 
@@ -2177,7 +2180,7 @@ void TabbyGame::AzioneLampada()
         
 }
 
-void TabbyGame::AzioneAbbonamento(const int mesi)
+void TabbyGame::AzioneAbbonamentoPal(const int mesi)
 {
     long long importo{};
     switch (mesi)

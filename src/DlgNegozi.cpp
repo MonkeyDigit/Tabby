@@ -135,6 +135,7 @@ void DlgScooter::OnConcessionario(wxCommandEvent& event)
 
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgScooter::OnVendi(wxCommandEvent& event)
@@ -146,6 +147,7 @@ void DlgScooter::OnVendi(wxCommandEvent& event)
 
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgScooter::OnTrucca(wxCommandEvent& event)
@@ -165,6 +167,7 @@ void DlgScooter::OnRipara(wxCommandEvent& event)
 	m_game.AzioneRiparaScooter();
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgScooter::OnFaiBenza(wxCommandEvent& event)
@@ -172,6 +175,7 @@ void DlgScooter::OnFaiBenza(wxCommandEvent& event)
 	m_game.AzioneFaiBenza();
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgScooter::OnUsa(wxCommandEvent& event)
@@ -304,17 +308,17 @@ DlgPalestra::DlgPalestra(wxWindow* parent, TabbyGame& game)
 	gridSub->Add(btnMesi12, 0, wxEXPAND | wxALL & ~wxTOP, 5);
 
 	btnMesi1->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		m_game.AzioneAbbonamento(1);
+		m_game.AzioneAbbonamentoPal(1);
 		ManifestaEventi(this, m_game);
 		this->AggiornaInterfaccia();
 		});
 	btnMesi6->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		m_game.AzioneAbbonamento(6);
+		m_game.AzioneAbbonamentoPal(6);
 		ManifestaEventi(this, m_game);
 		this->AggiornaInterfaccia();
 		});
 	btnMesi12->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		m_game.AzioneAbbonamento(12);
+		m_game.AzioneAbbonamentoPal(12);
 		ManifestaEventi(this, m_game);
 		this->AggiornaInterfaccia();
 		});
@@ -385,8 +389,9 @@ void DlgPalestra::OnVaiPalestra(wxCommandEvent& event)
 	if (m_game.TriggerPalestra())
 		m_game.AzioneVaiPalestra();
 
-	this->AggiornaInterfaccia();
 	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgPalestra::OnLampada(wxCommandEvent& event)
@@ -394,8 +399,9 @@ void DlgPalestra::OnLampada(wxCommandEvent& event)
 	if (m_game.TriggerPalestra())
 		m_game.AzioneLampada();
 
-	this->AggiornaInterfaccia();
 	ManifestaEventi(this, m_game);
+	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 // DIALOG ELENCO NEGOZI
@@ -665,6 +671,7 @@ void PnlProdotto::OnCompra(wxCommandEvent& event)
 {
 	m_game.AzioneCompra(m_prodotto);
 	m_parentDlg->EndModal(wxID_ANY);	// Chiudiamo la finestra del negozio
+	AggiornaFinestraMain();
 }
 
 // DIALOG CONCESSIONARIO
@@ -944,6 +951,7 @@ void DlgTelefono::OnCompraTel(wxCommandEvent& event)
 	}
 
 	ManifestaEventi(this, m_game);
+	AggiornaFinestraMain();
 }
 
 void DlgTelefono::OnVendiTel(wxCommandEvent& event)
@@ -953,6 +961,7 @@ void DlgTelefono::OnVendiTel(wxCommandEvent& event)
 
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgTelefono::OnRicarica(wxCommandEvent& event)
@@ -966,6 +975,7 @@ void DlgTelefono::OnRicarica(wxCommandEvent& event)
 	else
 		ManifestaEventi(this, m_game);
 
+	AggiornaFinestraMain();
 }
 
 // DIALOG RICARICHE

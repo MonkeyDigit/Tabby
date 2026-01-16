@@ -1,5 +1,6 @@
 #include <wx/artprov.h>
 #include <wx/sound.h>
+#include <wx/app.h> // Serve per wxTheApp
 #ifdef __WXMSW__
 // Questa macro impedisce a windows.h di includere winsock.h e altra robaccia inutile
 #ifndef WIN32_LEAN_AND_MEAN
@@ -8,6 +9,7 @@
 #include <windows.h> 
 #endif
 #include "DlgBase.h"
+#include "TabbyFrame.h"
 
 void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 {
@@ -98,6 +100,15 @@ void ManifestaEventi(wxWindow* parent, TabbyGame& game)
 		}
 	}
 	// Usciti dal while, la coda è sicuramente vuota
+}
+
+void AggiornaFinestraMain()
+{
+	// Ottieni il puntatore alla finestra principale
+	TabbyFrame* mainFrame = dynamic_cast<TabbyFrame*>(wxTheApp->GetTopWindow());
+
+	if (mainFrame)
+		mainFrame->AggiornaInterfaccia();	// Forza l'aggiornamento
 }
 
 wxBitmap CaricaAsset(const std::string& nomeFile) {

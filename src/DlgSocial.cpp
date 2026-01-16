@@ -329,6 +329,7 @@ void DlgTipa::OnLasciaTipa(wxCommandEvent& event)
 	m_game.AzioneLasciaTipa();
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgTipa::OnTelefonaTipa(wxCommandEvent& event)
@@ -336,6 +337,7 @@ void DlgTipa::OnTelefonaTipa(wxCommandEvent& event)
 	m_game.AzioneTelefonaTipa();
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgTipa::OnEsciTipa(wxCommandEvent& event)
@@ -343,6 +345,7 @@ void DlgTipa::OnEsciTipa(wxCommandEvent& event)
 	m_game.AzioneEsciTipa();
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgTipa::AggiornaInterfaccia()

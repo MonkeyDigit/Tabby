@@ -113,6 +113,7 @@ void DlgScuola::OnStudia(wxCommandEvent& event)
 	m_game.AzioneStudia(m_materiaIndex);
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgScuola::OnMinaccia(wxCommandEvent& event)
@@ -120,6 +121,7 @@ void DlgScuola::OnMinaccia(wxCommandEvent& event)
 	m_game.AzioneMinaccia(m_materiaIndex);
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgScuola::OnCorrompi(wxCommandEvent& event)
@@ -127,6 +129,7 @@ void DlgScuola::OnCorrompi(wxCommandEvent& event)
 	m_game.AzioneCorrompi(m_materiaIndex);
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgScuola::AggiornaInterfaccia()
@@ -242,6 +245,7 @@ void DlgLavoro::OnCercaLavoro(wxCommandEvent& event)
 
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgLavoro::OnLicenziati(wxCommandEvent& event)
@@ -249,6 +253,7 @@ void DlgLavoro::OnLicenziati(wxCommandEvent& event)
 	m_game.AzioneLicenziati();
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgLavoro::OnInformazioni(wxCommandEvent& event)
@@ -265,6 +270,7 @@ void DlgLavoro::OnLavora(wxCommandEvent& event)
 	m_game.AzioneLavora();
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgLavoro::OnLeccaculo(wxCommandEvent& event)
@@ -272,6 +278,7 @@ void DlgLavoro::OnLeccaculo(wxCommandEvent& event)
 	m_game.AzioneLeccaculo();
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgLavoro::OnAumento(wxCommandEvent& event)
@@ -279,6 +286,7 @@ void DlgLavoro::OnAumento(wxCommandEvent& event)
 	m_game.AzioneAumentoSalario();
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgLavoro::OnSciopera(wxCommandEvent& event)
@@ -286,6 +294,7 @@ void DlgLavoro::OnSciopera(wxCommandEvent& event)
 	m_game.AzioneSciopera();
 	ManifestaEventi(this, m_game);
 	this->AggiornaInterfaccia();
+	AggiornaFinestraMain();
 }
 
 void DlgLavoro::AggiornaInterfaccia()

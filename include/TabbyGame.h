@@ -154,7 +154,7 @@ public:
     bool PalestraAttiva() const { return m_scadenzaPal > m_date; }; // E' ancora attivo l'abbonamento della palestra?
     void AzioneVaiPalestra();
     void AzioneLampada();
-    void AzioneAbbonamento(const int mesi);
+    void AzioneAbbonamentoPal(const int mesi);
     // Telefono
     void AzioneVendiTelefono();
     void AzioneAttivaSim(const int abbonIndex);

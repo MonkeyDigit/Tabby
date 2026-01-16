@@ -9,6 +9,8 @@ public:
 	// Costruttore
 	TabbyFrame(TabbyGame& game);
 
+	void AggiornaInterfaccia();
+
 private:
 	// Classe di gestione gioco
 	TabbyGame& m_game;
@@ -36,9 +38,6 @@ private:
 	wxStaticText* m_lblScooter;
 	wxGauge* m_barScooter;
 	wxStaticText* m_lblDate;
-
-	// Funzioni Helper
-	void AggiornaInterfaccia();
 
 	// GESTORE EVENTI (Cosa succede quando clicchi)
 	void OnScooter(wxCommandEvent& event);

@@ -4,6 +4,9 @@
 #include "TabbyGame.h"
 #define WIN_BKG wxColor(194, 196, 184)
 
+// Forward Declaration della finestra padre
+class TabbyFrame;
+
 class DlgEvento : public wxDialog {
 public:
 	DlgEvento(wxWindow* parent, Messaggio& msg);
@@ -44,5 +47,7 @@ private:
 
 // Funzioni helper
 void ManifestaEventi(wxWindow* parent, TabbyGame& game);
+// Questa funzione permette alle sotto finestre di richiedere il refresh della finestra main se necessario, utile per avere un riscontro visivo immediato sullo scorrere dei giorni
+void AggiornaFinestraMain();
 wxBitmap CaricaAsset(const std::string& nomeFile);
 wxBitmap GeneraAvatar(const TabbyGuy& guy);
